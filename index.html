@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>德育留言墙 · 班级心语</title>
+  <title>德润童心 · 师范德育专题</title>
   <style>
+    /* 全局样式 */
     * {
       margin: 0;
       padding: 0;
@@ -12,11 +13,13 @@
     }
 
     body {
-      font-family: 'Segoe UI', '微软雅黑', sans-serif;
-      background: #f5f7f2;
-      min-height: 100vh;
+      font-family: 'Segoe UI', '微软雅黑', system-ui, sans-serif;
+      background-color: #fbfaf6;
+      color: #2e3b2c;
+      line-height: 1.6;
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
     }
 
     /* 页头 */
@@ -28,13 +31,11 @@
     }
 
     header h1 {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 500;
+      letter-spacing: 2px;
       color: #2d4e1e;
       margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
 
     nav {
@@ -47,7 +48,7 @@
       text-decoration: none;
       color: #3a5e2b;
       font-weight: 500;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       padding: 0.25rem 0;
       border-bottom: 2px solid transparent;
       transition: border-color 0.2s;
@@ -57,7 +58,7 @@
       border-bottom-color: #5b8c4e;
     }
 
-    /* 主内容区 */
+    /* 主内容 */
     main {
       flex: 1;
       max-width: 1200px;
@@ -66,58 +67,103 @@
       width: 100%;
     }
 
-    /* 使用指引卡片 */
-    .guide-card {
-      background: #e8f0e3;
-      border-radius: 20px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 2rem;
-      border-left: 6px solid #7fa86a;
+    /* 主视觉区 */
+    .hero {
+      background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
+      padding: 2.5rem 2rem;
+      border-radius: 32px;
+      margin-bottom: 2.5rem;
+      text-align: center;
+      box-shadow: 0 6px 14px rgba(90, 110, 70, 0.08);
+      border: 1px solid #c8dcc0;
     }
 
-    .guide-card h2 {
-      color: #3a5e2b;
+    .hero h2 {
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #1f3b14;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p {
       font-size: 1.4rem;
+      color: #43673a;
+      font-style: italic;
+    }
+
+    /* 卡片入口区域 */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0 2.5rem;
+    }
+
+    .card {
+      background: white;
+      padding: 1.8rem 1.5rem;
+      border-radius: 24px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+      border: 1px solid #dfe9d9;
+      text-align: center;
+      transition: transform 0.15s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 28px rgba(80, 110, 60, 0.1);
+      border-color: #b3cfaa;
+    }
+
+    .card-icon {
+      font-size: 3rem;
       margin-bottom: 0.75rem;
+    }
+
+    .card h3 {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: #2f5126;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      color: #4a5e42;
+      font-size: 1rem;
+    }
+
+    /* 留言板板块 */
+    .message-section {
+      background: white;
+      border-radius: 24px;
+      padding: 1.8rem;
+      margin-top: 1rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+      border: 1px solid #d9e6d3;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #e2ecdc;
+    }
+
+    .section-header h2 {
+      color: #3a5e2b;
+      font-weight: 400;
+      font-size: 1.6rem;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .guide-card ul {
-      margin-left: 1.5rem;
-      color: #4a6040;
-    }
-
-    .guide-card li {
-      margin-bottom: 0.4rem;
-    }
-
-    /* 留言板嵌入区域 */
-    .board-container {
-      background: white;
-      border-radius: 24px;
-      padding: 1.5rem;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-      border: 1px solid #d9e6d3;
-    }
-
-    .board-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 2px solid #e2ecdc;
-    }
-
-    .board-header h3 {
-      color: #4a6b3f;
-      font-weight: 400;
-      font-size: 1.3rem;
-    }
-
-    .anonymous-tag {
+    .anonymous-badge {
       background: #d9e6d3;
       padding: 0.3rem 1.2rem;
       border-radius: 30px;
@@ -125,16 +171,23 @@
       color: #3a5e2b;
     }
 
-    iframe {
-      display: block;
-      width: 100%;
-      height: 600px;
-      border: none;
+    .message-tip {
+      background: #e8f0e3;
       border-radius: 16px;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.2rem;
+      color: #4a6040;
+      font-size: 0.95rem;
+    }
+
+    /* 聊天框容器 */
+    #tlkio {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #c8dcc0;
       background: #fafbf9;
     }
 
-    /* 文明提示 */
     .civility-note {
       margin-top: 1rem;
       text-align: center;
@@ -150,77 +203,85 @@
       color: #36522b;
       font-size: 0.95rem;
       border-top: 2px solid #b3cba7;
-      margin-top: 2rem;
     }
 
     /* 响应式 */
     @media (max-width: 600px) {
-      header h1 { font-size: 1.5rem; }
-      nav { gap: 1rem; }
-      iframe { height: 450px; }
+      header h1 { font-size: 1.8rem; }
+      nav { gap: 1.2rem; }
+      .hero h2 { font-size: 1.8rem; }
     }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>
-      <span>📝</span>
-      <span>德润童心 · 班级留言墙</span>
-    </h1>
+    <h1>🌱 德润童心</h1>
     <nav>
       <a href="index.html">🏠 首页</a>
       <a href="virtues.html">📜 传统美德</a>
       <a href="stories.html">📖 德育故事</a>
       <a href="quotes.html">✨ 名言警句</a>
-      <a href="message.html">💬 留言墙</a>
       <a href="about.html">📋 关于课程</a>
     </nav>
   </header>
 
   <main>
-    <!-- 使用说明卡片 -->
-    <div class="guide-card">
-      <h2>
-        <span>💡</span>
-        <span>留言墙使用说明</span>
-      </h2>
-      <ul>
-        <li><strong>完全匿名</strong> · 无需登录或注册，打开即可留言</li>
-        <li><strong>双击任意空白处</strong>即可输入文字，写下你的想法</li>
-        <li>支持简单的文字格式（加粗、斜体、列表等）</li>
-        <li>所有打开本页面的同学都能<strong>实时看到彼此的留言</strong></li>
-        <li>内容会自动保存，下次打开依然存在</li>
-        <li>📌 <strong>文明留言，友善交流</strong> · 教师会定期查阅</li>
-      </ul>
+    <!-- 主视觉 + 教育名言 -->
+    <section class="hero">
+      <h2>“道德是做人的根本”</h2>
+      <p>—— 陶行知</p>
+    </section>
+
+    <!-- 四个入口卡片（加了留言板入口，方便导航） -->
+    <div class="card-grid">
+      <a href="virtues.html" class="card">
+        <div class="card-icon">🌿</div>
+        <h3>传统美德</h3>
+        <p>孝、悌、忠、信、礼、义、廉、耻 —— 中华文化的根基。</p>
+      </a>
+      <a href="stories.html" class="card">
+        <div class="card-icon">📚</div>
+        <h3>德育故事</h3>
+        <p>孔融让梨、曾子杀彘…… 用故事浸润心灵。</p>
+      </a>
+      <a href="quotes.html" class="card">
+        <div class="card-icon">💬</div>
+        <h3>名言警句</h3>
+        <p>古今中外的道德箴言，每日一省。</p>
+      </a>
+      <a href="#message-wall" class="card">
+        <div class="card-icon">📝</div>
+        <h3>留言墙</h3>
+        <p>匿名留下你的心声，和大家一起交流。</p>
+      </a>
     </div>
 
-    <!-- 嵌入留言板 -->
-    <div class="board-container">
-      <div class="board-header">
-        <h3>🌱 班级心语 · 大家的心声</h3>
-        <span class="anonymous-tag">🕶️ 完全匿名模式</span>
+    <!-- 留言板板块 -->
+    <section class="message-section" id="message-wall">
+      <div class="section-header">
+        <h2>
+          <span>💬</span>
+          <span>班级心语 · 留言墙</span>
+        </h2>
+        <span class="anonymous-badge">🕶️ 完全匿名 · 无需登录</span>
       </div>
       
-      <!-- 你生成的 Board.net 嵌入代码 -->
-      <iframe 
-        name="embed_readwrite" 
-        src="https://board.net/p/everyone?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false" 
-        width="100%" 
-        height="600" 
-        frameborder="0">
-      </iframe>
-      
+      <div class="message-tip">
+        💡 在下方输入框直接打字，按回车发送。所有人实时看到，留言永久保存。
+      </div>
+
+      <!-- Tlk.io 嵌入代码 -->
+      <div id="tlkio" data-channel="moral" style="width:100%;height:400px;"></div>
+      <script async src="https://tlk.io/embed.js" type="text/javascript"></script>
+
       <div class="civility-note">
-        ⚡ 双击白板任意位置开始留言 · 可拖动文字块调整位置
+        🌱 文明交流 · 友善表达 · 让网络空间清朗起来
       </div>
-    </div>
+    </section>
   </main>
 
   <footer>
-    <p>© 2026 德润童心 · 师范学校（课程作业） | 留言板采用 Board.net 匿名协作技术</p>
-    <p style="margin-top: 0.5rem; font-size: 0.85rem;">🌿 说文明话，做文明人，让网络空间清朗起来</p>
+    <p>© 2026 德润童心 · 师范学校（课程作业） | 德育如细雨，润物细无声</p>
   </footer>
-
 </body>
 </html>
