@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>德育留言墙 · 测试</title>
+  <title>德育留言墙 · 班级心语</title>
   <style>
     * {
       margin: 0;
@@ -14,50 +14,91 @@
     body {
       font-family: 'Segoe UI', '微软雅黑', sans-serif;
       background: #f5f7f2;
-      padding: 2rem;
-      max-width: 900px;
-      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    h1 {
-      color: #3a5e2b;
+    /* 页头 */
+    header {
+      background-color: #d9e6d3;
+      padding: 1.2rem 2rem;
+      border-bottom: 3px solid #9bb88b;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 500;
+      color: #2d4e1e;
       margin-bottom: 0.5rem;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .subtitle {
-      color: #6b7c63;
-      margin-bottom: 2rem;
-      font-size: 1rem;
-      border-left: 4px solid #9bb88b;
-      padding-left: 1rem;
+    nav {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
     }
 
-    .notice-box {
-      background: #e8f0e3;
-      border-radius: 16px;
-      padding: 1.2rem 1.5rem;
-      margin-bottom: 2rem;
+    nav a {
+      text-decoration: none;
       color: #3a5e2b;
-      font-size: 0.95rem;
+      font-weight: 500;
+      font-size: 1.1rem;
+      padding: 0.25rem 0;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s;
     }
 
-    .notice-box ul {
-      margin-top: 0.5rem;
+    nav a:hover {
+      border-bottom-color: #5b8c4e;
+    }
+
+    /* 主内容区 */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+
+    /* 使用指引卡片 */
+    .guide-card {
+      background: #e8f0e3;
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      border-left: 6px solid #7fa86a;
+    }
+
+    .guide-card h2 {
+      color: #3a5e2b;
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .guide-card ul {
       margin-left: 1.5rem;
+      color: #4a6040;
     }
 
-    .notice-box li {
-      margin-bottom: 0.25rem;
+    .guide-card li {
+      margin-bottom: 0.4rem;
     }
 
-    .message-board {
+    /* 留言板嵌入区域 */
+    .board-container {
       background: white;
       border-radius: 24px;
       padding: 1.5rem;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
       border: 1px solid #d9e6d3;
     }
 
@@ -70,109 +111,115 @@
       border-bottom: 2px solid #e2ecdc;
     }
 
-    .board-header h2 {
+    .board-header h3 {
       color: #4a6b3f;
       font-weight: 400;
       font-size: 1.3rem;
     }
 
-    .anonymous-badge {
+    .anonymous-tag {
       background: #d9e6d3;
-      padding: 0.3rem 1rem;
+      padding: 0.3rem 1.2rem;
       border-radius: 30px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #3a5e2b;
-    }
-
-    /* 腾讯文档嵌入区域 */
-    .tencent-doc-wrapper {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid #c8dcc0;
-      background: white;
     }
 
     iframe {
       display: block;
       width: 100%;
-      height: 500px;
+      height: 600px;
       border: none;
+      border-radius: 16px;
+      background: #fafbf9;
     }
 
-    .back-link {
-      margin-top: 2rem;
+    /* 文明提示 */
+    .civility-note {
+      margin-top: 1rem;
       text-align: center;
+      color: #8aa67d;
+      font-size: 0.9rem;
     }
 
-    .back-link a {
-      color: #7fa86a;
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-
-    .back-link a:hover {
-      text-decoration: underline;
-    }
-
+    /* 页脚 */
     footer {
-      margin-top: 2.5rem;
+      background-color: #d9e6d3;
+      padding: 1.5rem;
       text-align: center;
-      color: #9bb88b;
-      font-size: 0.85rem;
+      color: #36522b;
+      font-size: 0.95rem;
+      border-top: 2px solid #b3cba7;
+      margin-top: 2rem;
+    }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5rem; }
+      nav { gap: 1rem; }
+      iframe { height: 450px; }
     }
   </style>
 </head>
 <body>
 
-  <h1>
-    <span>📝</span> 
-    <span>德育留言墙 · 测试版</span>
-  </h1>
-  <div class="subtitle">
-    匿名留言 · 无需登录 · 文明用语
-  </div>
+  <header>
+    <h1>
+      <span>📝</span>
+      <span>德润童心 · 班级留言墙</span>
+    </h1>
+    <nav>
+      <a href="index.html">🏠 首页</a>
+      <a href="virtues.html">📜 传统美德</a>
+      <a href="stories.html">📖 德育故事</a>
+      <a href="quotes.html">✨ 名言警句</a>
+      <a href="message.html">💬 留言墙</a>
+      <a href="about.html">📋 关于课程</a>
+    </nav>
+  </header>
 
-  <!-- 使用说明 -->
-  <div class="notice-box">
-    <strong>🧪 测试说明：</strong>
-    <ul>
-      <li>下方是一个共享的腾讯文档，设置为了「所有人可编辑」</li>
-      <li>你可以在里面直接打字，内容会实时保存</li>
-      <li>其他打开这个网页的人也能看到并编辑</li>
-      <li>⚠️ 因为是测试，请随意输入内容看效果</li>
-    </ul>
-  </div>
-
-  <!-- 留言板主体 -->
-  <div class="message-board">
-    <div class="board-header">
-      <h2>🌱 大家的心声</h2>
-      <span class="anonymous-badge">🕶️ 匿名留言模式</span>
+  <main>
+    <!-- 使用说明卡片 -->
+    <div class="guide-card">
+      <h2>
+        <span>💡</span>
+        <span>留言墙使用说明</span>
+      </h2>
+      <ul>
+        <li><strong>完全匿名</strong> · 无需登录或注册，打开即可留言</li>
+        <li><strong>双击任意空白处</strong>即可输入文字，写下你的想法</li>
+        <li>支持简单的文字格式（加粗、斜体、列表等）</li>
+        <li>所有打开本页面的同学都能<strong>实时看到彼此的留言</strong></li>
+        <li>内容会自动保存，下次打开依然存在</li>
+        <li>📌 <strong>文明留言，友善交流</strong> · 教师会定期查阅</li>
+      </ul>
     </div>
-    
-    <div class="tencent-doc-wrapper">
-      <!-- 这里嵌入你提供的腾讯文档链接 -->
+
+    <!-- 嵌入留言板 -->
+    <div class="board-container">
+      <div class="board-header">
+        <h3>🌱 班级心语 · 大家的心声</h3>
+        <span class="anonymous-tag">🕶️ 完全匿名模式</span>
+      </div>
+      
+      <!-- 你生成的 Board.net 嵌入代码 -->
       <iframe 
-        src="https://docs.qq.com/doc/DVFBQbGJFYnZKVmhI" 
+        name="embed_readwrite" 
+        src="https://board.net/p/everyone?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false" 
         width="100%" 
-        height="500px" 
-        frameborder="0"
-        allowfullscreen>
+        height="600" 
+        frameborder="0">
       </iframe>
+      
+      <div class="civility-note">
+        ⚡ 双击白板任意位置开始留言 · 可拖动文字块调整位置
+      </div>
     </div>
-    
-    <p style="margin-top: 1rem; color: #8aa67d; font-size: 0.85rem; text-align: center;">
-      👆 点击上方区域即可输入留言，支持换行、简单的格式调整
-    </p>
-  </div>
-
-  <!-- 返回首页链接（可选） -->
-  <div class="back-link">
-    <a href="index.html">← 返回网站首页</a>
-  </div>
+  </main>
 
   <footer>
-    <p>师范课程作业 · 道德教育专题 · 留言板功能测试</p>
+    <p>© 2026 德润童心 · 师范学校（课程作业） | 留言板采用 Board.net 匿名协作技术</p>
+    <p style="margin-top: 0.5rem; font-size: 0.85rem;">🌿 说文明话，做文明人，让网络空间清朗起来</p>
   </footer>
 
 </body>
