@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>德润童心 · 师范德育专题</title>
   <style>
     * {
@@ -82,30 +82,33 @@
 
     header {
       background-color: #d9e6d3;
-      padding: 1.2rem 2rem;
+      padding: 1rem 1.5rem;
       border-bottom: 3px solid #9bb88b;
     }
 
     header h1 {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: 500;
       color: #2d4e1e;
       margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .user-welcome {
       display: inline-block;
       background: #a8c99b;
-      padding: 0.3rem 1.2rem;
+      padding: 0.2rem 1rem;
       border-radius: 30px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #2d4e1e;
-      margin-left: 1rem;
     }
 
     nav {
       display: flex;
-      gap: 2rem;
+      gap: 1rem;
       flex-wrap: wrap;
     }
 
@@ -113,93 +116,67 @@
       text-decoration: none;
       color: #3a5e2b;
       font-weight: 500;
-      font-size: 1.2rem;
+      font-size: 1rem;
       padding: 0.25rem 0;
       border-bottom: 2px solid transparent;
-      transition: border-color 0.2s;
     }
 
-    nav a:hover {
-      border-bottom-color: #5b8c4e;
-    }
+    nav a:hover { border-bottom-color: #5b8c4e; }
 
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
+      padding: 1.5rem 1rem;
     }
 
     .hero {
       background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
-      padding: 2.5rem 2rem;
+      padding: 2rem 1.5rem;
       border-radius: 32px;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       text-align: center;
       border: 1px solid #c8dcc0;
     }
 
-    .hero h2 {
-      font-size: 2.5rem;
-      font-weight: 400;
-      color: #1f3b14;
-    }
-
-    .hero p {
-      font-size: 1.4rem;
-      color: #43673a;
-      font-style: italic;
-    }
+    .hero h2 { font-size: 2rem; font-weight: 400; color: #1f3b14; }
+    .hero p { font-size: 1.2rem; color: #43673a; font-style: italic; }
 
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.8rem;
-      margin: 2rem 0 2.5rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
     }
 
     .card {
       background: white;
-      padding: 1.8rem 1.5rem;
-      border-radius: 24px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+      padding: 1.2rem 1rem;
+      border-radius: 20px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.04);
       border: 1px solid #dfe9d9;
       text-align: center;
-      transition: transform 0.15s;
       text-decoration: none;
       color: inherit;
       display: block;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: #b3cfaa;
-    }
+    .card-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .card h3 { font-size: 1.2rem; font-weight: 500; color: #2f5126; }
+    .card p { color: #4a5e42; font-size: 0.85rem; }
 
-    .card-icon { font-size: 3rem; margin-bottom: 0.75rem; }
-    .card h3 { font-size: 1.6rem; font-weight: 500; color: #2f5126; }
-    .card p { color: #4a5e42; }
-
-    /* 留言板 */
-    .message-section {
-      background: white;
-      border-radius: 24px;
-      padding: 1.8rem;
-      margin-top: 1rem;
-      border: 1px solid #d9e6d3;
-    }
-
+    /* 游戏板块 */
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.2rem;
-      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
       border-bottom: 2px solid #e2ecdc;
     }
 
     .section-header h2 {
       color: #3a5e2b;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -207,37 +184,97 @@
 
     .anonymous-badge {
       background: #d9e6d3;
-      padding: 0.3rem 1.2rem;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      color: #3a5e2b;
+    }
+
+    .game-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .game-tab {
+      background: white;
+      border: 1px solid #c8dcc0;
+      color: #3a5e2b;
+      padding: 0.5rem 1rem;
       border-radius: 30px;
       font-size: 0.85rem;
-      color: #3a5e2b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .game-tab.active {
+      background: #7fa86a;
+      color: white;
+      border-color: #7fa86a;
+    }
+
+    .game-container {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem;
+      border: 1px solid #d9e6d3;
+      margin-bottom: 1.5rem;
+    }
+
+    .game-wrapper {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .game-wrapper iframe {
+      display: block;
+      width: 100%;
+      height: 450px;
+      border: none;
+    }
+
+    .game-note {
+      margin-top: 0.8rem;
+      color: #8aa67d;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    /* 留言板 */
+    .message-section {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid #d9e6d3;
     }
 
     .message-tip {
       background: #e8f0e3;
       border-radius: 16px;
-      padding: 0.8rem 1.2rem;
+      padding: 0.8rem 1rem;
       margin-bottom: 1.2rem;
       color: #4a6040;
+      font-size: 0.9rem;
     }
 
     .message-form {
       background: #f8fbf7;
       border-radius: 20px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
       border: 1px solid #d9e6d3;
     }
 
     textarea {
       width: 100%;
-      padding: 1rem;
+      padding: 0.8rem;
       border: 2px solid #d9e6d3;
-      border-radius: 20px;
+      border-radius: 16px;
       font-size: 1rem;
       resize: vertical;
-      min-height: 100px;
-      margin-bottom: 1rem;
+      min-height: 90px;
+      margin-bottom: 0.8rem;
       font-family: inherit;
     }
 
@@ -247,8 +284,8 @@
       background: #7fa86a;
       color: white;
       border: none;
-      padding: 0.8rem 2rem;
-      font-size: 1.1rem;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
       border-radius: 40px;
       cursor: pointer;
     }
@@ -259,7 +296,7 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: 1rem;
+      gap: 0.8rem;
       margin-bottom: 0.5rem;
     }
 
@@ -267,65 +304,67 @@
       background: #d9e6d3;
       padding: 0.2rem 0.8rem;
       border-radius: 20px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
     }
 
     .manual-refresh-btn {
       background: none;
       border: 1px solid #b3cba7;
       color: #5b8c4e;
-      padding: 0.2rem 1rem;
+      padding: 0.2rem 0.8rem;
       border-radius: 20px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       cursor: pointer;
     }
 
     .message-list {
-      max-height: 400px;
+      max-height: 350px;
       overflow-y: auto;
-      padding-right: 0.5rem;
+      padding-right: 0.3rem;
     }
 
     .message-item {
       background: #fafbf9;
-      border-radius: 16px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 0.8rem;
+      border-radius: 14px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.6rem;
       border: 1px solid #e2ecdc;
     }
 
-    .message-content { color: #2e3b2c; word-break: break-word; }
+    .message-content { color: #2e3b2c; word-break: break-word; font-size: 0.95rem; }
 
     .message-status {
       text-align: center;
       padding: 1rem;
       color: #999;
+      font-size: 0.9rem;
     }
 
     .message-status.loading { color: #7fa86a; }
     .message-status.error { color: #c44; }
-    .empty-message { text-align: center; color: #aaa; padding: 2rem; font-style: italic; }
+    .empty-message { text-align: center; color: #aaa; padding: 1.5rem; font-style: italic; }
 
     .civility-note {
-      margin-top: 1rem;
+      margin-top: 0.8rem;
       text-align: center;
       color: #8aa67d;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     footer {
       background-color: #d9e6d3;
-      padding: 1.5rem;
+      padding: 1.2rem;
       text-align: center;
       color: #36522b;
-      margin-top: 2rem;
+      font-size: 0.85rem;
+      margin-top: 1.5rem;
       border-top: 2px solid #b3cba7;
     }
 
-    @media (max-width: 600px) {
-      header h1 { font-size: 1.8rem; }
-      nav { gap: 1.2rem; }
-      .hero h2 { font-size: 1.8rem; }
+    @media (min-width: 600px) {
+      .card-grid { grid-template-columns: repeat(4, 1fr); }
+      header h1 { font-size: 2.2rem; }
+      nav a { font-size: 1.1rem; }
     }
   </style>
 </head>
@@ -402,17 +441,17 @@
       <a href="#" class="card">
         <div class="card-icon">🌿</div>
         <h3>传统美德</h3>
-        <p>孝、悌、忠、信、礼、义、廉、耻</p>
+        <p>孝悌忠信礼义廉耻</p>
       </a>
       <a href="#" class="card">
         <div class="card-icon">📚</div>
         <h3>德育故事</h3>
-        <p>孔融让梨、曾子杀彘……</p>
+        <p>孔融让梨·曾子杀彘</p>
       </a>
       <a href="#" class="card">
         <div class="card-icon">💬</div>
         <h3>名言警句</h3>
-        <p>古今中外的道德箴言</p>
+        <p>古今道德箴言</p>
       </a>
       <a href="#message-wall" class="card">
         <div class="card-icon">📝</div>
@@ -421,11 +460,38 @@
       </a>
     </div>
 
-    <!-- 留言板 -->
+    <!-- ========== 互动小游戏板块 ========== -->
+    <section class="game-section">
+      <div class="section-header">
+        <h2><span>🎮</span><span>德育互动小游戏</span></h2>
+        <span class="anonymous-badge">📱 手机可玩</span>
+      </div>
+
+      <!-- 游戏标签切换 -->
+      <div class="game-tabs">
+        <button class="game-tab active" onclick="switchGame(0)">🗑️ 垃圾分类</button>
+        <button class="game-tab" onclick="switchGame(1)">😊 礼貌用语</button>
+        <button class="game-tab" onclick="switchGame(2)">😢 情绪识别</button>
+        <button class="game-tab" onclick="switchGame(3)">🚦 交通安全</button>
+        <button class="game-tab" onclick="switchGame(4)">🤝 诚实守信</button>
+      </div>
+
+      <!-- 游戏容器 -->
+      <div class="game-container">
+        <div class="game-wrapper" id="gameWrapper">
+          <iframe id="gameIframe" src="https://learningapps.org/watch?app=13306180" allowfullscreen></iframe>
+        </div>
+        <div class="game-note" id="gameNote">
+          💡 垃圾分类 · 把垃圾拖到正确的垃圾桶里
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 留言板 ========== -->
     <section class="message-section" id="message-wall">
       <div class="section-header">
         <h2><span>💬</span><span>班级心语 · 留言墙</span></h2>
-        <span class="anonymous-badge">🕶️ 署名留言 · 自动刷新</span>
+        <span class="anonymous-badge">🕶️ 署名留言</span>
       </div>
       
       <div class="message-tip">
@@ -438,7 +504,7 @@
       </div>
 
       <div class="refresh-info">
-        <span class="auto-refresh-badge">🔄 每30秒自动刷新</span>
+        <span class="auto-refresh-badge">🔄 每30秒刷新</span>
         <button class="manual-refresh-btn" onclick="loadMessages()">↻ 手动刷新</button>
       </div>
       
@@ -459,6 +525,51 @@
 </div>
 
 <script>
+// ==================== 游戏配置 ====================
+const GAMES = [
+  { 
+    id: '13306180', 
+    name: '🗑️ 垃圾分类', 
+    note: '💡 垃圾分类 · 把垃圾拖到正确的垃圾桶里'
+  },
+  { 
+    id: '11658712', 
+    name: '😊 礼貌用语', 
+    note: '💡 礼貌用语配对 · 什么场合说什么话'
+  },
+  { 
+    id: '3052194', 
+    name: '😢 情绪识别', 
+    note: '💡 情绪识别 · 根据表情猜情绪'
+  },
+  { 
+    id: '4637892', 
+    name: '🚦 交通安全', 
+    note: '💡 交通安全 · 认识交通标志'
+  },
+  { 
+    id: '13403279', 
+    name: '🤝 诚实守信', 
+    note: '💡 诚实守信 · 判断哪些是诚实的行为'
+  }
+];
+
+let currentGameIndex = 0;
+
+function switchGame(index) {
+  currentGameIndex = index;
+  
+  // 更新标签激活状态
+  document.querySelectorAll('.game-tab').forEach((tab, i) => {
+    tab.classList.toggle('active', i === index);
+  });
+  
+  // 更新游戏
+  const game = GAMES[index];
+  document.getElementById('gameIframe').src = `https://learningapps.org/watch?app=${game.id}`;
+  document.getElementById('gameNote').innerHTML = game.note;
+}
+
 // ==================== 配置 ====================
 const CONFIG = {
   googleScriptUrl: "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
@@ -484,19 +595,14 @@ function saveAndEnter() {
   currentUser = { grade, role, name, timestamp: new Date().toISOString() };
   localStorage.setItem('moralEduUserInfo', JSON.stringify(currentUser));
 
-  // 隐藏欢迎页，显示主页面
   document.getElementById('welcomeScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
-
-  // 显示欢迎语
   document.getElementById('userWelcomeDisplay').textContent = `👋 ${name}（${grade}${role}）`;
 
-  // 初始化留言功能
   loadMessages();
   setInterval(loadMessages, CONFIG.refreshInterval);
 }
 
-// 检查是否有已保存的用户信息
 function checkSavedUser() {
   const saved = localStorage.getItem('moralEduUserInfo');
   if (saved) {
@@ -596,14 +702,11 @@ function escapeHtml(text) {
 
 // ==================== 初始化 ====================
 document.addEventListener("DOMContentLoaded", function() {
-  // 检查是否有已保存的用户信息
   if (!checkSavedUser()) {
-    // 没有保存的信息，显示欢迎页
     document.getElementById('welcomeScreen').style.display = 'flex';
     document.getElementById('mainContent').style.display = 'none';
   }
 
-  // 自动填充之前保存的表单（如果有）
   const saved = localStorage.getItem('moralEduUserInfo');
   if (saved) {
     try {
