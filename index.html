@@ -16,24 +16,91 @@
       background-color: #fbfaf6;
       color: #2e3b2c;
       line-height: 1.6;
-      display: flex;
-      flex-direction: column;
       min-height: 100vh;
+    }
+
+    /* ========== 欢迎页样式 ========== */
+    #welcomeScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+    }
+
+    .welcome-card {
+      background: white;
+      max-width: 500px;
+      width: 100%;
+      padding: 2.5rem 2rem;
+      border-radius: 32px;
+      box-shadow: 0 12px 28px rgba(80, 110, 60, 0.12);
+      border: 1px solid #c8dcc0;
+      text-align: center;
+    }
+
+    .welcome-icon { font-size: 4rem; margin-bottom: 0.5rem; }
+    .welcome-card h1 { color: #2d4e1e; font-size: 2rem; font-weight: 500; margin-bottom: 0.5rem; }
+    .subtitle { color: #6b7c63; margin-bottom: 2rem; border-bottom: 1px solid #d9e6d3; padding-bottom: 1.2rem; }
+    .form-group { text-align: left; margin-bottom: 1.5rem; }
+    .form-group label { display: block; color: #3a5e2b; font-weight: 500; margin-bottom: 0.4rem; }
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 40px;
+      font-size: 1rem;
+      background: white;
+    }
+    .form-group select:focus, .form-group input:focus { outline: none; border-color: #7fa86a; }
+    .btn {
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #5b8c4e; }
+    .privacy-note { margin-top: 1.5rem; font-size: 0.8rem; color: #9bb88b; }
+    .error-message { color: #c44; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
+
+    /* ========== 主页面样式 ========== */
+    #mainContent {
+      display: none;
     }
 
     header {
       background-color: #d9e6d3;
       padding: 1.2rem 2rem;
       border-bottom: 3px solid #9bb88b;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
 
     header h1 {
       font-size: 2.2rem;
       font-weight: 500;
-      letter-spacing: 2px;
       color: #2d4e1e;
       margin-bottom: 0.5rem;
+    }
+
+    .user-welcome {
+      display: inline-block;
+      background: #a8c99b;
+      padding: 0.3rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: #2d4e1e;
+      margin-left: 1rem;
     }
 
     nav {
@@ -57,11 +124,9 @@
     }
 
     main {
-      flex: 1;
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem 1.5rem;
-      width: 100%;
     }
 
     .hero {
@@ -70,7 +135,6 @@
       border-radius: 32px;
       margin-bottom: 2.5rem;
       text-align: center;
-      box-shadow: 0 6px 14px rgba(90, 110, 70, 0.08);
       border: 1px solid #c8dcc0;
     }
 
@@ -78,7 +142,6 @@
       font-size: 2.5rem;
       font-weight: 400;
       color: #1f3b14;
-      margin-bottom: 0.5rem;
     }
 
     .hero p {
@@ -101,7 +164,7 @@
       box-shadow: 0 10px 20px rgba(0,0,0,0.04);
       border: 1px solid #dfe9d9;
       text-align: center;
-      transition: transform 0.15s, box-shadow 0.2s;
+      transition: transform 0.15s;
       text-decoration: none;
       color: inherit;
       display: block;
@@ -109,34 +172,19 @@
 
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 16px 28px rgba(80, 110, 60, 0.1);
       border-color: #b3cfaa;
     }
 
-    .card-icon {
-      font-size: 3rem;
-      margin-bottom: 0.75rem;
-    }
+    .card-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .card h3 { font-size: 1.6rem; font-weight: 500; color: #2f5126; }
+    .card p { color: #4a5e42; }
 
-    .card h3 {
-      font-size: 1.6rem;
-      font-weight: 500;
-      color: #2f5126;
-      margin-bottom: 0.5rem;
-    }
-
-    .card p {
-      color: #4a5e42;
-      font-size: 1rem;
-    }
-
-    /* 留言板板块 */
+    /* 留言板 */
     .message-section {
       background: white;
       border-radius: 24px;
       padding: 1.8rem;
       margin-top: 1rem;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.04);
       border: 1px solid #d9e6d3;
     }
 
@@ -151,7 +199,6 @@
 
     .section-header h2 {
       color: #3a5e2b;
-      font-weight: 400;
       font-size: 1.6rem;
       display: flex;
       align-items: center;
@@ -172,10 +219,8 @@
       padding: 0.8rem 1.2rem;
       margin-bottom: 1.2rem;
       color: #4a6040;
-      font-size: 0.95rem;
     }
 
-    /* 留言输入区 */
     .message-form {
       background: #f8fbf7;
       border-radius: 20px;
@@ -196,12 +241,9 @@
       font-family: inherit;
     }
 
-    textarea:focus {
-      outline: none;
-      border-color: #7fa86a;
-    }
+    textarea:focus { outline: none; border-color: #7fa86a; }
 
-    .btn {
+    .btn-sm {
       background: #7fa86a;
       color: white;
       border: none;
@@ -209,66 +251,9 @@
       font-size: 1.1rem;
       border-radius: 40px;
       cursor: pointer;
-      font-weight: 500;
-      transition: background 0.2s;
     }
 
-    .btn:hover {
-      background: #5b8c4e;
-    }
-
-    .btn:disabled {
-      background: #b3cba7;
-      cursor: not-allowed;
-    }
-
-    /* 留言列表 */
-    .message-list {
-      max-height: 400px;
-      overflow-y: auto;
-      padding-right: 0.5rem;
-    }
-
-    .message-item {
-      background: #fafbf9;
-      border-radius: 16px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 0.8rem;
-      border: 1px solid #e2ecdc;
-    }
-
-    .message-content {
-      color: #2e3b2c;
-      word-break: break-word;
-    }
-
-    .message-status {
-      text-align: center;
-      padding: 1rem;
-      color: #999;
-    }
-
-    .message-status.loading {
-      color: #7fa86a;
-    }
-
-    .message-status.error {
-      color: #c44;
-    }
-
-    .empty-message {
-      text-align: center;
-      color: #aaa;
-      padding: 2rem;
-      font-style: italic;
-    }
-
-    .civility-note {
-      margin-top: 1rem;
-      text-align: center;
-      color: #8aa67d;
-      font-size: 0.9rem;
-    }
+    .btn-sm:disabled { background: #b3cba7; cursor: not-allowed; }
 
     .refresh-info {
       display: flex;
@@ -283,7 +268,6 @@
       padding: 0.2rem 0.8rem;
       border-radius: 20px;
       font-size: 0.75rem;
-      color: #3a5e2b;
     }
 
     .manual-refresh-btn {
@@ -296,8 +280,37 @@
       cursor: pointer;
     }
 
-    .manual-refresh-btn:hover {
-      background: #e8f0e3;
+    .message-list {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .message-item {
+      background: #fafbf9;
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid #e2ecdc;
+    }
+
+    .message-content { color: #2e3b2c; word-break: break-word; }
+
+    .message-status {
+      text-align: center;
+      padding: 1rem;
+      color: #999;
+    }
+
+    .message-status.loading { color: #7fa86a; }
+    .message-status.error { color: #c44; }
+    .empty-message { text-align: center; color: #aaa; padding: 2rem; font-style: italic; }
+
+    .civility-note {
+      margin-top: 1rem;
+      text-align: center;
+      color: #8aa67d;
+      font-size: 0.9rem;
     }
 
     footer {
@@ -305,9 +318,8 @@
       padding: 1.5rem;
       text-align: center;
       color: #36522b;
-      font-size: 0.95rem;
-      border-top: 2px solid #b3cba7;
       margin-top: 2rem;
+      border-top: 2px solid #b3cba7;
     }
 
     @media (max-width: 600px) {
@@ -318,14 +330,65 @@
   </style>
 </head>
 <body>
+
+<!-- ========== 欢迎页 ========== -->
+<div id="welcomeScreen">
+  <div class="welcome-card">
+    <div class="welcome-icon">🌱</div>
+    <h1>德润童心</h1>
+    <div class="subtitle">在开始之前，请告诉我们你是谁</div>
+
+    <form onsubmit="return false;">
+      <div class="form-group">
+        <label>📚 你的年级</label>
+        <select id="grade" required>
+          <option value="">-- 请选择 --</option>
+          <option value="一年级">一年级</option>
+          <option value="二年级">二年级</option>
+          <option value="三年级">三年级</option>
+          <option value="四年级">四年级</option>
+          <option value="五年级">五年级</option>
+          <option value="六年级">六年级</option>
+          <option value="师范生">师范生</option>
+          <option value="教师">教师</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>👤 你的身份</label>
+        <select id="role" required>
+          <option value="">-- 请选择 --</option>
+          <option value="学生">学生</option>
+          <option value="老师">老师</option>
+          <option value="访客">访客</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>✏️ 你的名字或昵称</label>
+        <input type="text" id="userName" placeholder="例如：小明" maxlength="20" required>
+      </div>
+
+      <div class="error-message" id="errorMsg">请填写完整信息</div>
+      <button class="btn" onclick="saveAndEnter()">🌸 进入德育园地</button>
+    </form>
+    <div class="privacy-note">你的信息仅用于本次课堂互动</div>
+  </div>
+</div>
+
+<!-- ========== 主页面 ========== -->
+<div id="mainContent">
   <header>
-    <h1>🌱 德润童心</h1>
+    <h1>
+      🌱 德润童心
+      <span class="user-welcome" id="userWelcomeDisplay"></span>
+    </h1>
     <nav>
-      <a href="index.html">🏠 首页</a>
-      <a href="virtues.html">📜 传统美德</a>
-      <a href="stories.html">📖 德育故事</a>
-      <a href="quotes.html">✨ 名言警句</a>
-      <a href="about.html">📋 关于课程</a>
+      <a href="#">🏠 首页</a>
+      <a href="#">📜 传统美德</a>
+      <a href="#">📖 德育故事</a>
+      <a href="#">✨ 名言警句</a>
+      <a href="#">📋 关于课程</a>
     </nav>
   </header>
 
@@ -336,17 +399,17 @@
     </section>
 
     <div class="card-grid">
-      <a href="virtues.html" class="card">
+      <a href="#" class="card">
         <div class="card-icon">🌿</div>
         <h3>传统美德</h3>
         <p>孝、悌、忠、信、礼、义、廉、耻</p>
       </a>
-      <a href="stories.html" class="card">
+      <a href="#" class="card">
         <div class="card-icon">📚</div>
         <h3>德育故事</h3>
         <p>孔融让梨、曾子杀彘……</p>
       </a>
-      <a href="quotes.html" class="card">
+      <a href="#" class="card">
         <div class="card-icon">💬</div>
         <h3>名言警句</h3>
         <p>古今中外的道德箴言</p>
@@ -358,33 +421,28 @@
       </a>
     </div>
 
-    <!-- 留言板板块（使用你原有的 Google Sheets 配置） -->
+    <!-- 留言板 -->
     <section class="message-section" id="message-wall">
       <div class="section-header">
-        <h2>
-          <span>💬</span>
-          <span>班级心语 · 留言墙</span>
-        </h2>
-        <span class="anonymous-badge">🕶️ 匿名留言 · 自动刷新</span>
+        <h2><span>💬</span><span>班级心语 · 留言墙</span></h2>
+        <span class="anonymous-badge">🕶️ 署名留言 · 自动刷新</span>
       </div>
       
       <div class="message-tip">
         💡 留下你想说的话，所有人实时看到。文明交流，友善表达。
       </div>
 
-      <!-- 留言输入区 -->
       <div class="message-form">
         <textarea id="comment" placeholder="写下你想说的话……"></textarea>
-        <button class="btn" id="submitBtn" onclick="submitMessage()">🌱 发布留言</button>
+        <button class="btn-sm" id="submitBtn" onclick="submitMessage()">🌱 发布留言</button>
       </div>
 
-      <!-- 留言列表区 -->
       <div class="refresh-info">
         <span class="auto-refresh-badge">🔄 每30秒自动刷新</span>
         <button class="manual-refresh-btn" onclick="loadMessages()">↻ 手动刷新</button>
       </div>
       
-      <div class="message-list" id="messageList">
+      <div class="message-list">
         <div id="message-status" class="message-status loading">正在加载留言...</div>
         <div id="message-items"></div>
       </div>
@@ -398,121 +456,164 @@
   <footer>
     <p>© 2026 德润童心 · 师范学校（课程作业） | 德育如细雨，润物细无声</p>
   </footer>
+</div>
 
-  <script>
-    // ==================== 你的原始配置（完全保留） ====================
-    const CONFIG = {
-      googleScriptUrl: "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
-      sheetApiUrl: "https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1",
-      refreshInterval: 30000 // 30秒自动刷新
-    };
+<script>
+// ==================== 配置 ====================
+const CONFIG = {
+  googleScriptUrl: "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
+  sheetApiUrl: "https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1",
+  refreshInterval: 30000
+};
 
-    // ==================== 留言功能（从你的原始代码提取） ====================
-    
-    // 提交留言
-    async function submitMessage() {
-      const commentInput = document.getElementById("comment");
-      const submitBtn = document.getElementById("submitBtn");
-      const comment = commentInput.value.trim();
-      
-      if (!comment) {
-        alert("留言内容不能为空！");
-        return;
-      }
-      
-      try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "提交中...";
-        
-        await fetch(CONFIG.googleScriptUrl, {
-          method: 'POST',
-          body: new URLSearchParams({ 'comment': comment })
-        });
-        
-        commentInput.value = "";
-        alert("留言成功！");
-        
-        // 立即刷新留言
-        await loadMessages();
-      } catch (error) {
-        console.error('留言失败:', error);
-        alert("留言失败，请稍后再试");
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "🌱 发布留言";
-      }
-    }
+// ==================== 用户信息管理 ====================
+let currentUser = null;
 
-    // 加载留言
-    async function loadMessages() {
-      const statusEl = document.getElementById("message-status");
-      const itemsContainer = document.getElementById("message-items");
-      
-      try {
-        statusEl.textContent = "正在加载留言...";
-        statusEl.className = "message-status loading";
-        
-        const response = await fetch(CONFIG.sheetApiUrl);
-        if (!response.ok) throw new Error("网络响应不正常");
-        
-        const data = await response.json();
-        
-        itemsContainer.innerHTML = "";
-        
-        if (!data || data.length === 0) {
-          statusEl.textContent = "";
-          itemsContainer.innerHTML = '<div class="empty-message">✨ 还没有留言，快来写下第一条吧</div>';
-          return;
-        }
-        
-        // 按时间倒序显示（最新的在前面）
-        const messages = data.reverse();
-        let html = '';
-        messages.forEach(item => {
-          if (item["留言"]) {
-            html += `
-              <div class="message-item">
-                <div class="message-content">${escapeHtml(item["留言"])}</div>
-              </div>
-            `;
-          }
-        });
-        
-        itemsContainer.innerHTML = html;
-        statusEl.textContent = `📋 共 ${messages.length} 条留言`;
-        statusEl.className = "message-status";
-      } catch (error) {
-        console.error("加载留言失败:", error);
-        statusEl.textContent = "留言加载失败，请刷新重试";
-        statusEl.className = "message-status error";
-        itemsContainer.innerHTML = '';
-      }
-    }
+function saveAndEnter() {
+  const grade = document.getElementById('grade').value;
+  const role = document.getElementById('role').value;
+  const name = document.getElementById('userName').value.trim();
+  const errorMsg = document.getElementById('errorMsg');
 
-    // 简单的 XSS 防护
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
+  if (!grade || !role || !name) {
+    errorMsg.style.display = 'block';
+    errorMsg.textContent = '请填写所有信息后再进入';
+    return;
+  }
 
-    // ==================== 自动刷新功能（从你的原始代码提取） ====================
-    
-    function initAutoRefresh() {
-      // 初始加载
+  currentUser = { grade, role, name, timestamp: new Date().toISOString() };
+  localStorage.setItem('moralEduUserInfo', JSON.stringify(currentUser));
+
+  // 隐藏欢迎页，显示主页面
+  document.getElementById('welcomeScreen').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+
+  // 显示欢迎语
+  document.getElementById('userWelcomeDisplay').textContent = `👋 ${name}（${grade}${role}）`;
+
+  // 初始化留言功能
+  loadMessages();
+  setInterval(loadMessages, CONFIG.refreshInterval);
+}
+
+// 检查是否有已保存的用户信息
+function checkSavedUser() {
+  const saved = localStorage.getItem('moralEduUserInfo');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      document.getElementById('userWelcomeDisplay').textContent = 
+        `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）`;
       loadMessages();
-      
-      // 设置定时自动刷新
       setInterval(loadMessages, CONFIG.refreshInterval);
+      return true;
+    } catch(e) {
+      return false;
     }
+  }
+  return false;
+}
 
-    // ==================== 页面初始化 ====================
+// ==================== 留言功能 ====================
+async function submitMessage() {
+  const commentInput = document.getElementById("comment");
+  const submitBtn = document.getElementById("submitBtn");
+  const comment = commentInput.value.trim();
+  
+  if (!comment) {
+    alert("留言内容不能为空！");
+    return;
+  }
+  
+  const displayName = currentUser ? `${currentUser.name}（${currentUser.grade}${currentUser.role}）` : '匿名';
+  
+  try {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "提交中...";
     
-    document.addEventListener("DOMContentLoaded", function() {
-      initAutoRefresh();
+    await fetch(CONFIG.googleScriptUrl, {
+      method: 'POST',
+      body: new URLSearchParams({ 'comment': `【${displayName}】: ${comment}` })
     });
+    
+    commentInput.value = "";
+    alert("留言成功！");
+    await loadMessages();
+  } catch (error) {
+    console.error('留言失败:', error);
+    alert("留言失败，请稍后再试");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "🌱 发布留言";
+  }
+}
 
-    // 让手动刷新按钮也能调用 loadMessages（已通过 onclick 绑定）
-  </script>
+async function loadMessages() {
+  const statusEl = document.getElementById("message-status");
+  const itemsContainer = document.getElementById("message-items");
+  
+  try {
+    statusEl.textContent = "正在加载留言...";
+    statusEl.className = "message-status loading";
+    
+    const response = await fetch(CONFIG.sheetApiUrl);
+    if (!response.ok) throw new Error("网络响应不正常");
+    
+    const data = await response.json();
+    itemsContainer.innerHTML = "";
+    
+    if (!data || data.length === 0) {
+      statusEl.textContent = "";
+      itemsContainer.innerHTML = '<div class="empty-message">✨ 还没有留言，快来写下第一条吧</div>';
+      return;
+    }
+    
+    const messages = data.reverse();
+    let html = '';
+    messages.forEach(item => {
+      if (item["留言"]) {
+        html += `<div class="message-item"><div class="message-content">${escapeHtml(item["留言"])}</div></div>`;
+      }
+    });
+    
+    itemsContainer.innerHTML = html;
+    statusEl.textContent = `📋 共 ${messages.length} 条留言`;
+    statusEl.className = "message-status";
+  } catch (error) {
+    console.error("加载留言失败:", error);
+    statusEl.textContent = "留言加载失败，请刷新重试";
+    statusEl.className = "message-status error";
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ==================== 初始化 ====================
+document.addEventListener("DOMContentLoaded", function() {
+  // 检查是否有已保存的用户信息
+  if (!checkSavedUser()) {
+    // 没有保存的信息，显示欢迎页
+    document.getElementById('welcomeScreen').style.display = 'flex';
+    document.getElementById('mainContent').style.display = 'none';
+  }
+
+  // 自动填充之前保存的表单（如果有）
+  const saved = localStorage.getItem('moralEduUserInfo');
+  if (saved) {
+    try {
+      const info = JSON.parse(saved);
+      document.getElementById('grade').value = info.grade || '';
+      document.getElementById('role').value = info.role || '';
+      document.getElementById('userName').value = info.name || '';
+    } catch(e) {}
+  }
+});
+</script>
 </body>
 </html>
