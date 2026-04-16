@@ -166,6 +166,136 @@
       color: #3a5e2b;
     }
 
+    /* 留言输入区 */
+    .message-form {
+      background: #f8fbf7;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #d9e6d3;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .form-row input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.8rem 1rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 40px;
+      font-size: 1rem;
+      background: white;
+    }
+
+    .form-row input:focus {
+      outline: none;
+      border-color: #7fa86a;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 20px;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 100px;
+      margin-bottom: 1rem;
+      font-family: inherit;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #7fa86a;
+    }
+
+    .btn {
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #5b8c4e;
+    }
+
+    .btn:disabled {
+      background: #b3cba7;
+      cursor: not-allowed;
+    }
+
+    /* 留言列表 */
+    .message-list {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .message-item {
+      background: #fafbf9;
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid #e2ecdc;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+
+    .message-name {
+      font-weight: 600;
+      color: #2d4e1e;
+    }
+
+    .message-time {
+      font-size: 0.75rem;
+      color: #999;
+    }
+
+    .message-content {
+      color: #2e3b2c;
+      word-break: break-word;
+    }
+
+    .message-footer {
+      margin-top: 0.5rem;
+      text-align: right;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #c44;
+      font-size: 0.75rem;
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+    }
+
+    .empty-message {
+      text-align: center;
+      color: #aaa;
+      padding: 2rem;
+      font-style: italic;
+    }
+
     .message-tip {
       background: #e8f0e3;
       border-radius: 16px;
@@ -173,21 +303,6 @@
       margin-bottom: 1.2rem;
       color: #4a6040;
       font-size: 0.95rem;
-    }
-
-    /* 留言板嵌入容器 */
-    .board-wrapper {
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid #c8dcc0;
-      background: white;
-    }
-
-    iframe {
-      display: block;
-      width: 100%;
-      height: 450px;
-      border: none;
     }
 
     .civility-note {
@@ -204,12 +319,14 @@
       color: #36522b;
       font-size: 0.95rem;
       border-top: 2px solid #b3cba7;
+      margin-top: 2rem;
     }
 
     @media (max-width: 600px) {
       header h1 { font-size: 1.8rem; }
       nav { gap: 1.2rem; }
       .hero h2 { font-size: 1.8rem; }
+      .form-row { flex-direction: column; gap: 0.5rem; }
     }
   </style>
 </head>
@@ -226,13 +343,11 @@
   </header>
 
   <main>
-    <!-- 主视觉 -->
     <section class="hero">
       <h2>“道德是做人的根本”</h2>
       <p>—— 陶行知</p>
     </section>
 
-    <!-- 四个入口卡片 -->
     <div class="card-grid">
       <a href="virtues.html" class="card">
         <div class="card-icon">🌿</div>
@@ -256,33 +371,37 @@
       </a>
     </div>
 
-    <!-- 留言板板块（Board.net 简洁版） -->
+    <!-- 留言板板块（使用你原有的 Google Sheets 后端） -->
     <section class="message-section" id="message-wall">
       <div class="section-header">
         <h2>
           <span>💬</span>
           <span>班级心语 · 留言墙</span>
         </h2>
-        <span class="anonymous-badge">🕶️ 完全匿名 · 无需登录</span>
+        <span class="anonymous-badge">🕶️ 匿名留言</span>
       </div>
       
       <div class="message-tip">
-        💡 <strong>双击白板任意位置</strong>即可写下留言。可拖动文字块调整位置。所有人实时看到，内容自动保存。
+        💡 留下你想说的话，所有人实时看到。文明交流，友善表达。
       </div>
 
-      <!-- Board.net 嵌入（隐藏工具栏和聊天，保留简洁白板） -->
-      <div class="board-wrapper">
-        <iframe 
-          name="embed_readwrite" 
-          src="https://board.net/p/MoralClass?showControls=false&showChat=false&showLineNumbers=false&useMonospaceFont=false" 
-          width="100%" 
-          height="450" 
-          frameborder="0">
-        </iframe>
+      <!-- 留言输入区 -->
+      <div class="message-form">
+        <div class="form-row">
+          <input type="text" id="messageName" placeholder="你的昵称（可选）" maxlength="20">
+        </div>
+        <textarea id="messageContent" placeholder="写下你想说的话……" maxlength="500"></textarea>
+        <button class="btn" id="submitBtn" onclick="submitMessage()">🌱 发布留言</button>
+        <span style="margin-left: 1rem; color: #999; font-size: 0.85rem;" id="charCount">0/500</span>
+      </div>
+
+      <!-- 留言列表 -->
+      <div class="message-list" id="messageList">
+        <div class="empty-message">加载留言中...</div>
       </div>
 
       <div class="civility-note">
-        🌱 文明留言 · 友善交流 · 双击白板开始书写
+        🌱 留言即代表同意遵守班级网络文明公约
       </div>
     </section>
   </main>
@@ -290,5 +409,145 @@
   <footer>
     <p>© 2026 德润童心 · 师范学校（课程作业） | 德育如细雨，润物细无声</p>
   </footer>
+
+  <script>
+    // ==================== 你的 Google Sheets 留言板配置 ====================
+    const CONFIG = {
+      googleScriptUrl: "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
+      sheetApiUrl: "https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1"
+    };
+
+    // 敏感词列表（你可以自行增删）
+    const BANNED_WORDS = ['粗口示例1', '粗口示例2', '脏话', 'fuck', 'shit'];
+
+    // ==================== 辅助函数 ====================
+    function containsBannedWord(text) {
+      const lowerText = text.toLowerCase();
+      return BANNED_WORDS.some(word => lowerText.includes(word.toLowerCase()));
+    }
+
+    // 字符计数
+    const contentInput = document.getElementById('messageContent');
+    const charCount = document.getElementById('charCount');
+    contentInput.addEventListener('input', function() {
+      charCount.textContent = this.value.length + '/500';
+    });
+
+    // ==================== 加载留言 ====================
+    async function loadMessages() {
+      const listEl = document.getElementById('messageList');
+      try {
+        const response = await fetch(CONFIG.sheetApiUrl);
+        const data = await response.json();
+        
+        if (!data || data.length === 0) {
+          listEl.innerHTML = '<div class="empty-message">✨ 还没有留言，快来写下第一条吧</div>';
+          return;
+        }
+
+        // 按时间倒序显示（最新的在前面）
+        const messages = data.reverse();
+        let html = '';
+        messages.forEach(msg => {
+          const content = msg.content || msg.留言内容 || '';
+          const name = msg.name || msg.昵称 || '匿名';
+          const timestamp = msg.timestamp || msg.时间 || '';
+          const id = msg.id || timestamp;
+          
+          let timeStr = '';
+          if (timestamp) {
+            const date = new Date(timestamp);
+            timeStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
+          }
+
+          html += `
+            <div class="message-item" data-id="${id}">
+              <div class="message-header">
+                <span class="message-name">${escapeHtml(name)}</span>
+                <span class="message-time">${timeStr}</span>
+              </div>
+              <div class="message-content">${escapeHtml(content)}</div>
+            </div>
+          `;
+        });
+        listEl.innerHTML = html;
+      } catch (error) {
+        console.error('加载留言失败:', error);
+        listEl.innerHTML = '<div class="empty-message">加载失败，请刷新页面重试</div>';
+      }
+    }
+
+    // 简单的 XSS 防护
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ==================== 提交留言 ====================
+    async function submitMessage() {
+      const nameInput = document.getElementById('messageName');
+      const contentInput = document.getElementById('messageContent');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      let name = nameInput.value.trim();
+      const content = contentInput.value.trim();
+      
+      if (!content) {
+        alert('请输入留言内容');
+        return;
+      }
+      
+      if (content.length > 500) {
+        alert('留言内容不能超过500字');
+        return;
+      }
+      
+      if (containsBannedWord(content) || containsBannedWord(name)) {
+        alert('留言包含不适当用语，请修改后再发布。');
+        return;
+      }
+      
+      if (!name) {
+        name = '匿名';
+      }
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = '发布中...';
+      
+      try {
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('content', content);
+        formData.append('timestamp', new Date().toISOString());
+        
+        const response = await fetch(CONFIG.googleScriptUrl, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          contentInput.value = '';
+          charCount.textContent = '0/500';
+          await loadMessages();
+        } else {
+          alert('发布失败：' + (result.error || '未知错误'));
+        }
+      } catch (error) {
+        console.error('提交留言失败:', error);
+        alert('发布失败，请检查网络后重试');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '🌱 发布留言';
+      }
+    }
+
+    // ==================== 页面加载时获取留言 ====================
+    window.onload = function() {
+      loadMessages();
+    };
+  </script>
 </body>
 </html>
