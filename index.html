@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>德润童心 · 师范德育专题</title>
   <style>
-    /* 全局样式 */
     * {
       margin: 0;
       padding: 0;
@@ -22,7 +21,6 @@
       min-height: 100vh;
     }
 
-    /* 页头 */
     header {
       background-color: #d9e6d3;
       padding: 1.2rem 2rem;
@@ -58,7 +56,6 @@
       border-bottom-color: #5b8c4e;
     }
 
-    /* 主内容 */
     main {
       flex: 1;
       max-width: 1200px;
@@ -67,7 +64,6 @@
       width: 100%;
     }
 
-    /* 主视觉区 */
     .hero {
       background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
       padding: 2.5rem 2rem;
@@ -91,7 +87,6 @@
       font-style: italic;
     }
 
-    /* 卡片入口区域 */
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -180,12 +175,19 @@
       font-size: 0.95rem;
     }
 
-    /* 聊天框容器 */
-    #tlkio {
+    /* 留言板嵌入容器 */
+    .board-wrapper {
       border-radius: 16px;
       overflow: hidden;
       border: 1px solid #c8dcc0;
-      background: #fafbf9;
+      background: white;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 450px;
+      border: none;
     }
 
     .civility-note {
@@ -195,7 +197,6 @@
       font-size: 0.9rem;
     }
 
-    /* 页脚 */
     footer {
       background-color: #d9e6d3;
       padding: 1.5rem;
@@ -205,7 +206,6 @@
       border-top: 2px solid #b3cba7;
     }
 
-    /* 响应式 */
     @media (max-width: 600px) {
       header h1 { font-size: 1.8rem; }
       nav { gap: 1.2rem; }
@@ -226,37 +226,37 @@
   </header>
 
   <main>
-    <!-- 主视觉 + 教育名言 -->
+    <!-- 主视觉 -->
     <section class="hero">
       <h2>“道德是做人的根本”</h2>
       <p>—— 陶行知</p>
     </section>
 
-    <!-- 四个入口卡片（加了留言板入口，方便导航） -->
+    <!-- 四个入口卡片 -->
     <div class="card-grid">
       <a href="virtues.html" class="card">
         <div class="card-icon">🌿</div>
         <h3>传统美德</h3>
-        <p>孝、悌、忠、信、礼、义、廉、耻 —— 中华文化的根基。</p>
+        <p>孝、悌、忠、信、礼、义、廉、耻</p>
       </a>
       <a href="stories.html" class="card">
         <div class="card-icon">📚</div>
         <h3>德育故事</h3>
-        <p>孔融让梨、曾子杀彘…… 用故事浸润心灵。</p>
+        <p>孔融让梨、曾子杀彘……</p>
       </a>
       <a href="quotes.html" class="card">
         <div class="card-icon">💬</div>
         <h3>名言警句</h3>
-        <p>古今中外的道德箴言，每日一省。</p>
+        <p>古今中外的道德箴言</p>
       </a>
       <a href="#message-wall" class="card">
         <div class="card-icon">📝</div>
         <h3>留言墙</h3>
-        <p>匿名留下你的心声，和大家一起交流。</p>
+        <p>匿名留下你的心声</p>
       </a>
     </div>
 
-    <!-- 留言板板块 -->
+    <!-- 留言板板块（Board.net 简洁版） -->
     <section class="message-section" id="message-wall">
       <div class="section-header">
         <h2>
@@ -267,15 +267,22 @@
       </div>
       
       <div class="message-tip">
-        💡 在下方输入框直接打字，按回车发送。所有人实时看到，留言永久保存。
+        💡 <strong>双击白板任意位置</strong>即可写下留言。可拖动文字块调整位置。所有人实时看到，内容自动保存。
       </div>
 
-      <!-- Tlk.io 嵌入代码 -->
-      <div id="tlkio" data-channel="moral" style="width:100%;height:400px;"></div>
-      <script async src="https://tlk.io/embed.js" type="text/javascript"></script>
+      <!-- Board.net 嵌入（隐藏工具栏和聊天，保留简洁白板） -->
+      <div class="board-wrapper">
+        <iframe 
+          name="embed_readwrite" 
+          src="https://board.net/p/MoralClass?showControls=false&showChat=false&showLineNumbers=false&useMonospaceFont=false" 
+          width="100%" 
+          height="450" 
+          frameborder="0">
+        </iframe>
+      </div>
 
       <div class="civility-note">
-        🌱 文明交流 · 友善表达 · 让网络空间清朗起来
+        🌱 文明留言 · 友善交流 · 双击白板开始书写
       </div>
     </section>
   </main>
