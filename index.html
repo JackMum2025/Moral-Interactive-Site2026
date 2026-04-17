@@ -187,35 +187,25 @@
       color: #3a5e2b;
     }
 
-    .game-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+    /* 游戏下拉菜单 */
+    .game-selector {
       margin-bottom: 1rem;
     }
 
-    .game-tab {
+    .game-selector select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 40px;
+      font-size: 1rem;
       background: white;
-      border: 1px solid #c8dcc0;
-      color: #3a5e2b;
-      padding: 0.5rem 1rem;
-      border-radius: 30px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .game-tab.active {
-      background: #7fa86a;
-      color: white;
-      border-color: #7fa86a;
-    }
-
-    .game-tab.kahoot-tab {
-      background: #e8f0e3;
-      border-color: #7fa86a;
-      color: #2d4e1e;
+      color: #2e3b2c;
       font-weight: 500;
+    }
+
+    .game-selector select:focus {
+      outline: none;
+      border-color: #7fa86a;
     }
 
     .game-container {
@@ -244,11 +234,6 @@
     .game-link-wrapper {
       text-align: center;
       padding: 2rem 1rem;
-    }
-
-    .game-link-wrapper p {
-      margin-bottom: 1.5rem;
-      color: #4a6040;
     }
 
     .kahoot-pin-box {
@@ -526,16 +511,34 @@
     <!-- 互动游戏板块 -->
     <section class="game-section">
       <div class="section-header">
-        <h2><span>🎮</span><span>德育互动小游戏</span></h2>
+        <h2><span>🎮</span><span>德育互动小游戏（共20个）</span></h2>
         <span class="anonymous-badge">📱 手机可玩</span>
       </div>
 
-      <div class="game-tabs">
-        <button class="game-tab active" onclick="switchGame(0)">🧠 记忆力</button>
-        <button class="game-tab" onclick="switchGame(1)">🤝 礼让的好处</button>
-        <button class="game-tab" onclick="switchGame(2)">🇲🇾 尊重</button>
-        <button class="game-tab" onclick="switchGame(3)">🔢 2048</button>
-        <button class="game-tab kahoot-tab" onclick="switchGame(4)">📱 Kahoot 挑战</button>
+      <!-- 下拉菜单选择游戏 -->
+      <div class="game-selector">
+        <select id="gameSelect" onchange="switchGame(this.value)">
+          <option value="0">🧠 记忆力配对</option>
+          <option value="1">🤝 礼让的好处</option>
+          <option value="2">🇲🇾 尊重 (Hormat)</option>
+          <option value="3">🎯 道德价值：公正</option>
+          <option value="4">📖 Wordwall 游戏 5</option>
+          <option value="5">📖 Wordwall 游戏 6</option>
+          <option value="6">📖 Wordwall 游戏 7</option>
+          <option value="7">📖 Wordwall 游戏 8</option>
+          <option value="8">📖 Wordwall 游戏 9</option>
+          <option value="9">📖 Wordwall 游戏 10</option>
+          <option value="10">📖 Wordwall 游戏 11</option>
+          <option value="11">📖 Wordwall 游戏 12</option>
+          <option value="12">📖 Wordwall 游戏 13</option>
+          <option value="13">📖 Wordwall 游戏 14</option>
+          <option value="14">📖 Wordwall 游戏 15</option>
+          <option value="15">📖 Wordwall 游戏 16</option>
+          <option value="16">📖 Wordwall 游戏 17</option>
+          <option value="17">📖 Wordwall 游戏 18</option>
+          <option value="18">🔢 2048 数字益智</option>
+          <option value="19">📱 Kahoot 挑战</option>
+        </select>
       </div>
 
       <div class="game-container">
@@ -586,47 +589,39 @@
 </div>
 
 <script>
-// 游戏配置
+// 游戏配置（你提供的所有游戏）
 const GAMES = [
-  {
-    name: '🧠 记忆力',
-    type: 'iframe',
-    src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0',
-    note: '💡 记忆力配对 · 找出匹配的卡片'
-  },
-  {
-    name: '🤝 礼让的好处',
-    type: 'iframe',
-    src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0',
-    note: '💡 道德：礼让的好处 · 学习礼让的价值'
-  },
-  {
-    name: '🇲🇾 尊重',
-    type: 'iframe',
-    src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0',
-    note: '💡 Pendidikan Moral · Unit 6: Hormat (尊重)'
-  },
-  {
-    name: '🔢 2048',
-    type: 'link',
-    src: 'https://wellgames.com/cn/free_online/2048/',
-    note: '💡 2048 数字益智游戏 · 点击按钮在新窗口打开'
-  },
-  {
-    name: '📱 Kahoot 挑战',
-    type: 'kahoot',
-    src: 'https://kahoot.it/challenge/03124401?challenge-id=18244f5c-d9fa-4c81-8761-57d1765d4599_1776400327677',
-    pin: '03124401',
-    note: '💡 Kahoot 道德挑战 · 输入 PIN 码或点击链接参与'
-  }
+  // 0
+  { type: 'iframe', src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0', note: '💡 记忆力配对 · 找出匹配的卡片' },
+  // 1
+  { type: 'iframe', src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0', note: '💡 道德：礼让的好处 · 学习礼让的价值' },
+  // 2
+  { type: 'iframe', src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0', note: '💡 Pendidikan Moral · Unit 6: Hormat (尊重)' },
+  // 3 - 公正
+  { type: 'iframe', src: 'https://wordwall.net/embed/feb8aedbc0c4456484595f3e0ae040b2?themeId=6&templateId=35&fontStackId=0', note: '💡 道德价值：公正 · 学习公平与正义' },
+  // 4-17 你提供的其他 Wordwall 游戏
+  { type: 'iframe', src: 'https://wordwall.net/embed/d213239ac8f34d81805b5facd3eee01e?themeId=23&templateId=49&fontStackId=0', note: '💡 Wordwall 互动游戏 5' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/2c8a1440e8bb4afc8ccf17ec58a95e7f?themeId=65&templateId=30&fontStackId=0', note: '💡 Wordwall 互动游戏 6' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/df6a83c87752418ba46330a0c2f3cbb0?themeId=1&templateId=5&fontStackId=0', note: '💡 Wordwall 互动游戏 7' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/ebe4dbcafed34f94b68ec9999b325fc2?themeId=23&templateId=48&fontStackId=0', note: '💡 Wordwall 互动游戏 8' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/2be2287d3953405ca5dcd3929e371641?themeId=2&templateId=10&fontStackId=0', note: '💡 Wordwall 互动游戏 9' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/e9bafb13b24f4f4399be87e262e4ce83?themeId=1&templateId=5&fontStackId=0', note: '💡 Wordwall 互动游戏 10' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/9f49c3ff9da24759aacff72718f0be39?themeId=21&templateId=68&fontStackId=0', note: '💡 Wordwall 互动游戏 11' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/4b8b9c7b630944619be124cad128b83e?themeId=27&templateId=82&fontStackId=0', note: '💡 Wordwall 互动游戏 12' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/6c8954ceef4e470aa76a4f322acabfa9?themeId=22&templateId=8&fontStackId=13', note: '💡 Wordwall 互动游戏 13' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/ecef1a1ad74b4dd68894eb702f676ac1?themeId=1&templateId=3&fontStackId=0', note: '💡 Wordwall 互动游戏 14' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/7c25ff8464a04c408037e48601816e60?themeId=23&templateId=49&fontStackId=0', note: '💡 Wordwall 互动游戏 15' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/1b65caa8c8ba4cf885990faa19616015?themeId=1&templateId=5&fontStackId=0', note: '💡 Wordwall 互动游戏 16' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/56bf50f5405b4e1888c6d505a833a69d?themeId=22&templateId=71&fontStackId=0', note: '💡 Wordwall 互动游戏 17' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/acdeb3c70ce3462e931940de42683896?themeId=1&templateId=3&fontStackId=0', note: '💡 Wordwall 互动游戏 18' },
+  // 18 - 2048
+  { type: 'link', src: 'https://wellgames.com/cn/free_online/2048/', note: '💡 2048 数字益智游戏 · 点击按钮在新窗口打开' },
+  // 19 - Kahoot
+  { type: 'kahoot', src: 'https://kahoot.it/challenge/03124401?challenge-id=18244f5c-d9fa-4c81-8761-57d1765d4599_1776400327677', pin: '03124401', note: '💡 Kahoot 道德挑战 · 输入 PIN 码或点击链接参与' }
 ];
 
 function switchGame(index) {
-  // 更新标签激活状态
-  document.querySelectorAll('.game-tab').forEach((tab, i) => {
-    tab.classList.toggle('active', i === index);
-  });
-  
+  index = parseInt(index);
   const game = GAMES[index];
   const wrapper = document.getElementById('gameWrapper');
   
