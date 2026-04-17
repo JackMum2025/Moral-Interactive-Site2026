@@ -19,7 +19,7 @@
       min-height: 100vh;
     }
 
-    /* ========== 欢迎页样式 ========== */
+    /* 欢迎页 */
     #welcomeScreen {
       position: fixed;
       top: 0;
@@ -46,7 +46,7 @@
     }
 
     .welcome-icon { font-size: 4rem; margin-bottom: 0.5rem; }
-    .welcome-card h1 { color: #2d4e1e; font-size: 2rem; font-weight: 500; margin-bottom: 0.5rem; }
+    .welcome-card h1 { color: #2d4e1e; font-size: 2rem; font-weight:500; margin-bottom: 0.5rem; }
     .subtitle { color: #6b7c63; margin-bottom: 2rem; border-bottom: 1px solid #d9e6d3; padding-bottom: 1.2rem; }
     .form-group { text-align: left; margin-bottom: 1.5rem; }
     .form-group label { display: block; color: #3a5e2b; font-weight: 500; margin-bottom: 0.4rem; }
@@ -75,10 +75,8 @@
     .privacy-note { margin-top: 1.5rem; font-size: 0.8rem; color: #9bb88b; }
     .error-message { color: #c44; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
 
-    /* ========== 主页面样式 ========== */
-    #mainContent {
-      display: none;
-    }
+    /* 主页面 */
+    #mainContent { display: none; }
 
     header {
       background-color: #d9e6d3;
@@ -164,7 +162,6 @@
     .card h3 { font-size: 1.2rem; font-weight: 500; color: #2f5126; }
     .card p { color: #4a5e42; font-size: 0.85rem; }
 
-    /* 游戏板块 */
     .section-header {
       display: flex;
       justify-content: space-between;
@@ -225,12 +222,15 @@
     .game-wrapper {
       border-radius: 16px;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
     }
 
     .game-wrapper iframe {
       display: block;
       width: 100%;
-      height: 450px;
+      max-width: 500px;
+      height: 400px;
       border: none;
     }
 
@@ -241,7 +241,6 @@
       text-align: center;
     }
 
-    /* 留言板 */
     .message-section {
       background: white;
       border-radius: 20px;
@@ -370,7 +369,7 @@
 </head>
 <body>
 
-<!-- ========== 欢迎页 ========== -->
+<!-- 欢迎页 -->
 <div id="welcomeScreen">
   <div class="welcome-card">
     <div class="welcome-icon">🌱</div>
@@ -415,7 +414,7 @@
   </div>
 </div>
 
-<!-- ========== 主页面 ========== -->
+<!-- 主页面 -->
 <div id="mainContent">
   <header>
     <h1>
@@ -433,7 +432,7 @@
 
   <main>
     <section class="hero">
-      <h2>“道德是做人的根本”</h2>
+      <h2>"道德是做人的根本"</h2>
       <p>—— 陶行知</p>
     </section>
 
@@ -460,34 +459,31 @@
       </a>
     </div>
 
-    <!-- ========== 互动小游戏板块 ========== -->
+    <!-- 互动游戏板块 -->
     <section class="game-section">
       <div class="section-header">
         <h2><span>🎮</span><span>德育互动小游戏</span></h2>
         <span class="anonymous-badge">📱 手机可玩</span>
       </div>
 
-      <!-- 游戏标签切换 -->
       <div class="game-tabs">
-        <button class="game-tab active" onclick="switchGame(0)">🗑️ 垃圾分类</button>
-        <button class="game-tab" onclick="switchGame(1)">😊 礼貌用语</button>
-        <button class="game-tab" onclick="switchGame(2)">😢 情绪识别</button>
-        <button class="game-tab" onclick="switchGame(3)">🚦 交通安全</button>
-        <button class="game-tab" onclick="switchGame(4)">🤝 诚实守信</button>
+        <button class="game-tab active" onclick="switchGame(0)">🧠 记忆力</button>
+        <button class="game-tab" onclick="switchGame(1)">🤝 礼让的好处</button>
+        <button class="game-tab" onclick="switchGame(2)">🇲🇾 尊重 (BM)</button>
+        <button class="game-tab" onclick="switchGame(3)">🔢 2048</button>
       </div>
 
-      <!-- 游戏容器 -->
       <div class="game-container">
         <div class="game-wrapper" id="gameWrapper">
-          <iframe id="gameIframe" src="https://learningapps.org/watch?app=13306180" allowfullscreen></iframe>
+          <iframe id="gameIframe" src="https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0" allowfullscreen></iframe>
         </div>
         <div class="game-note" id="gameNote">
-          💡 垃圾分类 · 把垃圾拖到正确的垃圾桶里
+          💡 记忆力配对 · 找出匹配的卡片
         </div>
       </div>
     </section>
 
-    <!-- ========== 留言板 ========== -->
+    <!-- 留言板 -->
     <section class="message-section" id="message-wall">
       <div class="section-header">
         <h2><span>💬</span><span>班级心语 · 留言墙</span></h2>
@@ -525,40 +521,31 @@
 </div>
 
 <script>
-// ==================== 游戏配置 ====================
+// 游戏配置（你提供的4个游戏）
 const GAMES = [
-  { 
-    id: '13306180', 
-    name: '🗑️ 垃圾分类', 
-    note: '💡 垃圾分类 · 把垃圾拖到正确的垃圾桶里'
+  {
+    name: '🧠 记忆力',
+    src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0',
+    note: '💡 记忆力配对 · 找出匹配的卡片'
   },
-  { 
-    id: '11658712', 
-    name: '😊 礼貌用语', 
-    note: '💡 礼貌用语配对 · 什么场合说什么话'
+  {
+    name: '🤝 礼让的好处',
+    src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0',
+    note: '💡 道德：礼让的好处 · 学习礼让的价值'
   },
-  { 
-    id: '3052194', 
-    name: '😢 情绪识别', 
-    note: '💡 情绪识别 · 根据表情猜情绪'
+  {
+    name: '🇲🇾 尊重',
+    src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0',
+    note: '💡 Pendidikan Moral · Unit 6: Hormat (尊重)'
   },
-  { 
-    id: '4637892', 
-    name: '🚦 交通安全', 
-    note: '💡 交通安全 · 认识交通标志'
-  },
-  { 
-    id: '13403279', 
-    name: '🤝 诚实守信', 
-    note: '💡 诚实守信 · 判断哪些是诚实的行为'
+  {
+    name: '🔢 2048',
+    src: 'https://wellgames.com/cn/free_online/2048/?page=iframe',
+    note: '💡 2048 数字益智游戏 · 合并相同数字，挑战2048'
   }
 ];
 
-let currentGameIndex = 0;
-
 function switchGame(index) {
-  currentGameIndex = index;
-  
   // 更新标签激活状态
   document.querySelectorAll('.game-tab').forEach((tab, i) => {
     tab.classList.toggle('active', i === index);
@@ -566,18 +553,17 @@ function switchGame(index) {
   
   // 更新游戏
   const game = GAMES[index];
-  document.getElementById('gameIframe').src = `https://learningapps.org/watch?app=${game.id}`;
+  document.getElementById('gameIframe').src = game.src;
   document.getElementById('gameNote').innerHTML = game.note;
 }
 
-// ==================== 配置 ====================
+// 配置
 const CONFIG = {
   googleScriptUrl: "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
   sheetApiUrl: "https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1",
   refreshInterval: 30000
 };
 
-// ==================== 用户信息管理 ====================
 let currentUser = null;
 
 function saveAndEnter() {
@@ -622,7 +608,6 @@ function checkSavedUser() {
   return false;
 }
 
-// ==================== 留言功能 ====================
 async function submitMessage() {
   const commentInput = document.getElementById("comment");
   const submitBtn = document.getElementById("submitBtn");
@@ -700,7 +685,6 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// ==================== 初始化 ====================
 document.addEventListener("DOMContentLoaded", function() {
   if (!checkSavedUser()) {
     document.getElementById('welcomeScreen').style.display = 'flex';
