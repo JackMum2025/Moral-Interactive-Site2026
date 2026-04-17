@@ -211,6 +211,13 @@
       border-color: #7fa86a;
     }
 
+    .game-tab.kahoot-tab {
+      background: #e8f0e3;
+      border-color: #7fa86a;
+      color: #2d4e1e;
+      font-weight: 500;
+    }
+
     .game-container {
       background: white;
       border-radius: 20px;
@@ -234,7 +241,6 @@
       border: none;
     }
 
-    /* 新窗口打开按钮样式 */
     .game-link-wrapper {
       text-align: center;
       padding: 2rem 1rem;
@@ -243,6 +249,38 @@
     .game-link-wrapper p {
       margin-bottom: 1.5rem;
       color: #4a6040;
+    }
+
+    .kahoot-pin-box {
+      background: #f8fbf7;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .kahoot-pin {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: 8px;
+      color: #2d4e1e;
+      background: white;
+      display: inline-block;
+      padding: 0.5rem 2rem;
+      border-radius: 20px;
+      border: 2px dashed #7fa86a;
+      margin: 1rem 0;
+    }
+
+    .kahoot-link {
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 40px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 0.5rem;
     }
 
     .game-link-btn {
@@ -497,6 +535,7 @@
         <button class="game-tab" onclick="switchGame(1)">🤝 礼让的好处</button>
         <button class="game-tab" onclick="switchGame(2)">🇲🇾 尊重</button>
         <button class="game-tab" onclick="switchGame(3)">🔢 2048</button>
+        <button class="game-tab kahoot-tab" onclick="switchGame(4)">📱 Kahoot 挑战</button>
       </div>
 
       <div class="game-container">
@@ -572,6 +611,13 @@ const GAMES = [
     type: 'link',
     src: 'https://wellgames.com/cn/free_online/2048/',
     note: '💡 2048 数字益智游戏 · 点击按钮在新窗口打开'
+  },
+  {
+    name: '📱 Kahoot 挑战',
+    type: 'kahoot',
+    src: 'https://kahoot.it/challenge/03124401?challenge-id=18244f5c-d9fa-4c81-8761-57d1765d4599_1776400327677',
+    pin: '03124401',
+    note: '💡 Kahoot 道德挑战 · 输入 PIN 码或点击链接参与'
   }
 ];
 
@@ -586,6 +632,17 @@ function switchGame(index) {
   
   if (game.type === 'iframe') {
     wrapper.innerHTML = `<iframe id="gameIframe" src="${game.src}" allowfullscreen></iframe>`;
+  } else if (game.type === 'kahoot') {
+    wrapper.innerHTML = `
+      <div class="kahoot-pin-box">
+        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">📱 手机/平板参与方式</p>
+        <p style="color: #4a6040; margin-bottom: 0.5rem;">1. 打开 kahoot.it 或 Kahoot App</p>
+        <p style="color: #4a6040; margin-bottom: 1.5rem;">2. 输入下方 PIN 码</p>
+        <div class="kahoot-pin">${game.pin}</div>
+        <p style="margin: 1.5rem 0; color: #8aa67d;">或直接点击下方按钮</p>
+        <a href="${game.src}" target="_blank" class="kahoot-link">🎮 在新窗口打开 Kahoot 挑战 →</a>
+      </div>
+    `;
   } else {
     wrapper.innerHTML = `
       <div class="game-link-wrapper">
