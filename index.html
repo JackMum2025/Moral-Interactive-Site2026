@@ -46,7 +46,7 @@
     }
 
     .welcome-icon { font-size: 4rem; margin-bottom: 0.5rem; }
-    .welcome-card h1 { color: #2d4e1e; font-size: 2rem; font-weight:500; margin-bottom: 0.5rem; }
+    .welcome-card h1 { color: #2d4e1e; font-size: 2rem; font-weight: 500; margin-bottom: 0.5rem; }
     .subtitle { color: #6b7c63; margin-bottom: 2rem; border-bottom: 1px solid #d9e6d3; padding-bottom: 1.2rem; }
     .form-group { text-align: left; margin-bottom: 1.5rem; }
     .form-group label { display: block; color: #3a5e2b; font-weight: 500; margin-bottom: 0.4rem; }
@@ -233,6 +233,32 @@
       height: 400px;
       border: none;
     }
+
+    /* 新窗口打开按钮样式 */
+    .game-link-wrapper {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .game-link-wrapper p {
+      margin-bottom: 1.5rem;
+      color: #4a6040;
+    }
+
+    .game-link-btn {
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .game-link-btn:hover { background: #5b8c4e; }
 
     .game-note {
       margin-top: 0.8rem;
@@ -469,7 +495,7 @@
       <div class="game-tabs">
         <button class="game-tab active" onclick="switchGame(0)">🧠 记忆力</button>
         <button class="game-tab" onclick="switchGame(1)">🤝 礼让的好处</button>
-        <button class="game-tab" onclick="switchGame(2)">🇲🇾 尊重 (BM)</button>
+        <button class="game-tab" onclick="switchGame(2)">🇲🇾 尊重</button>
         <button class="game-tab" onclick="switchGame(3)">🔢 2048</button>
       </div>
 
@@ -521,27 +547,31 @@
 </div>
 
 <script>
-// 游戏配置（你提供的4个游戏）
+// 游戏配置
 const GAMES = [
   {
     name: '🧠 记忆力',
+    type: 'iframe',
     src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0',
     note: '💡 记忆力配对 · 找出匹配的卡片'
   },
   {
     name: '🤝 礼让的好处',
+    type: 'iframe',
     src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0',
     note: '💡 道德：礼让的好处 · 学习礼让的价值'
   },
   {
     name: '🇲🇾 尊重',
+    type: 'iframe',
     src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0',
     note: '💡 Pendidikan Moral · Unit 6: Hormat (尊重)'
   },
   {
     name: '🔢 2048',
-    src: 'https://wellgames.com/cn/free_online/2048/?page=iframe',
-    note: '💡 2048 数字益智游戏 · 合并相同数字，挑战2048'
+    type: 'link',
+    src: 'https://wellgames.com/cn/free_online/2048/',
+    note: '💡 2048 数字益智游戏 · 点击按钮在新窗口打开'
   }
 ];
 
@@ -551,9 +581,20 @@ function switchGame(index) {
     tab.classList.toggle('active', i === index);
   });
   
-  // 更新游戏
   const game = GAMES[index];
-  document.getElementById('gameIframe').src = game.src;
+  const wrapper = document.getElementById('gameWrapper');
+  
+  if (game.type === 'iframe') {
+    wrapper.innerHTML = `<iframe id="gameIframe" src="${game.src}" allowfullscreen></iframe>`;
+  } else {
+    wrapper.innerHTML = `
+      <div class="game-link-wrapper">
+        <p>🎮 2048 数字益智游戏</p>
+        <a href="${game.src}" target="_blank" class="game-link-btn">点击在新窗口打开游戏 →</a>
+      </div>
+    `;
+  }
+  
   document.getElementById('gameNote').innerHTML = game.note;
 }
 
