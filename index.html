@@ -475,18 +475,21 @@
            style="width:100%; max-width:800px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
     </div>
 
-    <!-- 上：匿名质询墙（带老师回复） -->
+    <!-- 上：匿名质询墙（带老师回复 + 删除功能） -->
     <div class="board-card">
       <div class="board-header">
         <h2><span>🌙</span><span>心事匿名质询墙</span></h2>
-        <span class="board-badge badge-anonymous">🕶️ 完全匿名</span>
+        <div style="display: flex; gap: 0.5rem;">
+          <span class="board-badge badge-anonymous">🕶️ 完全匿名</span>
+          <button id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background: #a8c99b; color: #2d4e1e; border: none; padding: 0.2rem 1rem; border-radius: 30px; font-size: 0.75rem; cursor: pointer;">🔑 老师登录</button>
+        </div>
       </div>
       <div class="board-tip">💬 有心事、有疑问？在这里匿名倾诉。老师会看到并回复你。</div>
       <div class="message-form">
         <textarea id="counselComment" placeholder="写下你的心事或问题……"></textarea>
         <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
           <button class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex: 2;">🌙 匿名发布</button>
-          <button class="btn-sm" id="teacherReplyBtn" onclick="showTeacherLogin()" style="flex: 1; background: #a8c99b; color: #2d4e1e;">🔑 老师回复</button>
+          <button class="btn-sm" id="teacherReplyIndicator" style="flex: 1; background: #a8c99b; color: #2d4e1e; display: none;" disabled>👩‍🏫 老师模式</button>
         </div>
       </div>
       <div class="message-list" id="counselList">
@@ -545,8 +548,6 @@
 <script>
 // ==================== 全局变量 ====================
 let currentUser = null;
-const TEACHER_PASSWORD = "123456"; // 老师回复密码，可自行修改
-let isTeacherMode = false;
 
 // ==================== 游戏配置 ====================
 const GAMES = [
@@ -563,6 +564,178 @@ const CONFIG = {
   googleScriptUrl: "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
   sheetApiUrl: "https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1"
 };
+
+// ==================== 脏话过滤系统（含违规计数） ====================
+const BANNED_WORDS = {
+    chinese: [
+        '傻逼', '傻b', 'sb', '白痴', '笨蛋', '蠢货', '去死', '滚蛋', '废物',
+        '垃圾', '混蛋', '王八蛋', '操你', '妈的', '他妈', '尼玛', '脑残', '弱智',
+        '低能', '畜生', '禽兽', '杂种', '贱人', '婊子', '骚货', '下贱', '无耻',
+        '干你', '靠北', '塞你', '丢你', '顶你', '叼你', '屌你', '七早八早'
+    ],
+    english: [
+        'fuck', 'fck', 'fuk', 'fcu', 'f*k', 'f**k', 'shit', 'sh1t', 'sh!t', 'sht',
+        'bitch', 'b1tch', 'b!tch', 'btch', 'asshole', 'ass', 'arse', 'bastard',
+        'damn', 'dumb', 'stupid', 'idiot', 'moron', 'retard', 'piss', 'crap', 'hell',
+        'nigger', 'nigga', 'faggot', 'fag', 'slut', 'whore', 'cunt', 'dick', 'pussy',
+        'cock', 'penis', 'vagina', 'motherfucker', 'mofo', 'wtf', 'stfu'
+    ],
+    malay: [
+        'babi', 'bab1', 'b4bi', 'anjing', 'anj1ng', 'sial', 's1al', 'bodoh', 'bod0h',
+        'bangang', 'bahlol', 'tolol', 'gila', 'g1la', 'pukimak', 'puk1mak', 'puki',
+        'lancau', 'kote', 'celaka', 'jilat', 'bangsat', 'haram', 'jadah',
+        'kurang ajar', 'tak guna', 'sampah', 'bencong', 'pondan', 'keparat'
+    ]
+};
+
+const CHAR_MAP = {
+    '0': 'o', '1': 'i', '2': 'z', '3': 'e', '4': 'a', '5': 's', '6': 'g', '7': 't', '8': 'b', '9': 'g',
+    '@': 'a', '$': 's', '!': 'i', '*': '', '#': '', '(':'', ')':'', '_':'', '-':'', '.':'', ',':''
+};
+
+let flatBannedWords = [];
+let bannedPatterns = [];
+
+function initBannedWords() {
+    flatBannedWords = [];
+    const allWords = [...BANNED_WORDS.chinese, ...BANNED_WORDS.english, ...BANNED_WORDS.malay];
+    
+    allWords.forEach(word => {
+        const normalized = normalizeText(word);
+        if (!flatBannedWords.includes(normalized)) {
+            flatBannedWords.push(normalized);
+        }
+    });
+    
+    bannedPatterns = flatBannedWords.map(word => ({
+        pattern: new RegExp(escapeRegex(word), 'gi'),
+        word: word
+    }));
+}
+
+function normalizeText(text) {
+    if (!text) return '';
+    let normalized = text.toLowerCase().trim();
+    for (const [char, replacement] of Object.entries(CHAR_MAP)) {
+        normalized = normalized.split(char).join(replacement);
+    }
+    normalized = normalized.replace(/(.)\1+/g, '$1');
+    return normalized;
+}
+
+function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function containsBannedWord(text) {
+    if (!text) return { found: false, word: '' };
+    
+    const normalizedText = normalizeText(text);
+    
+    for (const { pattern, word } of bannedPatterns) {
+        if (pattern.test(normalizedText)) {
+            pattern.lastIndex = 0;
+            return { found: true, word: word };
+        }
+    }
+    
+    for (const word of flatBannedWords) {
+        if (normalizedText.includes(word)) {
+            return { found: true, word: word };
+        }
+    }
+    
+    return { found: false, word: '' };
+}
+
+// ==================== 违规记录 ====================
+let violationCount = parseInt(localStorage.getItem('moral_violation_count') || '0');
+
+function addViolation() {
+    violationCount++;
+    localStorage.setItem('moral_violation_count', violationCount);
+    return violationCount;
+}
+
+function resetViolations() {
+    violationCount = 0;
+    localStorage.setItem('moral_violation_count', '0');
+}
+
+function getViolationWarning() {
+    const count = violationCount;
+    if (count === 1) {
+        return "⚠️ 警告：留言包含不适当用语，请文明交流！";
+    } else if (count >= 2) {
+        return "🚨 严重警告：你已多次使用不适当用语！\n\n老师后台已记录你的发布时间和IP地址。\n老师保留向 MCMC（马来西亚通讯及多媒体委员会）举报的权利。\n\n请立即停止！";
+    }
+    return "⚠️ 留言包含不适当用语，无法发布。";
+}
+
+// ==================== 防刷机制 ====================
+let lastSubmitTime = parseInt(localStorage.getItem('moral_last_submit') || '0');
+const SUBMIT_COOLDOWN = 10000; // 10秒
+
+function canSubmit() {
+    const now = Date.now();
+    if (now - lastSubmitTime < SUBMIT_COOLDOWN) {
+        const waitSeconds = Math.ceil((SUBMIT_COOLDOWN - (now - lastSubmitTime)) / 1000);
+        alert(`⏳ 请勿频繁留言，请等待 ${waitSeconds} 秒后再试。`);
+        return false;
+    }
+    return true;
+}
+
+function recordSubmit() {
+    lastSubmitTime = Date.now();
+    localStorage.setItem('moral_last_submit', lastSubmitTime);
+}
+
+// ==================== 老师模式 ====================
+const TEACHER_PASSWORD = "123456";
+let isTeacherMode = false;
+
+function toggleTeacherMode() {
+  if (isTeacherMode) {
+    isTeacherMode = false;
+    updateTeacherUI();
+    alert("已退出老师模式");
+  } else {
+    const password = prompt("请输入老师密码：");
+    if (password === TEACHER_PASSWORD) {
+      isTeacherMode = true;
+      resetViolations();  // 老师登录时清零违规记录
+      updateTeacherUI();
+      alert("✅ 老师模式已解锁！你可以回复和删除留言。");
+    } else if (password !== null) {
+      alert("❌ 密码错误！");
+    }
+  }
+}
+
+function updateTeacherUI() {
+  const toggleBtn = document.getElementById('teacherToggleBtn');
+  const indicator = document.getElementById('teacherReplyIndicator');
+  const counselBtn = document.getElementById('counselBtn');
+  
+  if (isTeacherMode) {
+    toggleBtn.textContent = '✅ 老师模式(点击退出)';
+    toggleBtn.style.background = '#5b8c4e';
+    toggleBtn.style.color = 'white';
+    indicator.style.display = 'block';
+    counselBtn.textContent = '👩‍🏫 老师回复';
+    counselBtn.style.background = '#5b8c4e';
+  } else {
+    toggleBtn.textContent = '🔑 老师登录';
+    toggleBtn.style.background = '#a8c99b';
+    toggleBtn.style.color = '#2d4e1e';
+    indicator.style.display = 'none';
+    counselBtn.textContent = '🌙 匿名发布';
+    counselBtn.style.background = '#7fa86a';
+  }
+  
+  loadAllMessages();
+}
 
 // ==================== 页面切换 ====================
 function goToQuiz() {
@@ -706,16 +879,30 @@ function switchGame(index) {
 }
 
 // ==================== 双留言板 ====================
-function showTeacherLogin() {
-  const password = prompt("请输入老师密码：");
-  if (password === TEACHER_PASSWORD) {
-    isTeacherMode = true;
-    alert("✅ 老师模式已解锁！你现在可以以毛老师的身份回复。");
-    document.getElementById('teacherReplyBtn').style.background = '#5b8c4e';
-    document.getElementById('teacherReplyBtn').style.color = 'white';
-    document.getElementById('teacherReplyBtn').textContent = '✅ 老师模式';
-  } else if (password !== null) {
-    alert("❌ 密码错误！");
+async function deleteMessage(timestamp, content) {
+  if (!isTeacherMode) {
+    alert("只有老师可以删除留言");
+    return;
+  }
+  
+  if (!confirm("确定要删除这条留言吗？")) return;
+  
+  try {
+    const response = await fetch(CONFIG.googleScriptUrl + '?action=delete', {
+      method: 'POST',
+      body: new URLSearchParams({ 'timestamp': timestamp, 'content': content })
+    });
+    
+    const result = await response.json();
+    if (result.success) {
+      alert("留言已删除");
+      loadAllMessages();
+    } else {
+      alert("删除失败：" + (result.error || "未知错误"));
+    }
+  } catch(e) {
+    console.error('删除失败:', e);
+    alert("删除失败，请检查网络");
   }
 }
 
@@ -723,43 +910,42 @@ async function submitCounsel() {
   const textarea = document.getElementById('counselComment');
   const btn = document.getElementById('counselBtn');
   const comment = textarea.value.trim();
+  
   if (!comment) return alert('请输入内容');
   
-  let prefix = '[质询]';
-  let successMsg = '匿名发布成功！';
+  // 防刷检查
+  if (!canSubmit()) return;
   
-  if (isTeacherMode) {
-    prefix = '[老师回复]';
-    successMsg = '已以毛老师身份发布回复！';
+  // 脏话检查
+  const banCheck = containsBannedWord(comment);
+  if (banCheck.found) {
+    const count = addViolation();
+    alert(getViolationWarning());
+    textarea.focus();
+    return;
   }
+  
+  let prefix = isTeacherMode ? '[老师回复]' : '[质询]';
+  let successMsg = isTeacherMode ? '已以毛老师身份发布回复！' : '匿名发布成功！';
   
   try {
     btn.disabled = true;
     btn.textContent = '发布中...';
-    if (isTeacherMode) document.getElementById('teacherReplyBtn').disabled = true;
     
     await fetch(CONFIG.googleScriptUrl, {
       method: 'POST',
       body: new URLSearchParams({ 'comment': `${prefix} ${comment}` })
     });
     
+    recordSubmit();
     textarea.value = '';
     alert(successMsg);
-    
-    if (isTeacherMode) {
-      isTeacherMode = false;
-      document.getElementById('teacherReplyBtn').style.background = '#a8c99b';
-      document.getElementById('teacherReplyBtn').style.color = '#2d4e1e';
-      document.getElementById('teacherReplyBtn').textContent = '🔑 老师回复';
-    }
-    
     loadAllMessages();
   } catch(e) {
     alert('发布失败');
   } finally {
     btn.disabled = false;
-    btn.textContent = '🌙 匿名发布';
-    if (isTeacherMode) document.getElementById('teacherReplyBtn').disabled = false;
+    btn.textContent = isTeacherMode ? '👩‍🏫 老师回复' : '🌙 匿名发布';
   }
 }
 
@@ -767,15 +953,33 @@ async function submitQuote() {
   const textarea = document.getElementById('quoteComment');
   const btn = document.getElementById('quoteBtn');
   const comment = textarea.value.trim();
+  
   if (!comment) return alert('请输入内容');
+  
+  // 防刷检查
+  if (!canSubmit()) return;
+  
+  // 脏话检查
+  const banCheck = containsBannedWord(comment);
+  if (banCheck.found) {
+    const count = addViolation();
+    alert(getViolationWarning());
+    textarea.focus();
+    return;
+  }
+  
   const displayName = currentUser ? `${currentUser.name}（${currentUser.grade}${currentUser.role}）` : '匿名';
+  
   try {
     btn.disabled = true;
     btn.textContent = '发布中...';
+    
     await fetch(CONFIG.googleScriptUrl, {
       method: 'POST',
       body: new URLSearchParams({ 'comment': `[名言] 【${displayName}】: ${comment}` })
     });
+    
+    recordSubmit();
     textarea.value = '';
     alert('发布成功！');
     loadAllMessages();
@@ -792,11 +996,19 @@ async function loadAllMessages() {
     const res = await fetch(CONFIG.sheetApiUrl);
     const data = await res.json();
     const counsel = [], quote = [];
+    
+    window._rawData = data;
+    
     data.reverse().forEach(item => {
       const content = item['留言'] || '';
-      if (content.startsWith('[质询]')) counsel.push(content);
-      else if (content.startsWith('[老师回复]')) counsel.push(content);
-      else if (content.startsWith('[名言]')) quote.push(content.replace('[名言]', '').trim());
+      if (content.startsWith('[质询]') || content.startsWith('[老师回复]')) {
+        counsel.push({
+          content: content,
+          timestamp: item['时间戳'] || ''
+        });
+      } else if (content.startsWith('[名言]')) {
+        quote.push(content.replace('[名言]', '').trim());
+      }
     });
     
     const counselList = document.getElementById('counselList');
@@ -804,15 +1016,22 @@ async function loadAllMessages() {
       counselList.innerHTML = '<div class="empty-message">✨ 还没有质询，匿名写下你的心事吧</div>';
     } else {
       let html = '';
-      counsel.forEach(msg => {
+      counsel.forEach(item => {
+        const msg = item.content;
+        const timestamp = item.timestamp;
         const isTeacherReply = msg.startsWith('[老师回复]');
         const cleanMsg = msg.replace('[老师回复]', '').replace('[质询]', '').trim();
+        
         html += `
           <div class="message-item" style="${isTeacherReply ? 'background: #f0f7ec; border-left: 4px solid #7fa86a;' : ''}">
             <div class="message-header">
               <span class="message-author" style="${isTeacherReply ? 'color: #2d4e1e; font-weight: 600;' : ''}">
                 ${isTeacherReply ? '👩‍🏫 毛老师回复' : '🕶️ 匿名'}
               </span>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="message-time">${timestamp}</span>
+                ${isTeacherMode ? `<button onclick="deleteMessage('${timestamp}', '${msg.replace(/'/g, "\\'")}')" style="background: none; border: none; color: #c44; cursor: pointer; font-size: 1rem;" title="删除留言">🗑️</button>` : ''}
+              </div>
             </div>
             <div class="message-content">${escapeHtml(cleanMsg)}</div>
           </div>
@@ -843,6 +1062,9 @@ function escapeHtml(text) {
 
 // ==================== 初始化 ====================
 document.addEventListener('DOMContentLoaded', function() {
+  // 初始化脏话词库
+  initBannedWords();
+  
   const saved = localStorage.getItem('moralEduUserInfo');
   if (saved) {
     currentUser = JSON.parse(saved);
