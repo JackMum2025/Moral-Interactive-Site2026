@@ -32,6 +32,7 @@
       justify-content: center;
       z-index: 1000;
       padding: 1.5rem;
+      overflow-y: auto;  /* ✅ 修复滑动问题 */
     }
 
     .card {
@@ -42,6 +43,7 @@
       border-radius: 32px;
       box-shadow: 0 12px 28px rgba(80, 110, 60, 0.12);
       border: 1px solid #c8dcc0;
+      margin: auto;  /* 让卡片居中 */
     }
 
     .card-icon { font-size: 3.5rem; margin-bottom: 0.5rem; text-align: center; }
@@ -193,7 +195,7 @@
     }
 
     .feature-card .card-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .feature-card h3 { font-size: 1.2rem; font-weight: 500; color: #2f5126; }
+    .feature-card h3 { font-size: 1.2rem; font-weight:500; color: #2f5126; }
     .feature-card p { color: #4a5e42; font-size: 0.85rem; }
 
     /* 游戏下拉菜单 */
@@ -465,7 +467,6 @@
     <section class="hero">
       <h2>"道德是做人的根本"</h2>
       <p>—— 陶行知</p>
-      <div id="quizResultDisplay" style="margin-top: 1rem; font-size: 1.2rem; color: #2d4e1e;"></div>
     </section>
 
     <div class="card-grid">
@@ -491,7 +492,7 @@
       </a>
     </div>
 
-    <!-- 互动游戏板块（保留你之前的游戏） -->
+    <!-- 互动游戏板块 -->
     <section class="game-section">
       <div class="section-header">
         <h2><span>🎮</span><span>德育互动小游戏</span></h2>
@@ -504,8 +505,8 @@
           <option value="1">🤝 礼让的好处</option>
           <option value="2">🇲🇾 尊重 (Hormat)</option>
           <option value="3">🎯 道德价值：公正</option>
-          <option value="18">🔢 2048 数字益智</option>
-          <option value="19">📱 Kahoot 挑战</option>
+          <option value="4">🔢 2048 数字益智</option>
+          <option value="5">📱 Kahoot 挑战</option>
         </select>
       </div>
 
@@ -548,15 +549,13 @@
 <script>
 // ==================== 全局变量 ====================
 let currentUser = null;
-let quizAnswers = {};
 
-// ==================== 游戏配置 ====================
+// ==================== 游戏配置（与下拉菜单顺序一致） ====================
 const GAMES = [
   { type: 'iframe', src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0', note: '💡 记忆力配对 · 找出匹配的卡片' },
   { type: 'iframe', src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0', note: '💡 道德：礼让的好处 · 学习礼让的价值' },
   { type: 'iframe', src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0', note: '💡 Pendidikan Moral · Unit 6: Hormat (尊重)' },
   { type: 'iframe', src: 'https://wordwall.net/embed/feb8aedbc0c4456484595f3e0ae040b2?themeId=6&templateId=35&fontStackId=0', note: '💡 道德价值：公正 · 学习公平与正义' },
-  // ... 中间省略部分游戏，保留你需要的
   { type: 'link', src: 'https://wellgames.com/cn/free_online/2048/', note: '💡 2048 数字益智游戏 · 点击按钮在新窗口打开' },
   { type: 'kahoot', src: 'https://kahoot.it/challenge/03124401?challenge-id=18244f5c-d9fa-4c81-8761-57d1765d4599_1776400327677', pin: '03124401', note: '💡 Kahoot 道德挑战 · 输入 PIN 码或点击链接参与' }
 ];
@@ -588,7 +587,6 @@ function selectOption(element) {
 }
 
 function submitQuiz() {
-  // 检查是否所有题目都回答了
   const q1 = document.querySelector('input[name="q1"]:checked');
   const q2 = document.querySelector('input[name="q2"]:checked');
   const q3 = document.querySelector('input[name="q3"]:checked');
@@ -600,11 +598,7 @@ function submitQuiz() {
     return;
   }
 
-  // 计算分数
-  const answers = {
-    q1: 'B', q2: 'A', q3: 'B', q4: 'A', q5: 'A'
-  };
-  
+  const answers = { q1: 'B', q2: 'A', q3: 'B', q4: 'A', q5: 'A' };
   let score = 0;
   if (q1.value === answers.q1) score++;
   if (q2.value === answers.q2) score++;
@@ -612,15 +606,9 @@ function submitQuiz() {
   if (q4.value === answers.q4) score++;
   if (q5.value === answers.q5) score++;
 
-  quizAnswers = {
-    q1: q1.value, q2: q2.value, q3: q3.value, q4: q4.value, q5: q5.value,
-    score: score
-  };
-
-  // 保存到 localStorage
+  const quizAnswers = { q1: q1.value, q2: q2.value, q3: q3.value, q4: q4.value, q5: q5.value, score: score };
   localStorage.setItem('moralQuizAnswers', JSON.stringify(quizAnswers));
 
-  // 进入主页
   document.getElementById('quizScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
   
@@ -697,6 +685,7 @@ async function loadMessages() {
     
     if (!data.length) {
       container.innerHTML = '<div class="empty-message">✨ 还没有留言，快来写下第一条吧</div>';
+      statusEl.textContent = '';
       return;
     }
     
@@ -722,20 +711,19 @@ document.addEventListener('DOMContentLoaded', function() {
   const saved = localStorage.getItem('moralEduUserInfo');
   if (saved) {
     currentUser = JSON.parse(saved);
-    // 检查是否有答题记录
     const savedQuiz = localStorage.getItem('moralQuizAnswers');
+    
     if (savedQuiz) {
-      // 直接进主页
       document.getElementById('welcomeScreen').style.display = 'none';
       document.getElementById('quizScreen').style.display = 'none';
       document.getElementById('mainContent').style.display = 'block';
+      
       const quiz = JSON.parse(savedQuiz);
       document.getElementById('userWelcomeDisplay').textContent = 
         `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· 测验得分: ${quiz.score}/5`;
       loadMessages();
       setInterval(loadMessages, 30000);
     } else {
-      // 没答题，去答题页
       document.getElementById('welcomeScreen').style.display = 'none';
       document.getElementById('quizScreen').style.display = 'flex';
       document.getElementById('quizUserName').textContent = `${currentUser.name}（${currentUser.grade}${currentUser.role}）`;
