@@ -166,18 +166,6 @@
       padding: 1.5rem 1rem;
     }
 
-    .hero {
-      background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
-      padding: 2rem 1.5rem;
-      border-radius: 32px;
-      margin-bottom: 2rem;
-      text-align: center;
-      border: 1px solid #c8dcc0;
-    }
-
-    .hero h2 { font-size: 2rem; font-weight: 400; color: #1f3b14; }
-    .hero p { font-size: 1.2rem; color: #43673a; font-style: italic; }
-
     .card-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -210,6 +198,13 @@
       border-bottom: 2px solid #e2ecdc;
     }
     .section-header h2 { color: #3a5e2b; font-size: 1.4rem; }
+    .anonymous-badge {
+      background: #d9e6d3;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      color: #3a5e2b;
+    }
 
     .game-selector select {
       width: 100%;
@@ -444,7 +439,7 @@
       </div>
 
       <div class="error-message" id="quizError">请回答所有题目</div>
-      <button class="btn" onclick="submitQuiz()">✅ 提交答案，进入主页</button>
+      <button class="btn" onclick="submitQuiz()">✅ 提交答案</button>
     </form>
   </div>
 </div>
@@ -466,10 +461,12 @@
   </header>
 
   <main>
-    <section class="hero">
-      <h2>"道德是做人的根本"</h2>
-      <p>—— 陶行知</p>
-    </section>
+    <!-- Slogan 图片 -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <img src="https://img.sanishtech.com/u/9b6a7099abc555c0e3c003b0b6c7eeb8.jpg" 
+           alt="德育 Slogan" 
+           style="width:100%; max-width:800px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
+    </div>
 
     <div class="card-grid">
       <a href="#" class="feature-card">
@@ -596,11 +593,11 @@ function submitQuiz() {
   const q5 = document.querySelector('input[name="q5"]:checked');
 
   if (!q1 || !q2 || !q3 || !q4 || !q5) {
+    document.getElementById('quizError').textContent = '请回答所有题目';
     document.getElementById('quizError').style.display = 'block';
     return;
   }
 
-  // 正确答案（根据你的图片内容设定）
   const answers = { q1: 'B', q2: 'A', q3: 'B', q4: 'A', q5: 'A' };
   let score = 0;
   if (q1.value === answers.q1) score++;
@@ -609,14 +606,100 @@ function submitQuiz() {
   if (q4.value === answers.q4) score++;
   if (q5.value === answers.q5) score++;
 
-  const quizAnswers = { q1: q1.value, q2: q2.value, q3: q3.value, q4: q4.value, q5: q5.value, score: score };
+  if (score < 5) {
+    document.getElementById('quizError').textContent = `你答对了 ${score} 题，需要全部答对才能进入下一页。再试试吧！`;
+    document.getElementById('quizError').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('quizError').style.display = 'none';
+  showCongratsModal(score);
+}
+
+function showCongratsModal(score) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `;
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    background: white;
+    max-width: 350px;
+    width: 90%;
+    padding: 2rem 1.5rem;
+    border-radius: 32px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: popIn 0.3s ease-out;
+  `;
+  
+  modal.innerHTML = `
+    <div style="font-size: 4rem; margin-bottom: 0.5rem;">🎉🏆</div>
+    <h2 style="color: #2d4e1e; font-size: 1.8rem; margin-bottom: 0.5rem;">道德满分！</h2>
+    <p style="color: #43673a; font-size: 1.2rem; margin-bottom: 1rem;">太棒了！你真是个品德小达人！</p>
+    <p style="color: #6b7c63; margin-bottom: 1.5rem;">得分：${score}/5 ✨</p>
+    <button id="enterMainBtn" style="
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      width: 100%;
+    ">🌸 进入德育园地 →</button>
+  `;
+  
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.getElementById('enterMainBtn').onclick = function() {
+    overlay.remove();
+    enterMainContent(score);
+  };
+  
+  overlay.onclick = function(e) {
+    if (e.target === overlay) {
+      overlay.remove();
+      enterMainContent(score);
+    }
+  };
+}
+
+function enterMainContent(score) {
+  const q1 = document.querySelector('input[name="q1"]:checked').value;
+  const q2 = document.querySelector('input[name="q2"]:checked').value;
+  const q3 = document.querySelector('input[name="q3"]:checked').value;
+  const q4 = document.querySelector('input[name="q4"]:checked').value;
+  const q5 = document.querySelector('input[name="q5"]:checked').value;
+  
+  const quizAnswers = { q1, q2, q3, q4, q5, score };
   localStorage.setItem('moralQuizAnswers', JSON.stringify(quizAnswers));
 
   document.getElementById('quizScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
   
   document.getElementById('userWelcomeDisplay').textContent = 
-    `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· 测验得分: ${score}/5`;
+    `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· 道德满分 ${score}/5 🏆`;
 
   loadMessages();
   setInterval(loadMessages, 30000);
@@ -723,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const quiz = JSON.parse(savedQuiz);
       document.getElementById('userWelcomeDisplay').textContent = 
-        `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· 测验得分: ${quiz.score}/5`;
+        `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· 道德满分 ${quiz.score}/5 🏆`;
       loadMessages();
       setInterval(loadMessages, 30000);
     } else {
