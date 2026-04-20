@@ -475,7 +475,7 @@
            style="width:100%; max-width:800px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
     </div>
 
-    <!-- 上：匿名质询墙（简化老师模式） -->
+    <!-- 上：匿名质询墙 -->
     <div class="board-card">
       <div class="board-header">
         <h2><span>🌙</span><span>心事匿名质询墙</span></h2>
@@ -691,7 +691,7 @@ function recordSubmit() {
     localStorage.setItem('moral_last_submit', lastSubmitTime);
 }
 
-// ==================== 老师模式（简化版） ====================
+// ==================== 老师模式 ====================
 const TEACHER_PASSWORD = "123456";
 let isTeacherMode = false;
 
@@ -764,46 +764,133 @@ function submitQuiz() {
   const q3 = document.querySelector('input[name="q3"]:checked');
   const q4 = document.querySelector('input[name="q4"]:checked');
   const q5 = document.querySelector('input[name="q5"]:checked');
+  
   if (!q1 || !q2 || !q3 || !q4 || !q5) {
     document.getElementById('quizError').textContent = '请回答所有题目';
     document.getElementById('quizError').style.display = 'block';
     return;
   }
+  
   const answers = { q1: 'B', q2: 'A', q3: 'B', q4: 'A', q5: 'A' };
+  const answerTexts = {
+    q1: { correct: 'B. 停下来扶他起来，关心他', explanation: '帮助他人是美德' },
+    q2: { correct: 'A. 用完后马上归还，并说谢谢', explanation: '借东西要守信' },
+    q3: { correct: 'B. 冷静沟通，互相理解', explanation: '沟通是解决矛盾的最好方式' },
+    q4: { correct: 'A. 尽力做到，做一个守信的人', explanation: '守信是重要品德' },
+    q5: { correct: 'A. 捡起来扔进垃圾桶', explanation: '爱护环境人人有责' }
+  };
+  
   let score = 0;
+  const userAnswers = {
+    q1: q1.value,
+    q2: q2.value,
+    q3: q3.value,
+    q4: q4.value,
+    q5: q5.value
+  };
+  
   if (q1.value === answers.q1) score++;
   if (q2.value === answers.q2) score++;
   if (q3.value === answers.q3) score++;
   if (q4.value === answers.q4) score++;
   if (q5.value === answers.q5) score++;
-  if (score < 5) {
-    document.getElementById('quizError').textContent = `你答对了 ${score} 题，需要全部答对才能进入下一页。再试试吧！`;
-    document.getElementById('quizError').style.display = 'block';
-    return;
-  }
+  
   document.getElementById('quizError').style.display = 'none';
-  showCongratsModal(score);
+  
+  const quizAnswers = { 
+    q1: q1.value, q2: q2.value, q3: q3.value, q4: q4.value, q5: q5.value, 
+    score: score 
+  };
+  localStorage.setItem('moralQuizAnswers', JSON.stringify(quizAnswers));
+  
+  showQuizFeedback(score, userAnswers, answers, answerTexts);
 }
 
-function showCongratsModal(score) {
+function showQuizFeedback(score, userAnswers, correctAnswers, answerTexts) {
   const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  
   const modal = document.createElement('div');
-  modal.style.cssText = 'background:white;max-width:350px;width:90%;padding:2rem 1.5rem;border-radius:32px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2);';
+  modal.style.cssText = 'background:white;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:2rem 1.5rem;border-radius:32px;box-shadow:0 20px 40px rgba(0,0,0,0.2);';
+  
+  let feedbackHtml = '';
+  const questionLabels = ['第1题', '第2题', '第3题', '第4题', '第5题'];
+  
+  for (let i = 1; i <= 5; i++) {
+    const qKey = `q${i}`;
+    const userAnswer = userAnswers[qKey];
+    const correctAnswer = correctAnswers[qKey];
+    const isCorrect = userAnswer === correctAnswer;
+    const correctText = answerTexts[qKey].correct;
+    
+    feedbackHtml += `
+      <div style="margin-bottom: 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid #e2ecdc;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+          <span style="font-weight: 500; color: #2d4e1e;">${questionLabels[i-1]}</span>
+          ${isCorrect ? 
+            '<span style="color: #7fa86a; font-size: 0.9rem;">✅ 回答正确</span>' : 
+            '<span style="color: #c44; font-size: 0.9rem;">❌ 回答错误</span>'
+          }
+        </div>
+        ${!isCorrect ? `
+          <div style="background: #fef8e7; padding: 0.8rem; border-radius: 12px; margin-top: 0.5rem;">
+            <p style="color: #6b7c63; font-size: 0.9rem;">你的答案：${userAnswer}</p>
+            <p style="color: #2d4e1e; font-size: 0.9rem; margin-top: 0.3rem;">✅ 正确答案：${correctText}</p>
+            <p style="color: #7fa86a; font-size: 0.85rem; margin-top: 0.3rem;">💡 ${answerTexts[qKey].explanation}</p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+  
+  const isFullScore = score === 5;
+  
   modal.innerHTML = `
-    <div style="font-size:4rem;margin-bottom:0.5rem;">🎉🏆</div>
-    <h2 style="color:#2d4e1e;font-size:1.8rem;margin-bottom:0.5rem;">道德满分！</h2>
-    <p style="color:#43673a;font-size:1.2rem;margin-bottom:1rem;">太棒了！你真是个品德小达人！</p>
-    <p style="color:#6b7c63;margin-bottom:1.5rem;">得分：${score}/5 ✨</p>
-    <button id="enterMainBtn" style="background:#7fa86a;color:white;border:none;padding:0.8rem 2rem;font-size:1.1rem;border-radius:40px;cursor:pointer;width:100%;">🌸 进入德育园地 →</button>
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">${isFullScore ? '🎉🏆' : '📝'}</div>
+      <h2 style="color: #2d4e1e; font-size: 1.6rem; margin-bottom: 0.3rem;">
+        ${isFullScore ? '道德满分！太棒了！' : '测验完成！'}
+      </h2>
+      <p style="color: #43673a; font-size: 1.1rem;">
+        得分：${score}/5
+        ${isFullScore ? ' ✨ 你真是个品德小达人！' : ' 💪 继续加油！'}
+      </p>
+    </div>
+    
+    <div style="margin-bottom: 1.5rem;">
+      ${feedbackHtml}
+    </div>
+    
+    <p style="color: #8aa67d; font-size: 0.9rem; text-align: center; margin-bottom: 1rem;">
+      ${isFullScore ? '你已掌握这些道德知识！' : '记住正确答案，下次一定全对！'}
+    </p>
+    
+    <button id="enterMainFromFeedback" style="
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      width: 100%;
+    ">🌸 进入德育园地 →</button>
   `;
+  
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
-  document.getElementById('enterMainBtn').onclick = function() {
+  
+  document.getElementById('enterMainFromFeedback').onclick = function() {
     overlay.remove();
     enterMainContent(score);
   };
-  overlay.onclick = function(e) { if (e.target === overlay) { overlay.remove(); enterMainContent(score); } };
+  
+  overlay.onclick = function(e) {
+    if (e.target === overlay) {
+      overlay.remove();
+      enterMainContent(score);
+    }
+  };
 }
 
 function enterMainContent(score) {
@@ -815,7 +902,10 @@ function enterMainContent(score) {
   localStorage.setItem('moralQuizAnswers', JSON.stringify({ q1, q2, q3, q4, q5, score }));
   document.getElementById('quizScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
-  document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· 道德满分 ${score}/5 🏆`;
+  
+  const scoreText = score === 5 ? `道德满分 ${score}/5 🏆` : `得分 ${score}/5 💪`;
+  document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
+  
   loadAllMessages();
   setInterval(loadAllMessages, 30000);
 }
@@ -1037,7 +1127,8 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('quizScreen').style.display = 'none';
       document.getElementById('mainContent').style.display = 'block';
       const quiz = JSON.parse(savedQuiz);
-      document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· 道德满分 ${quiz.score}/5 🏆`;
+      const scoreText = quiz.score === 5 ? `道德满分 ${quiz.score}/5 🏆` : `得分 ${quiz.score}/5 💪`;
+      document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
       loadAllMessages();
       setInterval(loadAllMessages, 30000);
     } else {
