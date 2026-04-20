@@ -19,7 +19,6 @@
       min-height: 100vh;
     }
 
-    /* 欢迎页 + 选择题页面 共用容器 */
     .screen {
       position: fixed;
       top: 0;
@@ -32,7 +31,7 @@
       justify-content: center;
       z-index: 1000;
       padding: 1.5rem;
-      overflow-y: auto;  /* ✅ 修复滑动问题 */
+      overflow-y: auto;
     }
 
     .card {
@@ -43,7 +42,7 @@
       border-radius: 32px;
       box-shadow: 0 12px 28px rgba(80, 110, 60, 0.12);
       border: 1px solid #c8dcc0;
-      margin: auto;  /* 让卡片居中 */
+      margin: auto;
     }
 
     .card-icon { font-size: 3.5rem; margin-bottom: 0.5rem; text-align: center; }
@@ -65,13 +64,17 @@
 
     /* 选择题样式 */
     .quiz-question {
-      margin-bottom: 1.8rem;
+      margin-bottom: 2rem;
     }
-    .quiz-question p {
-      font-weight: 500;
-      color: #2d4e1e;
-      margin-bottom: 0.8rem;
-      font-size: 1.1rem;
+    .quiz-image {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     .quiz-option {
       display: block;
@@ -195,10 +198,9 @@
     }
 
     .feature-card .card-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .feature-card h3 { font-size: 1.2rem; font-weight:500; color: #2f5126; }
+    .feature-card h3 { font-size: 1.2rem; font-weight: 500; color: #2f5126; }
     .feature-card p { color: #4a5e42; font-size: 0.85rem; }
 
-    /* 游戏下拉菜单 */
     .section-header {
       display: flex;
       justify-content: space-between;
@@ -248,7 +250,6 @@
       text-align: center;
     }
 
-    /* 留言板 */
     .message-section {
       background: white;
       border-radius: 20px;
@@ -363,7 +364,7 @@
   </div>
 </div>
 
-<!-- ========== 选择题页面 ========== -->
+<!-- ========== 选择题页面（带图片） ========== -->
 <div id="quizScreen" class="screen" style="display: none;">
   <div class="card">
     <div class="card-icon">📋</div>
@@ -371,9 +372,10 @@
     <div class="subtitle" id="quizUserName"></div>
 
     <form onsubmit="return false;">
+      
       <!-- 题目 1 -->
       <div class="quiz-question">
-        <p>1. 看到同学摔倒了，你应该怎么做？</p>
+        <img src="https://img.sanishtech.com/u/8a9b66551d58dab653865f56a9ef4ebc.jpeg" alt="题目1" class="quiz-image">
         <label class="quiz-option" onclick="selectOption(this)">
           <input type="radio" name="q1" value="A"> A. 当作没看见，继续走
         </label>
@@ -387,7 +389,7 @@
 
       <!-- 题目 2 -->
       <div class="quiz-question">
-        <p>2. 借了同学的东西，你应该？</p>
+        <img src="https://img.sanishtech.com/u/5a73b565b17e7ad367dc9c48d2b491ee.jpeg" alt="题目2" class="quiz-image">
         <label class="quiz-option" onclick="selectOption(this)">
           <input type="radio" name="q2" value="A"> A. 用完后马上归还，并说谢谢
         </label>
@@ -401,7 +403,7 @@
 
       <!-- 题目 3 -->
       <div class="quiz-question">
-        <p>3. 和同学发生矛盾时，最好的方法是？</p>
+        <img src="https://img.sanishtech.com/u/9bf8b668464b45341902cdd04b73c7d5.jpeg" alt="题目3" class="quiz-image">
         <label class="quiz-option" onclick="selectOption(this)">
           <input type="radio" name="q3" value="A"> A. 吵架，一定要赢
         </label>
@@ -415,7 +417,7 @@
 
       <!-- 题目 4 -->
       <div class="quiz-question">
-        <p>4. 答应别人的事情，应该？</p>
+        <img src="https://img.sanishtech.com/u/1b3e5db58d438c314aca0b35ebb2f5bd.jpeg" alt="题目4" class="quiz-image">
         <label class="quiz-option" onclick="selectOption(this)">
           <input type="radio" name="q4" value="A"> A. 尽力做到，做一个守信的人
         </label>
@@ -429,7 +431,7 @@
 
       <!-- 题目 5 -->
       <div class="quiz-question">
-        <p>5. 看到教室地上有垃圾，你会？</p>
+        <img src="https://img.sanishtech.com/u/d45f038c21f8de9fec31f72659081fbf.jpeg" alt="题目5" class="quiz-image">
         <label class="quiz-option" onclick="selectOption(this)">
           <input type="radio" name="q5" value="A"> A. 捡起来扔进垃圾桶
         </label>
@@ -550,7 +552,7 @@
 // ==================== 全局变量 ====================
 let currentUser = null;
 
-// ==================== 游戏配置（与下拉菜单顺序一致） ====================
+// ==================== 游戏配置 ====================
 const GAMES = [
   { type: 'iframe', src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0', note: '💡 记忆力配对 · 找出匹配的卡片' },
   { type: 'iframe', src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0', note: '💡 道德：礼让的好处 · 学习礼让的价值' },
@@ -598,6 +600,7 @@ function submitQuiz() {
     return;
   }
 
+  // 正确答案（根据你的图片内容设定）
   const answers = { q1: 'B', q2: 'A', q3: 'B', q4: 'A', q5: 'A' };
   let score = 0;
   if (q1.value === answers.q1) score++;
