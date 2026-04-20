@@ -193,7 +193,6 @@
       padding: 1.5rem 1rem;
     }
 
-    /* 留言板通用样式 */
     .board-card {
       background: white;
       border-radius: 24px;
@@ -289,7 +288,6 @@
     .message-status { text-align: center; padding: 1rem; color: #999; }
     .empty-message { text-align: center; color: #aaa; padding: 1.5rem; font-style: italic; }
 
-    /* 游戏板块 */
     .game-section { margin: 1.5rem 0; }
     .section-header {
       display: flex;
@@ -471,16 +469,13 @@
   </header>
 
   <main>
-    <!-- Slogan 图片 -->
     <div style="text-align: center; margin-bottom: 2rem;">
       <img src="https://img.sanishtech.com/u/9b6a7099abc555c0e3c003b0b6c7eeb8.jpg" 
            alt="德育 Slogan" 
            style="width:100%; max-width:800px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
     </div>
 
-    <!-- ========== 双留言板（上下布局） ========== -->
-    
-    <!-- 上：匿名质询墙 -->
+    <!-- 上：匿名质询墙（带老师回复） -->
     <div class="board-card">
       <div class="board-header">
         <h2><span>🌙</span><span>心事匿名质询墙</span></h2>
@@ -489,7 +484,10 @@
       <div class="board-tip">💬 有心事、有疑问？在这里匿名倾诉。老师会看到并回复你。</div>
       <div class="message-form">
         <textarea id="counselComment" placeholder="写下你的心事或问题……"></textarea>
-        <button class="btn-sm" id="counselBtn" onclick="submitCounsel()">🌙 匿名发布</button>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+          <button class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex: 2;">🌙 匿名发布</button>
+          <button class="btn-sm" id="teacherReplyBtn" onclick="showTeacherLogin()" style="flex: 1; background: #a8c99b; color: #2d4e1e;">🔑 老师回复</button>
+        </div>
       </div>
       <div class="message-list" id="counselList">
         <div class="message-status">正在加载...</div>
@@ -547,6 +545,8 @@
 <script>
 // ==================== 全局变量 ====================
 let currentUser = null;
+const TEACHER_PASSWORD = "123456"; // 老师回复密码，可自行修改
+let isTeacherMode = false;
 
 // ==================== 游戏配置 ====================
 const GAMES = [
@@ -706,20 +706,61 @@ function switchGame(index) {
 }
 
 // ==================== 双留言板 ====================
+function showTeacherLogin() {
+  const password = prompt("请输入老师密码：");
+  if (password === TEACHER_PASSWORD) {
+    isTeacherMode = true;
+    alert("✅ 老师模式已解锁！你现在可以以毛老师的身份回复。");
+    document.getElementById('teacherReplyBtn').style.background = '#5b8c4e';
+    document.getElementById('teacherReplyBtn').style.color = 'white';
+    document.getElementById('teacherReplyBtn').textContent = '✅ 老师模式';
+  } else if (password !== null) {
+    alert("❌ 密码错误！");
+  }
+}
+
 async function submitCounsel() {
   const textarea = document.getElementById('counselComment');
   const btn = document.getElementById('counselBtn');
   const comment = textarea.value.trim();
   if (!comment) return alert('请输入内容');
+  
+  let prefix = '[质询]';
+  let successMsg = '匿名发布成功！';
+  
+  if (isTeacherMode) {
+    prefix = '[老师回复]';
+    successMsg = '已以毛老师身份发布回复！';
+  }
+  
   try {
     btn.disabled = true;
     btn.textContent = '发布中...';
-    await fetch(CONFIG.googleScriptUrl, { method: 'POST', body: new URLSearchParams({ 'comment': `[质询] ${comment}` }) });
+    if (isTeacherMode) document.getElementById('teacherReplyBtn').disabled = true;
+    
+    await fetch(CONFIG.googleScriptUrl, {
+      method: 'POST',
+      body: new URLSearchParams({ 'comment': `${prefix} ${comment}` })
+    });
+    
     textarea.value = '';
-    alert('匿名发布成功！');
+    alert(successMsg);
+    
+    if (isTeacherMode) {
+      isTeacherMode = false;
+      document.getElementById('teacherReplyBtn').style.background = '#a8c99b';
+      document.getElementById('teacherReplyBtn').style.color = '#2d4e1e';
+      document.getElementById('teacherReplyBtn').textContent = '🔑 老师回复';
+    }
+    
     loadAllMessages();
-  } catch(e) { alert('发布失败'); }
-  finally { btn.disabled = false; btn.textContent = '🌙 匿名发布'; }
+  } catch(e) {
+    alert('发布失败');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🌙 匿名发布';
+    if (isTeacherMode) document.getElementById('teacherReplyBtn').disabled = false;
+  }
 }
 
 async function submitQuote() {
@@ -731,12 +772,19 @@ async function submitQuote() {
   try {
     btn.disabled = true;
     btn.textContent = '发布中...';
-    await fetch(CONFIG.googleScriptUrl, { method: 'POST', body: new URLSearchParams({ 'comment': `[名言] 【${displayName}】: ${comment}` }) });
+    await fetch(CONFIG.googleScriptUrl, {
+      method: 'POST',
+      body: new URLSearchParams({ 'comment': `[名言] 【${displayName}】: ${comment}` })
+    });
     textarea.value = '';
     alert('发布成功！');
     loadAllMessages();
-  } catch(e) { alert('发布失败'); }
-  finally { btn.disabled = false; btn.textContent = '🌟 署名发布'; }
+  } catch(e) {
+    alert('发布失败');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🌟 署名发布';
+  }
 }
 
 async function loadAllMessages() {
@@ -746,21 +794,37 @@ async function loadAllMessages() {
     const counsel = [], quote = [];
     data.reverse().forEach(item => {
       const content = item['留言'] || '';
-      if (content.startsWith('[质询]')) counsel.push(content.replace('[质询]', '').trim());
+      if (content.startsWith('[质询]')) counsel.push(content);
+      else if (content.startsWith('[老师回复]')) counsel.push(content);
       else if (content.startsWith('[名言]')) quote.push(content.replace('[名言]', '').trim());
     });
     
     const counselList = document.getElementById('counselList');
-    if (counsel.length === 0) counselList.innerHTML = '<div class="empty-message">✨ 还没有质询，匿名写下你的心事吧</div>';
-    else {
+    if (counsel.length === 0) {
+      counselList.innerHTML = '<div class="empty-message">✨ 还没有质询，匿名写下你的心事吧</div>';
+    } else {
       let html = '';
-      counsel.forEach(msg => html += `<div class="message-item"><div class="message-header"><span class="message-author">🕶️ 匿名</span></div><div class="message-content">${escapeHtml(msg)}</div></div>`);
+      counsel.forEach(msg => {
+        const isTeacherReply = msg.startsWith('[老师回复]');
+        const cleanMsg = msg.replace('[老师回复]', '').replace('[质询]', '').trim();
+        html += `
+          <div class="message-item" style="${isTeacherReply ? 'background: #f0f7ec; border-left: 4px solid #7fa86a;' : ''}">
+            <div class="message-header">
+              <span class="message-author" style="${isTeacherReply ? 'color: #2d4e1e; font-weight: 600;' : ''}">
+                ${isTeacherReply ? '👩‍🏫 毛老师回复' : '🕶️ 匿名'}
+              </span>
+            </div>
+            <div class="message-content">${escapeHtml(cleanMsg)}</div>
+          </div>
+        `;
+      });
       counselList.innerHTML = html;
     }
     
     const quoteList = document.getElementById('quoteList');
-    if (quote.length === 0) quoteList.innerHTML = '<div class="empty-message">✨ 还没有名言，快来分享正能量吧</div>';
-    else {
+    if (quote.length === 0) {
+      quoteList.innerHTML = '<div class="empty-message">✨ 还没有名言，快来分享正能量吧</div>';
+    } else {
       let html = '';
       quote.forEach(msg => html += `<div class="message-item"><div class="message-content">${escapeHtml(msg)}</div></div>`);
       quoteList.innerHTML = html;
