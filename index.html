@@ -475,7 +475,7 @@
            style="width:100%; max-width:800px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
     </div>
 
-    <!-- 上：匿名质询墙（带老师回复 + 删除功能） -->
+    <!-- 上：匿名质询墙（简化老师模式） -->
     <div class="board-card">
       <div class="board-header">
         <h2><span>🌙</span><span>心事匿名质询墙</span></h2>
@@ -565,7 +565,7 @@ const CONFIG = {
   sheetApiUrl: "https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1"
 };
 
-// ==================== 脏话过滤系统（含违规计数） ====================
+// ==================== 脏话过滤系统 ====================
 const BANNED_WORDS = {
     chinese: [
         '傻逼', '傻b', 'sb', '白痴', '笨蛋', '蠢货', '去死', '滚蛋', '废物',
@@ -691,7 +691,7 @@ function recordSubmit() {
     localStorage.setItem('moral_last_submit', lastSubmitTime);
 }
 
-// ==================== 老师模式 ====================
+// ==================== 老师模式（简化版） ====================
 const TEACHER_PASSWORD = "123456";
 let isTeacherMode = false;
 
@@ -704,9 +704,9 @@ function toggleTeacherMode() {
     const password = prompt("请输入老师密码：");
     if (password === TEACHER_PASSWORD) {
       isTeacherMode = true;
-      resetViolations();  // 老师登录时清零违规记录
+      resetViolations();
       updateTeacherUI();
-      alert("✅ 老师模式已解锁！你可以回复和删除留言。");
+      alert("✅ 老师模式已解锁！你可以以毛老师的身份回复。");
     } else if (password !== null) {
       alert("❌ 密码错误！");
     }
@@ -733,8 +733,6 @@ function updateTeacherUI() {
     counselBtn.textContent = '🌙 匿名发布';
     counselBtn.style.background = '#7fa86a';
   }
-  
-  loadAllMessages();
 }
 
 // ==================== 页面切换 ====================
@@ -879,33 +877,6 @@ function switchGame(index) {
 }
 
 // ==================== 双留言板 ====================
-async function deleteMessage(timestamp, content) {
-  if (!isTeacherMode) {
-    alert("只有老师可以删除留言");
-    return;
-  }
-  
-  if (!confirm("确定要删除这条留言吗？")) return;
-  
-  try {
-    const response = await fetch(CONFIG.googleScriptUrl + '?action=delete', {
-      method: 'POST',
-      body: new URLSearchParams({ 'timestamp': timestamp, 'content': content })
-    });
-    
-    const result = await response.json();
-    if (result.success) {
-      alert("留言已删除");
-      loadAllMessages();
-    } else {
-      alert("删除失败：" + (result.error || "未知错误"));
-    }
-  } catch(e) {
-    console.error('删除失败:', e);
-    alert("删除失败，请检查网络");
-  }
-}
-
 async function submitCounsel() {
   const textarea = document.getElementById('counselComment');
   const btn = document.getElementById('counselBtn');
@@ -913,10 +884,8 @@ async function submitCounsel() {
   
   if (!comment) return alert('请输入内容');
   
-  // 防刷检查
   if (!canSubmit()) return;
   
-  // 脏话检查
   const banCheck = containsBannedWord(comment);
   if (banCheck.found) {
     const count = addViolation();
@@ -956,10 +925,8 @@ async function submitQuote() {
   
   if (!comment) return alert('请输入内容');
   
-  // 防刷检查
   if (!canSubmit()) return;
   
-  // 脏话检查
   const banCheck = containsBannedWord(comment);
   if (banCheck.found) {
     const count = addViolation();
@@ -997,8 +964,6 @@ async function loadAllMessages() {
     const data = await res.json();
     const counsel = [], quote = [];
     
-    window._rawData = data;
-    
     data.reverse().forEach(item => {
       const content = item['留言'] || '';
       if (content.startsWith('[质询]') || content.startsWith('[老师回复]')) {
@@ -1028,10 +993,7 @@ async function loadAllMessages() {
               <span class="message-author" style="${isTeacherReply ? 'color: #2d4e1e; font-weight: 600;' : ''}">
                 ${isTeacherReply ? '👩‍🏫 毛老师回复' : '🕶️ 匿名'}
               </span>
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span class="message-time">${timestamp}</span>
-                ${isTeacherMode ? `<button onclick="deleteMessage('${timestamp}', '${msg.replace(/'/g, "\\'")}')" style="background: none; border: none; color: #c44; cursor: pointer; font-size: 1rem;" title="删除留言">🗑️</button>` : ''}
-              </div>
+              <span class="message-time">${timestamp}</span>
             </div>
             <div class="message-content">${escapeHtml(cleanMsg)}</div>
           </div>
@@ -1045,7 +1007,9 @@ async function loadAllMessages() {
       quoteList.innerHTML = '<div class="empty-message">✨ 还没有名言，快来分享正能量吧</div>';
     } else {
       let html = '';
-      quote.forEach(msg => html += `<div class="message-item"><div class="message-content">${escapeHtml(msg)}</div></div>`);
+      quote.forEach(msg => {
+        html += `<div class="message-item"><div class="message-content">${escapeHtml(msg)}</div></div>`;
+      });
       quoteList.innerHTML = html;
     }
   } catch(e) {
@@ -1062,7 +1026,6 @@ function escapeHtml(text) {
 
 // ==================== 初始化 ====================
 document.addEventListener('DOMContentLoaded', function() {
-  // 初始化脏话词库
   initBannedWords();
   
   const saved = localStorage.getItem('moralEduUserInfo');
