@@ -193,6 +193,42 @@
       padding: 1.5rem 1rem;
     }
 
+    /* 影片容器 */
+    .video-container {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+      border: 1px solid #d9e6d3;
+    }
+
+    .video-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #e2ecdc;
+    }
+
+    .video-header h2 {
+      color: #3a5e2b;
+      font-size: 1.4rem;
+    }
+
+    .video-wrapper {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .video-wrapper iframe {
+      display: block;
+      width: 100%;
+      height: 500px;
+      border: none;
+    }
+
     .board-card {
       background: white;
       border-radius: 24px;
@@ -469,10 +505,25 @@
   </header>
 
   <main>
-    <div style="text-align: center; margin-bottom: 2rem;">
+    <!-- Slogan 图片 -->
+    <div style="text-align: center; margin-bottom: 1.5rem;">
       <img src="https://img.sanishtech.com/u/9b6a7099abc555c0e3c003b0b6c7eeb8.jpg" 
            alt="德育 Slogan" 
            style="width:100%; max-width:800px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
+    </div>
+
+    <!-- 互动影片 -->
+    <div class="video-container">
+      <div class="video-header">
+        <span style="font-size: 1.8rem;">🎬</span>
+        <h2>今日课题：网络霸凌</h2>
+      </div>
+      <div class="video-wrapper">
+        <iframe src="https://learningapps.org/watch?v=pjqf9x5m226" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+      </div>
+      <p style="color: #8aa67d; font-size: 0.9rem; text-align: center; margin-top: 0.8rem;">
+        💡 观看影片，学习如何应对网络霸凌
+      </p>
     </div>
 
     <!-- 上：匿名质询墙 -->
