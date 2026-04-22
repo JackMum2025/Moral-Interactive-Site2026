@@ -249,7 +249,6 @@
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
-    /* 新增：速度提升提示动画 */
     .speed-up-hint {
       position: absolute;
       top: 20%;
@@ -272,6 +271,19 @@
       100% { opacity: 0; transform: translate(-50%, 20px); }
     }
 
+    .auto-fire-badge {
+      position: absolute;
+      bottom: 80px;
+      right: 20px;
+      color: #34d399;
+      font-size: 14px;
+      background: rgba(15,23,42,0.8);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid #34d399;
+      pointer-events: none;
+    }
+
     @media (max-width: 768px) {
       .game-ui { gap: 0.5rem; }
       canvas { border-radius: 4px; }
@@ -286,15 +298,16 @@
       <div style="font-size: clamp(3rem, 10vw, 5rem); margin-bottom: 1rem;">🛡️</div>
       <h1 id="el-title" class="menu-title">网络卫士</h1>
       <p class="menu-subtitle">拦截霸凌言论，守护网络世界！</p>
-      <p class="menu-subtitle" style="font-size: clamp(0.875rem, 3vw, 1rem); color: #64748b; margin-top: 1.5rem;">💻 鼠标控制 / 📱 手指滑动 / 🖱️ 点击射击</p>
+      <p class="menu-subtitle" style="font-size: clamp(0.875rem, 3vw, 1rem); color: #64748b; margin-top: 1.5rem;">💻 鼠标移动 / 📱 手指滑动 · 自动射击</p>
       <button id="el-startBtn" class="menu-button mt-6" onclick="startGame()">开始防御</button>
     </div>
   </div>
   <!-- Canvas 容器 -->
   <div class="canvas-wrapper">
     <canvas id="gameCanvas"></canvas>
-    <div class="mobile-hint" id="mobileHint">👆 滑动操控 · 点击屏幕射击</div>
+    <div class="mobile-hint" id="mobileHint">👈 左右滑动控制 · 自动射击 👉</div>
     <div id="speedUpHint" class="speed-up-hint"></div>
+    <div class="auto-fire-badge">🔥 自动连射中</div>
   </div>
   <!-- 游戏UI -->
   <div class="game-ui" id="gameUI" style="display: none;">
@@ -361,18 +374,18 @@
       difficulty: 1,
       bulletSpeed: 0,
       enemySpeed: 0,
-      baseEnemySpeed: 0,        // 基础速度
-      speedMultiplier: 1.0,     // 速度倍率（每30秒增加0.2）
+      baseEnemySpeed: 0,
+      speedMultiplier: 1.0,
       spawnRate: 0,
-      shootCooldown: 0,
-      shootCooldownMax: 8,
+      shootTimer: 0,
+      shootInterval: 8,          // 自动射击间隔（帧数）
       laserMode: false,
       laserTimer: 0,
       missileMode: false,
       missileTimer: 0,
-      gameEndTime: 300,          // 改为5分钟 = 300秒
+      gameEndTime: 300,
       powerUpSpawnChance: 30,
-      lastSpeedUpTime: 0        // 记录上次加速的时间点
+      lastSpeedUpTime: 0
     };
 
     let particles = [];
@@ -397,21 +410,19 @@
     function updateDifficulty() {
       const progress = Math.min(gameState.gameTimer / (gameState.gameEndTime * 60), 1.0);
       
-      // 【优化1】每30秒速度提升0.2倍
+      // 每20秒速度提升0.2倍
       const secondsElapsed = Math.floor(gameState.gameTimer / 60);
-      const speedLevel = Math.floor(secondsElapsed / 30); // 每30秒一个等级
+      const speedLevel = Math.floor(secondsElapsed / 20);
       gameState.speedMultiplier = 1.0 + (speedLevel * 0.2);
       
-      // 检查是否需要显示加速提示
-      if (speedLevel > 0 && secondsElapsed % 30 === 0 && secondsElapsed !== gameState.lastSpeedUpTime) {
+      if (speedLevel > 0 && secondsElapsed % 20 === 0 && secondsElapsed !== gameState.lastSpeedUpTime) {
         showSpeedUpHint(gameState.speedMultiplier);
         gameState.lastSpeedUpTime = secondsElapsed;
       }
       
       gameState.difficulty = 1 + progress * 2;
-      gameState.bulletSpeed = gameState.height * 0.01;
+      gameState.bulletSpeed = gameState.height * 0.012;
       
-      // 基础速度，然后乘以速度倍率
       gameState.baseEnemySpeed = gameState.height * 0.0035;
       gameState.enemySpeed = gameState.baseEnemySpeed * gameState.speedMultiplier * gameState.difficulty;
       
@@ -428,6 +439,7 @@
     }
 
     function setupControls() {
+      // 鼠标移动控制
       document.addEventListener('mousemove', e => {
         if (!gameState.running) return;
         const rect = gameCanvas.getBoundingClientRect();
@@ -435,6 +447,7 @@
         gameState.player.x = Math.max(0, Math.min(gameState.width - gameState.player.w, mouseX - gameState.player.w / 2));
       });
 
+      // 触摸移动控制
       gameCanvas.addEventListener('touchmove', e => {
         e.preventDefault();
         if (!gameState.running) return;
@@ -444,22 +457,13 @@
         gameState.player.x = Math.max(0, Math.min(gameState.width - gameState.player.w, touchX - gameState.player.w / 2));
       }, { passive: false });
 
-      gameCanvas.addEventListener('mousedown', e => {
-        e.preventDefault();
-        if (!gameState.running) return;
-        if (gameState.shootCooldown <= 0) {
-          shootBullet();
-          gameState.shootCooldown = gameState.shootCooldownMax;
-        }
-      });
-
       gameCanvas.addEventListener('touchstart', e => {
         e.preventDefault();
         if (!gameState.running) return;
-        if (gameState.shootCooldown <= 0) {
-          shootBullet();
-          gameState.shootCooldown = gameState.shootCooldownMax;
-        }
+        const touch = e.touches[0];
+        const rect = gameCanvas.getBoundingClientRect();
+        const touchX = touch.clientX - rect.left;
+        gameState.player.x = Math.max(0, Math.min(gameState.width - gameState.player.w, touchX - gameState.player.w / 2));
       }, { passive: false });
 
       gameCanvas.addEventListener('contextmenu', e => e.preventDefault());
@@ -501,6 +505,7 @@
         return;
       }
 
+      // 普通模式：三行子弹
       const offsets = [-16, 0, 16];
       for (let off of offsets) {
         gameState.bullets.push({
@@ -593,7 +598,12 @@
     function update() {
       if (!gameState.running) return;
 
-      if (gameState.shootCooldown > 0) gameState.shootCooldown--;
+      // 自动射击逻辑
+      gameState.shootTimer++;
+      if (gameState.shootTimer >= gameState.shootInterval) {
+        shootBullet();
+        gameState.shootTimer = 0;
+      }
 
       updateDifficulty();
 
@@ -837,7 +847,7 @@
       gameState.bullets = [];
       gameState.enemies = [];
       gameState.powerUps = [];
-      gameState.shootCooldown = 0;
+      gameState.shootTimer = 0;
       gameState.laserMode = false;
       gameState.missileMode = false;
       gameState.speedMultiplier = 1.0;
