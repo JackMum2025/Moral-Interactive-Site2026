@@ -271,16 +271,16 @@
       100% { opacity: 0; transform: translate(-50%, 20px); }
     }
 
-    .auto-fire-badge {
+    .powerup-timer {
       position: absolute;
-      bottom: 80px;
-      right: 20px;
-      color: #34d399;
+      top: 10px;
+      right: 10px;
+      color: #fbbf24;
       font-size: 14px;
       background: rgba(15,23,42,0.8);
-      padding: 8px 16px;
+      padding: 5px 12px;
       border-radius: 20px;
-      border: 1px solid #34d399;
+      border: 1px solid #fbbf24;
       pointer-events: none;
     }
 
@@ -298,16 +298,16 @@
       <div style="font-size: clamp(3rem, 10vw, 5rem); margin-bottom: 1rem;">🛡️</div>
       <h1 id="el-title" class="menu-title">网络卫士</h1>
       <p class="menu-subtitle">拦截霸凌言论，守护网络世界！</p>
-      <p class="menu-subtitle" style="font-size: clamp(0.875rem, 3vw, 1rem); color: #64748b; margin-top: 1.5rem;">💻 鼠标移动 / 📱 手指滑动 · 自动射击</p>
+      <p class="menu-subtitle" style="font-size: clamp(0.875rem, 3vw, 1rem); color: #64748b; margin-top: 1.5rem;">💻 鼠标移动 / 📱 手指滑动 · 点击射击</p>
       <button id="el-startBtn" class="menu-button mt-6" onclick="startGame()">开始防御</button>
     </div>
   </div>
   <!-- Canvas 容器 -->
   <div class="canvas-wrapper">
     <canvas id="gameCanvas"></canvas>
-    <div class="mobile-hint" id="mobileHint">👈 左右滑动控制 · 自动射击 👉</div>
+    <div class="mobile-hint" id="mobileHint">👆 滑动控制 · 点击屏幕射击</div>
     <div id="speedUpHint" class="speed-up-hint"></div>
-    <div class="auto-fire-badge">🔥 自动连射中</div>
+    <div id="powerupTimer" class="powerup-timer" style="display: none;"></div>
   </div>
   <!-- 游戏UI -->
   <div class="game-ui" id="gameUI" style="display: none;">
@@ -377,14 +377,18 @@
       baseEnemySpeed: 0,
       speedMultiplier: 1.0,
       spawnRate: 0,
-      shootTimer: 0,
-      shootInterval: 8,          // 自动射击间隔（帧数）
+      shootCooldown: 0,
+      shootCooldownMax: 12,
       laserMode: false,
       laserTimer: 0,
-      missileMode: false,
-      missileTimer: 0,
+      laserMaxTime: 600,
+      rapidMode: false,           // 单行自动连击模式（替代导弹）
+      rapidTimer: 0,
+      rapidMaxTime: 600,
+      autoShootTimer: 0,
+      autoShootInterval: 5,       // 连击间隔（帧数）
       gameEndTime: 300,
-      powerUpSpawnChance: 30,
+      powerUpSpawnChance: 25,
       lastSpeedUpTime: 0
     };
 
@@ -410,7 +414,6 @@
     function updateDifficulty() {
       const progress = Math.min(gameState.gameTimer / (gameState.gameEndTime * 60), 1.0);
       
-      // 每20秒速度提升0.2倍
       const secondsElapsed = Math.floor(gameState.gameTimer / 60);
       const speedLevel = Math.floor(secondsElapsed / 20);
       gameState.speedMultiplier = 1.0 + (speedLevel * 0.2);
@@ -421,12 +424,12 @@
       }
       
       gameState.difficulty = 1 + progress * 2;
-      gameState.bulletSpeed = gameState.height * 0.012;
+      gameState.bulletSpeed = gameState.height * 0.01;
       
-      gameState.baseEnemySpeed = gameState.height * 0.0035;
+      gameState.baseEnemySpeed = gameState.height * 0.003;
       gameState.enemySpeed = gameState.baseEnemySpeed * gameState.speedMultiplier * gameState.difficulty;
       
-      gameState.spawnRate = Math.max(30, 100 - Math.floor(progress * 70));
+      gameState.spawnRate = Math.max(40, 120 - Math.floor(progress * 80));
     }
 
     function showSpeedUpHint(multiplier) {
@@ -439,7 +442,6 @@
     }
 
     function setupControls() {
-      // 鼠标移动控制
       document.addEventListener('mousemove', e => {
         if (!gameState.running) return;
         const rect = gameCanvas.getBoundingClientRect();
@@ -447,7 +449,6 @@
         gameState.player.x = Math.max(0, Math.min(gameState.width - gameState.player.w, mouseX - gameState.player.w / 2));
       });
 
-      // 触摸移动控制
       gameCanvas.addEventListener('touchmove', e => {
         e.preventDefault();
         if (!gameState.running) return;
@@ -464,7 +465,21 @@
         const rect = gameCanvas.getBoundingClientRect();
         const touchX = touch.clientX - rect.left;
         gameState.player.x = Math.max(0, Math.min(gameState.width - gameState.player.w, touchX - gameState.player.w / 2));
+        
+        if (gameState.shootCooldown <= 0 && !gameState.rapidMode) {
+          shootBullet();
+          gameState.shootCooldown = gameState.shootCooldownMax;
+        }
       }, { passive: false });
+
+      gameCanvas.addEventListener('mousedown', e => {
+        e.preventDefault();
+        if (!gameState.running) return;
+        if (gameState.shootCooldown <= 0 && !gameState.rapidMode) {
+          shootBullet();
+          gameState.shootCooldown = gameState.shootCooldownMax;
+        }
+      });
 
       gameCanvas.addEventListener('contextmenu', e => e.preventDefault());
     }
@@ -481,25 +496,7 @@
             w: 5,
             h: 22,
             vx: 0,
-            isLaser: true,
-            damage: 2
-          });
-        }
-        return;
-      }
-
-      if (gameState.missileMode) {
-        for (let i = 0; i < 8; i++) {
-          const angle = (Math.PI * 2 * i) / 8;
-          gameState.bullets.push({
-            x: gameState.player.x + gameState.player.w / 2,
-            y: gameState.player.y,
-            w: 10,
-            h: 10,
-            vx: Math.cos(angle) * 5,
-            vy: Math.sin(angle) * 5 - 7,
-            isMissile: true,
-            exploded: false
+            isLaser: true
           });
         }
         return;
@@ -518,6 +515,18 @@
       }
     }
 
+    // 单行连击子弹（快速连续射击）
+    function shootRapidBullet() {
+      gameState.bullets.push({
+        x: gameState.player.x + gameState.player.w/2 - 3,
+        y: gameState.player.y,
+        w: 8,
+        h: 18,
+        vx: 0,
+        isRapid: true
+      });
+    }
+
     function activatePowerUp(type) {
       switch(type) {
         case 'health':
@@ -526,23 +535,25 @@
         case 'laser':
           gameState.laserMode = true;
           gameState.laserTimer = 0;
+          gameState.rapidMode = false;
           break;
-        case 'missile':
-          gameState.missileMode = true;
-          gameState.missileTimer = 0;
+        case 'rapid':
+          gameState.rapidMode = true;
+          gameState.rapidTimer = 0;
+          gameState.laserMode = false;
           break;
       }
     }
 
     function spawnEnemy() {
-      const spawnCount = Math.min(6, 2 + Math.floor(gameState.difficulty * 1.2));
+      const spawnCount = Math.min(5, 1 + Math.floor(gameState.difficulty * 1.5));
       for (let i = 0; i < spawnCount; i++) {
         const randomWord = badWords[Math.floor(Math.random() * badWords.length)];
         gameState.enemies.push({
-          x: Math.random() * (gameState.width - 40),
-          y: -60 - i * 50,
-          w: 44,
-          h: 44,
+          x: Math.random() * (gameState.width - 50),
+          y: -60 - i * 60,
+          w: 50,
+          h: 50,
           text: randomWord,
           health: 1,
           type: 'bad'
@@ -551,8 +562,8 @@
     }
 
     function spawnPowerUp() {
-      const powerTypes = ['health', 'laser', 'missile'];
-      const icons = { health: '❤️', laser: '⚡', missile: '💣' };
+      const powerTypes = ['health', 'laser', 'rapid'];
+      const icons = { health: '❤️', laser: '⚡', rapid: '🔥' };
       const type = powerTypes[Math.floor(Math.random() * powerTypes.length)];
       
       gameState.powerUps.push({
@@ -570,72 +581,73 @@
     }
 
     function createExplosion(x, y) {
-      for (let i = 0; i < 8; i++) {
-        const angle = (Math.PI * 2 * i) / 8;
-        const velocity = 4 + Math.random() * 3;
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI * 2 * i) / 6;
+        const velocity = 3 + Math.random() * 2;
         particles.push({
           x, y, vx: Math.cos(angle)*velocity, vy: Math.sin(angle)*velocity,
-          life: 30, color: ['#34d399','#6ee7b7','#fbbf24'][Math.floor(Math.random()*3)], size: 3+Math.random()*2
+          life: 25, color: ['#34d399','#6ee7b7','#fbbf24'][Math.floor(Math.random()*3)], size: 3
         });
       }
     }
     
     function createMissEffect(x, y) {
-      for (let i=0;i<8;i++) {
-        const angle = (Math.PI*2*i)/8;
-        particles.push({ x,y, vx: Math.cos(angle)*2, vy: Math.sin(angle)*2, life:25, color:'#fca5a5', size:2 });
+      for (let i=0;i<6;i++) {
+        const angle = (Math.PI*2*i)/6;
+        particles.push({ x,y, vx: Math.cos(angle)*2, vy: Math.sin(angle)*2, life:20, color:'#fca5a5', size:2 });
       }
     }
     
     function createPowerUpEffect(x, y, type) {
-      const colors = { health:'#34d399', laser:'#fbbf24', missile:'#f87171' };
-      for (let i=0;i<16;i++) {
-        const angle = (Math.PI*2*i)/16;
-        particles.push({ x,y, vx: Math.cos(angle)*3, vy: Math.sin(angle)*3, life:35, color:colors[type], size:4+Math.random()*2 });
+      const colors = { health:'#34d399', laser:'#fbbf24', rapid:'#f97316' };
+      for (let i=0;i<12;i++) {
+        const angle = (Math.PI*2*i)/12;
+        particles.push({ x,y, vx: Math.cos(angle)*3, vy: Math.sin(angle)*3, life:30, color:colors[type], size:3 });
       }
     }
 
     function update() {
       if (!gameState.running) return;
 
-      // 自动射击逻辑
-      gameState.shootTimer++;
-      if (gameState.shootTimer >= gameState.shootInterval) {
-        shootBullet();
-        gameState.shootTimer = 0;
-      }
+      if (gameState.shootCooldown > 0) gameState.shootCooldown--;
 
       updateDifficulty();
 
+      // 道具计时器（10秒）
       if (gameState.laserMode) {
         gameState.laserTimer++;
-        if (gameState.laserTimer > 900) { gameState.laserMode = false; gameState.laserTimer = 0; }
+        if (gameState.laserTimer > gameState.laserMaxTime) {
+          gameState.laserMode = false;
+          gameState.laserTimer = 0;
+        }
       }
-      if (gameState.missileMode) {
-        gameState.missileTimer++;
-        if (gameState.missileTimer > 600) { gameState.missileMode = false; gameState.missileTimer = 0; }
+      
+      if (gameState.rapidMode) {
+        gameState.rapidTimer++;
+        if (gameState.rapidTimer > gameState.rapidMaxTime) {
+          gameState.rapidMode = false;
+          gameState.rapidTimer = 0;
+        }
+      }
+
+      // 单行自动连击模式
+      if (gameState.rapidMode) {
+        gameState.autoShootTimer++;
+        if (gameState.autoShootTimer >= gameState.autoShootInterval) {
+          shootRapidBullet();
+          gameState.autoShootTimer = 0;
+        }
       }
 
       // 子弹更新
       gameState.bullets = gameState.bullets.filter(b => {
-        if (b.isMissile) {
-          b.x += b.vx;
-          b.y += b.vy;
-          b.vy += 0.25;
-          if (b.y > gameState.height && !b.exploded) {
-            b.exploded = true;
-            createExplosion(b.x, b.y);
-          }
-          return b.y > -120;
-        } else {
-          b.y -= gameState.bulletSpeed;
-          return b.y > -60;
-        }
+        b.y -= gameState.bulletSpeed * (b.isRapid ? 1.3 : 1);
+        return b.y > -60;
       });
 
       gameState.enemies.forEach(e => { e.y += gameState.enemySpeed; });
       gameState.powerUps = gameState.powerUps.filter(p => {
-        p.y += gameState.enemySpeed * 0.7;
+        p.y += gameState.enemySpeed * 0.6;
         return p.y < gameState.height;
       });
 
@@ -643,32 +655,14 @@
       for (let bi = gameState.bullets.length-1; bi>=0; bi--) {
         const b = gameState.bullets[bi];
         
-        if (b.isMissile && !b.exploded) {
-          let hit = false;
-          for (let ei=gameState.enemies.length-1; ei>=0; ei--) {
-            const e = gameState.enemies[ei];
-            const dist = Math.hypot(e.x+e.w/2 - b.x, e.y+e.h/2 - b.y);
-            if (dist < 130) {
-              gameState.score += 10;
-              createExplosion(e.x+e.w/2, e.y+e.h/2);
-              gameState.enemies.splice(ei,1);
-              hit = true;
-            }
-          }
-          if (hit) {
-            b.exploded = true;
-            createExplosion(b.x, b.y);
-          }
-        } else {
-          for (let ei=gameState.enemies.length-1; ei>=0; ei--) {
-            const e = gameState.enemies[ei];
-            if (collide(b, e)) {
-              gameState.score += 10;
-              createExplosion(e.x+e.w/2, e.y+e.h/2);
-              gameState.enemies.splice(ei,1);
-              gameState.bullets.splice(bi,1);
-              break;
-            }
+        for (let ei=gameState.enemies.length-1; ei>=0; ei--) {
+          const e = gameState.enemies[ei];
+          if (collide(b, e)) {
+            gameState.score += 10;
+            createExplosion(e.x+e.w/2, e.y+e.h/2);
+            gameState.enemies.splice(ei,1);
+            gameState.bullets.splice(bi,1);
+            break;
           }
         }
       }
@@ -693,11 +687,11 @@
 
       gameState.gameTimer++;
 
-      if (gameState.gameTimer % Math.max(20, gameState.spawnRate) === 0) {
+      if (gameState.gameTimer % Math.max(25, gameState.spawnRate) === 0) {
         spawnEnemy();
       }
 
-      if (gameState.gameTimer % 50 === 0 && Math.random()*100 < gameState.powerUpSpawnChance) {
+      if (gameState.gameTimer % 60 === 0 && Math.random()*100 < gameState.powerUpSpawnChance) {
         spawnPowerUp();
       }
 
@@ -719,10 +713,10 @@
     }
 
     function draw() {
-      ctx.fillStyle = 'rgba(10, 14, 39, 0.25)';
+      ctx.fillStyle = 'rgba(10, 14, 39, 0.3)';
       ctx.fillRect(0, 0, gameState.width, gameState.height);
 
-      ctx.strokeStyle = 'rgba(99, 102, 241, 0.06)';
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.05)';
       ctx.lineWidth = 1;
       const grid = Math.max(40, gameState.width*0.1);
       for (let i=0; i<gameState.width; i+=grid) { 
@@ -739,30 +733,26 @@
       ctx.beginPath();
       ctx.arc(gameState.player.x+gameState.player.w/2, gameState.player.y+gameState.player.h/2, gameState.player.w/2, 0, Math.PI*2);
       ctx.fill();
-      ctx.font = `bold ${gameState.player.w*0.6}px Arial`;
+      ctx.font = `bold ${gameState.player.w*0.5}px Arial`;
       ctx.fillStyle = 'white';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('🛡️', gameState.player.x+gameState.player.w/2, gameState.player.y+gameState.player.h/2);
 
+      // 子弹
       gameState.bullets.forEach(b => {
-        if (b.isMissile) {
-          const grd = ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.w/2+2);
-          grd.addColorStop(0,'#f87171'); 
-          grd.addColorStop(1,'rgba(248,113,113,0.4)');
-          ctx.fillStyle = grd;
-          ctx.beginPath(); 
-          ctx.arc(b.x,b.y,b.w/2,0,Math.PI*2); 
-          ctx.fill();
-          ctx.fillStyle='#fca5a5'; 
-          ctx.font='14px Arial'; 
-          ctx.fillText('💣',b.x-4,b.y+2);
-        } else if (b.isLaser) {
+        if (b.isLaser) {
           const gradient = ctx.createLinearGradient(b.x, b.y, b.x, b.y+b.h);
           gradient.addColorStop(0, '#fbbf24');
           gradient.addColorStop(1, '#fcd34d');
           ctx.fillStyle = gradient;
-          ctx.fillRect(b.x-2, b.y, 5, b.h+4);
+          ctx.fillRect(b.x-2, b.y, 4, b.h+4);
+        } else if (b.isRapid) {
+          const gradient = ctx.createLinearGradient(b.x, b.y, b.x, b.y+b.h);
+          gradient.addColorStop(0, '#f97316');
+          gradient.addColorStop(1, '#fb923c');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(b.x-2, b.y, 8, b.h);
         } else {
           const bulletGrad = ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);
           bulletGrad.addColorStop(0,'#6ee7b7'); 
@@ -772,6 +762,7 @@
         }
       });
 
+      // 敌人
       gameState.enemies.forEach(e => {
         const enemyGrad = ctx.createLinearGradient(e.x,e.y,e.x,e.y+e.h);
         enemyGrad.addColorStop(0,'rgba(248,113,113,0.8)'); 
@@ -783,13 +774,14 @@
         ctx.strokeStyle='rgba(248,113,113,1)'; 
         ctx.lineWidth=2; 
         ctx.stroke();
-        ctx.font='bold 14px "Noto Sans SC", Arial'; 
+        ctx.font='bold 13px "Noto Sans SC", Arial'; 
         ctx.fillStyle='white'; 
         ctx.fillText(e.text, e.x+e.w/2, e.y+e.h/2);
       });
 
+      // 道具
       gameState.powerUps.forEach(p => {
-        const cols = { health:'#34d399', laser:'#fbbf24', missile:'#f87171' };
+        const cols = { health:'#34d399', laser:'#fbbf24', rapid:'#f97316' };
         ctx.fillStyle = cols[p.type];
         ctx.beginPath(); 
         ctx.arc(p.x+p.w/2,p.y+p.h/2,p.w/2,0,Math.PI*2); 
@@ -797,14 +789,14 @@
         ctx.strokeStyle='rgba(255,255,255,0.5)'; 
         ctx.lineWidth=2; 
         ctx.stroke();
-        ctx.font='bold 16px Arial'; 
+        ctx.font='bold 14px Arial'; 
         ctx.fillStyle='white'; 
         ctx.fillText(p.icon, p.x+p.w/2, p.y+p.h/2);
       });
 
       updateParticles();
       particles.forEach(p => {
-        ctx.globalAlpha = p.life/40;
+        ctx.globalAlpha = p.life/30;
         ctx.fillStyle = p.color;
         ctx.beginPath(); 
         ctx.arc(p.x,p.y,p.size,0,Math.PI*2); 
@@ -822,8 +814,21 @@
       const secs = timeLeft%60;
       
       let status = `${mins}:${secs.toString().padStart(2,'0')}`;
-      if (gameState.laserMode) status += ' ⚡激光';
-      else if (gameState.missileMode) status += ' 💣导弹';
+      const timerDiv = document.getElementById('powerupTimer');
+      
+      if (gameState.laserMode) {
+        const timeLeft = Math.ceil((gameState.laserMaxTime - gameState.laserTimer) / 60);
+        status += ' ⚡';
+        timerDiv.textContent = `⚡ 激光 ${timeLeft}秒`;
+        timerDiv.style.display = 'block';
+      } else if (gameState.rapidMode) {
+        const timeLeft = Math.ceil((gameState.rapidMaxTime - gameState.rapidTimer) / 60);
+        status += ' 🔥';
+        timerDiv.textContent = `🔥 连击 ${timeLeft}秒`;
+        timerDiv.style.display = 'block';
+      } else {
+        timerDiv.style.display = 'none';
+      }
       
       document.getElementById('waveCounter').textContent = status;
       document.getElementById('speedDisplay').textContent = gameState.speedMultiplier.toFixed(1) + 'x';
@@ -847,9 +852,10 @@
       gameState.bullets = [];
       gameState.enemies = [];
       gameState.powerUps = [];
-      gameState.shootTimer = 0;
+      gameState.shootCooldown = 0;
       gameState.laserMode = false;
-      gameState.missileMode = false;
+      gameState.rapidMode = false;
+      gameState.autoShootTimer = 0;
       gameState.speedMultiplier = 1.0;
       gameState.lastSpeedUpTime = 0;
       
@@ -863,6 +869,7 @@
       gameState.running = false;
       document.getElementById('gameUI').style.display = 'none';
       document.getElementById('gameOverScreen').classList.add('active');
+      document.getElementById('powerupTimer').style.display = 'none';
       
       const finalScore = Math.floor(gameState.score);
       const emoji = finalScore>500?'🏆':finalScore>300?'🌟':finalScore>100?'💪':'👊';
@@ -886,6 +893,7 @@
       document.getElementById('menuScreen').classList.remove('hidden');
       document.getElementById('gameUI').style.display = 'none';
       document.getElementById('gameOverScreen').classList.remove('active');
+      document.getElementById('powerupTimer').style.display = 'none';
     }
 
     window.startGame = startGame;
