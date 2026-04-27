@@ -46,9 +46,21 @@
     }
 
     .card-icon { font-size: 3.5rem; margin-bottom: 0.5rem; text-align: center; }
-    .card h1 { color: #2d4e1e; font-size: 1.8rem; font-weight: 500; margin-bottom: 0.5rem; text-align: center; }
-    .card h2 { color: #3a5e2b; font-size: 1.4rem; font-weight: 500; margin-bottom: 1.2rem; }
+    h1 { color: #2d4e1e; font-size: 1.8rem; font-weight: 500; margin-bottom: 0.3rem; text-align: center; }
+    h2 { color: #3a5e2b; font-size: 1.4rem; font-weight: 500; margin-bottom: 1.2rem; }
     .subtitle { color: #6b7c63; margin-bottom: 1.5rem; border-bottom: 1px solid #d9e6d3; padding-bottom: 1rem; text-align: center; }
+
+    .form-group { text-align: left; margin-bottom: 1.2rem; }
+    .form-group label { display: block; color: #3a5e2b; font-weight: 500; margin-bottom: 0.3rem; }
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 40px;
+      font-size: 1rem;
+      background: white;
+    }
+    .form-group select:focus, .form-group input:focus { outline: none; border-color: #7fa86a; }
 
     .quiz-question { margin-bottom: 2rem; }
     .quiz-image {
@@ -90,9 +102,10 @@
     .btn:hover { background: #5b8c4e; }
     .btn:disabled { background: #b3cba7; cursor: not-allowed; }
 
+    .privacy-note { margin-top: 1rem; font-size: 0.8rem; color: #9bb88b; text-align: center; }
     .error-message { color: #c44; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
 
-    #mainContent { display: none; }
+    #quizScreen, #mainContent { display: none; }
 
     header {
       background-color: #d9e6d3;
@@ -370,6 +383,49 @@
 </head>
 <body>
 
+<!-- ========== Halaman Maklumat Peribadi ========== -->
+<div id="welcomeScreen" class="screen">
+  <div class="card">
+    <div class="card-icon">🌱</div>
+    <h1>Menyuburkan Moral Muda</h1>
+    <div class="subtitle">Sila beritahu kami siapa anda</div>
+
+    <form onsubmit="return false;">
+      <div class="form-group">
+        <label>📚 Tahun</label>
+        <select id="grade" required>
+          <option value="">-- Sila pilih --</option>
+          <option value="一年级">Tahun 1</option>
+          <option value="二年级">Tahun 2</option>
+          <option value="三年级">Tahun 3</option>
+          <option value="四年级">Tahun 4</option>
+          <option value="五年级">Tahun 5</option>
+          <option value="六年级">Tahun 6</option>
+          <option value="师范生">Pelajar IPG</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>👤 Peranan</label>
+        <select id="role" required>
+          <option value="">-- Sila pilih --</option>
+          <option value="学生">Pelajar</option>
+          <option value="老师">Guru</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>✏️ Nama / Gelaran</label>
+        <input type="text" id="userName" placeholder="Cth: Ali" maxlength="20" required>
+      </div>
+
+      <div class="error-message" id="welcomeError">Sila isi maklumat lengkap</div>
+      <button class="btn" onclick="goToQuiz()">📝 Mulakan Kuiz Moral →</button>
+    </form>
+    <div class="privacy-note">Maklumat anda hanya untuk interaksi kelas ini</div>
+  </div>
+</div>
+
 <!-- ========== Halaman Kuiz ========== -->
 <div id="quizScreen" class="screen">
   <div class="card">
@@ -542,23 +598,30 @@
 // ==================== Pembolehubah Global ====================
 let currentUser = null;
 
-// ==================== Baca Maklumat Pengguna ====================
-const saved = localStorage.getItem('moralEduUserInfo');
-if (saved) {
-  currentUser = JSON.parse(saved);
-  document.getElementById('quizUserName').textContent = `${currentUser.name}（${currentUser.grade}${currentUser.role}）`;
-} else {
-  window.location.href = 'index.html';
+// ==================== Tukar Halaman ====================
+function goToQuiz() {
+  const grade = document.getElementById('grade').value;
+  const role = document.getElementById('role').value;
+  const name = document.getElementById('userName').value.trim();
+  if (!grade || !role || !name) {
+    document.getElementById('welcomeError').style.display = 'block';
+    return;
+  }
+  currentUser = { grade, role, name, timestamp: new Date().toISOString() };
+  localStorage.setItem('moralEduUserInfo', JSON.stringify(currentUser));
+  document.getElementById('quizUserName').textContent = `${name}（${grade}${role}）`;
+  document.getElementById('welcomeScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'flex';
 }
 
 // ==================== Konfigurasi Permainan ====================
 const GAMES = [
   { type: 'iframe', src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0', note: '💡 Padanan Memori · Cari kad yang sepadan' },
-  { type: 'iframe', src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0', note: '💡 Moral: Kebaikan Bertolak Ansur · Belajar nilai bertolak ansur' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0', note: '💡 Moral: Kebaikan Bertolak Ansur' },
   { type: 'iframe', src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0', note: '💡 Pendidikan Moral · Unit 6: Hormat' },
   { type: 'genially', src: 'https://view.genially.com/69e852b8dc89ca6ad547d5a0', note: '💡 Kuiz Invaders · Soalan Moral' },
   { type: 'local', src: 'cyber-guardian.html', note: '🛡️ Pengawal Siber · Halang buli, lindungi dunia siber!' },
-  { type: 'link', src: 'https://wellgames.com/cn/free_online/2048/', note: '💡 Permainan Nombor 2048 · Klik butang buka di tetingkap baru' },
+  { type: 'link', src: 'https://wellgames.com/cn/free_online/2048/', note: '💡 Permainan Nombor 2048 · Buka di tetingkap baru' },
   { type: 'kahoot', src: 'https://kahoot.it/challenge/03124401?challenge-id=18244f5c-d9fa-4c81-8761-57d1765d4599_1776400327677', pin: '03124401', note: '💡 Cabaran Moral Kahoot · Masuk PIN atau klik pautan' }
 ];
 
@@ -790,108 +853,107 @@ function toggleDropdown() {
 function showCourses(grade) {
   const coursesByGrade = {
     '一年级': [
-      { ch: '我的宗教信仰', malay: 'Agama dan Kepercayaan Saya' },
-      { ch: '助人小天使', malay: 'Malaikat Kecil Suka Menolong' },
-      { ch: '我已经长大', malay: 'Saya Sudah Besar' },
-      { ch: '欢喜说谢谢', malay: 'Gembira Ucap Terima Kasih' },
-      { ch: '人人夸我有礼貌', malay: 'Semua Puji Saya Sopan' },
-      { ch: '我喜欢我自己', malay: 'Saya Suka Diri Saya' },
-      { ch: '爱惜自己', malay: 'Sayangi Diri Sendiri' },
-      { ch: '处处讲公正', malay: 'Adil di Mana-mana' },
-      { ch: '我是勇敢的小孩', malay: 'Saya Anak Berani' },
-      { ch: '花瓶是我打破的', malay: 'Saya Pecahkan Pasu Bunga' },
-      { ch: '天天要勤劳', malay: 'Rajin Setiap Hari' },
-      { ch: '分工合作真欢喜', malay: 'Bahagi Tugas Kerjasama Gembira' },
-      { ch: '凡事都要刚刚好', malay: 'Semua Perkara Biar Sederhana' },
-      { ch: '我懂得礼让', malay: 'Saya Tahu Bertolak Ansur' }
+      { malay: 'Agama dan Kepercayaan Saya' },
+      { malay: 'Malaikat Kecil Suka Menolong' },
+      { malay: 'Saya Sudah Besar' },
+      { malay: 'Gembira Ucap Terima Kasih' },
+      { malay: 'Semua Puji Saya Sopan' },
+      { malay: 'Saya Suka Diri Saya' },
+      { malay: 'Sayangi Diri Sendiri' },
+      { malay: 'Adil di Mana-mana' },
+      { malay: 'Saya Anak Berani' },
+      { malay: 'Saya Pecahkan Pasu Bunga' },
+      { malay: 'Rajin Setiap Hari' },
+      { malay: 'Bahagi Tugas Kerjasama Gembira' },
+      { malay: 'Semua Perkara Biar Sederhana' },
+      { malay: 'Saya Tahu Bertolak Ansur' }
     ],
     '二年级': [
-      { ch: '美好的时光', malay: 'Masa Indah' },
-      { ch: '贴心小举动', malay: 'Tindakan Kecil Prihatin' },
-      { ch: '长大了，学做事', malay: 'Dah Besar, Belajar Buat Kerja' },
-      { ch: '心里暖暖的', malay: 'Hati Terasa Hangat' },
-      { ch: '爸爸妈妈都夸我', malay: 'Ibu Ayah Puji Saya' },
-      { ch: '看重家人的感受', malay: 'Hargai Perasaan Keluarga' },
-      { ch: '可爱的家庭', malay: 'Keluarga Tersayang' },
-      { ch: '公平又正直', malay: 'Adil dan Jujur' },
-      { ch: '学做小勇士', malay: 'Belajar Jadi Wira Kecil' },
-      { ch: '踏实的心', malay: 'Hati yang Tulus' },
-      { ch: '勤劳的收获', malay: 'Hasil Kerajinan' },
-      { ch: '合作乐无穷', malay: 'Kerjasama Menyeronokkan' },
-      { ch: '跟我这样生活吧', malay: 'Hidup Seperti Saya' },
-      { ch: '退一步想想', malay: 'Undur Selangkah Fikirkan' }
+      { malay: 'Masa Indah' },
+      { malay: 'Tindakan Kecil Prihatin' },
+      { malay: 'Dah Besar, Belajar Buat Kerja' },
+      { malay: 'Hati Terasa Hangat' },
+      { malay: 'Ibu Ayah Puji Saya' },
+      { malay: 'Hargai Perasaan Keluarga' },
+      { malay: 'Keluarga Tersayang' },
+      { malay: 'Adil dan Jujur' },
+      { malay: 'Belajar Jadi Wira Kecil' },
+      { malay: 'Hati yang Tulus' },
+      { malay: 'Hasil Kerajinan' },
+      { malay: 'Kerjasama Menyeronokkan' },
+      { malay: 'Hidup Seperti Saya' },
+      { malay: 'Undur Selangkah Fikirkan' }
     ],
     '三年级': [
-      { ch: '欢喜庆佳节', malay: 'Gembira Raikan Perayaan' },
-      { ch: '助人为乐', malay: 'Gembira Menolong' },
-      { ch: '责任小尖兵', malay: 'Perintis Tanggungjawab' },
-      { ch: '感恩饼干', malay: 'Biskut Kesyukuran' },
-      { ch: '礼貌花朵校园开', malay: 'Bunga Sopan Mekar di Sekolah' },
-      { ch: '互相尊重暖人心', malay: 'Saling Hormat Hangatkan Hati' },
-      { ch: '关爱满校园', malay: 'Kasih Sayang Penuhi Sekolah' },
-      { ch: '大公无私', malay: 'Adil Tanpa Pilih Kasih' },
-      { ch: '我能够做到！', malay: 'Saya Boleh Buat!' },
-      { ch: '诚实是宝', malay: 'Jujur Itu Bernilai' },
-      { ch: '最甜美的果实', malay: 'Buah Paling Manis' },
-      { ch: '团结力量大', malay: 'Bersatu Kita Teguh' },
-      { ch: '刚刚好，真美好', malay: 'Sederhana Itu Indah' },
-      { ch: '一团和气', malay: 'Hidup Harmoni' }
+      { malay: 'Gembira Raikan Perayaan' },
+      { malay: 'Gembira Menolong' },
+      { malay: 'Perintis Tanggungjawab' },
+      { malay: 'Biskut Kesyukuran' },
+      { malay: 'Bunga Sopan Mekar di Sekolah' },
+      { malay: 'Saling Hormat Hangatkan Hati' },
+      { malay: 'Kasih Sayang Penuhi Sekolah' },
+      { malay: 'Adil Tanpa Pilih Kasih' },
+      { malay: 'Saya Boleh Buat!' },
+      { malay: 'Jujur Itu Bernilai' },
+      { malay: 'Buah Paling Manis' },
+      { malay: 'Bersatu Kita Teguh' },
+      { malay: 'Sederhana Itu Indah' },
+      { malay: 'Hidup Harmoni' }
     ],
     '四年级': [
-      { ch: '和谐乐融融', malay: 'Harmoni Gembira' },
-      { ch: '欢喜来助人', malay: 'Gembira Menolong' },
-      { ch: '尽责不自私', malay: 'Bertanggungjawab Tak Mementingkan Diri' },
-      { ch: '感恩有您', malay: 'Terima Kasih Atas Kehadiranmu' },
-      { ch: '谦让你的赞美', malay: 'Rendah Diri Terima Pujian' },
-      { ch: '一生受用的礼物', malay: 'Hadiah Seumur Hidup' },
-      { ch: '好邻居，无价宝', malay: 'Jiran Baik, Harta Berharga' },
-      { ch: '花卉才艺赛', malay: 'Pertandingan Bakat Bunga' },
-      { ch: '有理无惧', malay: 'Benar Tidak Takut' },
-      { ch: '线条上的密码', malay: 'Kod Pada Garisan' },
-      { ch: '晚霞里最美的笑容', malay: 'Senyuman Terindah di Senja' },
-      { ch: '幸福的传电波', malay: 'Gelombang Kebahagiaan' },
-      { ch: '讨人喜欢的白雪', malay: 'Putih Salju Disenangi' },
-      { ch: '礼让乐开怀', malay: 'Bertolak Ansur Gembira' }
+      { malay: 'Harmoni Gembira' },
+      { malay: 'Gembira Menolong' },
+      { malay: 'Bertanggungjawab Tak Mementingkan Diri' },
+      { malay: 'Terima Kasih Atas Kehadiranmu' },
+      { malay: 'Rendah Diri Terima Pujian' },
+      { malay: 'Hadiah Seumur Hidup' },
+      { malay: 'Jiran Baik, Harta Berharga' },
+      { malay: 'Pertandingan Bakat Bunga' },
+      { malay: 'Benar Tidak Takut' },
+      { malay: 'Kod Pada Garisan' },
+      { malay: 'Senyuman Terindah di Senja' },
+      { malay: 'Gelombang Kebahagiaan' },
+      { malay: 'Putih Salju Disenangi' },
+      { malay: 'Bertolak Ansur Gembira' }
     ],
     '五年级': [
-      { ch: '同一条路上', malay: 'Di Jalan Yang Sama' },
-      { ch: '种希望', malay: 'Tanam Harapan' },
-      { ch: '破窗效应', malay: 'Kesan Tingkap Pecah' },
-      { ch: '说不出口的"谢谢"', malay: '"Terima Kasih" Yang Tak Terungkap' },
-      { ch: '懂礼貌，守规矩', malay: 'Tahu Sopan, Ikut Peraturan' },
-      { ch: '尊重乐开怀', malay: 'Hormat Gembirakan Hati' },
-      { ch: '让青山更翠绿', malay: 'Hijaukan Gunung' },
-      { ch: '公正在人心', malay: 'Keadilan Di Hati' },
-      { ch: '见义勇为', malay: 'Berani Kerana Benar' },
-      { ch: '诚信无价', malay: 'Integriti Tak Ternilai' },
-      { ch: '勤奋坚毅', malay: 'Rajin dan Gigih' },
-      { ch: '守望相助', malay: 'Saling Bantu' },
-      { ch: '中庸之星', malay: 'Bintang Kesederhanaan' },
-      { ch: '礼让之城', malay: 'Bandar Bertolak Ansur' }
+      { malay: 'Di Jalan Yang Sama' },
+      { malay: 'Tanam Harapan' },
+      { malay: 'Kesan Tingkap Pecah' },
+      { malay: '"Terima Kasih" Yang Tak Terungkap' },
+      { malay: 'Tahu Sopan, Ikut Peraturan' },
+      { malay: 'Hormat Gembirakan Hati' },
+      { malay: 'Hijaukan Gunung' },
+      { malay: 'Keadilan Di Hati' },
+      { malay: 'Berani Kerana Benar' },
+      { malay: 'Integriti Tak Ternilai' },
+      { malay: 'Rajin dan Gigih' },
+      { malay: 'Saling Bantu' },
+      { malay: 'Bintang Kesederhanaan' },
+      { malay: 'Bandar Bertolak Ansur' }
     ],
     '六年级': [
-      { ch: '和谐心欢畅', malay: 'Harmoni Hati Gembira' },
-      { ch: '我为你送暖', malay: 'Saya Hantar Kehangatan Untukmu' },
-      { ch: '为了您，马来西亚', malay: 'Untukmu, Malaysia' },
-      { ch: '感恩之旅', malay: 'Perjalanan Kesyukuran' },
-      { ch: '权利代言人', malay: 'Penyokong Hak' },
-      { ch: '我的保护伞', malay: 'Payung Perlindunganku' },
-      { ch: '月亮一样圆', malay: 'Bulan Sama Bulat' },
-      { ch: '以理服人', malay: 'Guna Hujah Meyakinkan' },
-      { ch: '奔跑吧！小勇士', malay: 'Lari! Wira Kecil' },
-      { ch: '最美丽的外套', malay: 'Jaket Tercantik' },
-      { ch: '汗水年年', malay: 'Peluh Setiap Tahun' },
-      { ch: '小手牵大手', malay: 'Tangan Kecil Pegang Tangan Besar' },
-      { ch: '不偏不倚', malay: 'Tidak Berat Sebelah' },
-      { ch: '礼让不委屈', malay: 'Bertolak Ansur Tanpa Tersinggung' }
+      { malay: 'Harmoni Hati Gembira' },
+      { malay: 'Saya Hantar Kehangatan Untukmu' },
+      { malay: 'Untukmu, Malaysia' },
+      { malay: 'Perjalanan Kesyukuran' },
+      { malay: 'Penyokong Hak' },
+      { malay: 'Payung Perlindunganku' },
+      { malay: 'Bulan Sama Bulat' },
+      { malay: 'Guna Hujah Meyakinkan' },
+      { malay: 'Lari! Wira Kecil' },
+      { malay: 'Jaket Tercantik' },
+      { malay: 'Peluh Setiap Tahun' },
+      { malay: 'Tangan Kecil Pegang Tangan Besar' },
+      { malay: 'Tidak Berat Sebelah' },
+      { malay: 'Bertolak Ansur Tanpa Tersinggung' }
     ]
   };
   
   const courses = coursesByGrade[grade] || [];
   let html = `<div style="padding:0.5rem 1.5rem;color:#6b7c63;font-size:0.9rem;background:#f8fbf7;">${grade}</div>`;
-  
   courses.forEach((c, index) => {
-    html += `<div class="dropdown-item" onclick="selectCourse('${grade}', 'Pelajaran ${index+1}: ${c.malay}')">📚 Pelajaran ${index+1}: ${c.malay}<br><span style="font-size:0.8rem;color:#8aa67d;">${c.ch}</span></div>`;
+    html += `<div class="dropdown-item" onclick="selectCourse('${grade}', 'Pelajaran ${index+1}: ${c.malay}')">📚 Pelajaran ${index+1}: ${c.malay}</div>`;
   });
   
   document.getElementById('courseItems').innerHTML = html;
@@ -1039,15 +1101,25 @@ function escapeHtml(text) {
 // ==================== Permulaan ====================
 document.addEventListener('DOMContentLoaded', function() {
   initBannedWords();
-  const savedQuiz = localStorage.getItem('moralQuizAnswers');
-  if (savedQuiz) {
-    document.getElementById('quizScreen').style.display = 'none';
-    document.getElementById('mainContent').style.display = 'block';
-    const quiz = JSON.parse(savedQuiz);
-    const scoreText = quiz.score === 5 ? `Markah Penuh ${quiz.score}/5 🏆` : `Markah ${quiz.score}/5 💪`;
-    document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
-    loadAllMessages();
-    setInterval(loadAllMessages, 30000);
+  
+  const saved = localStorage.getItem('moralEduUserInfo');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    const savedQuiz = localStorage.getItem('moralQuizAnswers');
+    if (savedQuiz) {
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('quizScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      const quiz = JSON.parse(savedQuiz);
+      const scoreText = quiz.score === 5 ? `Markah Penuh ${quiz.score}/5 🏆` : `Markah ${quiz.score}/5 💪`;
+      document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
+      loadAllMessages();
+      setInterval(loadAllMessages, 30000);
+    } else {
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('quizScreen').style.display = 'flex';
+      document.getElementById('quizUserName').textContent = `${currentUser.name}（${currentUser.grade}${currentUser.role}）`;
+    }
   }
 });
 </script>
