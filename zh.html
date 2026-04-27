@@ -46,9 +46,21 @@
     }
 
     .card-icon { font-size: 3.5rem; margin-bottom: 0.5rem; text-align: center; }
-    .card h1 { color: #2d4e1e; font-size: 1.8rem; font-weight: 500; margin-bottom: 0.5rem; text-align: center; }
-    .card h2 { color: #3a5e2b; font-size: 1.4rem; font-weight: 500; margin-bottom: 1.2rem; }
+    h1 { color: #2d4e1e; font-size: 1.8rem; font-weight: 500; margin-bottom: 0.3rem; text-align: center; }
+    h2 { color: #3a5e2b; font-size: 1.4rem; font-weight: 500; margin-bottom: 1.2rem; }
     .subtitle { color: #6b7c63; margin-bottom: 1.5rem; border-bottom: 1px solid #d9e6d3; padding-bottom: 1rem; text-align: center; }
+
+    .form-group { text-align: left; margin-bottom: 1.2rem; }
+    .form-group label { display: block; color: #3a5e2b; font-weight: 500; margin-bottom: 0.3rem; }
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 40px;
+      font-size: 1rem;
+      background: white;
+    }
+    .form-group select:focus, .form-group input:focus { outline: none; border-color: #7fa86a; }
 
     .quiz-question { margin-bottom: 2rem; }
     .quiz-image {
@@ -90,9 +102,10 @@
     .btn:hover { background: #5b8c4e; }
     .btn:disabled { background: #b3cba7; cursor: not-allowed; }
 
+    .privacy-note { margin-top: 1rem; font-size: 0.8rem; color: #9bb88b; text-align: center; }
     .error-message { color: #c44; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
 
-    #mainContent { display: none; }
+    #quizScreen, #mainContent { display: none; }
 
     header {
       background-color: #d9e6d3;
@@ -370,6 +383,49 @@
 </head>
 <body>
 
+<!-- ========== 个人资料页 ========== -->
+<div id="welcomeScreen" class="screen">
+  <div class="card">
+    <div class="card-icon">🌱</div>
+    <h1>德润童心</h1>
+    <div class="subtitle">请告诉我们你是谁</div>
+
+    <form onsubmit="return false;">
+      <div class="form-group">
+        <label>📚 年级</label>
+        <select id="grade" required>
+          <option value="">-- 请选择 --</option>
+          <option value="一年级">一年级</option>
+          <option value="二年级">二年级</option>
+          <option value="三年级">三年级</option>
+          <option value="四年级">四年级</option>
+          <option value="五年级">五年级</option>
+          <option value="六年级">六年级</option>
+          <option value="师范生">师范生</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>👤 身份</label>
+        <select id="role" required>
+          <option value="">-- 请选择 --</option>
+          <option value="学生">学生</option>
+          <option value="老师">老师</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>✏️ 名字/昵称</label>
+        <input type="text" id="userName" placeholder="例如：小明" maxlength="20" required>
+      </div>
+
+      <div class="error-message" id="welcomeError">请填写完整信息</div>
+      <button class="btn" onclick="goToQuiz()">📝 开始道德小测验 →</button>
+    </form>
+    <div class="privacy-note">你的信息仅用于本次课堂互动</div>
+  </div>
+</div>
+
 <!-- ========== 选择题页面 ========== -->
 <div id="quizScreen" class="screen">
   <div class="card">
@@ -414,6 +470,7 @@
     </form>
   </div>
 </div>
+
 <!-- ========== 主页面 ========== -->
 <div id="mainContent">
   <header>
@@ -542,14 +599,20 @@
 // ==================== 全局变量 ====================
 let currentUser = null;
 
-// ==================== 读取用户信息 ====================
-const saved = localStorage.getItem('moralEduUserInfo');
-if (saved) {
-  currentUser = JSON.parse(saved);
-  document.getElementById('quizUserName').textContent = `${currentUser.name}（${currentUser.grade}${currentUser.role}）`;
-} else {
-  // 没有用户信息，跳回首页
-  window.location.href = 'index.html';
+// ==================== 页面切换 ====================
+function goToQuiz() {
+  const grade = document.getElementById('grade').value;
+  const role = document.getElementById('role').value;
+  const name = document.getElementById('userName').value.trim();
+  if (!grade || !role || !name) {
+    document.getElementById('welcomeError').style.display = 'block';
+    return;
+  }
+  currentUser = { grade, role, name, timestamp: new Date().toISOString() };
+  localStorage.setItem('moralEduUserInfo', JSON.stringify(currentUser));
+  document.getElementById('quizUserName').textContent = `${name}（${grade}${role}）`;
+  document.getElementById('welcomeScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'flex';
 }
 
 // ==================== 游戏配置 ====================
@@ -949,15 +1012,25 @@ function escapeHtml(text) {
 // ==================== 初始化 ====================
 document.addEventListener('DOMContentLoaded', function() {
   initBannedWords();
-  const savedQuiz = localStorage.getItem('moralQuizAnswers');
-  if (savedQuiz) {
-    document.getElementById('quizScreen').style.display = 'none';
-    document.getElementById('mainContent').style.display = 'block';
-    const quiz = JSON.parse(savedQuiz);
-    const scoreText = quiz.score === 5 ? `道德满分 ${quiz.score}/5 🏆` : `得分 ${quiz.score}/5 💪`;
-    document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
-    loadAllMessages();
-    setInterval(loadAllMessages, 30000);
+  
+  const saved = localStorage.getItem('moralEduUserInfo');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    const savedQuiz = localStorage.getItem('moralQuizAnswers');
+    if (savedQuiz) {
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('quizScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      const quiz = JSON.parse(savedQuiz);
+      const scoreText = quiz.score === 5 ? `道德满分 ${quiz.score}/5 🏆` : `得分 ${quiz.score}/5 💪`;
+      document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
+      loadAllMessages();
+      setInterval(loadAllMessages, 30000);
+    } else {
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('quizScreen').style.display = 'flex';
+      document.getElementById('quizUserName').textContent = `${currentUser.name}（${currentUser.grade}${currentUser.role}）`;
+    }
   }
 });
 </script>
