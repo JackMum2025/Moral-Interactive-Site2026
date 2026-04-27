@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>德润童心 · 师范德育专题</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', '微软雅黑', system-ui, sans-serif;
+      background-color: #fbfaf6;
+      color: #2e3b2c;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .card {
+      background: white;
+      max-width: 600px;
+      width: 100%;
+      padding: 2rem 1.8rem;
+      border-radius: 32px;
+      box-shadow: 0 12px 28px rgba(80, 110, 60, 0.12);
+      border: 1px solid #c8dcc0;
+      margin: auto;
+    }
+
+    .card-icon { font-size: 3.5rem; margin-bottom: 0.5rem; text-align: center; }
+    .card h1 { color: #2d4e1e; font-size: 1.8rem; font-weight: 500; margin-bottom: 0.5rem; text-align: center; }
+    .card h2 { color: #3a5e2b; font-size: 1.4rem; font-weight: 500; margin-bottom: 1.2rem; }
+    .subtitle { color: #6b7c63; margin-bottom: 1.5rem; border-bottom: 1px solid #d9e6d3; padding-bottom: 1rem; text-align: center; }
+
+    .quiz-question { margin-bottom: 2rem; }
+    .quiz-image {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .quiz-option {
+      display: block;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.5rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-option:hover { border-color: #7fa86a; background: #f0f7ec; }
+    .quiz-option input { margin-right: 10px; accent-color: #7fa86a; }
+    .quiz-option.selected { border-color: #7fa86a; background: #e8f0e3; }
+
+    .btn {
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+      width: 100%;
+      transition: background 0.2s;
+      margin-top: 1rem;
+    }
+    .btn:hover { background: #5b8c4e; }
+    .btn:disabled { background: #b3cba7; cursor: not-allowed; }
+
+    .error-message { color: #c44; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
+
+    #mainContent { display: none; }
+
+    header {
+      background-color: #d9e6d3;
+      padding: 1rem 1.5rem;
+      border-bottom: 3px solid #9bb88b;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: #2d4e1e;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .user-welcome {
+      background: #a8c99b;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      color: #2d4e1e;
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-btn {
+      background: white;
+      border: 2px solid #9bb88b;
+      color: #3a5e2b;
+      padding: 0.5rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .dropdown-btn:hover { background: #e8f0e3; }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      min-width: 260px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      border-radius: 20px;
+      border: 1px solid #d9e6d3;
+      z-index: 100;
+      margin-top: 0.5rem;
+      overflow: hidden;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .dropdown-content.show { display: block; }
+
+    .dropdown-item {
+      padding: 0.9rem 1.5rem;
+      cursor: pointer;
+      color: #3a5e2b;
+      font-size: 1rem;
+      border-bottom: 1px solid #e2ecdc;
+    }
+    .dropdown-item:last-child { border-bottom: none; }
+    .dropdown-item:hover { background: #f0f7ec; }
+    .back-btn { background: #e8f0e3; font-weight: 500; color: #2d4e1e; }
+
+    .today-topic {
+      background: #a8c99b;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      color: #2d4e1e;
+      font-weight: 500;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+
+    .video-container {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+      border: 1px solid #d9e6d3;
+    }
+
+    .video-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #e2ecdc;
+    }
+
+    .video-header h2 { color: #3a5e2b; font-size: 1.4rem; }
+
+    .video-wrapper {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .video-wrapper iframe {
+      display: block;
+      width: 100%;
+      height: 500px;
+      border: none;
+    }
+
+    .board-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+      border: 1px solid #d9e6d3;
+    }
+
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #e2ecdc;
+    }
+
+    .board-header h2 { color: #3a5e2b; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; }
+
+    .board-badge {
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+    }
+    .badge-anonymous { background: #d9e6d3; color: #3a5e2b; }
+    .badge-signed { background: #a8c99b; color: #2d4e1e; }
+
+    .board-tip {
+      background: #e8f0e3;
+      border-radius: 16px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1.2rem;
+      color: #4a6040;
+      font-size: 0.9rem;
+    }
+
+    .message-form {
+      background: #f8fbf7;
+      border-radius: 20px;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid #d9e6d3;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 16px;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 90px;
+      margin-bottom: 0.8rem;
+      font-family: inherit;
+    }
+    textarea:focus { outline: none; border-color: #7fa86a; }
+
+    .btn-sm {
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 40px;
+      cursor: pointer;
+    }
+
+    .message-list {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+
+    .message-item {
+      background: #fafbf9;
+      border-radius: 14px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.6rem;
+      border: 1px solid #e2ecdc;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.3rem;
+      font-size: 0.8rem;
+    }
+    .message-author { color: #5b8c4e; font-weight: 500; }
+    .message-time { color: #999; }
+    .message-content { color: #2e3b2c; word-break: break-word; font-size: 0.95rem; }
+
+    .message-status { text-align: center; padding: 1rem; color: #999; }
+    .empty-message { text-align: center; color: #aaa; padding: 1.5rem; font-style: italic; }
+
+    .game-section { margin: 1.5rem 0; }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .section-header h2 { color: #3a5e2b; font-size: 1.4rem; }
+
+    .game-selector select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #d9e6d3;
+      border-radius: 40px;
+      font-size: 1rem;
+      background: white;
+      margin-bottom: 1rem;
+    }
+
+    .game-container {
+      background: white;
+      border-radius: 20px;
+      padding: 1rem;
+      border: 1px solid #d9e6d3;
+    }
+
+    .game-wrapper {
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+    .game-wrapper iframe {
+      width: 100%;
+      max-width: 500px;
+      height: 400px;
+      border: none;
+    }
+    .game-note {
+      margin-top: 0.8rem;
+      color: #8aa67d;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #d9e6d3;
+      padding: 1.2rem;
+      text-align: center;
+      color: #36522b;
+      margin-top: 1.5rem;
+      border-top: 2px solid #b3cba7;
+    }
+
+    @media (min-width: 600px) {
+      header h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== 选择题页面 ========== -->
+<div id="quizScreen" class="screen">
+  <div class="card">
+    <div class="card-icon">📋</div>
+    <h2>道德小测验</h2>
+    <div class="subtitle" id="quizUserName"></div>
+
+    <form onsubmit="return false;">
+      <div class="quiz-question">
+        <img src="https://img.sanishtech.com/u/8a9b66551d58dab653865f56a9ef4ebc.jpeg" alt="题目1" class="quiz-image">
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="A"> A. 当作没看见，继续走</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="B"> B. 停下来扶他起来，关心他</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="C"> C. 站在旁边笑他</label>
+      </div>
+      <div class="quiz-question">
+        <img src="https://img.sanishtech.com/u/5a73b565b17e7ad367dc9c48d2b491ee.jpeg" alt="题目2" class="quiz-image">
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="A"> A. 用完后马上归还，并说谢谢</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="B"> B. 用完随便丢，不还也没关系</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="C"> C. 偷偷藏起来</label>
+      </div>
+      <div class="quiz-question">
+        <img src="https://img.sanishtech.com/u/9bf8b668464b45341902cdd04b73c7d5.jpeg" alt="题目3" class="quiz-image">
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="A"> A. 吵架，一定要赢</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="B"> B. 冷静沟通，互相理解</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="C"> C. 找人来帮忙打架</label>
+      </div>
+      <div class="quiz-question">
+        <img src="https://img.sanishtech.com/u/1b3e5db58d438c314aca0b35ebb2f5bd.jpeg" alt="题目4" class="quiz-image">
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="A"> A. 尽力做到，做一个守信的人</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="B"> B. 随便答应，做不做无所谓</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="C"> C. 答应了又反悔</label>
+      </div>
+      <div class="quiz-question">
+        <img src="https://img.sanishtech.com/u/d45f038c21f8de9fec31f72659081fbf.jpeg" alt="题目5" class="quiz-image">
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="A"> A. 捡起来扔进垃圾桶</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="B"> B. 假装没看见</label>
+        <label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="C"> C. 踢到别人座位下面</label>
+      </div>
+
+      <div class="error-message" id="quizError">请回答所有题目</div>
+      <button class="btn" onclick="submitQuiz()">✅ 提交答案</button>
+    </form>
+  </div>
+</div>
+<!-- ========== 主页面 ========== -->
+<div id="mainContent">
+  <header>
+    <h1>
+      🌱 德润童心
+      <span class="user-welcome" id="userWelcomeDisplay"></span>
+    </h1>
+    
+    <div class="nav-bar">
+      <div class="dropdown">
+        <button class="dropdown-btn" onclick="toggleDropdown()">📚 其他课题 ▼</button>
+        <div class="dropdown-content" id="dropdownMenu">
+          <div id="gradeList">
+            <div class="dropdown-item" onclick="showCourses('一年级')">📖 一年级</div>
+            <div class="dropdown-item" onclick="showCourses('二年级')">📖 二年级</div>
+            <div class="dropdown-item" onclick="showCourses('三年级')">📖 三年级</div>
+            <div class="dropdown-item" onclick="showCourses('四年级')">📖 四年级</div>
+            <div class="dropdown-item" onclick="showCourses('五年级')">📖 五年级</div>
+            <div class="dropdown-item" onclick="showCourses('六年级')">📖 六年级</div>
+          </div>
+          <div id="courseList" style="display: none;">
+            <div class="dropdown-item back-btn" onclick="backToGrades()">← 返回年级</div>
+            <div id="courseItems"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="today-topic">📌 今日课题：网络霸凌</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Slogan 图片 -->
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <img src="https://i.ibb.co/VWxhBjJQ/Cute-Slogan.jpg" 
+           alt="德育 Slogan" 
+           style="width:100%; max-width:800px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
+    </div>
+
+    <!-- 互动影片 -->
+    <div class="video-container">
+      <div class="video-header">
+        <span style="font-size: 1.8rem;">🎬</span>
+        <h2>今日课题：网络霸凌</h2>
+      </div>
+      <div class="video-wrapper">
+        <iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+      </div>
+      <p style="color: #8aa67d; font-size: 0.9rem; text-align: center; margin-top: 0.8rem;">
+        💡 观看影片，学习如何应对网络霸凌
+      </p>
+    </div>
+
+    <!-- 上：匿名质询墙 -->
+    <div class="board-card">
+      <div class="board-header">
+        <h2><span>🌙</span><span>心事匿名质询墙</span></h2>
+        <div style="display: flex; gap: 0.5rem;">
+          <span class="board-badge badge-anonymous">🕶️ 完全匿名</span>
+          <button id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background: #a8c99b; color: #2d4e1e; border: none; padding: 0.2rem 1rem; border-radius: 30px; font-size: 0.75rem; cursor: pointer;">🔑 老师登录</button>
+        </div>
+      </div>
+      <div class="board-tip">💬 有心事、有疑问？在这里匿名倾诉。老师会看到并回复你。</div>
+      <div class="message-form">
+        <textarea id="counselComment" placeholder="写下你的心事或问题……"></textarea>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+          <button class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex: 2;">🌙 匿名发布</button>
+          <button class="btn-sm" id="teacherReplyIndicator" style="flex: 1; background: #a8c99b; color: #2d4e1e; display: none;" disabled>👩‍🏫 老师模式</button>
+        </div>
+      </div>
+      <div class="message-list" id="counselList">
+        <div class="message-status">正在加载...</div>
+      </div>
+    </div>
+
+    <!-- 下：名言鼓励墙 -->
+    <div class="board-card">
+      <div class="board-header">
+        <h2><span>🌟</span><span>名言鼓励墙</span></h2>
+        <span class="board-badge badge-signed">✏️ 署名分享</span>
+      </div>
+      <div class="board-tip">✨ 分享一句名言或鼓励的话，传递正能量。</div>
+      <div class="message-form">
+        <textarea id="quoteComment" placeholder="写下你想分享的名言或鼓励……"></textarea>
+        <button class="btn-sm" id="quoteBtn" onclick="submitQuote()">🌟 署名发布</button>
+      </div>
+      <div class="message-list" id="quoteList">
+        <div class="message-status">正在加载...</div>
+      </div>
+    </div>
+
+    <!-- 互动游戏板块 -->
+    <section class="game-section">
+      <div class="section-header">
+        <h2><span>🎮</span><span>德育互动小游戏</span></h2>
+        <span class="board-badge badge-anonymous">📱 手机可玩</span>
+      </div>
+
+      <div class="game-selector">
+        <select id="gameSelect" onchange="switchGame(this.value)">
+          <option value="0">🧠 记忆力配对</option>
+          <option value="1">🤝 礼让的好处</option>
+          <option value="2">🇲🇾 尊重 (Hormat)</option>
+          <option value="3">👾 Invaders 问答</option>
+          <option value="4">🛡️ 网络卫士</option>
+          <option value="5">🔢 2048 数字益智</option>
+          <option value="6">📱 Kahoot 挑战</option>
+        </select>
+      </div>
+
+      <div class="game-container">
+        <div class="game-wrapper" id="gameWrapper">
+          <iframe id="gameIframe" src="https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0" allowfullscreen></iframe>
+        </div>
+        <div class="game-note" id="gameNote">💡 记忆力配对 · 找出匹配的卡片</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 德润童心 · 师范学校（课程作业） | 德育如细雨，润物细无声</p>
+  </footer>
+</div>
+
+<script>
+// ==================== 全局变量 ====================
+let currentUser = null;
+
+// ==================== 读取用户信息 ====================
+const saved = localStorage.getItem('moralEduUserInfo');
+if (saved) {
+  currentUser = JSON.parse(saved);
+  document.getElementById('quizUserName').textContent = `${currentUser.name}（${currentUser.grade}${currentUser.role}）`;
+} else {
+  // 没有用户信息，跳回首页
+  window.location.href = 'index.html';
+}
+
+// ==================== 游戏配置 ====================
+const GAMES = [
+  { type: 'iframe', src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0', note: '💡 记忆力配对 · 找出匹配的卡片' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0', note: '💡 道德：礼让的好处 · 学习礼让的价值' },
+  { type: 'iframe', src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0', note: '💡 Pendidikan Moral · Unit 6: Hormat (尊重)' },
+  { type: 'genially', src: 'https://view.genially.com/69e852b8dc89ca6ad547d5a0', note: '💡 Invaders Quiz · 道德知识问答' },
+  { type: 'local', src: 'cyber-guardian.html', note: '🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！' },
+  { type: 'link', src: 'https://wellgames.com/cn/free_online/2048/', note: '💡 2048 数字益智游戏 · 点击按钮在新窗口打开' },
+  { type: 'kahoot', src: 'https://kahoot.it/challenge/03124401?challenge-id=18244f5c-d9fa-4c81-8761-57d1765d4599_1776400327677', pin: '03124401', note: '💡 Kahoot 道德挑战 · 输入 PIN 码或点击链接参与' }
+];
+
+// ==================== 留言配置 ====================
+const CONFIG = {
+  googleScriptUrl: "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
+  sheetApiUrl: "https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1"
+};
+
+// ==================== 脏话过滤系统 ====================
+const BANNED_WORDS = {
+    chinese: ['傻逼','傻b','sb','白痴','笨蛋','蠢货','去死','滚蛋','废物','垃圾','混蛋','王八蛋','操你','妈的','他妈','尼玛','脑残','弱智','低能','畜生','禽兽','杂种','贱人','婊子','骚货','下贱','无耻','干你','靠北','塞你','丢你','顶你','叼你','屌你','七早八早'],
+    english: ['fuck','fck','fuk','fcu','f*k','f**k','shit','sh1t','sh!t','sht','bitch','b1tch','b!tch','btch','asshole','ass','arse','bastard','damn','dumb','stupid','idiot','moron','retard','piss','crap','hell','nigger','nigga','faggot','fag','slut','whore','cunt','dick','pussy','cock','penis','vagina','motherfucker','mofo','wtf','stfu'],
+    malay: ['babi','bab1','b4bi','anjing','anj1ng','sial','s1al','bodoh','bod0h','bangang','bahlol','tolol','gila','g1la','pukimak','puk1mak','puki','lancau','kote','celaka','jilat','bangsat','haram','jadah','kurang ajar','tak guna','sampah','bencong','pondan','keparat']
+};
+
+const CHAR_MAP = {'0':'o','1':'i','2':'z','3':'e','4':'a','5':'s','6':'g','7':'t','8':'b','9':'g','@':'a','$':'s','!':'i','*':'','#':'','(':'',')':'','_':'','-':'','.':'',',':''};
+let flatBannedWords = [];
+let bannedPatterns = [];
+
+function initBannedWords() {
+    flatBannedWords = [];
+    const allWords = [...BANNED_WORDS.chinese, ...BANNED_WORDS.english, ...BANNED_WORDS.malay];
+    allWords.forEach(word => {
+        const normalized = normalizeText(word);
+        if (!flatBannedWords.includes(normalized)) flatBannedWords.push(normalized);
+    });
+    bannedPatterns = flatBannedWords.map(word => ({ pattern: new RegExp(escapeRegex(word), 'gi'), word: word }));
+}
+
+function normalizeText(text) {
+    if (!text) return '';
+    let normalized = text.toLowerCase().trim();
+    for (const [char, replacement] of Object.entries(CHAR_MAP)) normalized = normalized.split(char).join(replacement);
+    return normalized.replace(/(.)\1+/g, '$1');
+}
+
+function escapeRegex(str) { return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+function containsBannedWord(text) {
+    if (!text) return { found: false, word: '' };
+    const normalizedText = normalizeText(text);
+    for (const { pattern, word } of bannedPatterns) {
+        if (pattern.test(normalizedText)) { pattern.lastIndex = 0; return { found: true, word: word }; }
+    }
+    for (const word of flatBannedWords) {
+        if (normalizedText.includes(word)) return { found: true, word: word };
+    }
+    return { found: false, word: '' };
+}
+
+// ==================== 违规记录 ====================
+let violationCount = parseInt(localStorage.getItem('moral_violation_count') || '0');
+function addViolation() { violationCount++; localStorage.setItem('moral_violation_count', violationCount); return violationCount; }
+function resetViolations() { violationCount = 0; localStorage.setItem('moral_violation_count', '0'); }
+function getViolationWarning() {
+    if (violationCount === 1) return "⚠️ 警告：留言包含不适当用语，请文明交流！";
+    else if (violationCount >= 2) return "🚨 严重警告：你已多次使用不适当用语！\n\n老师后台已记录你的发布时间和IP地址。\n老师保留向 MCMC（马来西亚通讯及多媒体委员会）举报的权利。\n\n请立即停止！";
+    return "⚠️ 留言包含不适当用语，无法发布。";
+}
+
+// ==================== 防刷机制 ====================
+let lastSubmitTime = parseInt(localStorage.getItem('moral_last_submit') || '0');
+const SUBMIT_COOLDOWN = 10000;
+function canSubmit() {
+    const now = Date.now();
+    if (now - lastSubmitTime < SUBMIT_COOLDOWN) {
+        const waitSeconds = Math.ceil((SUBMIT_COOLDOWN - (now - lastSubmitTime)) / 1000);
+        alert(`⏳ 请勿频繁留言，请等待 ${waitSeconds} 秒后再试。`);
+        return false;
+    }
+    return true;
+}
+function recordSubmit() { lastSubmitTime = Date.now(); localStorage.setItem('moral_last_submit', lastSubmitTime); }
+
+// ==================== 老师模式 ====================
+const TEACHER_PASSWORD = "123456";
+let isTeacherMode = false;
+
+function toggleTeacherMode() {
+  if (isTeacherMode) {
+    isTeacherMode = false;
+    updateTeacherUI();
+    alert("已退出老师模式");
+  } else {
+    const password = prompt("请输入老师密码：");
+    if (password === TEACHER_PASSWORD) {
+      isTeacherMode = true;
+      resetViolations();
+      updateTeacherUI();
+      alert("✅ 老师模式已解锁！你可以以毛老师的身份回复。");
+    } else if (password !== null) {
+      alert("❌ 密码错误！");
+    }
+  }
+}
+
+function updateTeacherUI() {
+  const toggleBtn = document.getElementById('teacherToggleBtn');
+  const indicator = document.getElementById('teacherReplyIndicator');
+  const counselBtn = document.getElementById('counselBtn');
+  if (isTeacherMode) {
+    toggleBtn.textContent = '✅ 老师模式(点击退出)';
+    toggleBtn.style.background = '#5b8c4e';
+    toggleBtn.style.color = 'white';
+    indicator.style.display = 'block';
+    counselBtn.textContent = '👩‍🏫 老师回复';
+    counselBtn.style.background = '#5b8c4e';
+  } else {
+    toggleBtn.textContent = '🔑 老师登录';
+    toggleBtn.style.background = '#a8c99b';
+    toggleBtn.style.color = '#2d4e1e';
+    indicator.style.display = 'none';
+    counselBtn.textContent = '🌙 匿名发布';
+    counselBtn.style.background = '#7fa86a';
+  }
+}
+  // ==================== 选择答案 ====================
+function selectOption(element) {
+  const parent = element.parentElement;
+  parent.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+  element.classList.add('selected');
+  element.querySelector('input').checked = true;
+}
+
+// ==================== 提交测验 ====================
+function submitQuiz() {
+  const q1 = document.querySelector('input[name="q1"]:checked');
+  const q2 = document.querySelector('input[name="q2"]:checked');
+  const q3 = document.querySelector('input[name="q3"]:checked');
+  const q4 = document.querySelector('input[name="q4"]:checked');
+  const q5 = document.querySelector('input[name="q5"]:checked');
+  
+  if (!q1 || !q2 || !q3 || !q4 || !q5) {
+    document.getElementById('quizError').textContent = '请回答所有题目';
+    document.getElementById('quizError').style.display = 'block';
+    return;
+  }
+  
+  const answers = { q1: 'B', q2: 'A', q3: 'B', q4: 'A', q5: 'A' };
+  const answerTexts = {
+    q1: { correct: 'B. 停下来扶他起来，关心他', explanation: '帮助他人是美德' },
+    q2: { correct: 'A. 用完后马上归还，并说谢谢', explanation: '借东西要守信' },
+    q3: { correct: 'B. 冷静沟通，互相理解', explanation: '沟通是解决矛盾的最好方式' },
+    q4: { correct: 'A. 尽力做到，做一个守信的人', explanation: '守信是重要品德' },
+    q5: { correct: 'A. 捡起来扔进垃圾桶', explanation: '爱护环境人人有责' }
+  };
+  
+  let score = 0;
+  if (q1.value === answers.q1) score++;
+  if (q2.value === answers.q2) score++;
+  if (q3.value === answers.q3) score++;
+  if (q4.value === answers.q4) score++;
+  if (q5.value === answers.q5) score++;
+  
+  document.getElementById('quizError').style.display = 'none';
+  localStorage.setItem('moralQuizAnswers', JSON.stringify({ q1: q1.value, q2: q2.value, q3: q3.value, q4: q4.value, q5: q5.value, score }));
+  showQuizFeedback(score, { q1: q1.value, q2: q2.value, q3: q3.value, q4: q4.value, q5: q5.value }, answers, answerTexts);
+}
+
+// ==================== 测验反馈弹窗 ====================
+function showQuizFeedback(score, userAnswers, correctAnswers, answerTexts) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  
+  const modal = document.createElement('div');
+  modal.style.cssText = 'background:white;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:2rem 1.5rem;border-radius:32px;box-shadow:0 20px 40px rgba(0,0,0,0.2);';
+  
+  let feedbackHtml = '';
+  const questionLabels = ['第1题', '第2题', '第3题', '第4题', '第5题'];
+  
+  for (let i = 1; i <= 5; i++) {
+    const qKey = `q${i}`;
+    const userAnswer = userAnswers[qKey];
+    const isCorrect = userAnswer === correctAnswers[qKey];
+    feedbackHtml += `
+      <div style="margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid #e2ecdc;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;">
+          <span style="font-weight:500;color:#2d4e1e;">${questionLabels[i-1]}</span>
+          ${isCorrect ? '<span style="color:#7fa86a;">✅ 回答正确</span>' : '<span style="color:#c44;">❌ 回答错误</span>'}
+        </div>
+        ${!isCorrect ? `
+          <div style="background:#fef8e7;padding:0.8rem;border-radius:12px;margin-top:0.5rem;">
+            <p style="color:#6b7c63;">你的答案：${userAnswer}</p>
+            <p style="color:#2d4e1e;margin-top:0.3rem;">✅ 正确答案：${answerTexts[qKey].correct}</p>
+            <p style="color:#7fa86a;margin-top:0.3rem;">💡 ${answerTexts[qKey].explanation}</p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+  
+  const isFullScore = score === 5;
+  modal.innerHTML = `
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:3rem;">${isFullScore ? '🎉🏆' : '📝'}</div>
+      <h2 style="color:#2d4e1e;font-size:1.6rem;">${isFullScore ? '道德满分！太棒了！' : '测验完成！'}</h2>
+      <p style="color:#43673a;font-size:1.1rem;">${isFullScore ? '你真是个品德小达人！✨' : '继续加油！💪'}</p>
+    </div>
+    <div style="margin-bottom:1.5rem;">${feedbackHtml}</div>
+    <p style="color:#8aa67d;text-align:center;margin-bottom:1rem;">${isFullScore ? '你已掌握这些道德知识！' : '记住正确答案，下次一定全对！'}</p>
+    <button id="enterMainFromFeedback" style="background:#7fa86a;color:white;border:none;padding:0.8rem 2rem;font-size:1.1rem;border-radius:40px;cursor:pointer;width:100%;">🌸 进入德育园地 →</button>
+  `;
+  
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.getElementById('enterMainFromFeedback').onclick = () => { overlay.remove(); enterMainContent(score); };
+  overlay.onclick = e => { if (e.target === overlay) { overlay.remove(); enterMainContent(score); } };
+}
+
+// ==================== 进入主页 ====================
+function enterMainContent(score) {
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+  const scoreText = score === 5 ? `道德满分 ${score}/5 🏆` : `得分 ${score}/5 💪`;
+  document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
+  loadAllMessages();
+  setInterval(loadAllMessages, 30000);
+}
+
+// ==================== 导航下拉 ====================
+function toggleDropdown() {
+  const menu = document.getElementById('dropdownMenu');
+  menu.classList.toggle('show');
+  document.getElementById('gradeList').style.display = 'block';
+  document.getElementById('courseList').style.display = 'none';
+}
+
+function showCourses(grade) {
+  const coursesByGrade = {
+    '一年级': ['我的宗教信仰','助人小天使','我已经长大','欢喜说谢谢','人人夸我有礼貌','我喜欢我自己','爱惜自己','处处讲公正','我是勇敢的小孩','花瓶是我打破的','天天要勤劳','分工合作真欢喜','凡事都要刚刚好','我懂得礼让'],
+    '二年级': ['美好的时光','贴心小举动','长大了，学做事','心里暖暖的','爸爸妈妈都夸我','看重家人的感受','可爱的家庭','公平又正直','学做小勇士','踏实的心','勤劳的收获','合作乐无穷','跟我这样生活吧','退一步想想'],
+    '三年级': ['欢喜庆佳节','助人为乐','责任小尖兵','感恩饼干','礼貌花朵校园开','互相尊重暖人心','关爱满校园','大公无私','我能够做到！','诚实是宝','最甜美的果实','团结力量大','刚刚好，真美好','一团和气'],
+    '四年级': ['和谐乐融融','欢喜来助人','尽责不自私','感恩有您','谦让你的赞美','一生受用的礼物','好邻居，无价宝','花卉才艺赛','有理无惧','线条上的密码','晚霞里最美的笑容','幸福的传电波','讨人喜欢的白雪','礼让乐开怀'],
+    '五年级': ['同一条路上','种希望','破窗效应','说不出口的"谢谢"','懂礼貌，守规矩','尊重乐开怀','让青山更翠绿','公正在人心','见义勇为','诚信无价','勤奋坚毅','守望相助','中庸之星','礼让之城'],
+    '六年级': ['和谐心欢畅','我为你送暖','为了您，马来西亚','感恩之旅','权利代言人','我的保护伞','月亮一样圆','以理服人','奔跑吧！小勇士','最美丽的外套','汗水年年','小手牵大手','不偏不倚','礼让不委屈']
+  };
+  
+  const courses = coursesByGrade[grade] || [];
+  let html = `<div style="padding:0.5rem 1.5rem;color:#6b7c63;font-size:0.9rem;background:#f8fbf7;">${grade}</div>`;
+  courses.forEach((c, index) => {
+    html += `<div class="dropdown-item" onclick="selectCourse('${grade}', '第${index+1}课：${c}')">📚 第${index+1}课：${c}</div>`;
+  });
+  
+  document.getElementById('courseItems').innerHTML = html;
+  document.getElementById('gradeList').style.display = 'none';
+  document.getElementById('courseList').style.display = 'block';
+}
+
+function backToGrades() {
+  document.getElementById('gradeList').style.display = 'block';
+  document.getElementById('courseList').style.display = 'none';
+}
+
+function selectCourse(grade, course) {
+  document.getElementById('dropdownMenu').classList.remove('show');
+  showContactModal(grade, course);
+}
+
+function showContactModal(grade, course) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  const modal = document.createElement('div');
+  modal.style.cssText = 'background:white;max-width:400px;width:90%;padding:2rem 1.8rem;border-radius:32px;text-align:center;';
+  modal.innerHTML = `
+    <div style="font-size:3rem;">📧</div>
+    <h3 style="color:#2d4e1e;font-size:1.4rem;">${grade} · ${course}</h3>
+    <p style="color:#6b7c63;margin-bottom:1.5rem;">其他课程请电邮联系负责人毛老师</p>
+    <div style="background:#f8fbf7;padding:1rem;border-radius:16px;margin-bottom:1.5rem;"><p style="color:#3a5e2b;font-weight:500;">📮 nexusgt.my@gmail.com</p></div>
+    <p style="color:#8aa67d;margin-bottom:1.5rem;">质询付费解锁详情</p>
+    <button id="closeModalBtn" style="background:#7fa86a;color:white;border:none;padding:0.8rem 2rem;font-size:1rem;border-radius:40px;cursor:pointer;width:100%;">我知道了</button>
+  `;
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.getElementById('closeModalBtn').onclick = () => overlay.remove();
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+}
+document.addEventListener('click', e => { if (!e.target.closest('.dropdown')) document.getElementById('dropdownMenu').classList.remove('show'); });
+
+// ==================== 游戏切换 ====================
+function switchGame(index) {
+  index = parseInt(index);
+  const game = GAMES[index];
+  const wrapper = document.getElementById('gameWrapper');
+  
+  if (game.type === 'iframe') {
+    wrapper.innerHTML = `<iframe src="${game.src}" allowfullscreen></iframe>`;
+  } else if (game.type === 'local') {
+    wrapper.innerHTML = `<iframe src="${game.src}" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>`;
+  } else if (game.type === 'genially') {
+    wrapper.innerHTML = `<div style="width:100%;"><div style="position:relative;padding-bottom:56.25%;padding-top:0;height:0;"><iframe frameborder="0" width="1200" height="675" style="position:absolute;top:0;left:0;width:100%;height:100%;" src="${game.src}" allowfullscreen></iframe></div></div>`;
+  } else if (game.type === 'kahoot') {
+    wrapper.innerHTML = `<div style="text-align:center;padding:2rem;"><p>📱 Kahoot 挑战</p><p style="font-size:3rem;font-weight:bold;color:#2d4e1e;">${game.pin}</p><a href="${game.src}" target="_blank" style="background:#7fa86a;color:white;padding:0.8rem 1.5rem;border-radius:40px;text-decoration:none;">打开 Kahoot →</a></div>`;
+  } else {
+    wrapper.innerHTML = `<div style="text-align:center;padding:2rem;"><a href="${game.src}" target="_blank" style="background:#7fa86a;color:white;padding:1rem 2rem;border-radius:40px;text-decoration:none;">点击玩 2048 →</a></div>`;
+  }
+  document.getElementById('gameNote').innerHTML = game.note;
+}
+
+// ==================== 双留言板 ====================
+async function submitCounsel() {
+  const textarea = document.getElementById('counselComment');
+  const btn = document.getElementById('counselBtn');
+  const comment = textarea.value.trim();
+  if (!comment) return alert('请输入内容');
+  if (!canSubmit()) return;
+  const banCheck = containsBannedWord(comment);
+  if (banCheck.found) { addViolation(); alert(getViolationWarning()); textarea.focus(); return; }
+  
+  let prefix = isTeacherMode ? '[老师回复]' : '[质询]';
+  try {
+    btn.disabled = true;
+    btn.textContent = '发布中...';
+    await fetch(CONFIG.googleScriptUrl, { method: 'POST', body: new URLSearchParams({ 'comment': `${prefix} ${comment}` }) });
+    recordSubmit();
+    textarea.value = '';
+    alert(isTeacherMode ? '已以毛老师身份发布回复！' : '匿名发布成功！');
+    loadAllMessages();
+  } catch(e) { alert('发布失败'); }
+  finally { btn.disabled = false; btn.textContent = isTeacherMode ? '👩‍🏫 老师回复' : '🌙 匿名发布'; }
+}
+
+async function submitQuote() {
+  const textarea = document.getElementById('quoteComment');
+  const btn = document.getElementById('quoteBtn');
+  const comment = textarea.value.trim();
+  if (!comment) return alert('请输入内容');
+  if (!canSubmit()) return;
+  const banCheck = containsBannedWord(comment);
+  if (banCheck.found) { addViolation(); alert(getViolationWarning()); textarea.focus(); return; }
+  
+  const displayName = currentUser ? `${currentUser.name}（${currentUser.grade}${currentUser.role}）` : '匿名';
+  try {
+    btn.disabled = true;
+    btn.textContent = '发布中...';
+    await fetch(CONFIG.googleScriptUrl, { method: 'POST', body: new URLSearchParams({ 'comment': `[名言] 【${displayName}】: ${comment}` }) });
+    recordSubmit();
+    textarea.value = '';
+    alert('发布成功！');
+    loadAllMessages();
+  } catch(e) { alert('发布失败'); }
+  finally { btn.disabled = false; btn.textContent = '🌟 署名发布'; }
+}
+
+async function loadAllMessages() {
+  try {
+    const res = await fetch(CONFIG.sheetApiUrl);
+    const data = await res.json();
+    const counsel = [], quote = [];
+    data.reverse().forEach(item => {
+      const content = item['留言'] || '';
+      if (content.startsWith('[质询]') || content.startsWith('[老师回复]')) counsel.push({ content, timestamp: item['时间戳'] || '' });
+      else if (content.startsWith('[名言]')) quote.push(content.replace('[名言]', '').trim());
+    });
+    
+    const counselList = document.getElementById('counselList');
+    if (counsel.length === 0) counselList.innerHTML = '<div class="empty-message">✨ 还没有质询，匿名写下你的心事吧</div>';
+    else {
+      let html = '';
+      counsel.forEach(item => {
+        const isTeacherReply = item.content.startsWith('[老师回复]');
+        const cleanMsg = item.content.replace('[老师回复]', '').replace('[质询]', '').trim();
+        html += `<div class="message-item" style="${isTeacherReply ? 'background:#f0f7ec;border-left:4px solid #7fa86a;' : ''}"><div class="message-header"><span class="message-author" style="${isTeacherReply ? 'color:#2d4e1e;font-weight:600;' : ''}">${isTeacherReply ? '👩‍🏫 毛老师回复' : '🕶️ 匿名'}</span><span class="message-time">${item.timestamp}</span></div><div class="message-content">${escapeHtml(cleanMsg)}</div></div>`;
+      });
+      counselList.innerHTML = html;
+    }
+    
+    const quoteList = document.getElementById('quoteList');
+    if (quote.length === 0) quoteList.innerHTML = '<div class="empty-message">✨ 还没有名言，快来分享正能量吧</div>';
+    else {
+      let html = '';
+      quote.forEach(msg => html += `<div class="message-item"><div class="message-content">${escapeHtml(msg)}</div></div>`);
+      quoteList.innerHTML = html;
+    }
+  } catch(e) {
+    document.getElementById('counselList').innerHTML = '<div class="message-status" style="color:#c44;">加载失败</div>';
+    document.getElementById('quoteList').innerHTML = '<div class="message-status" style="color:#c44;">加载失败</div>';
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ==================== 初始化 ====================
+document.addEventListener('DOMContentLoaded', function() {
+  initBannedWords();
+  const savedQuiz = localStorage.getItem('moralQuizAnswers');
+  if (savedQuiz) {
+    document.getElementById('quizScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    const quiz = JSON.parse(savedQuiz);
+    const scoreText = quiz.score === 5 ? `道德满分 ${quiz.score}/5 🏆` : `得分 ${quiz.score}/5 💪`;
+    document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
+    loadAllMessages();
+    setInterval(loadAllMessages, 30000);
+  }
+});
+</script>
+</body>
+</html>
