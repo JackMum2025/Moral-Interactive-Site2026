@@ -356,8 +356,7 @@
     }
     .game-wrapper iframe {
       width: 100%;
-      max-width: 500px;
-      height: 400px;
+      height: 600px;
       border: none;
     }
     .game-note {
@@ -395,13 +394,13 @@
         <label>📚 Tahun</label>
         <select id="grade" required>
           <option value="">-- Sila pilih --</option>
-          <option value="一年级">Tahun 1</option>
-          <option value="二年级">Tahun 2</option>
-          <option value="三年级">Tahun 3</option>
-          <option value="四年级">Tahun 4</option>
-          <option value="五年级">Tahun 5</option>
-          <option value="六年级">Tahun 6</option>
-          <option value="师范生">Pelajar IPG</option>
+          <option value="Tahun 1">Tahun 1</option>
+          <option value="Tahun 2">Tahun 2</option>
+          <option value="Tahun 3">Tahun 3</option>
+          <option value="Tahun 4">Tahun 4</option>
+          <option value="Tahun 5">Tahun 5</option>
+          <option value="Tahun 6">Tahun 6</option>
+          <option value="Pelajar IPG">Pelajar IPG</option>
         </select>
       </div>
 
@@ -409,8 +408,8 @@
         <label>👤 Peranan</label>
         <select id="role" required>
           <option value="">-- Sila pilih --</option>
-          <option value="学生">Pelajar</option>
-          <option value="老师">Guru</option>
+          <option value="Pelajar">Pelajar</option>
+          <option value="Guru">Guru</option>
         </select>
       </div>
 
@@ -470,6 +469,7 @@
     </form>
   </div>
 </div>
+
 <!-- ========== Halaman Utama ========== -->
 <div id="mainContent">
   <header>
@@ -570,21 +570,17 @@
 
       <div class="game-selector">
         <select id="gameSelect" onchange="switchGame(this.value)">
-          <option value="0">🧠 Padanan Memori</option>
-          <option value="1">🤝 Kebaikan Bertolak Ansur</option>
-          <option value="2">🇲🇾 Hormat</option>
-          <option value="3">👾 Kuiz Invaders</option>
-          <option value="4">🛡️ Pengawal Siber</option>
-          <option value="5">🔢 Permainan Nombor 2048</option>
-          <option value="6">📱 Cabaran Kahoot</option>
+          <option value="0">🛡️ Pengawal Siber</option>
+          <option value="1">🛡️ Pengawal Siber II</option>
+          <option value="2">🛡️ Pengawal Siber III</option>
         </select>
       </div>
 
       <div class="game-container">
         <div class="game-wrapper" id="gameWrapper">
-          <iframe id="gameIframe" src="https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0" allowfullscreen></iframe>
+          <iframe id="gameIframe" src="cyber-guardian.html" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>
         </div>
-        <div class="game-note" id="gameNote">💡 Padanan Memori · Cari kad yang sepadan</div>
+        <div class="game-note" id="gameNote">🛡️ Pengawal Siber · Halang buli, lindungi dunia siber!</div>
       </div>
     </section>
   </main>
@@ -609,20 +605,16 @@ function goToQuiz() {
   }
   currentUser = { grade, role, name, timestamp: new Date().toISOString() };
   localStorage.setItem('moralEduUserInfo', JSON.stringify(currentUser));
-  document.getElementById('quizUserName').textContent = `${name}（${grade}${role}）`;
+  document.getElementById('quizUserName').textContent = `${name}（${grade} - ${role}）`;
   document.getElementById('welcomeScreen').style.display = 'none';
   document.getElementById('quizScreen').style.display = 'flex';
 }
 
 // ==================== Konfigurasi Permainan ====================
 const GAMES = [
-  { type: 'iframe', src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0', note: '💡 Padanan Memori · Cari kad yang sepadan' },
-  { type: 'iframe', src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0', note: '💡 Moral: Kebaikan Bertolak Ansur' },
-  { type: 'iframe', src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0', note: '💡 Pendidikan Moral · Unit 6: Hormat' },
-  { type: 'genially', src: 'https://view.genially.com/69e852b8dc89ca6ad547d5a0', note: '💡 Kuiz Invaders · Soalan Moral' },
   { type: 'local', src: 'cyber-guardian.html', note: '🛡️ Pengawal Siber · Halang buli, lindungi dunia siber!' },
-  { type: 'link', src: 'https://wellgames.com/cn/free_online/2048/', note: '💡 Permainan Nombor 2048 · Buka di tetingkap baru' },
-  { type: 'kahoot', src: 'https://kahoot.it/challenge/03124401?challenge-id=18244f5c-d9fa-4c81-8761-57d1765d4599_1776400327677', pin: '03124401', note: '💡 Cabaran Moral Kahoot · Masuk PIN atau klik pautan' }
+  { type: 'local', src: 'cyber-guardian2.html', note: '🛡️ Pengawal Siber II · Cabaran Kedua' },
+  { type: 'local', src: 'cyber-guardian3.html', note: '🛡️ Pengawal Siber III · Cabaran Terakhir' }
 ];
 
 // ==================== Konfigurasi Mesej ====================
@@ -739,7 +731,8 @@ function updateTeacherUI() {
     counselBtn.style.background = '#7fa86a';
   }
 }
-  // ==================== Pilih Jawapan ====================
+
+// ==================== Pilih Jawapan ====================
 function selectOption(element) {
   const parent = element.parentElement;
   parent.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
@@ -837,7 +830,7 @@ function enterMainContent(score) {
   document.getElementById('quizScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
   const scoreText = score === 5 ? `Markah Penuh ${score}/5 🏆` : `Markah ${score}/5 💪`;
-  document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
+  document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade} - ${currentUser.role}）· ${scoreText}`;
   loadAllMessages();
   setInterval(loadAllMessages, 30000);
 }
@@ -996,18 +989,7 @@ function switchGame(index) {
   index = parseInt(index);
   const game = GAMES[index];
   const wrapper = document.getElementById('gameWrapper');
-  
-  if (game.type === 'iframe') {
-    wrapper.innerHTML = `<iframe src="${game.src}" allowfullscreen></iframe>`;
-  } else if (game.type === 'local') {
-    wrapper.innerHTML = `<iframe src="${game.src}" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>`;
-  } else if (game.type === 'genially') {
-    wrapper.innerHTML = `<div style="width:100%;"><div style="position:relative;padding-bottom:56.25%;padding-top:0;height:0;"><iframe frameborder="0" width="1200" height="675" style="position:absolute;top:0;left:0;width:100%;height:100%;" src="${game.src}" allowfullscreen></iframe></div></div>`;
-  } else if (game.type === 'kahoot') {
-    wrapper.innerHTML = `<div style="text-align:center;padding:2rem;"><p>📱 Cabaran Kahoot</p><p style="font-size:3rem;font-weight:bold;color:#2d4e1e;">${game.pin}</p><a href="${game.src}" target="_blank" style="background:#7fa86a;color:white;padding:0.8rem 1.5rem;border-radius:40px;text-decoration:none;">Buka Kahoot →</a></div>`;
-  } else {
-    wrapper.innerHTML = `<div style="text-align:center;padding:2rem;"><a href="${game.src}" target="_blank" style="background:#7fa86a;color:white;padding:1rem 2rem;border-radius:40px;text-decoration:none;">Klik Main 2048 →</a></div>`;
-  }
+  wrapper.innerHTML = `<iframe src="${game.src}" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>`;
   document.getElementById('gameNote').innerHTML = game.note;
 }
 
@@ -1043,7 +1025,7 @@ async function submitQuote() {
   const banCheck = containsBannedWord(comment);
   if (banCheck.found) { addViolation(); alert(getViolationWarning()); textarea.focus(); return; }
   
-  const displayName = currentUser ? `${currentUser.name}（${currentUser.grade}${currentUser.role}）` : 'Tanpa Nama';
+  const displayName = currentUser ? `${currentUser.name}（${currentUser.grade} - ${currentUser.role}）` : 'Tanpa Nama';
   try {
     btn.disabled = true;
     btn.textContent = 'Menghantar...';
@@ -1112,13 +1094,13 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('mainContent').style.display = 'block';
       const quiz = JSON.parse(savedQuiz);
       const scoreText = quiz.score === 5 ? `Markah Penuh ${quiz.score}/5 🏆` : `Markah ${quiz.score}/5 💪`;
-      document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${scoreText}`;
+      document.getElementById('userWelcomeDisplay').textContent = `👋 ${currentUser.name}（${currentUser.grade} - ${currentUser.role}）· ${scoreText}`;
       loadAllMessages();
       setInterval(loadAllMessages, 30000);
     } else {
       document.getElementById('welcomeScreen').style.display = 'none';
       document.getElementById('quizScreen').style.display = 'flex';
-      document.getElementById('quizUserName').textContent = `${currentUser.name}（${currentUser.grade}${currentUser.role}）`;
+      document.getElementById('quizUserName').textContent = `${currentUser.name}（${currentUser.grade} - ${currentUser.role}）`;
     }
   }
 });
