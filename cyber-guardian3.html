@@ -26,12 +26,19 @@ body{font-family:'Rajdhani',sans-serif;color:#ddd6fe;display:flex;flex-direction
 #bottom-bar{flex-shrink:0;background:rgba(6,3,16,0.99);border-top:1px solid var(--bdr);z-index:50;}
 #tower-row{display:flex;align-items:center;gap:4px;padding:5px 6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
 #tower-row::-webkit-scrollbar{display:none;}
-.tcard{flex-shrink:0;width:64px;background:rgba(0,0,0,0.45);border:1.5px solid var(--bdr);border-radius:10px;padding:5px 3px;cursor:pointer;text-align:center;position:relative;touch-action:manipulation;transition:border-color 0.12s,box-shadow 0.12s;}
-.tcard.sel{border-color:var(--gold);box-shadow:0 0 12px rgba(251,191,36,0.45);}
-.tcard.nope{opacity:0.35;}
+.tcard{flex-shrink:0;width:64px;background:rgba(0,0,0,0.45);border:1.5px solid rgba(80,60,120,0.4);border-radius:10px;padding:5px 3px;cursor:pointer;text-align:center;position:relative;touch-action:manipulation;transition:border-color 0.15s,box-shadow 0.15s,opacity 0.15s;}
+/* Can afford — subtle green glow */
+.tcard.afford{border-color:rgba(52,211,153,0.7);box-shadow:0 0 8px rgba(52,211,153,0.25);}
+/* Selected */
+.tcard.sel{border-color:var(--gold);box-shadow:0 0 14px rgba(251,191,36,0.55);}
+/* Cannot afford — dimmed, no glow */
+.tcard.nope{opacity:0.32;border-color:rgba(60,40,80,0.35);box-shadow:none;}
 .tcard-icon{font-size:20px;line-height:1.1;}
 .tcard-name{font-size:8px;color:#c4b5fd;font-weight:700;margin-top:1px;}
-.tcard-cost{font-size:8px;color:var(--gold);font-family:'Orbitron',monospace;font-weight:700;}
+/* Cost text: green when affordable, red when not */
+.tcard-cost{font-size:8px;font-family:'Orbitron',monospace;font-weight:700;color:var(--gold);}
+.tcard.afford .tcard-cost{color:#34d399;}
+.tcard.nope .tcard-cost{color:#f87171;}
 .tcard-badge{position:absolute;top:2px;right:3px;font-size:7px;font-family:'Orbitron',monospace;color:#f87171;font-weight:700;}
 
 #info-strip{display:flex;align-items:center;gap:5px;padding:3px 8px 6px;min-height:26px;border-top:1px solid rgba(167,139,250,0.1);font-size:10px;color:#9d86e0;}
@@ -682,8 +689,20 @@ function refreshCards(){
   document.querySelectorAll('.tcard').forEach(c=>{
     const k=c.dataset.type,d=TDEFS[k];
     const blocked=d.isPrincipal&&principalPlaced;
-    c.classList.toggle('sel',selType===k&&!selTower);
-    c.classList.toggle('nope',gold<d.cost||blocked);
+    const canAfford=gold>=d.cost&&!blocked;
+    const isSel=selType===k&&!selTower;
+
+    // Always clear all three states first, then apply exactly one
+    c.classList.remove('sel','afford','nope');
+    if(isSel){
+      c.classList.add('sel');           // selected: gold glow
+    } else if(canAfford){
+      c.classList.add('afford');        // can buy: green glow
+    } else {
+      c.classList.add('nope');          // cannot buy: dimmed
+    }
+
+    // Update principal badge
     const badge=c.querySelector('.tcard-badge');
     if(badge&&d.isPrincipal)badge.textContent=principalPlaced?'✓':'×1';
   });
@@ -717,7 +736,8 @@ function updateStrip(){
 function updGold(){
   document.getElementById('h-gold').textContent=gold;
   document.getElementById('h-score').textContent=score;
-  refreshCards();if(selTower)updateStrip();
+  refreshCards();
+  updateStrip(); // always refresh strip so upgrade button opacity stays correct
 }
 
 // ══════════ INPUT ══════════
@@ -788,6 +808,8 @@ function loop(ts){
     spawnT+=gspeed*dt;
     while(spawnQ.length&&spawnT>=spawnQ[0].t){const s=spawnQ.shift();spawnEnemy(s.type,s.pi);}
     updateEnemies(dt);updateTowers(dt);updateParticles(dt);checkWaveClear();
+    // Re-sync card states every 20 frames in case gold changed without triggering updGold
+    if(frame%20===0) refreshCards();
   } else updateParticles(dt);
   draw();if(state==='wavebreak')drawWaveBreak();
   requestAnimationFrame(loop);
