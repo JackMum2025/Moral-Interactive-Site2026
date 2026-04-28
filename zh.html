@@ -569,23 +569,19 @@
         <span class="board-badge badge-anonymous">📱 手机可玩</span>
       </div>
 
-      <div class="game-selector">
-        <select id="gameSelect" onchange="switchGame(this.value)">
-          <option value="0">🧠 记忆力配对</option>
-          <option value="1">🤝 礼让的好处</option>
-          <option value="2">🇲🇾 尊重 (Hormat)</option>
-          <option value="3">👾 Invaders 问答</option>
-          <option value="4">🛡️ 网络卫士</option>
-          <option value="5">🔢 2048 数字益智</option>
-          <option value="6">📱 Kahoot 挑战</option>
-        </select>
-      </div>
+    <div class="game-selector">
+  <select id="gameSelect" onchange="switchGame(this.value)">
+    <option value="0">🛡️ 网络卫士</option>
+    <option value="1">🛡️ 网络卫士 II</option>
+    <option value="2">🛡️ 网络卫士 III</option>
+  </select>
+</div>
 
       <div class="game-container">
-        <div class="game-wrapper" id="gameWrapper">
-          <iframe id="gameIframe" src="https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0" allowfullscreen></iframe>
-        </div>
-        <div class="game-note" id="gameNote">💡 记忆力配对 · 找出匹配的卡片</div>
+      <div class="game-wrapper" id="gameWrapper">
+  <iframe id="gameIframe" src="cyber-guardian.html" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>
+</div>
+       <div class="game-note" id="gameNote">🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！</div>
       </div>
     </section>
   </main>
@@ -617,13 +613,9 @@ function goToQuiz() {
 
 // ==================== 游戏配置 ====================
 const GAMES = [
-  { type: 'iframe', src: 'https://wordwall.net/ms/embed/3a9c23204947466181fd96468c29c6da?themeId=22&templateId=5&fontStackId=0', note: '💡 记忆力配对 · 找出匹配的卡片' },
-  { type: 'iframe', src: 'https://wordwall.net/embed/d2dcb63615464c80b98ae58154ce011c?themeId=1&templateId=2&fontStackId=0', note: '💡 道德：礼让的好处 · 学习礼让的价值' },
-  { type: 'iframe', src: 'https://wordwall.net/embed/53c0023ebc9c4d1fb2ea167850dd58e5?themeId=65&templateId=30&fontStackId=0', note: '💡 Pendidikan Moral · Unit 6: Hormat (尊重)' },
-  { type: 'genially', src: 'https://view.genially.com/69e852b8dc89ca6ad547d5a0', note: '💡 Invaders Quiz · 道德知识问答' },
   { type: 'local', src: 'cyber-guardian.html', note: '🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！' },
-  { type: 'link', src: 'https://wellgames.com/cn/free_online/2048/', note: '💡 2048 数字益智游戏 · 点击按钮在新窗口打开' },
-  { type: 'kahoot', src: 'https://kahoot.it/challenge/03124401?challenge-id=18244f5c-d9fa-4c81-8761-57d1765d4599_1776400327677', pin: '03124401', note: '💡 Kahoot 道德挑战 · 输入 PIN 码或点击链接参与' }
+  { type: 'local', src: 'cyber-guardian2.html', note: '🛡️ 网络卫士 II · 第二关挑战' },
+  { type: 'local', src: 'cyber-guardian3.html', note: '🛡️ 网络卫士 III · 终极挑战' }
 ];
 
 // ==================== 留言配置 ====================
@@ -907,18 +899,7 @@ function switchGame(index) {
   index = parseInt(index);
   const game = GAMES[index];
   const wrapper = document.getElementById('gameWrapper');
-  
-  if (game.type === 'iframe') {
-    wrapper.innerHTML = `<iframe src="${game.src}" allowfullscreen></iframe>`;
-  } else if (game.type === 'local') {
-    wrapper.innerHTML = `<iframe src="${game.src}" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>`;
-  } else if (game.type === 'genially') {
-    wrapper.innerHTML = `<div style="width:100%;"><div style="position:relative;padding-bottom:56.25%;padding-top:0;height:0;"><iframe frameborder="0" width="1200" height="675" style="position:absolute;top:0;left:0;width:100%;height:100%;" src="${game.src}" allowfullscreen></iframe></div></div>`;
-  } else if (game.type === 'kahoot') {
-    wrapper.innerHTML = `<div style="text-align:center;padding:2rem;"><p>📱 Kahoot 挑战</p><p style="font-size:3rem;font-weight:bold;color:#2d4e1e;">${game.pin}</p><a href="${game.src}" target="_blank" style="background:#7fa86a;color:white;padding:0.8rem 1.5rem;border-radius:40px;text-decoration:none;">打开 Kahoot →</a></div>`;
-  } else {
-    wrapper.innerHTML = `<div style="text-align:center;padding:2rem;"><a href="${game.src}" target="_blank" style="background:#7fa86a;color:white;padding:1rem 2rem;border-radius:40px;text-decoration:none;">点击玩 2048 →</a></div>`;
-  }
+  wrapper.innerHTML = `<iframe src="${game.src}" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>`;
   document.getElementById('gameNote').innerHTML = game.note;
 }
 
