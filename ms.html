@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="ms">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>德润童心 · 师范德育专题</title>
+  <title>Menyuburkan Moral Muda</title>
   <style>
     html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
     *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
@@ -18,7 +18,6 @@
     input, textarea { user-select: text; -webkit-user-select: text; }
     select, input, textarea, button { font-size: 16px !important; }
     .btn, .btn-sm, .quiz-option, .dropdown-item { min-height: 44px; }
-
     .screen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh;
       background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
@@ -125,50 +124,47 @@
 </head>
 <body>
 
-<div id="rotateOverlay"><div class="rotate-icon">📱</div><p>请将手机转回竖屏模式<br><span style="font-size:1rem;color:#94a3b8;">Sila putar telefon ke mod potret</span></p></div>
+<div id="rotateOverlay"><div class="rotate-icon">📱</div><p>Sila putar telefon ke mod potret<br><span style="font-size:1rem;color:#94a3b8;">请将手机转回竖屏模式</span></p></div>
 
-<!-- 个人资料页 -->
 <div id="welcomeScreen" class="screen">
-  <div class="card"><div class="card-icon">🌱</div><h1>德润童心</h1><div class="subtitle">请告诉我们你是谁</div>
+  <div class="card"><div class="card-icon">🌱</div><h1>Menyuburkan Moral Muda</h1><div class="subtitle">Sila beritahu kami siapa anda</div>
     <form onsubmit="return false;">
-      <div class="form-group"><label>📚 年级</label><select id="grade" required><option value="">-- 请选择 --</option><option value="一年级">一年级</option><option value="二年级">二年级</option><option value="三年级">三年级</option><option value="四年级">四年级</option><option value="五年级">五年级</option><option value="六年级">六年级</option><option value="师范生">师范生</option></select></div>
-      <div class="form-group"><label>👤 身份</label><select id="role" required><option value="">-- 请选择 --</option><option value="学生">学生</option><option value="老师">老师</option></select></div>
-      <div class="form-group"><label>✏️ 名字/昵称</label><input type="text" id="userName" placeholder="例如：小明" maxlength="20" required></div>
-      <div class="error-message" id="welcomeError">请填写完整信息</div>
-      <button type="button" class="btn" onclick="goToQuiz()">📝 开始道德小测验 →</button>
+      <div class="form-group"><label>Tahun</label><select id="grade" required><option value="">-- Sila pilih --</option><option value="Tahun 1">Tahun 1</option><option value="Tahun 2">Tahun 2</option><option value="Tahun 3">Tahun 3</option><option value="Tahun 4">Tahun 4</option><option value="Tahun 5">Tahun 5</option><option value="Tahun 6">Tahun 6</option><option value="Pelajar IPG">Pelajar IPG</option></select></div>
+      <div class="form-group"><label>Peranan</label><select id="role" required><option value="">-- Sila pilih --</option><option value="Pelajar">Pelajar</option><option value="Guru">Guru</option></select></div>
+      <div class="form-group"><label>Nama / Gelaran</label><input type="text" id="userName" placeholder="Cth: Ali" maxlength="20" required></div>
+      <div class="error-message" id="welcomeError">Sila isi maklumat lengkap</div>
+      <button type="button" class="btn" onclick="goToQuiz()">Mulakan Kuiz Moral</button>
     </form>
-    <div class="privacy-note">你的信息仅用于本次课堂互动</div>
+    <div class="privacy-note">Maklumat anda hanya untuk interaksi kelas ini</div>
   </div>
 </div>
 
-<!-- 选择题页面 -->
 <div id="quizScreen" class="screen">
-  <div class="card"><div class="card-icon">📋</div><h2>道德小测验</h2><div class="subtitle" id="quizUserName"></div>
+  <div class="card"><div class="card-icon">📋</div><h2>Kuiz Moral</h2><div class="subtitle" id="quizUserName"></div>
     <form onsubmit="return false;">
-      <div class="quiz-question"><img src="https://i.ibb.co/HDj9cX3t/1.jpg" alt="题目1" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="A"> A. 举报别人对你发表仇恨言论。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="B"> B. 向其他人发送有关宗教的恶意评论。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="C"> C. 只和学校的朋友一起玩电子游戏。</label></div>
-      <div class="quiz-question"><img src="https://i.ibb.co/Zz5FsY3Y/2.jpg" alt="题目2" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="A"> A. 分享朋友的私人故事。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="B"> B. 举报网上针对性别的恶意评论。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="C"> C. 用更难听的话来辱骂欺凌者。</label></div>
-      <div class="quiz-question"><img src="https://i.ibb.co/PsKnmv0L/3.jpg" alt="题目3" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="A"> A. 有爱心。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="B"> B. 网络仇恨。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="C"> C. 有责任感。</label></div>
-      <div class="quiz-question"><img src="https://i.ibb.co/5hxgqgWG/4.jpg" alt="题目4" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="A"> A. 会说两种语言。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="B"> B. 残疾人士。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="C"> C. 过高的人。</label></div>
-      <div class="quiz-question"><img src="https://i.ibb.co/RGKC9xGf/5.jpg" alt="题目5" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="A"> A. 教师，家长或儿童热线咨询员。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="B"> B. 朋友，兄弟或表兄弟。</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="C"> C. 散播和评论仇恨言论的人。</label></div>
-      <div class="error-message" id="quizError">请回答所有题目</div>
-      <button type="button" class="btn" onclick="submitQuiz()">✅ 提交答案</button>
+      <div class="quiz-question"><img src="https://i.ibb.co/HDj9cX3t/1.jpg" alt="Soalan 1" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="A"> A. Laporkan seseorang yang menghantar komen buruk terhadap anda.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="B"> B. Menghantar komen buruk tentang agama orang lain.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="C"> C. Saya hanya bermain permainan digital dengan rakan sekolah saya.</label></div>
+      <div class="quiz-question"><img src="https://i.ibb.co/Zz5FsY3Y/2.jpg" alt="Soalan 2" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="A"> A. Kongsikan kisah peribadi rakan.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="B"> B. Laporkan komen buruk atas talian.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="C"> C. Gunakan bahasa yang lebih kasar untuk melawan pembuli.</label></div>
+      <div class="quiz-question"><img src="https://i.ibb.co/PsKnmv0L/3.jpg" alt="Soalan 3" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="A"> A. Kasih sayang.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="B"> B. Kebencian Internet.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="C"> C. Bertanggungjawab.</label></div>
+      <div class="quiz-question"><img src="https://i.ibb.co/5hxgqgWG/4.jpg" alt="Soalan 4" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="A"> A. Boleh bercakap dalam dua bahasa.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="B"> B. Orang Kecacatan.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="C"> C. Orang yang terlalu tinggi.</label></div>
+      <div class="quiz-question"><img src="https://i.ibb.co/RGKC9xGf/5.jpg" alt="Soalan 5" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="A"> A. Guru, ibu bapa atau kaunselor hotline kanak-kanak.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="B"> B. Kawan, abang atau sepupu.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="C"> C. Orang yang menyebar atau orang yang komen buruk.</label></div>
+      <div class="error-message" id="quizError">Sila jawab semua soalan</div>
+      <button type="button" class="btn" onclick="submitQuiz()">Hantar Jawapan</button>
     </form>
   </div>
 </div>
 
-<!-- 主页面 -->
 <div id="mainContent">
-  <header><h1>🌱 德润童心<span class="user-welcome" id="userWelcomeDisplay"></span></h1>
-    <div class="nav-bar"><div class="dropdown"><button type="button" class="dropdown-btn" onclick="toggleDropdown()">📚 其他课题 ▼</button><div class="dropdown-content" id="dropdownMenu"><div id="gradeList"><div class="dropdown-item" onclick="showCourses('一年级')">📖 一年级</div><div class="dropdown-item" onclick="showCourses('二年级')">📖 二年级</div><div class="dropdown-item" onclick="showCourses('三年级')">📖 三年级</div><div class="dropdown-item" onclick="showCourses('四年级')">📖 四年级</div><div class="dropdown-item" onclick="showCourses('五年级')">📖 五年级</div><div class="dropdown-item" onclick="showCourses('六年级')">📖 六年级</div></div><div id="courseList" style="display:none;"><div class="dropdown-item back-btn" onclick="backToGrades()">← 返回年级</div><div id="courseItems"></div></div></div></div><div class="today-topic">📌 今日课题：网络霸凌</div></div></header>
+  <header><h1>Menyuburkan Moral Muda<span class="user-welcome" id="userWelcomeDisplay"></span></h1>
+    <div class="nav-bar"><div class="dropdown"><button type="button" class="dropdown-btn" onclick="toggleDropdown()">Topik Lain</button><div class="dropdown-content" id="dropdownMenu"><div id="gradeList"><div class="dropdown-item" onclick="showCourses('一年级')">Tahun 1</div><div class="dropdown-item" onclick="showCourses('二年级')">Tahun 2</div><div class="dropdown-item" onclick="showCourses('三年级')">Tahun 3</div><div class="dropdown-item" onclick="showCourses('四年级')">Tahun 4</div><div class="dropdown-item" onclick="showCourses('五年级')">Tahun 5</div><div class="dropdown-item" onclick="showCourses('六年级')">Tahun 6</div></div><div id="courseList" style="display:none;"><div class="dropdown-item back-btn" onclick="backToGrades()">Kembali</div><div id="courseItems"></div></div></div></div><div class="today-topic">Topik Hari Ini: Buli Siber</div></div></header>
   <main>
-    <div style="text-align:center;margin-bottom:1.2rem;"><img src="https://i.ibb.co/VWxhBjJQ/Cute-Slogan.jpg" alt="德育 Slogan" style="width:100%;max-width:800px;border-radius:20px;box-shadow:0 6px 16px rgba(0,0,0,0.08);"></div>
-    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">▶️</span><h2>网络霸凌宣传影片</h2></div><div class="video-wrapper"><iframe src="https://www.youtube.com/embed/ZZKRRh9TjKo" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">💡 观看影片，了解网络霸凌</p></div>
-    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">🎬</span><h2>今日课题：网络霸凌</h2></div><div class="video-wrapper"><iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">💡 观看影片，学习如何应对网络霸凌</p></div>
-    <div class="board-card"><div class="board-header"><h2><span>🌙</span><span>心事匿名质询墙</span></h2><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><span class="board-badge badge-anonymous">🕶️ 完全匿名</span><button type="button" id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background:#a8c99b;color:#2d4e1e;border:none;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;cursor:pointer;">🔑 老师登录</button></div></div><div class="board-tip">💬 有心事、有疑问？在这里匿名倾诉。老师会看到并回复你。</div><div class="message-form"><textarea id="counselComment" placeholder="写下你的心事或问题……"></textarea><div style="display:flex;gap:0.4rem;margin-top:0.4rem;"><button type="button" class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex:2;">🌙 匿名发布</button><button type="button" class="btn-sm" id="teacherReplyIndicator" style="flex:1;background:#a8c99b;color:#2d4e1e;display:none;" disabled>👩‍🏫 老师模式</button></div></div><div class="message-list" id="counselList"><div class="message-status">正在加载...</div></div></div>
-    <div class="board-card"><div class="board-header"><h2><span>🌟</span><span>名言鼓励墙</span></h2><span class="board-badge badge-signed">✏️ 署名分享</span></div><div class="board-tip">✨ 分享一句名言或鼓励的话，传递正能量。</div><div class="message-form"><textarea id="quoteComment" placeholder="写下你想分享的名言或鼓励……"></textarea><button type="button" class="btn-sm" id="quoteBtn" onclick="submitQuote()">🌟 署名发布</button></div><div class="message-list" id="quoteList"><div class="message-status">正在加载...</div></div></div>
-    <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>德育互动游戏</span></h2><span class="board-badge badge-anonymous">📱 手机可玩</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">🛡️ 网络卫士</option><option value="1">🛡️ 网络卫士 II</option><option value="2">🛡️ 网络卫士 III</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！</div></div></section>
+    <div style="text-align:center;margin-bottom:1.2rem;"><img src="https://i.ibb.co/VWxhBjJQ/Cute-Slogan.jpg" alt="Slogan Moral" style="width:100%;max-width:800px;border-radius:20px;box-shadow:0 6px 16px rgba(0,0,0,0.08);"></div>
+    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">▶️</span><h2>Video Buli Siber</h2></div><div class="video-wrapper"><iframe src="https://www.youtube.com/embed/ZZKRRh9TjKo" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">Tonton video, kenali buli siber</p></div>
+    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">🎬</span><h2>Topik Hari Ini: Buli Siber</h2></div><div class="video-wrapper"><iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">Tonton video, belajar cara hadapi buli siber</p></div>
+    <div class="board-card"><div class="board-header"><h2><span>🌙</span><span>Dinding Luahan Tanpa Nama</span></h2><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><span class="board-badge badge-anonymous">Tanpa Nama</span><button type="button" id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background:#a8c99b;color:#2d4e1e;border:none;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;cursor:pointer;">Log Masuk Guru</button></div></div><div class="board-tip">Ada masalah atau soalan? Luah di sini tanpa nama. Guru akan lihat dan balas.</div><div class="message-form"><textarea id="counselComment" placeholder="Tulis masalah atau soalan anda..."></textarea><div style="display:flex;gap:0.4rem;margin-top:0.4rem;"><button type="button" class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex:2;">Hantar Tanpa Nama</button><button type="button" class="btn-sm" id="teacherReplyIndicator" style="flex:1;background:#a8c99b;color:#2d4e1e;display:none;" disabled>Mod Guru</button></div></div><div class="message-list" id="counselList"><div class="message-status">Sedang memuat...</div></div></div>
+    <div class="board-card"><div class="board-header"><h2><span>🌟</span><span>Dinding Kata Semangat</span></h2><span class="board-badge badge-signed">Kongsi Beridentiti</span></div><div class="board-tip">Kongsi kata mutiara atau semangat, sebarkan positif.</div><div class="message-form"><textarea id="quoteComment" placeholder="Tulis kata mutiara atau semangat..."></textarea><button type="button" class="btn-sm" id="quoteBtn" onclick="submitQuote()">Hantar Beridentiti</button></div><div class="message-list" id="quoteList"><div class="message-status">Sedang memuat...</div></div></div>
+    <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>Permainan Interaktif Moral</span></h2><span class="board-badge badge-anonymous">Boleh Guna Telefon</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">Pengawal Siber</option><option value="1">Pengawal Siber II</option><option value="2">Pengawal Siber III</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">Pengawal Siber - Halang buli, lindungi dunia siber!</div></div></section>
   </main>
-  <footer><p>© 2026 德润童心 · 师范学校（课程作业） | 德育如细雨，润物细无声</p></footer>
+  <footer><p>2026 Menyuburkan Moral Muda - Tugasan Kursus IPG | Moral bagai hujan renyai, menyubur tanpa bunyi</p></footer>
 </div>
 
 <script>
@@ -380,7 +376,7 @@ function switchGame(index){
   document.getElementById('gameNote').innerHTML=game.note;
 }
 
-// ==================== 双留言板（从工作版本提取） ====================
+// ==================== 双留言板 ====================
 async function submitCounsel(){
   var textarea=document.getElementById('counselComment');
   var btn=document.getElementById('counselBtn');
