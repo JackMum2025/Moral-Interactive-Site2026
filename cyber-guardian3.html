@@ -134,9 +134,9 @@ const TDEFS={
     upgCost:[190,260]},
   prefect:{name:'Prefect',icon:'🎖️',cost:200,color:'#a78bfa',proj:'tentacle',
     levels:[
-      {dmg:12,rate:25,range:175,slow:0,slowDur:0,multi:7,splash:0},
-      {dmg:18,rate:20,range:195,slow:0,slowDur:0,multi:9,splash:0},
-      {dmg:27,rate:16,range:215,slow:0.26,slowDur:44,multi:11,splash:0}],
+      {dmg:12,rate:25,range:175,slow:0,slowDur:0,multi:6,splash:0},
+      {dmg:18,rate:20,range:195,slow:0,slowDur:0,multi:7,splash:0},
+      {dmg:27,rate:16,range:215,slow:0.26,slowDur:44,multi:8,splash:0}],
     upgCost:[250,320]},
   vp:{name:'VP',icon:'🏛️',cost:260,color:'#34d399',proj:'spine',aoe360:true,
     levels:[
@@ -144,24 +144,25 @@ const TDEFS={
       {dmg:28,rate:23,range:115,slow:0,slowDur:0,multi:14,splash:0},
       {dmg:42,rate:18,range:130,slow:0.18,slowDur:34,multi:16,splash:0}],
     upgCost:[310,400]},
-  principal:{name:'Principal',icon:'👨‍💼',cost:350,color:'#fbbf24',proj:'pulse',aoe360:true,isPrincipal:true,maxCount:1,
+  principal:{name:'Principal',icon:'👨‍💼',cost:500,color:'#fbbf24',proj:'pulse',aoe360:true,isPrincipal:true,maxCount:1,
     levels:[
-      {dmg:0, rate:260,range:99999,slow:0.30,slowDur:125,multi:1,splash:99999},
-      {dmg:25,rate:215,range:99999,slow:0.22,slowDur:160,multi:1,splash:99999},
-      {dmg:50,rate:170,range:99999,slow:0.15,slowDur:200,multi:1,splash:99999}],
+      {dmg:0, rate:260,range:99999,slow:0.42,slowDur:125,multi:1,splash:99999},
+      {dmg:25,rate:215,range:99999,slow:0.34,slowDur:160,multi:1,splash:99999},
+      {dmg:50,rate:170,range:99999,slow:0.27,slowDur:200,multi:1,splash:99999}],
     upgCost:[420,540]},
 };
 const TKEYS=Object.keys(TDEFS);
 
 // ══════════ ENEMY DEFS — tuned HP so wave 1 is fair ══════════
 const EDEFS={
-  minor:   {hp:80,  spd:0.75,gold:8, size:13,fill:'#4ade80',glow:'#22c55e',score:10},
-  quick:   {hp:45,  spd:1.60,gold:7, size:10,fill:'#facc15',glow:'#eab308',score:15},
-  heavy:   {hp:380, spd:0.42,gold:18,size:20,fill:'#f87171',glow:'#ef4444',score:30},
-  armored: {hp:320, spd:0.55,gold:16,size:18,fill:'#94a3b8',glow:'#cbd5e1',score:35},
-  boss:    {hp:1100,spd:0.32,gold:50,size:27,fill:'#c084fc',glow:'#a855f7',score:100},
-  regen:   {hp:250, spd:0.50,gold:14,size:15,fill:'#fb923c',glow:'#f97316',score:40},
-  splitter:{hp:160, spd:0.65,gold:9, size:14,fill:'#38bdf8',glow:'#0ea5e9',score:25},
+  // gold values reduced ~20% from previous, quick spd +10%
+  minor:   {hp:80,  spd:0.75,gold:6, size:13,fill:'#4ade80',glow:'#22c55e',score:10},
+  quick:   {hp:45,  spd:1.76,gold:6, size:10,fill:'#facc15',glow:'#eab308',score:15},
+  heavy:   {hp:380, spd:0.42,gold:14,size:20,fill:'#f87171',glow:'#ef4444',score:30,leakLives:3},
+  armored: {hp:320, spd:0.55,gold:13,size:18,fill:'#94a3b8',glow:'#cbd5e1',score:35,leakLives:3},
+  boss:    {hp:1100,spd:0.32,gold:40,size:27,fill:'#c084fc',glow:'#a855f7',score:100,leakLives:5},
+  regen:   {hp:250, spd:0.50,gold:11,size:15,fill:'#fb923c',glow:'#f97316',score:40,regenPct:0.20},
+  splitter:{hp:160, spd:0.65,gold:7, size:14,fill:'#38bdf8',glow:'#0ea5e9',score:25},
 };
 
 // ══════════ 20 WAVES — p:0=pathA(left) p:1=pathB(right) p:2=both alternating ══════════
@@ -382,16 +383,29 @@ function updateEnemies(dt){
   for(let i=enemies.length-1;i>=0;i--){
     const e=enemies[i];
     const path=PATHS[e.pi];
-    if(e.type==='regen'&&e.regenTick>0){e.regenTick-=dt;if(e.regenTick<=0){e.regenTick=200;e.hp=Math.min(e.maxHp,e.hp+Math.ceil(e.maxHp*0.10));}}
+    // regen: uses regenPct from def (default 10%)
+    if(e.type==='regen'&&e.regenTick>0){
+      e.regenTick-=dt;
+      if(e.regenTick<=0){
+        const pct=EDEFS[e.type].regenPct||0.10;
+        e.regenTick=200;
+        e.hp=Math.min(e.maxHp,e.hp+Math.ceil(e.maxHp*pct));
+      }
+    }
     if(e.slowT>0)e.slowT-=dt; else e.slow=1;
     e.dist+=e.spd*e.slow*gspeed*dt;
     const p=posOnPath(path,e.dist);
     e.x=p.x;e.y=p.y;e.wob+=.05*dt;
     if(e.flash>0)e.flash-=dt;
     if(p.done||e.dist>pathLength(e.pi)+10){
-      enemies.splice(i,1);lives--;
+      enemies.splice(i,1);
+      // heavy/armored leak = -3 lives, boss leak = -5 lives, others = -1
+      const penalty=EDEFS[e.type].leakLives||1;
+      lives=Math.max(0,lives-penalty);
       document.getElementById('h-lives').textContent=lives;
-      floatAt(p.x,p.y,'💔','#f87171');
+      // show how many lives lost
+      const txt=penalty>1?`💔×${penalty}`:'💔';
+      floatAt(p.x,p.y,txt,'#f87171');
       if(lives<=0){loseGame();return;}
     }
   }
