@@ -2,9 +2,19 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Menyuburkan Moral Muda · Pendidikan Moral</title>
   <style>
+    /* ========== 移动端基础优化 ========== */
+    html {
+      -webkit-text-size-adjust: 100%;
+      touch-action: manipulation;
+    }
+
+    *, *::before, *::after {
+      -webkit-tap-highlight-color: transparent;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -17,6 +27,17 @@
       color: #2e3b2c;
       line-height: 1.6;
       min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    select, input, textarea, button {
+      font-size: 16px !important;
+    }
+
+    .btn, .btn-sm, .quiz-option, .dropdown-item {
+      min-height: 44px;
     }
 
     .screen {
@@ -25,96 +46,106 @@
       left: 0;
       width: 100%;
       height: 100vh;
+      height: 100dvh;
       background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       z-index: 1000;
-      padding: 1.5rem;
+      padding: 1rem;
       overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
 
     .card {
       background: white;
-      max-width: 600px;
+      max-width: 500px;
       width: 100%;
-      padding: 2rem 1.8rem;
-      border-radius: 32px;
+      padding: 1.5rem 1.2rem;
+      border-radius: 24px;
       box-shadow: 0 12px 28px rgba(80, 110, 60, 0.12);
       border: 1px solid #c8dcc0;
       margin: auto;
     }
 
-    .card-icon { font-size: 3.5rem; margin-bottom: 0.5rem; text-align: center; }
-    h1 { color: #2d4e1e; font-size: 1.8rem; font-weight: 500; margin-bottom: 0.3rem; text-align: center; }
-    h2 { color: #3a5e2b; font-size: 1.4rem; font-weight: 500; margin-bottom: 1.2rem; }
-    .subtitle { color: #6b7c63; margin-bottom: 1.5rem; border-bottom: 1px solid #d9e6d3; padding-bottom: 1rem; text-align: center; }
+    .card-icon { font-size: 3rem; margin-bottom: 0.5rem; text-align: center; }
+    h1 { color: #2d4e1e; font-size: 1.6rem; font-weight: 500; margin-bottom: 0.3rem; text-align: center; }
+    h2 { color: #3a5e2b; font-size: 1.3rem; font-weight: 500; margin-bottom: 1rem; }
+    .subtitle { color: #6b7c63; margin-bottom: 1.2rem; border-bottom: 1px solid #d9e6d3; padding-bottom: 0.8rem; text-align: center; font-size: 0.95rem; }
 
-    .form-group { text-align: left; margin-bottom: 1.2rem; }
-    .form-group label { display: block; color: #3a5e2b; font-weight: 500; margin-bottom: 0.3rem; }
+    .form-group { text-align: left; margin-bottom: 1rem; }
+    .form-group label { display: block; color: #3a5e2b; font-weight: 500; margin-bottom: 0.3rem; font-size: 0.95rem; }
     .form-group select, .form-group input {
       width: 100%;
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 0.9rem;
       border: 2px solid #d9e6d3;
       border-radius: 40px;
       font-size: 1rem;
       background: white;
+      appearance: none;
+      -webkit-appearance: none;
     }
     .form-group select:focus, .form-group input:focus { outline: none; border-color: #7fa86a; }
 
-    .quiz-question { margin-bottom: 2rem; }
+    .quiz-question { margin-bottom: 1.5rem; }
     .quiz-image {
       width: 100%;
-      max-width: 400px;
-      border-radius: 16px;
-      margin-bottom: 1rem;
+      max-width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 0.8rem;
       display: block;
       margin-left: auto;
       margin-right: auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     .quiz-option {
-      display: block;
-      padding: 0.8rem 1rem;
-      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.7rem 0.9rem;
+      margin-bottom: 0.4rem;
       border: 2px solid #d9e6d3;
       border-radius: 40px;
       cursor: pointer;
       transition: all 0.2s;
+      font-size: 0.95rem;
     }
     .quiz-option:hover { border-color: #7fa86a; background: #f0f7ec; }
-    .quiz-option input { margin-right: 10px; accent-color: #7fa86a; }
+    .quiz-option input { margin-right: 6px; accent-color: #7fa86a; min-width: 18px; }
     .quiz-option.selected { border-color: #7fa86a; background: #e8f0e3; }
 
     .btn {
       background: #7fa86a;
       color: white;
       border: none;
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
+      padding: 0.9rem 1.5rem;
+      font-size: 1.1rem;
       border-radius: 40px;
       cursor: pointer;
       font-weight: 500;
       width: 100%;
       transition: background 0.2s;
-      margin-top: 1rem;
+      margin-top: 0.8rem;
     }
     .btn:hover { background: #5b8c4e; }
     .btn:disabled { background: #b3cba7; cursor: not-allowed; }
 
-    .privacy-note { margin-top: 1rem; font-size: 0.8rem; color: #9bb88b; text-align: center; }
+    .privacy-note { margin-top: 0.8rem; font-size: 0.75rem; color: #9bb88b; text-align: center; }
     .error-message { color: #c44; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
 
     #quizScreen, #mainContent { display: none; }
 
     header {
       background-color: #d9e6d3;
-      padding: 1rem 1.5rem;
+      padding: 0.8rem 1rem;
       border-bottom: 3px solid #9bb88b;
     }
 
     header h1 {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 500;
       color: #2d4e1e;
       display: flex;
@@ -125,17 +156,17 @@
 
     .user-welcome {
       background: #a8c99b;
-      padding: 0.2rem 1rem;
+      padding: 0.2rem 0.8rem;
       border-radius: 30px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #2d4e1e;
     }
 
     .nav-bar {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
-      margin-top: 0.5rem;
+      gap: 1rem;
+      margin-top: 0.4rem;
       flex-wrap: wrap;
     }
 
@@ -144,8 +175,8 @@
       background: white;
       border: 2px solid #9bb88b;
       color: #3a5e2b;
-      padding: 0.5rem 1.2rem;
-      font-size: 1rem;
+      padding: 0.4rem 1rem;
+      font-size: 0.9rem;
       border-radius: 40px;
       cursor: pointer;
       font-weight: 500;
@@ -158,23 +189,23 @@
       top: 100%;
       left: 0;
       background: white;
-      min-width: 260px;
+      min-width: 200px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.12);
       border-radius: 20px;
       border: 1px solid #d9e6d3;
       z-index: 100;
-      margin-top: 0.5rem;
+      margin-top: 0.4rem;
       overflow: hidden;
-      max-height: 400px;
+      max-height: 300px;
       overflow-y: auto;
     }
     .dropdown-content.show { display: block; }
 
     .dropdown-item {
-      padding: 0.9rem 1.5rem;
+      padding: 0.7rem 1.2rem;
       cursor: pointer;
       color: #3a5e2b;
-      font-size: 1rem;
+      font-size: 0.9rem;
       border-bottom: 1px solid #e2ecdc;
     }
     .dropdown-item:last-child { border-bottom: none; }
@@ -183,23 +214,24 @@
 
     .today-topic {
       background: #a8c99b;
-      padding: 0.4rem 1.2rem;
+      padding: 0.3rem 1rem;
       border-radius: 30px;
       color: #2d4e1e;
       font-weight: 500;
+      font-size: 0.9rem;
     }
 
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 1.5rem 1rem;
+      padding: 1rem 0.8rem;
     }
 
     .video-container {
       background: white;
-      border-radius: 24px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      border-radius: 20px;
+      padding: 1rem;
+      margin-bottom: 1.2rem;
       box-shadow: 0 6px 16px rgba(0,0,0,0.05);
       border: 1px solid #d9e6d3;
     }
@@ -207,16 +239,16 @@
     .video-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
+      gap: 6px;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.5rem;
       border-bottom: 2px solid #e2ecdc;
     }
 
-    .video-header h2 { color: #3a5e2b; font-size: 1.4rem; }
+    .video-header h2 { color: #3a5e2b; font-size: 1.2rem; }
 
     .video-wrapper {
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
     }
 
@@ -229,9 +261,9 @@
 
     .board-card {
       background: white;
-      border-radius: 24px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      border-radius: 20px;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
       box-shadow: 0 6px 16px rgba(0,0,0,0.05);
       border: 1px solid #d9e6d3;
     }
@@ -240,48 +272,51 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.5rem;
       border-bottom: 2px solid #e2ecdc;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
-    .board-header h2 { color: #3a5e2b; font-size: 1.4rem; display: flex; align-items: center; gap: 8px; }
+    .board-header h2 { color: #3a5e2b; font-size: 1.2rem; display: flex; align-items: center; gap: 6px; }
 
     .board-badge {
-      padding: 0.2rem 1rem;
+      padding: 0.2rem 0.8rem;
       border-radius: 30px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
     }
     .badge-anonymous { background: #d9e6d3; color: #3a5e2b; }
     .badge-signed { background: #a8c99b; color: #2d4e1e; }
 
     .board-tip {
       background: #e8f0e3;
-      border-radius: 16px;
-      padding: 0.8rem 1rem;
-      margin-bottom: 1.2rem;
+      border-radius: 12px;
+      padding: 0.6rem 0.8rem;
+      margin-bottom: 1rem;
       color: #4a6040;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .message-form {
       background: #f8fbf7;
-      border-radius: 20px;
-      padding: 1.2rem;
-      margin-bottom: 1.2rem;
+      border-radius: 16px;
+      padding: 1rem;
+      margin-bottom: 1rem;
       border: 1px solid #d9e6d3;
     }
 
     textarea {
       width: 100%;
-      padding: 0.8rem;
+      padding: 0.7rem;
       border: 2px solid #d9e6d3;
-      border-radius: 16px;
+      border-radius: 14px;
       font-size: 1rem;
       resize: vertical;
-      min-height: 90px;
-      margin-bottom: 0.8rem;
+      min-height: 80px;
+      margin-bottom: 0.6rem;
       font-family: inherit;
+      -webkit-border-radius: 0;
     }
     textarea:focus { outline: none; border-color: #7fa86a; }
 
@@ -289,94 +324,120 @@
       background: #7fa86a;
       color: white;
       border: none;
-      padding: 0.7rem 1.5rem;
-      font-size: 1rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
       border-radius: 40px;
       cursor: pointer;
     }
 
     .message-list {
-      max-height: 300px;
+      max-height: 250px;
       overflow-y: auto;
-      padding-right: 0.3rem;
+      padding-right: 0.2rem;
+      -webkit-overflow-scrolling: touch;
     }
 
     .message-item {
       background: #fafbf9;
-      border-radius: 14px;
-      padding: 0.8rem 1rem;
-      margin-bottom: 0.6rem;
+      border-radius: 12px;
+      padding: 0.6rem 0.8rem;
+      margin-bottom: 0.5rem;
       border: 1px solid #e2ecdc;
     }
 
     .message-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 0.3rem;
-      font-size: 0.8rem;
+      margin-bottom: 0.2rem;
+      font-size: 0.75rem;
+      flex-wrap: wrap;
     }
     .message-author { color: #5b8c4e; font-weight: 500; }
     .message-time { color: #999; }
-    .message-content { color: #2e3b2c; word-break: break-word; font-size: 0.95rem; }
+    .message-content { color: #2e3b2c; word-break: break-word; font-size: 0.9rem; }
 
-    .message-status { text-align: center; padding: 1rem; color: #999; }
-    .empty-message { text-align: center; color: #aaa; padding: 1.5rem; font-style: italic; }
+    .message-status { text-align: center; padding: 0.8rem; color: #999; font-size: 0.9rem; }
+    .empty-message { text-align: center; color: #aaa; padding: 1rem; font-style: italic; font-size: 0.9rem; }
 
-    .game-section { margin: 1.5rem 0; }
+    .game-section { margin: 1.2rem 0; }
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
-    .section-header h2 { color: #3a5e2b; font-size: 1.4rem; }
+    .section-header h2 { color: #3a5e2b; font-size: 1.2rem; }
 
     .game-selector select {
       width: 100%;
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 0.9rem;
       border: 2px solid #d9e6d3;
       border-radius: 40px;
       font-size: 1rem;
       background: white;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
+      appearance: none;
+      -webkit-appearance: none;
     }
 
     .game-container {
       background: white;
-      border-radius: 20px;
-      padding: 1rem;
+      border-radius: 16px;
+      padding: 0.8rem;
       border: 1px solid #d9e6d3;
     }
 
     .game-wrapper {
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
       display: flex;
       justify-content: center;
     }
     .game-wrapper iframe {
       width: 100%;
-      height: 600px;
+      height: 500px;
       border: none;
     }
     .game-note {
-      margin-top: 0.8rem;
+      margin-top: 0.6rem;
       color: #8aa67d;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       text-align: center;
     }
 
     footer {
       background-color: #d9e6d3;
-      padding: 1.2rem;
+      padding: 1rem;
       text-align: center;
       color: #36522b;
-      margin-top: 1.5rem;
+      margin-top: 1.2rem;
       border-top: 2px solid #b3cba7;
+      font-size: 0.85rem;
     }
 
-    @media (min-width: 600px) {
-      header h1 { font-size: 2rem; }
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      .card { padding: 1.2rem 1rem; margin: 0.3rem auto; }
+      .screen { padding: 0.5rem; }
+      .btn { padding: 0.8rem 1.2rem; font-size: 1rem; }
+      .quiz-option { padding: 0.6rem 0.7rem; font-size: 0.9rem; }
+      textarea { min-height: 70px; }
+      .game-wrapper iframe { height: 350px; }
+      .dropdown-content { min-width: 180px; max-height: 250px; }
+      h1 { font-size: 1.4rem; }
+      h2 { font-size: 1.1rem; }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .screen { padding: 0.3rem; }
+      .card { padding: 0.8rem; max-width: 400px; }
+      h1 { font-size: 1.3rem; }
+      h2 { font-size: 1rem; }
+      .quiz-image { max-height: 100px; }
+      .btn { padding: 0.6rem 1rem; font-size: 0.9rem; }
+      .game-wrapper iframe { height: 250px; }
     }
   </style>
 </head>
@@ -503,22 +564,22 @@
 
   <main>
     <!-- Slogan -->
-    <div style="text-align: center; margin-bottom: 1.5rem;">
+    <div style="text-align: center; margin-bottom: 1.2rem;">
       <img src="https://i.ibb.co/VWxhBjJQ/Cute-Slogan.jpg" 
            alt="Slogan Moral" 
-           style="width:100%; max-width:800px; border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
+           style="width:100%; max-width:800px; border-radius: 20px; box-shadow: 0 6px 16px rgba(0,0,0,0.08);">
     </div>
 
     <!-- Video Interaktif -->
     <div class="video-container">
       <div class="video-header">
-        <span style="font-size: 1.8rem;">🎬</span>
+        <span style="font-size: 1.5rem;">🎬</span>
         <h2>Topik Hari Ini: Buli Siber</h2>
       </div>
       <div class="video-wrapper">
         <iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
       </div>
-      <p style="color: #8aa67d; font-size: 0.9rem; text-align: center; margin-top: 0.8rem;">
+      <p style="color: #8aa67d; font-size: 0.8rem; text-align: center; margin-top: 0.6rem;">
         💡 Tonton video, belajar cara hadapi buli siber
       </p>
     </div>
@@ -527,15 +588,15 @@
     <div class="board-card">
       <div class="board-header">
         <h2><span>🌙</span><span>Dinding Luahan Tanpa Nama</span></h2>
-        <div style="display: flex; gap: 0.5rem;">
+        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
           <span class="board-badge badge-anonymous">🕶️ Tanpa Nama</span>
-          <button id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background: #a8c99b; color: #2d4e1e; border: none; padding: 0.2rem 1rem; border-radius: 30px; font-size: 0.75rem; cursor: pointer;">🔑 Log Masuk Guru</button>
+          <button id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background: #a8c99b; color: #2d4e1e; border: none; padding: 0.2rem 0.8rem; border-radius: 30px; font-size: 0.7rem; cursor: pointer;">🔑 Log Masuk Guru</button>
         </div>
       </div>
       <div class="board-tip">💬 Ada masalah atau soalan? Luah di sini tanpa nama. Guru akan lihat dan balas.</div>
       <div class="message-form">
         <textarea id="counselComment" placeholder="Tulis masalah atau soalan anda..."></textarea>
-        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+        <div style="display: flex; gap: 0.4rem; margin-top: 0.4rem;">
           <button class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex: 2;">🌙 Hantar Tanpa Nama</button>
           <button class="btn-sm" id="teacherReplyIndicator" style="flex: 1; background: #a8c99b; color: #2d4e1e; display: none;" disabled>👩‍🏫 Mod Guru</button>
         </div>
@@ -578,7 +639,7 @@
 
       <div class="game-container">
         <div class="game-wrapper" id="gameWrapper">
-          <iframe id="gameIframe" src="cyber-guardian.html" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>
+          <iframe id="gameIframe" src="cyber-guardian.html" style="width:100%; height:500px; border:none;" allowfullscreen></iframe>
         </div>
         <div class="game-note" id="gameNote">🛡️ Pengawal Siber · Halang buli, lindungi dunia siber!</div>
       </div>
@@ -756,11 +817,11 @@ function submitQuiz() {
   
   const answers = { q1: 'A', q2: 'B', q3: 'B', q4: 'B', q5: 'A' };
   const answerTexts = {
-    q1: { correct: 'B. Berhenti tolong dia bangun, tunjuk prihatin', explanation: 'Menolong orang adalah nilai murni' },
-    q2: { correct: 'A. Pulangkan segera, ucap terima kasih', explanation: 'Pinjam barang kena amanah' },
-    q3: { correct: 'B. Bincang tenang, saling memahami', explanation: 'Komunikasi cara terbaik selesai konflik' },
-    q4: { correct: 'A. Usaha jadi orang amanah', explanation: 'Amanah adalah nilai penting' },
-    q5: { correct: 'A. Buang dalam tong sampah', explanation: 'Jaga alam sekitar tanggungjawab bersama' }
+    q1: { correct: 'A. Laporkan seseorang yang menghantar komen buruk terhadap anda.', explanation: 'Menolong orang adalah nilai murni' },
+    q2: { correct: 'B. Laporkan komen buruk atas talian.', explanation: 'Pinjam barang kena amanah' },
+    q3: { correct: 'B. Kebencian Internet.', explanation: 'Komunikasi cara terbaik selesai konflik' },
+    q4: { correct: 'B. Orang Kecacatan.', explanation: 'Amanah adalah nilai penting' },
+    q5: { correct: 'A. Guru, ibu bapa atau kaunselor hotline kanak-kanak.', explanation: 'Jaga alam sekitar tanggungjawab bersama' }
   };
   
   let score = 0;
@@ -781,7 +842,7 @@ function showQuizFeedback(score, userAnswers, correctAnswers, answerTexts) {
   overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
   
   const modal = document.createElement('div');
-  modal.style.cssText = 'background:white;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:2rem 1.5rem;border-radius:32px;box-shadow:0 20px 40px rgba(0,0,0,0.2);';
+  modal.style.cssText = 'background:white;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:1.5rem 1.2rem;border-radius:24px;box-shadow:0 20px 40px rgba(0,0,0,0.2);';
   
   let feedbackHtml = '';
   const questionLabels = ['Soalan 1', 'Soalan 2', 'Soalan 3', 'Soalan 4', 'Soalan 5'];
@@ -791,16 +852,16 @@ function showQuizFeedback(score, userAnswers, correctAnswers, answerTexts) {
     const userAnswer = userAnswers[qKey];
     const isCorrect = userAnswer === correctAnswers[qKey];
     feedbackHtml += `
-      <div style="margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid #e2ecdc;">
+      <div style="margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px solid #e2ecdc;">
         <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;">
           <span style="font-weight:500;color:#2d4e1e;">${questionLabels[i-1]}</span>
-          ${isCorrect ? '<span style="color:#7fa86a;">✅ Jawapan Betul</span>' : '<span style="color:#c44;">❌ Jawapan Salah</span>'}
+          ${isCorrect ? '<span style="color:#7fa86a;font-size:0.85rem;">✅ Jawapan Betul</span>' : '<span style="color:#c44;font-size:0.85rem;">❌ Jawapan Salah</span>'}
         </div>
         ${!isCorrect ? `
-          <div style="background:#fef8e7;padding:0.8rem;border-radius:12px;margin-top:0.5rem;">
-            <p style="color:#6b7c63;">Jawapan Anda: ${userAnswer}</p>
-            <p style="color:#2d4e1e;margin-top:0.3rem;">✅ Jawapan Betul: ${answerTexts[qKey].correct}</p>
-            <p style="color:#7fa86a;margin-top:0.3rem;">💡 ${answerTexts[qKey].explanation}</p>
+          <div style="background:#fef8e7;padding:0.6rem;border-radius:10px;margin-top:0.4rem;">
+            <p style="color:#6b7c63;font-size:0.85rem;">Jawapan Anda: ${userAnswer}</p>
+            <p style="color:#2d4e1e;font-size:0.85rem;margin-top:0.2rem;">✅ Jawapan Betul: ${answerTexts[qKey].correct}</p>
+            <p style="color:#7fa86a;font-size:0.8rem;margin-top:0.2rem;">💡 ${answerTexts[qKey].explanation}</p>
           </div>
         ` : ''}
       </div>
@@ -809,14 +870,14 @@ function showQuizFeedback(score, userAnswers, correctAnswers, answerTexts) {
   
   const isFullScore = score === 5;
   modal.innerHTML = `
-    <div style="text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:3rem;">${isFullScore ? '🎉🏆' : '📝'}</div>
-      <h2 style="color:#2d4e1e;font-size:1.6rem;">${isFullScore ? 'Markah Penuh! Hebat!' : 'Kuiz Selesai!'}</h2>
-      <p style="color:#43673a;font-size:1.1rem;">${isFullScore ? 'Kamu memang jaguh nilai murni! ✨' : 'Teruskan usaha! 💪'}</p>
+    <div style="text-align:center;margin-bottom:1rem;">
+      <div style="font-size:2.5rem;">${isFullScore ? '🎉🏆' : '📝'}</div>
+      <h2 style="color:#2d4e1e;font-size:1.4rem;">${isFullScore ? 'Markah Penuh! Hebat!' : 'Kuiz Selesai!'}</h2>
+      <p style="color:#43673a;font-size:1rem;">${isFullScore ? 'Kamu memang jaguh nilai murni! ✨' : 'Teruskan usaha! 💪'}</p>
     </div>
-    <div style="margin-bottom:1.5rem;">${feedbackHtml}</div>
-    <p style="color:#8aa67d;text-align:center;margin-bottom:1rem;">${isFullScore ? 'Kamu telah kuasai pengetahuan moral ini!' : 'Ingat jawapan betul, lain kali mesti penuh!'}</p>
-    <button id="enterMainFromFeedback" style="background:#7fa86a;color:white;border:none;padding:0.8rem 2rem;font-size:1.1rem;border-radius:40px;cursor:pointer;width:100%;">🌸 Masuk Taman Moral →</button>
+    <div style="margin-bottom:1rem;">${feedbackHtml}</div>
+    <p style="color:#8aa67d;text-align:center;margin-bottom:0.8rem;font-size:0.85rem;">${isFullScore ? 'Kamu telah kuasai pengetahuan moral ini!' : 'Ingat jawapan betul, lain kali mesti penuh!'}</p>
+    <button id="enterMainFromFeedback" style="background:#7fa86a;color:white;border:none;padding:0.7rem 1.5rem;font-size:1rem;border-radius:40px;cursor:pointer;width:100%;">🌸 Masuk Taman Moral →</button>
   `;
   
   overlay.appendChild(modal);
@@ -846,7 +907,7 @@ function toggleDropdown() {
 function showCourses(grade) {
   const coursesByGrade = {
     '一年级': [
-      { malay: 'Agama dan Kepercayaan Saya' },
+      { malay: 'Pegangan Hidup Saya' },
       { malay: 'Malaikat Kecil Suka Menolong' },
       { malay: 'Saya Sudah Besar' },
       { malay: 'Gembira Ucap Terima Kasih' },
@@ -944,7 +1005,7 @@ function showCourses(grade) {
   };
   
   const courses = coursesByGrade[grade] || [];
-  let html = `<div style="padding:0.5rem 1.5rem;color:#6b7c63;font-size:0.9rem;background:#f8fbf7;">${grade}</div>`;
+  let html = `<div style="padding:0.4rem 1.2rem;color:#6b7c63;font-size:0.85rem;background:#f8fbf7;">${grade}</div>`;
   courses.forEach((c, index) => {
     html += `<div class="dropdown-item" onclick="selectCourse('${grade}', 'Pelajaran ${index+1}: ${c.malay}')">📚 Pelajaran ${index+1}: ${c.malay}</div>`;
   });
@@ -968,14 +1029,14 @@ function showContactModal(grade, course) {
   const overlay = document.createElement('div');
   overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
   const modal = document.createElement('div');
-  modal.style.cssText = 'background:white;max-width:400px;width:90%;padding:2rem 1.8rem;border-radius:32px;text-align:center;';
+  modal.style.cssText = 'background:white;max-width:380px;width:90%;padding:1.5rem 1.2rem;border-radius:24px;text-align:center;';
   modal.innerHTML = `
-    <div style="font-size:3rem;">📧</div>
-    <h3 style="color:#2d4e1e;font-size:1.4rem;">${grade} · ${course}</h3>
-    <p style="color:#6b7c63;margin-bottom:1.5rem;">Untuk topik lain, sila emel Cikgu Mao</p>
-    <div style="background:#f8fbf7;padding:1rem;border-radius:16px;margin-bottom:1.5rem;"><p style="color:#3a5e2b;font-weight:500;">📮 nexusgt.my@gmail.com</p></div>
-    <p style="color:#8aa67d;margin-bottom:1.5rem;">Untuk maklumat langganan</p>
-    <button id="closeModalBtn" style="background:#7fa86a;color:white;border:none;padding:0.8rem 2rem;font-size:1rem;border-radius:40px;cursor:pointer;width:100%;">Saya Faham</button>
+    <div style="font-size:2.5rem;">📧</div>
+    <h3 style="color:#2d4e1e;font-size:1.2rem;">${grade} · ${course}</h3>
+    <p style="color:#6b7c63;margin-bottom:1.2rem;">Untuk topik lain, sila emel Cikgu Mao</p>
+    <div style="background:#f8fbf7;padding:0.8rem;border-radius:12px;margin-bottom:1.2rem;"><p style="color:#3a5e2b;font-weight:500;">📮 nexusgt.my@gmail.com</p></div>
+    <p style="color:#8aa67d;margin-bottom:1.2rem;font-size:0.85rem;">Untuk maklumat langganan</p>
+    <button id="closeModalBtn" style="background:#7fa86a;color:white;border:none;padding:0.7rem 1.5rem;font-size:0.95rem;border-radius:40px;cursor:pointer;width:100%;">Saya Faham</button>
   `;
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
@@ -989,7 +1050,7 @@ function switchGame(index) {
   index = parseInt(index);
   const game = GAMES[index];
   const wrapper = document.getElementById('gameWrapper');
-  wrapper.innerHTML = `<iframe src="${game.src}" style="width:100%; height:600px; border:none;" allowfullscreen></iframe>`;
+  wrapper.innerHTML = `<iframe src="${game.src}" style="width:100%; height:500px; border:none;" allowfullscreen></iframe>`;
   document.getElementById('gameNote').innerHTML = game.note;
 }
 
@@ -1056,7 +1117,7 @@ async function loadAllMessages() {
       counsel.forEach(item => {
         const isTeacherReply = item.content.startsWith('[老师回复]');
         const cleanMsg = item.content.replace('[老师回复]', '').replace('[质询]', '').trim();
-        html += `<div class="message-item" style="${isTeacherReply ? 'background:#f0f7ec;border-left:4px solid #7fa86a;' : ''}"><div class="message-header"><span class="message-author" style="${isTeacherReply ? 'color:#2d4e1e;font-weight:600;' : ''}">${isTeacherReply ? '👩‍🏫 Balasan Cikgu Mao' : '🕶️ Tanpa Nama'}</span><span class="message-time">${item.timestamp}</span></div><div class="message-content">${escapeHtml(cleanMsg)}</div></div>`;
+        html += `<div class="message-item" style="${isTeacherReply ? 'background:#f0f7ec;border-left:3px solid #7fa86a;' : ''}"><div class="message-header"><span class="message-author" style="${isTeacherReply ? 'color:#2d4e1e;font-weight:600;' : ''}">${isTeacherReply ? '👩‍🏫 Balasan Cikgu Mao' : '🕶️ Tanpa Nama'}</span><span class="message-time">${item.timestamp}</span></div><div class="message-content">${escapeHtml(cleanMsg)}</div></div>`;
       });
       counselList.innerHTML = html;
     }
