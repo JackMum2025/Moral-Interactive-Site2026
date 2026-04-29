@@ -36,7 +36,6 @@
       -ms-user-select: none;
     }
 
-    /* 允许输入框中可以选择文字 */
     input, textarea {
       user-select: text;
       -webkit-user-select: text;
@@ -174,131 +173,53 @@
       color: #2d4e1e;
     }
 
-    .nav-bar {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 0.4rem;
-      flex-wrap: wrap;
-    }
-
+    .nav-bar { display: flex; align-items: center; gap: 1rem; margin-top: 0.4rem; flex-wrap: wrap; }
     .dropdown { position: relative; display: inline-block; }
     .dropdown-btn {
-      background: white;
-      border: 2px solid #9bb88b;
-      color: #3a5e2b;
-      padding: 0.4rem 1rem;
-      font-size: 0.9rem;
-      border-radius: 40px;
-      cursor: pointer;
-      font-weight: 500;
+      background: white; border: 2px solid #9bb88b; color: #3a5e2b;
+      padding: 0.4rem 1rem; font-size: 0.9rem; border-radius: 40px; cursor: pointer; font-weight: 500;
     }
     .dropdown-btn:hover { background: #e8f0e3; }
-
     .dropdown-content {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: white;
-      min-width: 200px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-      border-radius: 20px;
-      border: 1px solid #d9e6d3;
-      z-index: 100;
-      margin-top: 0.4rem;
-      overflow: hidden;
-      max-height: 300px;
-      overflow-y: auto;
+      display: none; position: absolute; top: 100%; left: 0; background: white;
+      min-width: 200px; box-shadow: 0 8px 20px rgba(0,0,0,0.12); border-radius: 20px;
+      border: 1px solid #d9e6d3; z-index: 100; margin-top: 0.4rem; overflow: hidden;
+      max-height: 300px; overflow-y: auto;
     }
     .dropdown-content.show { display: block; }
-
     .dropdown-item {
-      padding: 0.7rem 1.2rem;
-      cursor: pointer;
-      color: #3a5e2b;
-      font-size: 0.9rem;
+      padding: 0.7rem 1.2rem; cursor: pointer; color: #3a5e2b; font-size: 0.9rem;
       border-bottom: 1px solid #e2ecdc;
     }
     .dropdown-item:last-child { border-bottom: none; }
     .dropdown-item:hover { background: #f0f7ec; }
     .back-btn { background: #e8f0e3; font-weight: 500; color: #2d4e1e; }
-
     .today-topic {
-      background: #a8c99b;
-      padding: 0.3rem 1rem;
-      border-radius: 30px;
-      color: #2d4e1e;
-      font-weight: 500;
-      font-size: 0.9rem;
+      background: #a8c99b; padding: 0.3rem 1rem; border-radius: 30px;
+      color: #2d4e1e; font-weight: 500; font-size: 0.9rem;
     }
 
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem 0.8rem;
-    }
+    main { max-width: 1200px; margin: 0 auto; padding: 1rem 0.8rem; }
 
     .video-container {
-      background: white;
-      border-radius: 20px;
-      padding: 1rem;
-      margin-bottom: 1.2rem;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-      border: 1px solid #d9e6d3;
+      background: white; border-radius: 20px; padding: 1rem; margin-bottom: 1.2rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05); border: 1px solid #d9e6d3;
     }
-
-    .video-header {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 0.8rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #e2ecdc;
-    }
-
+    .video-header { display: flex; align-items: center; gap: 6px; margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2ecdc; }
     .video-header h2 { color: #3a5e2b; font-size: 1.2rem; }
-
-    .video-wrapper {
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .video-wrapper iframe {
-      display: block;
-      width: 100%;
-      height: 500px;
-      border: none;
-    }
+    .video-wrapper { border-radius: 12px; overflow: hidden; }
+    .video-wrapper iframe { display: block; width: 100%; height: 500px; border: none; }
 
     .board-card {
-      background: white;
-      border-radius: 20px;
-      padding: 1.2rem;
-      margin-bottom: 1.2rem;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-      border: 1px solid #d9e6d3;
+      background: white; border-radius: 20px; padding: 1.2rem; margin-bottom: 1.2rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.05); border: 1px solid #d9e6d3;
     }
-
-    .board-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.8rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #e2ecdc;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
+    .board-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2ecdc; flex-wrap: wrap; gap: 0.5rem; }
     .board-header h2 { color: #3a5e2b; font-size: 1.2rem; display: flex; align-items: center; gap: 6px; }
-
     .board-badge { padding: 0.2rem 0.8rem; border-radius: 30px; font-size: 0.7rem; }
     .badge-anonymous { background: #d9e6d3; color: #3a5e2b; }
     .badge-signed { background: #a8c99b; color: #2d4e1e; }
-
     .board-tip { background: #e8f0e3; border-radius: 12px; padding: 0.6rem 0.8rem; margin-bottom: 1rem; color: #4a6040; font-size: 0.85rem; }
-
     .message-form { background: #f8fbf7; border-radius: 16px; padding: 1rem; margin-bottom: 1rem; border: 1px solid #d9e6d3; }
 
     textarea {
@@ -307,39 +228,69 @@
       font-family: inherit; -webkit-border-radius: 0;
     }
     textarea:focus { outline: none; border-color: #7fa86a; }
-
     .btn-sm { background: #7fa86a; color: white; border: none; padding: 0.6rem 1.2rem; font-size: 0.9rem; border-radius: 40px; cursor: pointer; }
-
     .message-list { max-height: 250px; overflow-y: auto; padding-right: 0.2rem; -webkit-overflow-scrolling: touch; }
-
     .message-item { background: #fafbf9; border-radius: 12px; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem; border: 1px solid #e2ecdc; }
-
     .message-header { display: flex; justify-content: space-between; margin-bottom: 0.2rem; font-size: 0.75rem; flex-wrap: wrap; }
     .message-author { color: #5b8c4e; font-weight: 500; }
     .message-time { color: #999; }
     .message-content { color: #2e3b2c; word-break: break-word; font-size: 0.9rem; }
-
     .message-status { text-align: center; padding: 0.8rem; color: #999; font-size: 0.9rem; }
     .empty-message { text-align: center; color: #aaa; padding: 1rem; font-style: italic; font-size: 0.9rem; }
 
     .game-section { margin: 1.2rem 0; }
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem; }
     .section-header h2 { color: #3a5e2b; font-size: 1.2rem; }
-
     .game-selector select {
       width: 100%; padding: 0.7rem 0.9rem; border: 2px solid #d9e6d3; border-radius: 40px;
       font-size: 1rem; background: white; margin-bottom: 0.8rem; appearance: none; -webkit-appearance: none;
     }
-
     .game-container { background: white; border-radius: 16px; padding: 0.8rem; border: 1px solid #d9e6d3; }
     .game-wrapper { border-radius: 12px; overflow: hidden; display: flex; justify-content: center; }
     .game-wrapper iframe { width: 100%; height: 500px; border: none; }
     .game-note { margin-top: 0.6rem; color: #8aa67d; font-size: 0.8rem; text-align: center; }
-
     footer { background-color: #d9e6d3; padding: 1rem; text-align: center; color: #36522b; margin-top: 1.2rem; border-top: 2px solid #b3cba7; font-size: 0.85rem; }
+
+    /* ========== 横屏提示遮罩 ========== */
+    #rotateOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+    }
+    #rotateOverlay.active { display: flex; }
+    #rotateOverlay .rotate-icon {
+      font-size: 5rem;
+      animation: rotatePhone 1.5s ease-in-out infinite;
+    }
+    @keyframes rotatePhone {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(90deg); }
+    }
+    #rotateOverlay p {
+      margin-top: 1.5rem;
+      font-size: 1.3rem;
+      color: #e0e7ff;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
+
+<!-- 横屏提示遮罩 -->
+<div id="rotateOverlay">
+  <div class="rotate-icon">📱</div>
+  <p>请将手机转回竖屏模式<br><span style="font-size:1rem;color:#94a3b8;">Sila putar telefon ke mod potret</span></p>
+</div>
 
 <!-- ========== 个人资料页 ========== -->
 <div id="welcomeScreen" class="screen">
@@ -391,6 +342,18 @@
 </div>
 
 <script>
+// ==================== 横屏检测 ====================
+function checkOrientation() {
+  const overlay = document.getElementById('rotateOverlay');
+  if (window.innerWidth > window.innerHeight) {
+    overlay.classList.add('active');
+  } else {
+    overlay.classList.remove('active');
+  }
+}
+window.addEventListener('orientationchange', checkOrientation);
+window.addEventListener('resize', checkOrientation);
+
 // ==================== 内容保护 ====================
 document.addEventListener('contextmenu', e => { e.preventDefault(); return false; });
 document.addEventListener('copy', e => { e.preventDefault(); return false; });
@@ -481,7 +444,7 @@ async function submitQuote(){const ta=document.getElementById('quoteComment'),bt
 async function loadAllMessages(){try{const res=await fetch(CONFIG.sheetApiUrl);const data=await res.json();const counsel=[],quote=[];data.reverse().forEach(item=>{const content=item['留言']||'';if(content.startsWith('[质询]')||content.startsWith('[老师回复]'))counsel.push({content,timestamp:item['时间戳']||''});else if(content.startsWith('[名言]'))quote.push(content.replace('[名言]','').trim());});const cl=document.getElementById('counselList');if(counsel.length===0)cl.innerHTML='<div class="empty-message">✨ 还没有质询，匿名写下你的心事吧</div>';else{let html='';counsel.forEach(item=>{const isTR=item.content.startsWith('[老师回复]'),cleanMsg=item.content.replace('[老师回复]','').replace('[质询]','').trim();html+=`<div class="message-item" style="${isTR?'background:#f0f7ec;border-left:3px solid #7fa86a;':''}"><div class="message-header"><span class="message-author" style="${isTR?'color:#2d4e1e;font-weight:600;':''}">${isTR?'👩‍🏫 毛老师回复':'🕶️ 匿名'}</span><span class="message-time">${item.timestamp}</span></div><div class="message-content">${escapeHtml(cleanMsg)}</div></div>`;});cl.innerHTML=html;}const ql=document.getElementById('quoteList');if(quote.length===0)ql.innerHTML='<div class="empty-message">✨ 还没有名言，快来分享正能量吧</div>';else{let html='';quote.forEach(msg=>html+=`<div class="message-item"><div class="message-content">${escapeHtml(msg)}</div></div>`);ql.innerHTML=html;}}catch(e){document.getElementById('counselList').innerHTML='<div class="message-status" style="color:#c44;">加载失败</div>';document.getElementById('quoteList').innerHTML='<div class="message-status" style="color:#c44;">加载失败</div>';}}
 function escapeHtml(text){const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
 
-document.addEventListener('DOMContentLoaded',function(){initBannedWords();const saved=localStorage.getItem('moralEduUserInfo');if(saved){currentUser=JSON.parse(saved);const sq=localStorage.getItem('moralQuizAnswers');if(sq){document.getElementById('welcomeScreen').style.display='none';document.getElementById('quizScreen').style.display='none';document.getElementById('mainContent').style.display='block';const quiz=JSON.parse(sq);const st=quiz.score===5?`道德满分 ${quiz.score}/5 🏆`:`得分 ${quiz.score}/5 💪`;document.getElementById('userWelcomeDisplay').textContent=`👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${st}`;loadAllMessages();setInterval(loadAllMessages,30000);}else{document.getElementById('welcomeScreen').style.display='none';document.getElementById('quizScreen').style.display='flex';document.getElementById('quizUserName').textContent=`${currentUser.name}（${currentUser.grade}${currentUser.role}）`;}}});
+document.addEventListener('DOMContentLoaded',function(){initBannedWords();checkOrientation();const saved=localStorage.getItem('moralEduUserInfo');if(saved){currentUser=JSON.parse(saved);const sq=localStorage.getItem('moralQuizAnswers');if(sq){document.getElementById('welcomeScreen').style.display='none';document.getElementById('quizScreen').style.display='none';document.getElementById('mainContent').style.display='block';const quiz=JSON.parse(sq);const st=quiz.score===5?`道德满分 ${quiz.score}/5 🏆`:`得分 ${quiz.score}/5 💪`;document.getElementById('userWelcomeDisplay').textContent=`👋 ${currentUser.name}（${currentUser.grade}${currentUser.role}）· ${st}`;loadAllMessages();setInterval(loadAllMessages,30000);}else{document.getElementById('welcomeScreen').style.display='none';document.getElementById('quizScreen').style.display='flex';document.getElementById('quizUserName').textContent=`${currentUser.name}（${currentUser.grade}${currentUser.role}）`;}}});
 </script>
 </body>
 </html>
