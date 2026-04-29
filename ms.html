@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Menyuburkan Moral Muda · Pendidikan Moral</title>
+  <title>Menyuburkan Moral Muda</title>
   <style>
     html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
     *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
@@ -18,7 +18,6 @@
     input, textarea { user-select: text; -webkit-user-select: text; }
     select, input, textarea, button { font-size: 16px !important; }
     .btn, .btn-sm, .quiz-option, .dropdown-item { min-height: 44px; }
-
     .screen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh;
       background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
@@ -131,11 +130,11 @@
 <div id="welcomeScreen" class="screen">
   <div class="card"><div class="card-icon">🌱</div><h1>Menyuburkan Moral Muda</h1><div class="subtitle">Sila beritahu kami siapa anda</div>
     <form onsubmit="return false;">
-      <div class="form-group"><label>📚 Tahun</label><select id="grade" required><option value="">-- Sila pilih --</option><option value="Tahun 1">Tahun 1</option><option value="Tahun 2">Tahun 2</option><option value="Tahun 3">Tahun 3</option><option value="Tahun 4">Tahun 4</option><option value="Tahun 5">Tahun 5</option><option value="Tahun 6">Tahun 6</option><option value="Pelajar IPG">Pelajar IPG</option></select></div>
-      <div class="form-group"><label>👤 Peranan</label><select id="role" required><option value="">-- Sila pilih --</option><option value="Pelajar">Pelajar</option><option value="Guru">Guru</option></select></div>
-      <div class="form-group"><label>✏️ Nama / Gelaran</label><input type="text" id="userName" placeholder="Cth: Ali" maxlength="20" required></div>
+      <div class="form-group"><label>Tahun</label><select id="grade" required><option value="">-- Sila pilih --</option><option value="Tahun 1">Tahun 1</option><option value="Tahun 2">Tahun 2</option><option value="Tahun 3">Tahun 3</option><option value="Tahun 4">Tahun 4</option><option value="Tahun 5">Tahun 5</option><option value="Tahun 6">Tahun 6</option><option value="Pelajar IPG">Pelajar IPG</option></select></div>
+      <div class="form-group"><label>Peranan</label><select id="role" required><option value="">-- Sila pilih --</option><option value="Pelajar">Pelajar</option><option value="Guru">Guru</option></select></div>
+      <div class="form-group"><label>Nama / Gelaran</label><input type="text" id="userName" placeholder="Cth: Ali" maxlength="20" required></div>
       <div class="error-message" id="welcomeError">Sila isi maklumat lengkap</div>
-      <button type="button" class="btn" onclick="goToQuiz()">📝 Mulakan Kuiz Moral →</button>
+      <button type="button" class="btn" onclick="goToQuiz()">Mulakan Kuiz Moral</button>
     </form>
     <div class="privacy-note">Maklumat anda hanya untuk interaksi kelas ini</div>
   </div>
@@ -151,31 +150,31 @@
       <div class="quiz-question"><img src="https://i.ibb.co/5hxgqgWG/4.jpg" alt="Soalan 4" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="A"> A. Boleh bercakap dalam dua bahasa.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="B"> B. Orang Kecacatan.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q4" value="C"> C. Orang yang terlalu tinggi.</label></div>
       <div class="quiz-question"><img src="https://i.ibb.co/RGKC9xGf/5.jpg" alt="Soalan 5" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="A"> A. Guru, ibu bapa atau kaunselor hotline kanak-kanak.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="B"> B. Kawan, abang atau sepupu.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q5" value="C"> C. Orang yang menyebar atau orang yang komen buruk.</label></div>
       <div class="error-message" id="quizError">Sila jawab semua soalan</div>
-      <button type="button" class="btn" onclick="submitQuiz()">✅ Hantar Jawapan</button>
+      <button type="button" class="btn" onclick="submitQuiz()">Hantar Jawapan</button>
     </form>
   </div>
 </div>
 
 <!-- Halaman Utama -->
 <div id="mainContent">
-  <header><h1>🌱 Menyuburkan Moral Muda<span class="user-welcome" id="userWelcomeDisplay"></span></h1>
-    <div class="nav-bar"><div class="dropdown"><button type="button" class="dropdown-btn" onclick="toggleDropdown()">📚 Topik Lain ▼</button><div class="dropdown-content" id="dropdownMenu"><div id="gradeList"><div class="dropdown-item" onclick="showCourses('一年级')">📖 Tahun 1</div><div class="dropdown-item" onclick="showCourses('二年级')">📖 Tahun 2</div><div class="dropdown-item" onclick="showCourses('三年级')">📖 Tahun 3</div><div class="dropdown-item" onclick="showCourses('四年级')">📖 Tahun 4</div><div class="dropdown-item" onclick="showCourses('五年级')">📖 Tahun 5</div><div class="dropdown-item" onclick="showCourses('六年级')">📖 Tahun 6</div></div><div id="courseList" style="display:none;"><div class="dropdown-item back-btn" onclick="backToGrades()">← Kembali</div><div id="courseItems"></div></div></div></div><div class="today-topic">📌 Topik Hari Ini: Buli Siber</div></div></header>
+  <header><h1>Menyuburkan Moral Muda<span class="user-welcome" id="userWelcomeDisplay"></span></h1>
+    <div class="nav-bar"><div class="dropdown"><button type="button" class="dropdown-btn" onclick="toggleDropdown()">Topik Lain</button><div class="dropdown-content" id="dropdownMenu"><div id="gradeList"><div class="dropdown-item" onclick="showCourses('一年级')">Tahun 1</div><div class="dropdown-item" onclick="showCourses('二年级')">Tahun 2</div><div class="dropdown-item" onclick="showCourses('三年级')">Tahun 3</div><div class="dropdown-item" onclick="showCourses('四年级')">Tahun 4</div><div class="dropdown-item" onclick="showCourses('五年级')">Tahun 5</div><div class="dropdown-item" onclick="showCourses('六年级')">Tahun 6</div></div><div id="courseList" style="display:none;"><div class="dropdown-item back-btn" onclick="backToGrades()">Kembali</div><div id="courseItems"></div></div></div></div><div class="today-topic">Topik Hari Ini: Buli Siber</div></div></header>
   <main>
     <div style="text-align:center;margin-bottom:1.2rem;"><img src="https://i.ibb.co/VWxhBjJQ/Cute-Slogan.jpg" alt="Slogan Moral" style="width:100%;max-width:800px;border-radius:20px;box-shadow:0 6px 16px rgba(0,0,0,0.08);"></div>
-    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">▶️</span><h2>Video Buli Siber</h2></div><div class="video-wrapper"><iframe src="https://www.youtube.com/embed/ZZKRRh9TjKo" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">💡 Tonton video, kenali buli siber</p></div>
-    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">🎬</span><h2>Topik Hari Ini: Buli Siber</h2></div><div class="video-wrapper"><iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">💡 Tonton video, belajar cara hadapi buli siber</p></div>
-    <div class="board-card"><div class="board-header"><h2><span>🌙</span><span>Dinding Luahan Tanpa Nama</span></h2><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><span class="board-badge badge-anonymous">🕶️ Tanpa Nama</span><button type="button" id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background:#a8c99b;color:#2d4e1e;border:none;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;cursor:pointer;">🔑 Log Masuk Guru</button></div></div><div class="board-tip">💬 Ada masalah atau soalan? Luah di sini tanpa nama. Guru akan lihat dan balas.</div><div class="message-form"><textarea id="counselComment" placeholder="Tulis masalah atau soalan anda..."></textarea><div style="display:flex;gap:0.4rem;margin-top:0.4rem;"><button type="button" class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex:2;">🌙 Hantar Tanpa Nama</button><button type="button" class="btn-sm" id="teacherReplyIndicator" style="flex:1;background:#a8c99b;color:#2d4e1e;display:none;" disabled>👩‍🏫 Mod Guru</button></div></div><div class="message-list" id="counselList"><div class="message-status">Sedang memuat...</div></div></div>
-    <div class="board-card"><div class="board-header"><h2><span>🌟</span><span>Dinding Kata Semangat</span></h2><span class="board-badge badge-signed">✏️ Kongsi Beridentiti</span></div><div class="board-tip">✨ Kongsi kata mutiara atau semangat, sebarkan positif.</div><div class="message-form"><textarea id="quoteComment" placeholder="Tulis kata mutiara atau semangat..."></textarea><button type="button" class="btn-sm" id="quoteBtn" onclick="submitQuote()">🌟 Hantar Beridentiti</button></div><div class="message-list" id="quoteList"><div class="message-status">Sedang memuat...</div></div></div>
-    <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>Permainan Interaktif Moral</span></h2><span class="board-badge badge-anonymous">📱 Boleh Guna Telefon</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">🛡️ Pengawal Siber</option><option value="1">🛡️ Pengawal Siber II</option><option value="2">🛡️ Pengawal Siber III</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">🛡️ Pengawal Siber · Halang buli, lindungi dunia siber!</div></div></section>
+    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">▶️</span><h2>Video Buli Siber</h2></div><div class="video-wrapper"><iframe src="https://www.youtube.com/embed/ZZKRRh9TjKo" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">Tonton video, kenali buli siber</p></div>
+    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">🎬</span><h2>Topik Hari Ini: Buli Siber</h2></div><div class="video-wrapper"><iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">Tonton video, belajar cara hadapi buli siber</p></div>
+    <div class="board-card"><div class="board-header"><h2><span>🌙</span><span>Dinding Luahan Tanpa Nama</span></h2><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><span class="board-badge badge-anonymous">Tanpa Nama</span><button type="button" id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background:#a8c99b;color:#2d4e1e;border:none;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;cursor:pointer;">Log Masuk Guru</button></div></div><div class="board-tip">Ada masalah atau soalan? Luah di sini tanpa nama. Guru akan lihat dan balas.</div><div class="message-form"><textarea id="counselComment" placeholder="Tulis masalah atau soalan anda..."></textarea><div style="display:flex;gap:0.4rem;margin-top:0.4rem;"><button type="button" class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex:2;">Hantar Tanpa Nama</button><button type="button" class="btn-sm" id="teacherReplyIndicator" style="flex:1;background:#a8c99b;color:#2d4e1e;display:none;" disabled>Mod Guru</button></div></div><div class="message-list" id="counselList"><div class="message-status">Sedang memuat...</div></div></div>
+    <div class="board-card"><div class="board-header"><h2><span>🌟</span><span>Dinding Kata Semangat</span></h2><span class="board-badge badge-signed">Kongsi Beridentiti</span></div><div class="board-tip">Kongsi kata mutiara atau semangat, sebarkan positif.</div><div class="message-form"><textarea id="quoteComment" placeholder="Tulis kata mutiara atau semangat..."></textarea><button type="button" class="btn-sm" id="quoteBtn" onclick="submitQuote()">Hantar Beridentiti</button></div><div class="message-list" id="quoteList"><div class="message-status">Sedang memuat...</div></div></div>
+    <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>Permainan Interaktif Moral</span></h2><span class="board-badge badge-anonymous">Boleh Guna Telefon</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">Pengawal Siber</option><option value="1">Pengawal Siber II</option><option value="2">Pengawal Siber III</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">Pengawal Siber - Halang buli, lindungi dunia siber!</div></div></section>
   </main>
-  <footer><p>© 2026 Menyuburkan Moral Muda · Tugasan Kursus IPG | Moral bagai hujan renyai, menyubur tanpa bunyi</p></footer>
+  <footer><p>2026 Menyuburkan Moral Muda - Tugasan Kursus IPG | Moral bagai hujan renyai, menyubur tanpa bunyi</p></footer>
 </div>
 
 <script>
-// ==================== Pembolehubah Global ====================
+  alert('JS sudah berjalan!');
+// ==================== Global ====================
 let currentUser = null;
 
-// ==================== Pengesanan Landskap ====================
 function isTouchDevice(){return 'ontouchstart' in window||navigator.maxTouchPoints>0;}
 function checkOrientation(){
   var o=document.getElementById('rotateOverlay');
@@ -185,7 +184,6 @@ function checkOrientation(){
 window.addEventListener('orientationchange',checkOrientation);
 window.addEventListener('resize',checkOrientation);
 
-// ==================== Perlindungan Kandungan ====================
 document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
 document.addEventListener('copy',function(e){e.preventDefault();return false;});
 document.addEventListener('cut',function(e){e.preventDefault();return false;});
@@ -200,7 +198,6 @@ document.addEventListener('keydown',function(e){
   if(e.ctrlKey&&e.shiftKey&&e.key==='C'){e.preventDefault();return false;}
 });
 
-// ==================== Tukar Halaman ====================
 function goToQuiz(){
   var grade=document.getElementById('grade').value;
   var role=document.getElementById('role').value;
@@ -208,25 +205,22 @@ function goToQuiz(){
   if(!grade||!role||!name){document.getElementById('welcomeError').style.display='block';return;}
   currentUser={grade:grade,role:role,name:name,timestamp:new Date().toISOString()};
   localStorage.setItem('moralEduUserInfo',JSON.stringify(currentUser));
-  document.getElementById('quizUserName').textContent=name+'（'+grade+' - '+role+'）';
+  document.getElementById('quizUserName').textContent=name+' ('+grade+' - '+role+')';
   document.getElementById('welcomeScreen').style.display='none';
   document.getElementById('quizScreen').style.display='flex';
 }
 
-// ==================== Konfigurasi Permainan ====================
 var GAMES=[
-  {src:'cyber-guardian.html',note:'🛡️ Pengawal Siber · Halang buli, lindungi dunia siber!'},
-  {src:'cyber-guardian2.html',note:'🛡️ Pengawal Siber II · Cabaran Kedua'},
-  {src:'cyber-guardian3.html',note:'🛡️ Pengawal Siber III · Cabaran Terakhir'}
+  {src:'cyber-guardian.html',note:'Pengawal Siber - Halang buli, lindungi dunia siber!'},
+  {src:'cyber-guardian2.html',note:'Pengawal Siber II - Cabaran Kedua'},
+  {src:'cyber-guardian3.html',note:'Pengawal Siber III - Cabaran Terakhir'}
 ];
 
-// ==================== Konfigurasi Mesej ====================
 var CONFIG={
   googleScriptUrl:"https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
   sheetApiUrl:"https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1"
 };
 
-// ==================== Sistem Tapisan Bahasa ====================
 var BANNED_WORDS={
   chinese:['傻逼','傻b','sb','白痴','笨蛋','蠢货','去死','滚蛋','废物','垃圾','混蛋','王八蛋','操你','妈的','他妈','尼玛','脑残','弱智','低能','畜生','禽兽','杂种','贱人','婊子','骚货','下贱','无耻','干你','靠北','塞你','丢你','顶你','叼你','屌你','七早八早'],
   english:['fuck','fck','fuk','fcu','f*k','f**k','shit','sh1t','sh!t','sht','bitch','b1tch','b!tch','btch','asshole','ass','arse','bastard','damn','dumb','stupid','idiot','moron','retard','piss','crap','hell','nigger','nigga','faggot','fag','slut','whore','cunt','dick','pussy','cock','penis','vagina','motherfucker','mofo','wtf','stfu'],
@@ -238,78 +232,51 @@ var flatBannedWords=[],bannedPatterns=[];
 function initBannedWords(){
   flatBannedWords=[];
   var allWords=BANNED_WORDS.chinese.concat(BANNED_WORDS.english,BANNED_WORDS.malay);
-  allWords.forEach(function(word){
-    var normalized=normalizeText(word);
-    if(flatBannedWords.indexOf(normalized)===-1)flatBannedWords.push(normalized);
-  });
+  allWords.forEach(function(word){var n=normalizeText(word);if(flatBannedWords.indexOf(n)===-1)flatBannedWords.push(n);});
   bannedPatterns=flatBannedWords.map(function(word){return{pattern:new RegExp(escapeRegex(word),'gi'),word:word};});
 }
-function normalizeText(text){
-  if(!text)return'';
-  var normalized=text.toLowerCase().trim();
-  for(var char in CHAR_MAP){normalized=normalized.split(char).join(CHAR_MAP[char]);}
-  return normalized.replace(/(.)\1+/g,'$1');
-}
+function normalizeText(text){if(!text)return'';var n=text.toLowerCase().trim();for(var c in CHAR_MAP){n=n.split(c).join(CHAR_MAP[c]);}return n.replace(/(.)\1+/g,'$1');}
 function escapeRegex(str){return str.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
 function containsBannedWord(text){
   if(!text)return{found:false,word:''};
-  var normalizedText=normalizeText(text);
-  for(var i=0;i<bannedPatterns.length;i++){
-    if(bannedPatterns[i].pattern.test(normalizedText)){bannedPatterns[i].pattern.lastIndex=0;return{found:true,word:bannedPatterns[i].word};}
-  }
-  for(var j=0;j<flatBannedWords.length;j++){if(normalizedText.indexOf(flatBannedWords[j])!==-1)return{found:true,word:flatBannedWords[j]};}
+  var nt=normalizeText(text);
+  for(var i=0;i<bannedPatterns.length;i++){if(bannedPatterns[i].pattern.test(nt)){bannedPatterns[i].pattern.lastIndex=0;return{found:true,word:bannedPatterns[i].word};}}
+  for(var j=0;j<flatBannedWords.length;j++){if(nt.indexOf(flatBannedWords[j])!==-1)return{found:true,word:flatBannedWords[j]};}
   return{found:false,word:''};
 }
 
-// ==================== Rekod Pelanggaran ====================
 var violationCount=parseInt(localStorage.getItem('moral_violation_count')||'0');
 function addViolation(){violationCount++;localStorage.setItem('moral_violation_count',violationCount);return violationCount;}
 function resetViolations(){violationCount=0;localStorage.setItem('moral_violation_count','0');}
 function getViolationWarning(){
-  if(violationCount===1)return"⚠️ Amaran: Mesej mengandungi bahasa tidak sopan, sila guna bahasa baik!";
-  else if(violationCount>=2)return"🚨 Amaran Serius: Anda guna bahasa tidak sopan berulang kali!\n\nGuru telah rekod masa dan IP anda. Guru berhak lapor pada MCMC.\n\nSila hentikan segera!";
-  return"⚠️ Mesej ada bahasa tidak sopan, tidak boleh hantar.";
+  if(violationCount===1)return"Amaran: Mesej mengandungi bahasa tidak sopan, sila guna bahasa baik!";
+  else if(violationCount>=2)return"Amaran Serius: Anda guna bahasa tidak sopan berulang kali!\n\nGuru telah rekod masa dan IP anda. Guru berhak lapor pada MCMC.\n\nSila hentikan segera!";
+  return"Mesej ada bahasa tidak sopan, tidak boleh hantar.";
 }
 
-// ==================== Anti-Spam ====================
 var lastSubmitTime=parseInt(localStorage.getItem('moral_last_submit')||'0');
 var SUBMIT_COOLDOWN=10000;
 function canSubmit(){
   var now=Date.now();
-  if(now-lastSubmitTime<SUBMIT_COOLDOWN){var ws=Math.ceil((SUBMIT_COOLDOWN-(now-lastSubmitTime))/1000);alert('⏳ Jangan spam, sila tunggu '+ws+' saat.');return false;}
+  if(now-lastSubmitTime<SUBMIT_COOLDOWN){var ws=Math.ceil((SUBMIT_COOLDOWN-(now-lastSubmitTime))/1000);alert('Jangan spam, sila tunggu '+ws+' saat.');return false;}
   return true;
 }
 function recordSubmit(){lastSubmitTime=Date.now();localStorage.setItem('moral_last_submit',lastSubmitTime);}
 
-// ==================== Mod Guru ====================
-var TEACHER_PASSWORD="123456";
-var isTeacherMode=false;
-
+var TEACHER_PASSWORD="123456",isTeacherMode=false;
 function toggleTeacherMode(){
   if(isTeacherMode){isTeacherMode=false;updateTeacherUI();alert("Telah keluar mod guru");}
-  else{
-    var password=prompt("Sila masukkan kata laluan guru:");
-    if(password===TEACHER_PASSWORD){isTeacherMode=true;resetViolations();updateTeacherUI();alert("✅ Mod guru dibuka! Anda boleh balas sebagai Cikgu Mao.");}
-    else if(password!==null){alert("❌ Kata laluan salah!");}
-  }
+  else{var pw=prompt("Sila masukkan kata laluan guru:");if(pw===TEACHER_PASSWORD){isTeacherMode=true;resetViolations();updateTeacherUI();alert("Mod guru dibuka! Anda boleh balas sebagai Cikgu Mao.");}else if(pw!==null){alert("Kata laluan salah!");}}
 }
 function updateTeacherUI(){
-  var toggleBtn=document.getElementById('teacherToggleBtn');
-  var indicator=document.getElementById('teacherReplyIndicator');
-  var counselBtn=document.getElementById('counselBtn');
-  if(isTeacherMode){
-    toggleBtn.textContent='✅ Mod Guru (Klik keluar)';toggleBtn.style.background='#5b8c4e';toggleBtn.style.color='white';
-    indicator.style.display='block';counselBtn.textContent='👩‍🏫 Balas Guru';counselBtn.style.background='#5b8c4e';
-  }else{
-    toggleBtn.textContent='🔑 Log Masuk Guru';toggleBtn.style.background='#a8c99b';toggleBtn.style.color='#2d4e1e';
-    indicator.style.display='none';counselBtn.textContent='🌙 Hantar Tanpa Nama';counselBtn.style.background='#7fa86a';
-  }
+  var tb=document.getElementById('teacherToggleBtn'),ind=document.getElementById('teacherReplyIndicator'),cb=document.getElementById('counselBtn');
+  if(isTeacherMode){tb.textContent='Mod Guru (Klik keluar)';tb.style.background='#5b8c4e';tb.style.color='white';ind.style.display='block';cb.textContent='Balas Guru';cb.style.background='#5b8c4e';}
+  else{tb.textContent='Log Masuk Guru';tb.style.background='#a8c99b';tb.style.color='#2d4e1e';ind.style.display='none';cb.textContent='Hantar Tanpa Nama';cb.style.background='#7fa86a';}
 }
 
-// ==================== Kuiz ====================
 function selectOption(element){
-  var parent=element.parentElement;
-  parent.querySelectorAll('.quiz-option').forEach(function(opt){opt.classList.remove('selected');});
+  var p=element.parentElement;
+  p.querySelectorAll('.quiz-option').forEach(function(opt){opt.classList.remove('selected');});
   element.classList.add('selected');element.querySelector('input').checked=true;
 }
 
@@ -331,13 +298,13 @@ function submitQuiz(){
   showQuizFeedback(score,{q1:q1.value,q2:q2.value,q3:q3.value,q4:q4.value,q5:q5.value},answers,answerTexts);
 }
 
-function showQuizFeedback(score,userAnswers,correctAnswers,answerTexts){
+function showQuizFeedback(score,ua,ca,at){
   var overlay=document.createElement('div');overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
   var modal=document.createElement('div');modal.style.cssText='background:white;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:1.5rem 1.2rem;border-radius:24px;box-shadow:0 20px 40px rgba(0,0,0,0.2);';
-  var feedbackHtml='';var questionLabels=['Soalan 1','Soalan 2','Soalan 3','Soalan 4','Soalan 5'];
-  for(var i=1;i<=5;i++){var qKey='q'+i,userAnswer=userAnswers[qKey],isCorrect=userAnswer===correctAnswers[qKey];feedbackHtml+='<div style="margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px solid #e2ecdc;"><div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;"><span style="font-weight:500;color:#2d4e1e;">'+questionLabels[i-1]+'</span>'+(isCorrect?'<span style="color:#7fa86a;font-size:0.85rem;">✅ Jawapan Betul</span>':'<span style="color:#c44;font-size:0.85rem;">❌ Jawapan Salah</span>')+'</div>'+(!isCorrect?'<div style="background:#fef8e7;padding:0.6rem;border-radius:10px;margin-top:0.4rem;"><p style="color:#6b7c63;font-size:0.85rem;">Jawapan Anda: '+userAnswer+'</p><p style="color:#2d4e1e;font-size:0.85rem;margin-top:0.2rem;">✅ Jawapan Betul: '+answerTexts[qKey].correct+'</p><p style="color:#7fa86a;font-size:0.8rem;margin-top:0.2rem;">💡 '+answerTexts[qKey].explanation+'</p></div>':'')+'</div>';}
+  var fh='';var ql=['Soalan 1','Soalan 2','Soalan 3','Soalan 4','Soalan 5'];
+  for(var i=1;i<=5;i++){var qk='q'+i,uaa=ua[qk],isCorrect=uaa===ca[qk];fh+='<div style="margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px solid #e2ecdc;"><div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;"><span style="font-weight:500;color:#2d4e1e;">'+ql[i-1]+'</span>'+(isCorrect?'<span style="color:#7fa86a;font-size:0.85rem;">Jawapan Betul</span>':'<span style="color:#c44;font-size:0.85rem;">Jawapan Salah</span>')+'</div>'+(!isCorrect?'<div style="background:#fef8e7;padding:0.6rem;border-radius:10px;margin-top:0.4rem;"><p style="color:#6b7c63;font-size:0.85rem;">Jawapan Anda: '+uaa+'</p><p style="color:#2d4e1e;font-size:0.85rem;margin-top:0.2rem;">Jawapan Betul: '+at[qk].correct+'</p><p style="color:#7fa86a;font-size:0.8rem;margin-top:0.2rem;">'+at[qk].explanation+'</p></div>':'')+'</div>';}
   var isFull=score===5;
-  modal.innerHTML='<div style="text-align:center;margin-bottom:1rem;"><div style="font-size:2.5rem;">'+(isFull?'🎉🏆':'📝')+'</div><h2 style="color:#2d4e1e;font-size:1.4rem;">'+(isFull?'Markah Penuh! Hebat!':'Kuiz Selesai!')+'</h2><p style="color:#43673a;font-size:1rem;">'+(isFull?'Kamu memang jaguh nilai murni! ✨':'Teruskan usaha! 💪')+'</p></div><div style="margin-bottom:1rem;">'+feedbackHtml+'</div><p style="color:#8aa67d;text-align:center;margin-bottom:0.8rem;font-size:0.85rem;">'+(isFull?'Kamu telah kuasai pengetahuan moral ini!':'Ingat jawapan betul, lain kali mesti penuh!')+'</p><button id="enterMainFromFeedback" style="background:#7fa86a;color:white;border:none;padding:0.7rem 1.5rem;font-size:1rem;border-radius:40px;cursor:pointer;width:100%;">🌸 Masuk Taman Moral →</button>';
+  modal.innerHTML='<div style="text-align:center;margin-bottom:1rem;"><div style="font-size:2.5rem;">'+(isFull?'🎉🏆':'📝')+'</div><h2 style="color:#2d4e1e;font-size:1.4rem;">'+(isFull?'Markah Penuh! Hebat!':'Kuiz Selesai!')+'</h2><p style="color:#43673a;font-size:1rem;">'+(isFull?'Kamu memang jaguh nilai murni!':'Teruskan usaha!')+'</p></div><div style="margin-bottom:1rem;">'+fh+'</div><p style="color:#8aa67d;text-align:center;margin-bottom:0.8rem;font-size:0.85rem;">'+(isFull?'Kamu telah kuasai pengetahuan moral ini!':'Ingat jawapan betul, lain kali mesti penuh!')+'</p><button id="enterMainFromFeedback" style="background:#7fa86a;color:white;border:none;padding:0.7rem 1.5rem;font-size:1rem;border-radius:40px;cursor:pointer;width:100%;">Masuk Taman Moral</button>';
   overlay.appendChild(modal);document.body.appendChild(overlay);
   document.getElementById('enterMainFromFeedback').onclick=function(){overlay.remove();enterMainContent(score);};
   overlay.onclick=function(e){if(e.target===overlay){overlay.remove();enterMainContent(score);}};
@@ -345,21 +312,19 @@ function showQuizFeedback(score,userAnswers,correctAnswers,answerTexts){
 
 function enterMainContent(score){
   document.getElementById('quizScreen').style.display='none';document.getElementById('mainContent').style.display='block';
-  var scoreText=score===5?'Markah Penuh '+score+'/5 🏆':'Markah '+score+'/5 💪';
-  document.getElementById('userWelcomeDisplay').textContent='👋 '+currentUser.name+'（'+currentUser.grade+' - '+currentUser.role+'）· '+scoreText;
+  var st=score===5?'Markah Penuh '+score+'/5':'Markah '+score+'/5';
+  document.getElementById('userWelcomeDisplay').textContent=currentUser.name+' ('+currentUser.grade+' - '+currentUser.role+') - '+st;
   loadAllMessages();setInterval(loadAllMessages,30000);
 }
 
-// ==================== Menu Navigasi ====================
 function toggleDropdown(){var m=document.getElementById('dropdownMenu');m.classList.toggle('show');document.getElementById('gradeList').style.display='block';document.getElementById('courseList').style.display='none';}
-
 function showCourses(grade){
   var cbg={
     '一年级':[{malay:'Pegangan Hidup Saya'},{malay:'Baik Hati Amalan Saya'},{malay:'Tanggungjawab Suresh'},{malay:'Terima Kasih, Kawan-kawan'},{malay:'Budi Bahasa Amalan Saya'},{malay:'Hormati Diri Disanjung Tinggi'},{malay:'Sayangi Diri Sendiri'},{malay:'Adil Membawa Sejahtera'},{malay:'Berani Menghadapi Cabaran'},{malay:'Kok Heng Yang Jujur'},{malay:'Blog Kerajinan'},{malay:'Kerjasama Membawa Berkat'},{malay:'Pesanan Nenek'},{malay:'Bertolak Ansur Amalan Saya'}],'二年级':[{malay:'Ajaran Agama Keluarga Saya'},{malay:'Baik Hati Keluarga Bahagia'},{malay:'Tanggungjawab Saya Dalam Keluarga'},{malay:'Terima Kasih, Keluargaku'},{malay:'Hemah Tinggi Dalam Keluarga'},{malay:'Hormati Keluarga Hidup Gembira'},{malay:'Keluarga Bahagia'},{malay:'Keluarga yang Adil Hidup Sejahtera'},{malay:'Berani Demi Nama Baik Keluarga'},{malay:'Jujur Selalu'},{malay:'Sikap Rajin Amalan Keluarga'},{malay:'Kerjasama Meringankan Beban Keluarga'},{malay:'Bersederhana Amalan Keluarga'},{malay:'Toleransi Sesama Ahli Keluarga'}],'三年级':[{malay:'Perayaan Warga Sekolah'},{malay:'Baik Hati Nilai Mulia'},{malay:'Murid Bertanggungjawab'},{malay:'Berterima Kasih Amalan Mulia'},{malay:'Beradab Sopan Pekerti Terpuji'},{malay:'Hormati Semua Amalan Kami'},{malay:'Sekolah Kebanggaanku'},{malay:'Sikap Adil Sekolah Sejahtera'},{malay:'Hadapi Cabaran Demi Sekolah'},{malay:'Jujur Amalan Warga Sekolah'},{malay:'Rajin Tangga Kejayaan'},{malay:'Kerjasama Budaya Kami'},{malay:'Amalan Hidup di Sekolah'},{malay:'Toleransi Sesama Warga Sekolah'}],'四年级':[{malay:'Hayati Amalan Agama dan Kepercayaan Jiran'},{malay:'Sikap Prihatin Amalan Mulia'},{malay:'Tanggungjawab Hidup Berjiran'},{malay:'Hargai Jiran Hubungan Erat'},{malay:'Sopan Santun dengan Jiran'},{malay:'Semaikan Amalan Menghormati Jiran'},{malay:'Sayangi Jiran'},{malay:'Bersikap Adil Sesama Jiran'},{malay:'Bertindak Berani demi Kesejahteraan Kejiranan'},{malay:'Kejujuran Amalan Hidup Bersama-sama Jiran'},{malay:'Usaha Berterusan Membawa Kesejahteraan'},{malay:'Muafakat Membawa Berkat'},{malay:'Kesederhanaan Menjalin Kemesraan Sesama Jiran'},{malay:'Bertolak Ansur Amalan Terpuji'}],'五年级':[{malay:'Keunikan Masyarakatku'},{malay:'Penyeri Jiwa Masyarakat'},{malay:'Kehijauan Alam Tanggungjawab Bersama'},{malay:'Hargai Jasa dan Sumbangan'},{malay:'Pupuk Amalan Berbudi Pekerti Mulia'},{malay:'Budaya Masyarakat Patut Dihormati'},{malay:'Sajak Kasih Sayang'},{malay:'Suri Teladan Dicontohi Masyarakat'},{malay:'Berani Pertahankan Cabaran'},{malay:'Beradab dengan Jujurnya'},{malay:'Berkat Kerajinan'},{malay:'Amalan Kerjasama, Kebaikan Bersama'},{malay:'Bersederhana Menjamin Kebahagiaan'},{malay:'Bertoleransi Membawa Kesejahteraan'}],'六年级':[{malay:'Kepercayaan Kepada Tuhan Menjamin Kesejahteraan Negara'},{malay:'Bantuan Dan Sokongan Moral Kepada Negara'},{malay:'Tanggungjawab Sebagai Warganegara'},{malay:'Hargai Keunikan Negara'},{malay:'Amalan Hemah Tinggi Meningkatkan Imej Negara'},{malay:'Hormati Identiti Negara'},{malay:'Cinta Akan Negara'},{malay:'Amalan Adil Demi Kesejahteraan Negara'},{malay:'Berani Mempertahankan Maruah Negara'},{malay:'Kejujuran Demi Kesejahteraan Negara'}]
   };
   var courses=cbg[grade]||[];
   var html='<div style="padding:0.4rem 1.2rem;color:#6b7c63;font-size:0.85rem;background:#f8fbf7;">'+grade+'</div>';
-  courses.forEach(function(c,i){html+='<div class="dropdown-item" onclick="selectCourse(\''+grade+'\',\'Pelajaran '+(i+1)+': '+c.malay+'\')">📚 Pelajaran '+(i+1)+': '+c.malay+'</div>';});
+  courses.forEach(function(c,i){html+='<div class="dropdown-item" onclick="selectCourse(\''+grade+'\',\'Pelajaran '+(i+1)+': '+c.malay+'\')">Pelajaran '+(i+1)+': '+c.malay+'</div>';});
   document.getElementById('courseItems').innerHTML=html;document.getElementById('gradeList').style.display='none';document.getElementById('courseList').style.display='block';
 }
 function backToGrades(){document.getElementById('gradeList').style.display='block';document.getElementById('courseList').style.display='none';}
@@ -367,53 +332,47 @@ function selectCourse(grade,course){document.getElementById('dropdownMenu').clas
 function showContactModal(grade,course){
   var overlay=document.createElement('div');overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
   var modal=document.createElement('div');modal.style.cssText='background:white;max-width:380px;width:90%;padding:1.5rem 1.2rem;border-radius:24px;text-align:center;';
-  modal.innerHTML='<div style="font-size:2.5rem;">📧</div><h3 style="color:#2d4e1e;font-size:1.2rem;">'+grade+' · '+course+'</h3><p style="color:#6b7c63;margin-bottom:1.2rem;">Untuk topik lain, sila emel Cikgu Mao</p><div style="background:#f8fbf7;padding:0.8rem;border-radius:12px;margin-bottom:1.2rem;"><p style="color:#3a5e2b;font-weight:500;">📮 nexusgt.my@gmail.com</p></div><p style="color:#8aa67d;margin-bottom:1.2rem;font-size:0.85rem;">Untuk maklumat langganan</p><button id="closeModalBtn" style="background:#7fa86a;color:white;border:none;padding:0.7rem 1.5rem;font-size:0.95rem;border-radius:40px;cursor:pointer;width:100%;">Saya Faham</button>';
+  modal.innerHTML='<div style="font-size:2.5rem;">📧</div><h3 style="color:#2d4e1e;font-size:1.2rem;">'+grade+' - '+course+'</h3><p style="color:#6b7c63;margin-bottom:1.2rem;">Untuk topik lain, sila emel Cikgu Mao</p><div style="background:#f8fbf7;padding:0.8rem;border-radius:12px;margin-bottom:1.2rem;"><p style="color:#3a5e2b;font-weight:500;">nexusgt.my@gmail.com</p></div><p style="color:#8aa67d;margin-bottom:1.2rem;font-size:0.85rem;">Untuk maklumat langganan</p><button id="closeModalBtn" style="background:#7fa86a;color:white;border:none;padding:0.7rem 1.5rem;font-size:0.95rem;border-radius:40px;cursor:pointer;width:100%;">Saya Faham</button>';
   overlay.appendChild(modal);document.body.appendChild(overlay);
   document.getElementById('closeModalBtn').onclick=function(){overlay.remove();};
   overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
 }
 document.addEventListener('click',function(e){if(!e.target.closest('.dropdown'))document.getElementById('dropdownMenu').classList.remove('show');});
 
-// ==================== Tukar Permainan ====================
 function switchGame(index){
   index=parseInt(index);var game=GAMES[index];var wrapper=document.getElementById('gameWrapper');
   wrapper.innerHTML='<iframe src="'+game.src+'" style="width:100%;height:500px;border:none;" allowfullscreen></iframe>';
   document.getElementById('gameNote').innerHTML=game.note;
 }
 
-// ==================== Dua Papan Mesej ====================
 async function submitCounsel(){
-  var textarea=document.getElementById('counselComment');
-  var btn=document.getElementById('counselBtn');
-  var comment=textarea.value.trim();
+  var ta=document.getElementById('counselComment'),btn=document.getElementById('counselBtn'),comment=ta.value.trim();
   if(!comment){alert('Sila isi kandungan');return;}
   if(!canSubmit())return;
-  var banCheck=containsBannedWord(comment);
-  if(banCheck.found){addViolation();alert(getViolationWarning());textarea.focus();return;}
+  var bc=containsBannedWord(comment);
+  if(bc.found){addViolation();alert(getViolationWarning());ta.focus();return;}
   var prefix=isTeacherMode?'[老师回复]':'[质询]';
   try{
     btn.disabled=true;btn.textContent='Menghantar...';
     await fetch(CONFIG.googleScriptUrl,{method:'POST',body:new URLSearchParams({'comment':prefix+' '+comment})});
-    recordSubmit();textarea.value='';alert(isTeacherMode?'Balasan Cikgu Mao dihantar!':'Berjaya hantar tanpa nama!');loadAllMessages();
+    recordSubmit();ta.value='';alert(isTeacherMode?'Balasan Cikgu Mao dihantar!':'Berjaya hantar tanpa nama!');loadAllMessages();
   }catch(e){alert('Hantar gagal');}
-  finally{btn.disabled=false;btn.textContent=isTeacherMode?'👩‍🏫 Balas Guru':'🌙 Hantar Tanpa Nama';}
+  finally{btn.disabled=false;btn.textContent=isTeacherMode?'Balas Guru':'Hantar Tanpa Nama';}
 }
 
 async function submitQuote(){
-  var textarea=document.getElementById('quoteComment');
-  var btn=document.getElementById('quoteBtn');
-  var comment=textarea.value.trim();
+  var ta=document.getElementById('quoteComment'),btn=document.getElementById('quoteBtn'),comment=ta.value.trim();
   if(!comment){alert('Sila isi kandungan');return;}
   if(!canSubmit())return;
-  var banCheck=containsBannedWord(comment);
-  if(banCheck.found){addViolation();alert(getViolationWarning());textarea.focus();return;}
-  var displayName=currentUser?currentUser.name+'（'+currentUser.grade+' - '+currentUser.role+'）':'Tanpa Nama';
+  var bc=containsBannedWord(comment);
+  if(bc.found){addViolation();alert(getViolationWarning());ta.focus();return;}
+  var dn=currentUser?currentUser.name+' ('+currentUser.grade+' - '+currentUser.role+')':'Tanpa Nama';
   try{
     btn.disabled=true;btn.textContent='Menghantar...';
-    await fetch(CONFIG.googleScriptUrl,{method:'POST',body:new URLSearchParams({'comment':'[名言] 【'+displayName+'】: '+comment})});
-    recordSubmit();textarea.value='';alert('Berjaya dihantar!');loadAllMessages();
+    await fetch(CONFIG.googleScriptUrl,{method:'POST',body:new URLSearchParams({'comment':'[名言] 【'+dn+'】: '+comment})});
+    recordSubmit();ta.value='';alert('Berjaya dihantar!');loadAllMessages();
   }catch(e){alert('Hantar gagal');}
-  finally{btn.disabled=false;btn.textContent:'🌟 Hantar Beridentiti';}
+  finally{btn.disabled=false;btn.textContent:'Hantar Beridentiti';}
 }
 
 async function loadAllMessages(){
@@ -424,32 +383,29 @@ async function loadAllMessages(){
       if(content.startsWith('[质询]')||content.startsWith('[老师回复]'))counsel.push({content:content,timestamp:item['时间戳']||''});
       else if(content.startsWith('[名言]'))quote.push(content.replace('[名言]','').trim());
     });
-    var counselList=document.getElementById('counselList');
-    if(counsel.length===0)counselList.innerHTML='<div class="empty-message">✨ Tiada luahan, tulis masalah anda tanpa nama</div>';
-    else{
-      var html='';counsel.forEach(function(item){var isTR=item.content.startsWith('[老师回复]'),cleanMsg=item.content.replace('[老师回复]','').replace('[质询]','').trim();html+='<div class="message-item" style="'+(isTR?'background:#f0f7ec;border-left:3px solid #7fa86a;':'')+'"><div class="message-header"><span class="message-author" style="'+(isTR?'color:#2d4e1e;font-weight:600;':'')+'">'+(isTR?'👩‍🏫 Balasan Cikgu Mao':'🕶️ Tanpa Nama')+'</span><span class="message-time">'+item.timestamp+'</span></div><div class="message-content">'+escapeHtml(cleanMsg)+'</div></div>';});counselList.innerHTML=html;
-    }
-    var quoteList=document.getElementById('quoteList');
-    if(quote.length===0)quoteList.innerHTML='<div class="empty-message">✨ Tiada kata mutiara, jom kongsi positif!</div>';
-    else{var html='';quote.forEach(function(msg){html+='<div class="message-item"><div class="message-content">'+escapeHtml(msg)+'</div></div>';});quoteList.innerHTML=html;}
+    var cl=document.getElementById('counselList');
+    if(counsel.length===0)cl.innerHTML='<div class="empty-message">Tiada luahan, tulis masalah anda tanpa nama</div>';
+    else{var html='';counsel.forEach(function(item){var isTR=item.content.startsWith('[老师回复]'),cleanMsg=item.content.replace('[老师回复]','').replace('[质询]','').trim();html+='<div class="message-item" style="'+(isTR?'background:#f0f7ec;border-left:3px solid #7fa86a;':'')+'"><div class="message-header"><span class="message-author" style="'+(isTR?'color:#2d4e1e;font-weight:600;':'')+'">'+(isTR?'Balasan Cikgu Mao':'Tanpa Nama')+'</span><span class="message-time">'+item.timestamp+'</span></div><div class="message-content">'+escapeHtml(cleanMsg)+'</div></div>';});cl.innerHTML=html;}
+    var ql=document.getElementById('quoteList');
+    if(quote.length===0)ql.innerHTML='<div class="empty-message">Tiada kata mutiara, jom kongsi positif!</div>';
+    else{var html='';quote.forEach(function(msg){html+='<div class="message-item"><div class="message-content">'+escapeHtml(msg)+'</div></div>';});ql.innerHTML=html;}
   }catch(e){document.getElementById('counselList').innerHTML='<div class="message-status" style="color:#c44;">Gagal memuat</div>';document.getElementById('quoteList').innerHTML='<div class="message-status" style="color:#c44;">Gagal memuat</div>';}
 }
 function escapeHtml(text){var div=document.createElement('div');div.textContent=text;return div.innerHTML;}
 
-// ==================== Permulaan ====================
 document.addEventListener('DOMContentLoaded',function(){
   initBannedWords();checkOrientation();
   var saved=localStorage.getItem('moralEduUserInfo');
   if(saved){
-    currentUser=JSON.parse(saved);var savedQuiz=localStorage.getItem('moralQuizAnswers');
-    if(savedQuiz){
+    currentUser=JSON.parse(saved);var sq=localStorage.getItem('moralQuizAnswers');
+    if(sq){
       document.getElementById('welcomeScreen').style.display='none';document.getElementById('quizScreen').style.display='none';document.getElementById('mainContent').style.display='block';
-      var quiz=JSON.parse(savedQuiz);var scoreText=quiz.score===5?'Markah Penuh '+quiz.score+'/5 🏆':'Markah '+quiz.score+'/5 💪';
-      document.getElementById('userWelcomeDisplay').textContent='👋 '+currentUser.name+'（'+currentUser.grade+' - '+currentUser.role+'）· '+scoreText;
+      var quiz=JSON.parse(sq);var st=quiz.score===5?'Markah Penuh '+quiz.score+'/5':'Markah '+quiz.score+'/5';
+      document.getElementById('userWelcomeDisplay').textContent=currentUser.name+' ('+currentUser.grade+' - '+currentUser.role+') - '+st;
       loadAllMessages();setInterval(loadAllMessages,30000);
     }else{
       document.getElementById('welcomeScreen').style.display='none';document.getElementById('quizScreen').style.display='flex';
-      document.getElementById('quizUserName').textContent=currentUser.name+'（'+currentUser.grade+' - '+currentUser.role+'）';
+      document.getElementById('quizUserName').textContent=currentUser.name+' ('+currentUser.grade+' - '+currentUser.role+')';
     }
   }
 });
