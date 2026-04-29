@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>Menyuburkan Moral Muda</title>
   <style>
+    /* 完全复制 zh.html 的 CSS，不变 */
     html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
     *, *::before, *::after { -webkit-tap-highlight-color: transparent; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -126,6 +127,7 @@
 
 <div id="rotateOverlay"><div class="rotate-icon">📱</div><p>Sila putar telefon ke mod potret<br><span style="font-size:1rem;color:#94a3b8;">请将手机转回竖屏模式</span></p></div>
 
+<!-- Halaman Maklumat Peribadi -->
 <div id="welcomeScreen" class="screen">
   <div class="card"><div class="card-icon">🌱</div><h1>Menyuburkan Moral Muda</h1><div class="subtitle">Sila beritahu kami siapa anda</div>
     <form onsubmit="return false;">
@@ -139,9 +141,11 @@
   </div>
 </div>
 
+<!-- Halaman Kuiz -->
 <div id="quizScreen" class="screen">
   <div class="card"><div class="card-icon">📋</div><h2>Kuiz Moral</h2><div class="subtitle" id="quizUserName"></div>
     <form onsubmit="return false;">
+      <!-- 题目选项保留马来文，不变 -->
       <div class="quiz-question"><img src="https://i.ibb.co/HDj9cX3t/1.jpg" alt="Soalan 1" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="A"> A. Laporkan seseorang yang menghantar komen buruk terhadap anda.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="B"> B. Menghantar komen buruk tentang agama orang lain.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q1" value="C"> C. Saya hanya bermain permainan digital dengan rakan sekolah saya.</label></div>
       <div class="quiz-question"><img src="https://i.ibb.co/Zz5FsY3Y/2.jpg" alt="Soalan 2" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="A"> A. Kongsikan kisah peribadi rakan.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="B"> B. Laporkan komen buruk atas talian.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q2" value="C"> C. Gunakan bahasa yang lebih kasar untuk melawan pembuli.</label></div>
       <div class="quiz-question"><img src="https://i.ibb.co/PsKnmv0L/3.jpg" alt="Soalan 3" class="quiz-image"><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="A"> A. Kasih sayang.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="B"> B. Kebencian Internet.</label><label class="quiz-option" onclick="selectOption(this)"><input type="radio" name="q3" value="C"> C. Bertanggungjawab.</label></div>
@@ -153,6 +157,7 @@
   </div>
 </div>
 
+<!-- Halaman Utama -->
 <div id="mainContent">
   <header><h1>Menyuburkan Moral Muda<span class="user-welcome" id="userWelcomeDisplay"></span></h1>
     <div class="nav-bar"><div class="dropdown"><button type="button" class="dropdown-btn" onclick="toggleDropdown()">Topik Lain</button><div class="dropdown-content" id="dropdownMenu"><div id="gradeList"><div class="dropdown-item" onclick="showCourses('一年级')">Tahun 1</div><div class="dropdown-item" onclick="showCourses('二年级')">Tahun 2</div><div class="dropdown-item" onclick="showCourses('三年级')">Tahun 3</div><div class="dropdown-item" onclick="showCourses('四年级')">Tahun 4</div><div class="dropdown-item" onclick="showCourses('五年级')">Tahun 5</div><div class="dropdown-item" onclick="showCourses('六年级')">Tahun 6</div></div><div id="courseList" style="display:none;"><div class="dropdown-item back-btn" onclick="backToGrades()">Kembali</div><div id="courseItems"></div></div></div></div><div class="today-topic">Topik Hari Ini: Buli Siber</div></div></header>
@@ -204,16 +209,16 @@ function goToQuiz(){
   if(!grade||!role||!name){document.getElementById('welcomeError').style.display='block';return;}
   currentUser={grade:grade,role:role,name:name,timestamp:new Date().toISOString()};
   localStorage.setItem('moralEduUserInfo',JSON.stringify(currentUser));
-  document.getElementById('quizUserName').textContent=name+'（'+grade+role+'）';
+  document.getElementById('quizUserName').textContent=name+' ('+grade+' - '+role+')';
   document.getElementById('welcomeScreen').style.display='none';
   document.getElementById('quizScreen').style.display='flex';
 }
 
 // ==================== 游戏配置 ====================
 var GAMES=[
-  {src:'cyber-guardian.html',note:'🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！'},
-  {src:'cyber-guardian2.html',note:'🛡️ 网络卫士 II · 第二关挑战'},
-  {src:'cyber-guardian3.html',note:'🛡️ 网络卫士 III · 终极挑战'}
+  {src:'cyber-guardian.html',note:'Pengawal Siber - Halang buli, lindungi dunia siber!'},
+  {src:'cyber-guardian2.html',note:'Pengawal Siber II - Cabaran Kedua'},
+  {src:'cyber-guardian3.html',note:'Pengawal Siber III - Cabaran Terakhir'}
 ];
 
 // ==================== 留言配置 ====================
