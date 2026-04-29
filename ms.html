@@ -333,7 +333,13 @@ function showCourses(grade){
   document.getElementById('courseItems').innerHTML=html;document.getElementById('gradeList').style.display='none';document.getElementById('courseList').style.display='block';
 }
 function backToGrades(){document.getElementById('gradeList').style.display='block';document.getElementById('courseList').style.display='none';}
-function selectCourse(grade,course){document.getElementById('dropdownMenu').classList.remove('show');showContactModal(grade,course);}
+function selectCourse(grade,course){
+  document.getElementById('dropdownMenu').classList.remove('show');
+  // 在这里把中文grade转成马来文再传给弹窗
+  var gradeNames = {'一年级':'Tahun 1','二年级':'Tahun 2','三年级':'Tahun 3','四年级':'Tahun 4','五年级':'Tahun 5','六年级':'Tahun 6'};
+  var displayGrade = gradeNames[grade] || grade;
+  showContactModal(displayGrade, course);
+}
 function showContactModal(grade,course){
   var overlay=document.createElement('div');overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
   var modal=document.createElement('div');modal.style.cssText='background:white;max-width:380px;width:90%;padding:1.5rem 1.2rem;border-radius:24px;text-align:center;';
