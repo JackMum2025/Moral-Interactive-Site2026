@@ -251,7 +251,7 @@
     .game-note { margin-top: 0.6rem; color: #8aa67d; font-size: 0.8rem; text-align: center; }
     footer { background-color: #d9e6d3; padding: 1rem; text-align: center; color: #36522b; margin-top: 1.2rem; border-top: 2px solid #b3cba7; font-size: 0.85rem; }
 
-    /* ========== 横屏提示遮罩 ========== */
+    /* ========== 横屏提示遮罩（仅触屏设备） ========== */
     #rotateOverlay {
       display: none;
       position: fixed;
@@ -337,28 +337,22 @@
     <div class="board-card"><div class="board-header"><h2><span>🌙</span><span>Dinding Luahan Tanpa Nama</span></h2><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><span class="board-badge badge-anonymous">🕶️ Tanpa Nama</span><button id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background:#a8c99b;color:#2d4e1e;border:none;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;cursor:pointer;">🔑 Log Masuk Guru</button></div></div><div class="board-tip">💬 Ada masalah atau soalan? Luah di sini tanpa nama. Guru akan lihat dan balas.</div><div class="message-form"><textarea id="counselComment" placeholder="Tulis masalah atau soalan anda..."></textarea><div style="display:flex;gap:0.4rem;margin-top:0.4rem;"><button class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex:2;">🌙 Hantar Tanpa Nama</button><button class="btn-sm" id="teacherReplyIndicator" style="flex:1;background:#a8c99b;color:#2d4e1e;display:none;" disabled>👩‍🏫 Mod Guru</button></div></div><div class="message-list" id="counselList"><div class="message-status">Sedang memuat...</div></div></div>
     <div class="board-card"><div class="board-header"><h2><span>🌟</span><span>Dinding Kata Semangat</span></h2><span class="board-badge badge-signed">✏️ Kongsi Beridentiti</span></div><div class="board-tip">✨ Kongsi kata mutiara atau semangat, sebarkan positif.</div><div class="message-form"><textarea id="quoteComment" placeholder="Tulis kata mutiara atau semangat..."></textarea><button class="btn-sm" id="quoteBtn" onclick="submitQuote()">🌟 Hantar Beridentiti</button></div><div class="message-list" id="quoteList"><div class="message-status">Sedang memuat...</div></div></div>
     <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>Permainan Interaktif Moral</span></h2><span class="board-badge badge-anonymous">📱 Boleh Guna Telefon</span></div>
-      <div class="game-selector">
-        <select id="gameSelect" onchange="switchGame(this.value)">
-          <option value="0">🛡️ Pengawal Siber</option>
-          <option value="1">🛡️ Pengawal Siber II</option>
-          <option value="2">🛡️ Pengawal Siber III</option>
-          <option value="3">🔤 Carian Kata Moral</option>
-        </select>
-      </div>
+      <div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">🛡️ Pengawal Siber</option><option value="1">🛡️ Pengawal Siber II</option><option value="2">🛡️ Pengawal Siber III</option><option value="3">🔤 Carian Kata Moral</option></select></div>
       <div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe id="gameIframe" src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">🛡️ Pengawal Siber · Halang buli, lindungi dunia siber!</div></div></section>
   </main>
   <footer><p>© 2026 Menyuburkan Moral Muda · Tugasan Kursus IPG | Moral bagai hujan renyai, menyubur tanpa bunyi</p></footer>
 </div>
 
 <script>
-// ==================== Pengesanan Landskap ====================
+// ==================== 横屏检测（仅触屏设备） ====================
+function isTouchDevice() {
+  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+}
 function checkOrientation() {
   const overlay = document.getElementById('rotateOverlay');
-  if (window.innerWidth > window.innerHeight) {
-    overlay.classList.add('active');
-  } else {
-    overlay.classList.remove('active');
-  }
+  if (!isTouchDevice()) { overlay.classList.remove('active'); return; }
+  if (window.innerWidth > window.innerHeight) { overlay.classList.add('active'); }
+  else { overlay.classList.remove('active'); }
 }
 window.addEventListener('orientationchange', checkOrientation);
 window.addEventListener('resize', checkOrientation);
