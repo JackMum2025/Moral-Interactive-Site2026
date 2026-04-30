@@ -67,8 +67,9 @@
 
     #game-over { display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 100; }
     .panel { background: #10121f; padding: 30px 35px; border-radius: 20px; color: white; border: 1px solid #2a2a3a; text-align: center; box-shadow: 0 20px 50px black; max-width: 95vw; }
-    .panel h1 { font-family: 'Orbitron', sans-serif; margin-bottom: 20px; font-size: 30px; }
-    button { margin-top: 20px; padding: 12px 35px; background: transparent; border: 2px solid #00f3ff; color: #00f3ff; font-weight: bold; border-radius: 30px; font-size: 18px; letter-spacing: 1px; cursor: pointer; transition: 0.2s; }
+    .panel h1 { font-family: 'Orbitron', 'PingFang SC', sans-serif; margin-bottom: 20px; font-size: 30px; }
+    .panel .encourage { font-size: 18px; color: #ccc; margin: 15px 0 25px; line-height: 1.5; }
+    button { padding: 12px 35px; background: transparent; border: 2px solid #00f3ff; color: #00f3ff; font-weight: bold; border-radius: 30px; font-size: 18px; letter-spacing: 1px; cursor: pointer; transition: 0.2s; }
     button:active { background: #00f3ff; color: #000; }
 
     @media (max-width: 600px) {
@@ -79,6 +80,8 @@
       #minimap-container { width: 130px; height: 130px; }
       #joystick-container { width: 120px; height: 120px; }
       #joystick-thumb { width: 50px; height: 50px; }
+      .panel h1 { font-size: 24px; }
+      .panel .encourage { font-size: 16px; }
     }
   </style>
 </head>
@@ -98,8 +101,8 @@
   </div>
   <div id="game-over" style="display:none;">
     <div class="panel">
-      <h1 id="result-title">连接已中断</h1>
-      <div>排名 <span id="stat-rank">1</span> · 人数 <span id="stat-max">0</span></div>
+      <h1 id="result-title"></h1>
+      <div class="encourage" id="result-message"></div>
       <button onclick="startGame()">重新接入网络</button>
     </div>
   </div>
@@ -111,6 +114,8 @@
       const minimapCanvas = document.getElementById('minimap');
       const minictx = minimapCanvas.getContext('2d');
       const gameOverScreen = document.getElementById('game-over');
+      const resultTitle = document.getElementById('result-title');
+      const resultMessage = document.getElementById('result-message');
       const joystickContainer = document.getElementById('joystick-container');
       const joystickThumb = document.getElementById('joystick-thumb');
 
@@ -129,9 +134,8 @@
       window.addEventListener('resize', resize);
       resize();
 
-      // 虚拟摇杆
+      // 虚拟摇杆逻辑
       let joystickActive = false, joystickId = null;
-      const joystickRadius = 50;
       function handleJoystickStart(e) { e.preventDefault(); joystickActive = true; joystickId = e.pointerId; }
       function handleJoystickMove(e) {
         if (!joystickActive || e.pointerId !== joystickId) return;
@@ -169,6 +173,23 @@
       let gameState = 'MENU', persons = [], teams = {}, particles = [], obstacles = [], powerups = [], superStars = [];
       let camera = { x: WORLD_SIZE/2, y: WORLD_SIZE/2 }, inputDir = { x:0, y:0 };
 
+      // 预渲染球体图像 (大幅提升性能)
+      const teamBallImages = {};
+      function createBallImage(color) {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = PERSON_RADIUS * 2 + 4;
+        offCanvas.height = PERSON_RADIUS * 2 + 4;
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.beginPath();
+        offCtx.arc(PERSON_RADIUS+2, PERSON_RADIUS+2, PERSON_RADIUS, 0, Math.PI*2);
+        offCtx.fillStyle = color;
+        offCtx.fill();
+        return offCanvas;
+      }
+      for (let i = 0; i < TEAM_COLORS.length; i++) {
+        teamBallImages[i] = createBallImage(TEAM_COLORS[i]);
+      }
+
       const SUPER_STAR_TYPES = [
         { name:'老师', bonus:10, radius:15, glowColor:'#FFD700', glowIntensity:22, weight:45 },
         { name:'训导主任', bonus:20, radius:19, glowColor:'#FFC107', glowIntensity:28, weight:25 },
@@ -194,23 +215,27 @@
           if(this.x<10){this.x=10; this.vx*=-0.7;} if(this.x>WORLD_SIZE-10){this.x=WORLD_SIZE-10; this.vx*=-0.7;}
           if(this.y<10){this.y=10; this.vy*=-0.7;} if(this.y>WORLD_SIZE-10){this.y=WORLD_SIZE-10; this.vy*=-0.7;}
         }
-        draw(ctx){
-          ctx.beginPath(); ctx.arc(this.x,this.y,PERSON_RADIUS,0,Math.PI*2);
-          ctx.fillStyle=TEAM_COLORS[this.team];
-          if(this.team===1){ ctx.shadowBlur=6; ctx.shadowColor=TEAM_COLORS[1]; }
-          ctx.fill(); ctx.shadowBlur=0;
+        draw(ctx) {
+          const img = teamBallImages[this.team];
+          if (img) {
+            ctx.drawImage(img, this.x - PERSON_RADIUS - 2, this.y - PERSON_RADIUS - 2);
+          } else {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, PERSON_RADIUS, 0, Math.PI*2);
+            ctx.fillStyle = TEAM_COLORS[this.team];
+            ctx.fill();
+          }
         }
       }
       class Particle {
-        constructor(x,y,color,size){ this.x=x; this.y=y; let a=Math.random()*Math.PI*2,s=Math.random()*5; this.vx=Math.cos(a)*s; this.vy=Math.sin(a)*s; this.color=color; this.life=1; this.decay=0.03+Math.random()*0.03; this.size=size||2; }
+        constructor(x,y,color,size){ this.x=x; this.y=y; let a=Math.random()*Math.PI*2,s=Math.random()*4; this.vx=Math.cos(a)*s; this.vy=Math.sin(a)*s; this.color=color; this.life=1; this.decay=0.04+Math.random()*0.04; this.size=size||2; }
         update(){this.x+=this.vx; this.y+=this.vy; this.life-=this.decay;}
         draw(ctx){if(this.life<=0)return; ctx.globalAlpha=this.life; ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;}
       }
 
       function generateMap(){
         obstacles=[]; powerups=[]; superStars=[];
-        // 障碍物数量增加，并随机形状
-        for(let i=0;i<55;i++) obstacles.push({x:Math.random()*(WORLD_SIZE-200)+100, y:Math.random()*(WORLD_SIZE-200)+100, w:40+Math.random()*100, h:40+Math.random()*100});
+        for(let i=0;i<45;i++) obstacles.push({x:Math.random()*(WORLD_SIZE-200)+100, y:Math.random()*(WORLD_SIZE-200)+100, w:40+Math.random()*100, h:40+Math.random()*100});
         for(let i=0;i<10;i++) powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:Math.random()*Math.PI*2});
         for(let i=0;i<20;i++) superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:Math.random()*Math.PI*2});
       }
@@ -244,7 +269,7 @@
 
       function updatePhysics(){
         for(let i=1;i<=NUM_AI_TEAMS+1;i++) if(teams[i]){teams[i].count=0; teams[i].sumX=0; teams[i].sumY=0;}
-        const CS=60, gC=Math.ceil(WORLD_SIZE/CS), grid=new Array(gC*gC).fill().map(()=>[]);
+        const CS=80, gC=Math.ceil(WORLD_SIZE/CS), grid=new Array(gC*gC).fill().map(()=>[]);
         persons.forEach(p=>{ if(p.team>0&&teams[p.team]){teams[p.team].count++; teams[p.team].sumX+=p.x; teams[p.team].sumY+=p.y;} let idx=Math.floor(p.x/CS)+Math.floor(p.y/CS)*gC; if(grid[idx])grid[idx].push(p); });
         for(let i=1;i<=NUM_AI_TEAMS+1;i++) if(teams[i]&&teams[i].count>0){teams[i].cx=teams[i].sumX/teams[i].count; teams[i].cy=teams[i].sumY/teams[i].count;} else if(teams[i])teams[i].alive=false;
         persons.forEach(p1=>{
@@ -256,6 +281,8 @@
           let cx=Math.floor(p1.x/CS),cy=Math.floor(p1.y/CS);
           for(let nx=-1;nx<=1;nx++) for(let ny=-1;ny<=1;ny++){ let idx=(cx+nx)+(cy+ny)*gC; if(!grid[idx])continue; grid[idx].forEach(p2=>{ if(p1===p2)return; let dx=p1.x-p2.x,dy=p1.y-p2.y,distSq=dx*dx+dy*dy; if(distSq<121){ if(p1.team!==p2.team){ let c1=p1.team===0?0:(teams[p1.team]?teams[p1.team].count:0),c2=p2.team===0?0:(teams[p2.team]?teams[p2.team].count:0); if(c1>c2&&p1.team!==0) p2.team=p1.team; } else { let d=Math.sqrt(distSq)||0.1; p1.x+=(dx/d)*0.5; p1.y+=(dy/d)*0.5; } } }); }
         });
+        // 限制粒子数量
+        if (particles.length > 80) particles.splice(0, particles.length - 80);
       }
 
       function drawWorld(){
@@ -266,28 +293,17 @@
         ctx.translate(width/2 - camera.x * viewScale, height/2 - camera.y * viewScale);
         ctx.scale(viewScale, viewScale);
 
-        // 背景
         ctx.fillStyle='#08080f'; ctx.fillRect(0,0,WORLD_SIZE,WORLD_SIZE);
-        // 障碍物 - 更明显
         obstacles.forEach(o=>{
-          ctx.fillStyle='#151520';
-          ctx.fillRect(o.x, o.y, o.w, o.h);
-          ctx.strokeStyle='#3a3a4a';
-          ctx.lineWidth=2;
-          ctx.strokeRect(o.x, o.y, o.w, o.h);
-          ctx.strokeStyle='rgba(0,243,255,0.15)';
-          ctx.lineWidth=4;
-          ctx.strokeRect(o.x-2, o.y-2, o.w+4, o.h+4);
+          ctx.fillStyle='#151520'; ctx.fillRect(o.x, o.y, o.w, o.h);
+          ctx.strokeStyle='#3a3a4a'; ctx.lineWidth=2; ctx.strokeRect(o.x, o.y, o.w, o.h);
+          ctx.strokeStyle='rgba(0,243,255,0.15)'; ctx.lineWidth=4; ctx.strokeRect(o.x-2, o.y-2, o.w+4, o.h+4);
         });
 
-        // 能量核心
         powerups.forEach(p=>{ p.pulse+=0.08; ctx.beginPath(); ctx.arc(p.x,p.y,9+Math.sin(p.pulse)*2.5,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.shadowBlur=10; ctx.shadowColor='#fff'; ctx.fill(); ctx.shadowBlur=0; });
 
-        // 超级星星 (放大字体)
-        const desiredNameSize = isMobile ? 20 : 18;
-        const desiredBonusSize = isMobile ? 14 : 12;
-        const nameFontSize = desiredNameSize / viewScale;
-        const bonusFontSize = desiredBonusSize / viewScale;
+        const nameFontSize = (isMobile ? 22 : 20) / viewScale;
+        const bonusFontSize = (isMobile ? 15 : 13) / viewScale;
         superStars.forEach(s=>{
           s.pulse+=0.06;
           let r=s.type.radius+Math.sin(s.pulse)*4;
@@ -295,39 +311,38 @@
           let g=ctx.createRadialGradient(s.x,s.y,r*0.2,s.x,s.y,r);
           g.addColorStop(0,'#FFFDE7'); g.addColorStop(0.4,'#FFB300'); g.addColorStop(1,'#E65100');
           ctx.fillStyle=g; ctx.shadowBlur=s.type.glowIntensity; ctx.shadowColor=s.type.glowColor; ctx.fill(); ctx.shadowBlur=0;
-          // 大文字
           ctx.font = `bold ${nameFontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
           ctx.textAlign = 'center';
-          ctx.fillStyle = '#ffffff';
-          ctx.shadowBlur = 10; ctx.shadowColor = '#000';
+          ctx.fillStyle = '#ffffff'; ctx.shadowBlur = 10; ctx.shadowColor = '#000';
           ctx.fillText(s.type.name, s.x, s.y - r - 6);
           ctx.font = `bold ${bonusFontSize}px "Orbitron",sans-serif`;
           ctx.fillText('+'+s.type.bonus, s.x, s.y - r - 6 - nameFontSize*0.8);
           ctx.shadowBlur = 0;
         });
 
-        // 绘制人物
+        // 先绘制粒子，再绘制人物
+        particles.forEach(p=>{ p.update(); p.draw(ctx); });
+        particles = particles.filter(p => p.life > 0);
+        
+        // 绘制人物 (使用预渲染图像)
         persons.forEach(p=>{ p.update(); p.draw(ctx); });
 
-        // 队伍总数标签（只显示在中心）
-        const labelSize = isMobile ? 26 : 22;
-        const teamFontSize = labelSize / viewScale;
+        // 队伍总人数标签
+        const teamFontSize = (isMobile ? 28 : 24) / viewScale;
         for(let i=1;i<=NUM_AI_TEAMS+1;i++){
           const t = teams[i];
           if(t && t.alive && t.count > 0) {
             ctx.font = `bold ${teamFontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
             ctx.textAlign = 'center';
             ctx.fillStyle = TEAM_COLORS[i];
-            ctx.shadowBlur = 12; ctx.shadowColor = '#000000';
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 3;
+            ctx.shadowBlur = 12; ctx.shadowColor = '#000';
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
             const txt = t.count.toString();
             ctx.strokeText(txt, t.cx, t.cy - 32);
             ctx.fillText(txt, t.cx, t.cy - 32);
             ctx.shadowBlur = 0;
           }
         }
-
         ctx.restore();
       }
 
@@ -355,12 +370,19 @@
         document.getElementById('board-content').innerHTML=html;
       }
 
-      function triggerGameOver(title,sorted){
-        gameState='GAMEOVER'; let rank=sorted.findIndex(t=>t.id===1)+1||1;
-        document.getElementById('result-title').innerText=title;
-        document.getElementById('stat-rank').innerText=rank;
-        document.getElementById('stat-max').innerText=teams[1]?teams[1].count:0;
-        gameOverScreen.style.display='flex';
+      function triggerGameOver(title, sorted) {
+        gameState = 'GAMEOVER';
+        if (title.includes('吞噬') || title.includes('中断')) {
+          resultTitle.innerText = '连接中断';
+          resultMessage.innerText = '不要向霸凌者低头，记得寻找家长，老师，训导主任，校长的帮助。';
+        } else if (title.includes('肃清')) {
+          resultTitle.innerText = '网络环境已肃清！';
+          resultMessage.innerText = '恭喜！你成功对抗了霸凌者。继续战斗，永不放弃！';
+        } else {
+          resultTitle.innerText = title;
+          resultMessage.innerText = '游戏结束';
+        }
+        gameOverScreen.style.display = 'flex';
       }
 
       function gameLoop(){
