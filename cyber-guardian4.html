@@ -34,44 +34,19 @@
       left: 0;
     }
 
-    canvas {
+    canvas#gameCanvas {
       display: block;
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
     }
 
     #ui-layer {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
       z-index: 20;
-    }
-
-    /* 移动端操控提示 */
-    #mobile-control-hint {
-      position: absolute;
-      bottom: calc(40px + var(--safe-bottom));
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 243, 255, 0.15);
-      border: 1px solid rgba(0, 243, 255, 0.4);
-      border-radius: 30px;
-      padding: 8px 20px;
-      color: #00f3ff;
-      font-size: 13px;
-      letter-spacing: 1px;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      pointer-events: none;
-      display: none; /* 默认隐藏，手机端显示 */
-      text-shadow: 0 0 8px rgba(0,243,255,0.5);
-      z-index: 25;
     }
 
     /* 计时器 */
@@ -106,7 +81,7 @@
       letter-spacing: 1px;
     }
 
-    /* 排行榜 - 手机端紧凑版 */
+    /* 排行榜 - 紧凑版 */
     #leaderboard {
       position: absolute;
       top: calc(80px + var(--safe-top));
@@ -162,11 +137,11 @@
       border: 1px solid rgba(0, 243, 255, 0.25);
     }
 
-    /* 小地图 */
+    /* 小地图 - 移至左下角 */
     #minimap-container {
       position: absolute;
       bottom: calc(14px + var(--safe-bottom));
-      right: calc(10px + var(--safe-right));
+      left: calc(10px + var(--safe-left));
       width: 180px;
       height: 180px;
       background: rgba(4,4,10,0.8);
@@ -176,16 +151,39 @@
       box-shadow: 0 0 25px rgba(0,0,0,0.7), 0 0 18px rgba(0,243,255,0.15);
       z-index: 25;
       pointer-events: auto;
-      transition: opacity 0.3s;
-    }
-    #minimap-container.hidden-mobile {
-      opacity: 0;
-      pointer-events: auto; /* 保留点击区域以唤醒 */
     }
     #minimap-container canvas {
       width: 100%;
       height: 100%;
       border-radius: 12px;
+    }
+
+    /* 虚拟摇杆容器 */
+    #joystick-container {
+      position: absolute;
+      bottom: calc(40px + var(--safe-bottom));
+      right: calc(20px + var(--safe-right));
+      width: 140px;
+      height: 140px;
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 30;
+      pointer-events: auto;
+      touch-action: none;
+    }
+    #joystick-thumb {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 60px; height: 60px;
+      background: rgba(0, 243, 255, 0.25);
+      border: 2px solid rgba(0, 243, 255, 0.6);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 15px rgba(0,243,255,0.3);
+      pointer-events: none;
     }
 
     /* 结算面板 */
@@ -236,7 +234,8 @@
       #leaderboard { top: calc(65px + var(--safe-top)); gap: 4px; padding: 8px 10px; }
       .board-row { font-size: 10px; padding: 3px 8px; }
       #minimap-container { width: 130px; height: 130px; }
-      #mobile-control-hint { display: block; }
+      #joystick-container { width: 120px; height: 120px; }
+      #joystick-thumb { width: 50px; height: 50px; }
     }
   </style>
 </head>
@@ -251,10 +250,12 @@
       <div class="board-title">净化进度</div>
       <div id="board-content"></div>
     </div>
-    <div id="minimap-container" class="hidden-mobile">
+    <div id="minimap-container">
       <canvas id="minimap"></canvas>
     </div>
-    <div id="mobile-control-hint">◈ 滑动屏幕移动 ◈</div>
+    <div id="joystick-container">
+      <div id="joystick-thumb"></div>
+    </div>
   </div>
   <div id="game-over" style="display:none;">
     <div class="panel">
@@ -271,43 +272,86 @@
       const minimapCanvas = document.getElementById('minimap');
       const minictx = minimapCanvas.getContext('2d');
       const gameOverScreen = document.getElementById('game-over');
-      const mmContainer = document.getElementById('minimap-container');
-      const hint = document.getElementById('mobile-control-hint');
+      const joystickContainer = document.getElementById('joystick-container');
+      const joystickThumb = document.getElementById('joystick-thumb');
 
       let width, height;
-      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 600;
-
       function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
         canvas.width = width;
         canvas.height = height;
-        const mmSize = isMobile ? 130 : 180;
+        const mmSize = window.innerWidth < 600 ? 130 : 180;
         minimapCanvas.width = mmSize;
         minimapCanvas.height = mmSize;
-        mmContainer.style.width = mmSize + 'px';
-        mmContainer.style.height = mmSize + 'px';
-        
-        if (isMobile) {
-          hint.style.display = 'block';
-          mmContainer.classList.add('hidden-mobile');
-        } else {
-          hint.style.display = 'none';
-          mmContainer.classList.remove('hidden-mobile');
-        }
+        document.getElementById('minimap-container').style.width = mmSize + 'px';
+        document.getElementById('minimap-container').style.height = mmSize + 'px';
       }
       window.addEventListener('resize', resize);
       resize();
 
-      // 移动端小地图唤醒
-      mmContainer.addEventListener('click', () => {
-        if (isMobile) {
-          mmContainer.classList.remove('hidden-mobile');
-          clearTimeout(mmContainer._hideTimeout);
-          mmContainer._hideTimeout = setTimeout(() => mmContainer.classList.add('hidden-mobile'), 4000);
-        }
-      });
+      // ========== 虚拟摇杆逻辑 ==========
+      let joystickActive = false;
+      let joystickId = null;
+      const joystickRadius = 50; // 摇杆移动半径
 
+      function handleJoystickStart(e) {
+        e.preventDefault();
+        joystickActive = true;
+        joystickId = e.pointerId;
+      }
+      function handleJoystickMove(e) {
+        if (!joystickActive || e.pointerId !== joystickId) return;
+        e.preventDefault();
+        const rect = joystickContainer.getBoundingClientRect();
+        const cx = rect.left + rect.width/2;
+        const cy = rect.top + rect.height/2;
+        let dx = e.clientX - cx;
+        let dy = e.clientY - cy;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const maxDist = rect.width/2 - 15;
+        if (dist > maxDist) {
+          dx = (dx / dist) * maxDist;
+          dy = (dy / dist) * maxDist;
+        }
+        joystickThumb.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        // 更新游戏输入方向
+        if (dist > 8) {
+          inputDir.x = dx / maxDist;
+          inputDir.y = dy / maxDist;
+        } else {
+          inputDir.x = 0;
+          inputDir.y = 0;
+        }
+      }
+      function handleJoystickEnd(e) {
+        if (e.pointerId !== joystickId) return;
+        e.preventDefault();
+        joystickActive = false;
+        joystickId = null;
+        joystickThumb.style.transform = `translate(-50%, -50%)`;
+        inputDir.x = 0;
+        inputDir.y = 0;
+      }
+
+      joystickContainer.addEventListener('pointerdown', handleJoystickStart);
+      joystickContainer.addEventListener('pointermove', handleJoystickMove);
+      joystickContainer.addEventListener('pointerup', handleJoystickEnd);
+      joystickContainer.addEventListener('pointercancel', handleJoystickEnd);
+      joystickContainer.addEventListener('pointerleave', handleJoystickEnd);
+
+      // 桌面端鼠标支持 (可选)
+      window.addEventListener('mousemove', (e) => {
+        if (joystickActive) return; // 摇杆激活时不处理鼠标移动
+        if (gameState !== 'PLAYING') return;
+        let dx = e.clientX - width/2, dy = e.clientY - height/2;
+        let dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist > 20) { inputDir.x = dx/dist; inputDir.y = dy/dist; }
+        else { inputDir.x = 0; inputDir.y = 0; }
+      });
+      window.addEventListener('mouseleave', () => { if(!joystickActive) { inputDir.x=0; inputDir.y=0; } });
+
+      // ========== 游戏核心 ==========
       const WORLD_SIZE = 3500;
       const PERSON_RADIUS = 5;
       const NUM_NEUTRALS = 650;
@@ -347,73 +391,67 @@
         return SUPER_STAR_TYPES[0];
       }
 
-      // === 移动端完美操控：基于滑动方向 ===
-      let touchActive = false;
-      window.addEventListener('touchstart', e => {
-        e.preventDefault();
-        if(e.touches.length) {
-          touchActive = true;
-          updateInputFromTouch(e.touches[0]);
-        }
-      }, {passive: false});
-      window.addEventListener('touchmove', e => {
-        e.preventDefault();
-        if(touchActive && e.touches.length) updateInputFromTouch(e.touches[0]);
-      }, {passive: false});
-      window.addEventListener('touchend', e => {
-        e.preventDefault();
-        touchActive = false;
-        inputDir.x = 0; inputDir.y = 0;
-      });
-      window.addEventListener('touchcancel', () => { touchActive = false; inputDir.x = 0; inputDir.y = 0; });
-
-      function updateInputFromTouch(touch) {
-        if(gameState !== 'PLAYING') return;
-        let dx = touch.clientX - width/2;
-        let dy = touch.clientY - height/2;
-        let dist = Math.sqrt(dx*dx+dy*dy);
-        if(dist > 15) {
-          inputDir.x = (dx/dist) * Math.min(1, dist/150);
-          inputDir.y = (dy/dist) * Math.min(1, dist/150);
-        } else {
-          inputDir.x = 0; inputDir.y = 0;
-        }
-      }
-
-      // 桌面端鼠标支持
-      window.addEventListener('mousemove', e => {
-        if(touchActive) return;
-        if(gameState !== 'PLAYING') return;
-        let dx = e.clientX - width/2, dy = e.clientY - height/2;
-        let dist = Math.sqrt(dx*dx+dy*dy);
-        if(dist > 20) { inputDir.x = dx/dist; inputDir.y = dy/dist; }
-        else { inputDir.x = 0; inputDir.y = 0; }
-      });
-      window.addEventListener('mouseleave', ()=>{ if(!touchActive){inputDir.x=0; inputDir.y=0;} });
-
       class Person {
-        constructor(x,y,team){ this.x=x; this.y=y; this.vx=(Math.random()-0.5)*2; this.vy=(Math.random()-0.5)*2; this.team=team; this.baseSpeed=3.5+Math.random(); }
+        constructor(x,y,team){ 
+          this.x=x; this.y=y; 
+          this.vx=(Math.random()-0.5)*2; 
+          this.vy=(Math.random()-0.5)*2; 
+          this.team=team; 
+          this.baseSpeed = 4.8 + Math.random()*1.2; // 基础速度提升
+        }
         update(){
-          let tx=0,ty=0;
+          let tx=0, ty=0;
           const ms = this.baseSpeed * speedMultiplier;
-          if(this.team===0){ tx=this.vx+(Math.random()-0.5)*0.6; ty=this.vy+(Math.random()-0.5)*0.6; }
-          else { let t=teams[this.team]; if(t&&t.alive){ let d=Math.sqrt((t.targetX-this.x)**2+(t.targetY-this.y)**2)||1; tx=(t.targetX-this.x)/d*ms; ty=(t.targetY-this.y)/d*ms; } }
-          this.vx+=(tx-this.vx)*0.15; this.vy+=(ty-this.vy)*0.15;
-          let sp=Math.sqrt(this.vx**2+this.vy**2), lim=this.team===0?1.0*ms:ms;
+          if(this.team===0){ 
+            tx=this.vx+(Math.random()-0.5)*0.6; 
+            ty=this.vy+(Math.random()-0.5)*0.6; 
+          } else { 
+            let t=teams[this.team]; 
+            if(t&&t.alive){ 
+              let d=Math.sqrt((t.targetX-this.x)**2+(t.targetY-this.y)**2)||1; 
+              tx=(t.targetX-this.x)/d*ms; 
+              ty=(t.targetY-this.y)/d*ms; 
+            }
+          }
+          this.vx+=(tx-this.vx)*0.18; 
+          this.vy+=(ty-this.vy)*0.18;
+          let sp=Math.sqrt(this.vx**2+this.vy**2), lim=ms;
           if(sp>lim){ this.vx=this.vx/sp*lim; this.vy=this.vy/sp*lim; }
           this.x+=this.vx; this.y+=this.vy;
-          if(this.x<10){this.x=10; this.vx*=-0.7;} if(this.x>WORLD_SIZE-10){this.x=WORLD_SIZE-10; this.vx*=-0.7;}
-          if(this.y<10){this.y=10; this.vy*=-0.7;} if(this.y>WORLD_SIZE-10){this.y=WORLD_SIZE-10; this.vy*=-0.7;}
+          if(this.x<10){this.x=10; this.vx*=-0.7;} 
+          if(this.x>WORLD_SIZE-10){this.x=WORLD_SIZE-10; this.vx*=-0.7;}
+          if(this.y<10){this.y=10; this.vy*=-0.7;} 
+          if(this.y>WORLD_SIZE-10){this.y=WORLD_SIZE-10; this.vy*=-0.7;}
         }
-        draw(ctx){
-          ctx.beginPath(); ctx.arc(this.x,this.y,PERSON_RADIUS,0,Math.PI*2);
+        draw(ctx, teamCount){
+          ctx.beginPath(); 
+          ctx.arc(this.x,this.y,PERSON_RADIUS,0,Math.PI*2);
           ctx.fillStyle=TEAM_COLORS[this.team];
           if(this.team===1){ ctx.shadowBlur=6; ctx.shadowColor=TEAM_COLORS[1]; }
-          ctx.fill(); ctx.shadowBlur=0;
+          ctx.fill(); 
+          ctx.shadowBlur=0;
+          // 头顶数字
+          if (teamCount !== undefined && teamCount > 0) {
+            ctx.font = 'bold 8px "PingFang SC","Microsoft YaHei",sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = '#000';
+            ctx.fillText(teamCount, this.x, this.y - 10);
+            ctx.shadowBlur = 0;
+          }
         }
       }
+
       class Particle {
-        constructor(x,y,color,size){ this.x=x; this.y=y; let a=Math.random()*Math.PI*2,s=Math.random()*5; this.vx=Math.cos(a)*s; this.vy=Math.sin(a)*s; this.color=color; this.life=1; this.decay=0.03+Math.random()*0.03; this.size=size||2; }
+        constructor(x,y,color,size){ 
+          this.x=x; this.y=y; 
+          let a=Math.random()*Math.PI*2,s=Math.random()*5; 
+          this.vx=Math.cos(a)*s; this.vy=Math.sin(a)*s; 
+          this.color=color; this.life=1; 
+          this.decay=0.03+Math.random()*0.03; 
+          this.size=size||2; 
+        }
         update(){this.x+=this.vx; this.y+=this.vy; this.life-=this.decay;}
         draw(ctx){if(this.life<=0)return; ctx.globalAlpha=this.life; ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;}
       }
@@ -448,15 +486,20 @@
           let bx=t.targetX+(Math.random()-0.5)*150, by=t.targetY+(Math.random()-0.5)*150, min=450*450, found=false;
           [...superStars,...powerups].forEach(o=>{ let d=(o.x-t.cx)**2+(o.y-t.cy)**2; if(d<min){min=d; bx=o.x; by=o.y; found=true;} });
           if(!found) persons.forEach(p=>{ if(p.team===i)return; let d=(p.x-t.cx)**2+(p.y-t.cy)**2; if(d<min){ let ec=p.team===0?0:(teams[p.team]?teams[p.team].count:0); if(t.count>ec){min=d; bx=p.x; by=p.y;} else if(t.count<ec){ bx=t.cx-(p.x-t.cx); by=t.cy-(p.y-t.cy); min=0; } } });
-          t.targetX+=(bx-t.targetX)*0.08*speedMultiplier; t.targetY+=(by-t.targetY)*0.08*speedMultiplier;
+          t.targetX+=(bx-t.targetX)*0.1*speedMultiplier; t.targetY+=(by-t.targetY)*0.1*speedMultiplier;
         }
       }
 
       function updatePhysics(){
         for(let i=1;i<=NUM_AI_TEAMS+1;i++) if(teams[i]){teams[i].count=0; teams[i].sumX=0; teams[i].sumY=0;}
         const CS=60, gC=Math.ceil(WORLD_SIZE/CS), grid=new Array(gC*gC).fill().map(()=>[]);
-        persons.forEach(p=>{ if(p.team>0&&teams[p.team]){teams[p.team].count++; teams[p.team].sumX+=p.x; teams[p.team].sumY+=p.y;} let idx=Math.floor(p.x/CS)+Math.floor(p.y/CS)*gC; if(grid[idx])grid[idx].push(p); });
+        persons.forEach(p=>{ 
+          if(p.team>0&&teams[p.team]){teams[p.team].count++; teams[p.team].sumX+=p.x; teams[p.team].sumY+=p.y;} 
+          let idx=Math.floor(p.x/CS)+Math.floor(p.y/CS)*gC; 
+          if(grid[idx])grid[idx].push(p); 
+        });
         for(let i=1;i<=NUM_AI_TEAMS+1;i++) if(teams[i]&&teams[i].count>0){teams[i].cx=teams[i].sumX/teams[i].count; teams[i].cy=teams[i].sumY/teams[i].count;} else if(teams[i])teams[i].alive=false;
+        
         persons.forEach(p1=>{
           obstacles.forEach(o=>{ if(p1.x>o.x-5&&p1.x<o.x+o.w+5&&p1.y>o.y-5&&p1.y<o.y+o.h+5){ p1.x+=(p1.x>o.x+o.w/2?3:-3); p1.y+=(p1.y>o.y+o.h/2?3:-3); } });
           if(p1.team>0){
@@ -470,35 +513,80 @@
 
       function drawWorld(){
         ctx.save();
-        if(teams[1]&&teams[1].alive) camera.x+=(teams[1].cx-camera.x)*0.1, camera.y+=(teams[1].cy-camera.y)*0.1;
-        // 手机端拉远视野
-        const viewScale = isMobile ? 0.35 : 1.0;
+        if(teams[1]&&teams[1].alive) { camera.x+=(teams[1].cx-camera.x)*0.12; camera.y+=(teams[1].cy-camera.y)*0.12; }
+        const viewScale = window.innerWidth < 600 ? 0.38 : 1.0;
         ctx.translate(width/2 - camera.x * viewScale, height/2 - camera.y * viewScale);
         ctx.scale(viewScale, viewScale);
         
         ctx.fillStyle='#08080f'; ctx.fillRect(0,0,WORLD_SIZE,WORLD_SIZE);
         obstacles.forEach(o=>{ ctx.fillStyle='#0e0e16'; ctx.fillRect(o.x,o.y,o.w,o.h); });
+        
+        // 普通能量核心
         powerups.forEach(p=>{ p.pulse+=0.08; ctx.beginPath(); ctx.arc(p.x,p.y,9+Math.sin(p.pulse)*2.5,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.shadowBlur=10; ctx.shadowColor='#fff'; ctx.fill(); ctx.shadowBlur=0; });
-        superStars.forEach(s=>{ s.pulse+=0.06; let r=s.type.radius+Math.sin(s.pulse)*4; ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2); let g=ctx.createRadialGradient(s.x,s.y,r*0.2,s.x,s.y,r); g.addColorStop(0,'#FFFDE7'); g.addColorStop(0.4,'#FFB300'); g.addColorStop(1,'#E65100'); ctx.fillStyle=g; ctx.shadowBlur=s.type.glowIntensity; ctx.shadowColor=s.type.glowColor; ctx.fill(); ctx.shadowBlur=0; });
-        persons.forEach(p=>{ p.update(); p.draw(ctx); });
+        
+        // 超级星星 (金色，带文字)
+        superStars.forEach(s=>{ 
+          s.pulse+=0.06; 
+          let r=s.type.radius+Math.sin(s.pulse)*4; 
+          ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2); 
+          let g=ctx.createRadialGradient(s.x,s.y,r*0.2,s.x,s.y,r); 
+          g.addColorStop(0,'#FFFDE7'); g.addColorStop(0.4,'#FFB300'); g.addColorStop(1,'#E65100'); 
+          ctx.fillStyle=g; 
+          ctx.shadowBlur=s.type.glowIntensity; ctx.shadowColor=s.type.glowColor; 
+          ctx.fill(); 
+          ctx.shadowBlur=0;
+          // 星星上的文字
+          ctx.font = 'bold 11px "PingFang SC","Microsoft YaHei",sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = '#000';
+          ctx.fillText(s.type.name, s.x, s.y - r - 4);
+          ctx.font = 'bold 9px "Orbitron",sans-serif';
+          ctx.fillText('+'+s.type.bonus, s.x, s.y - r - 16);
+          ctx.shadowBlur = 0;
+        });
+        
+        // 人物 (带上团队计数)
+        const teamCounts = {};
+        for (let i=1; i<=NUM_AI_TEAMS+1; i++) if (teams[i]) teamCounts[i] = teams[i].count;
+        persons.forEach(p=>{ 
+          p.update(); 
+          let count = p.team > 0 ? teamCounts[p.team] : 0;
+          p.draw(ctx, count); 
+        });
+        
         ctx.restore();
       }
 
       function drawMinimap(){
         let w=minimapCanvas.width, h=minimapCanvas.height, s=w/WORLD_SIZE;
-        minictx.clearRect(0,0,w,h); minictx.fillStyle='#000'; minictx.fillRect(0,0,w,h);
-        persons.forEach(p=>{ minictx.fillStyle=TEAM_COLORS[p.team]; minictx.fillRect(p.x*s-1,p.y*s-1,2,2); });
-        minictx.strokeStyle='rgba(0,243,255,0.8)'; minictx.strokeRect((camera.x-width/2)*s,(camera.y-height/2)*s,width*s,height*s);
+        minictx.clearRect(0,0,w,h); 
+        minictx.fillStyle='rgba(4,4,10,0.9)'; minictx.fillRect(0,0,w,h);
+        // 绘制金色超级星星
+        superStars.forEach(ss=>{
+          minictx.fillStyle='#FFD740';
+          minictx.beginPath();
+          minictx.arc(ss.x*s, ss.y*s, 3, 0, Math.PI*2);
+          minictx.fill();
+        });
+        persons.forEach(p=>{ 
+          minictx.fillStyle=TEAM_COLORS[p.team]; 
+          minictx.fillRect(p.x*s-1,p.y*s-1,2,2); 
+        });
+        minictx.strokeStyle='rgba(0,243,255,0.8)'; 
+        minictx.strokeRect((camera.x-width/2)*s,(camera.y-height/2)*s,width*s,height*s);
       }
 
       function updateUI(sorted){
         if(gameState!=='PLAYING') return;
         let now=performance.now(), dt=Math.min((now-lastTime)/1000,0.1); lastTime=now;
-        gameTimeLeft-=dt; if(gameTimeLeft<=0){gameTimeLeft=0; triggerGameOver("终局裁决",sorted);}
-        speedMultiplier=1.0+((MAX_GAME_TIME-gameTimeLeft)/MAX_GAME_TIME)*1.4;
+        gameTimeLeft-=dt; 
+        if(gameTimeLeft<=0){gameTimeLeft=0; triggerGameOver("终局裁决",sorted);}
+        speedMultiplier=1.0+((MAX_GAME_TIME-gameTimeLeft)/MAX_GAME_TIME)*1.6; // 速度曲线更陡
         document.getElementById('timer-text').innerText=`${Math.floor(gameTimeLeft/60).toString().padStart(2,'0')}:${Math.floor(gameTimeLeft%60).toString().padStart(2,'0')}`;
         document.getElementById('speed-indicator').innerText=`网络流速 ${speedMultiplier.toFixed(2)}x`;
-        let html=''; const maxShow=isMobile?3:5;
+        let html=''; const maxShow=window.innerWidth<600?3:5;
         for(let i=0;i<Math.min(sorted.length,maxShow);i++){
           let t=sorted[i], isMe=t.id===1;
           html+=`<div class="board-row ${isMe?'my-score-row':''}"><span class="board-color-dot" style="background:${TEAM_COLORS[t.id]};color:${TEAM_COLORS[t.id]};"></span><span style="flex:1;color:#ccc;">${TEAM_NAMES[t.id]}</span><span>${t.count}</span></div>`;
@@ -507,7 +595,8 @@
       }
 
       function triggerGameOver(title,sorted){
-        gameState='GAMEOVER'; let rank=sorted.findIndex(t=>t.id===1)+1||1;
+        gameState='GAMEOVER'; 
+        let rank=sorted.findIndex(t=>t.id===1)+1||1;
         document.getElementById('result-title').innerText=title;
         document.getElementById('stat-rank').innerText=rank;
         document.getElementById('stat-max').innerText=teams[1]?teams[1].count:0;
@@ -516,13 +605,18 @@
 
       function gameLoop(){
         if(gameState==='PLAYING'){
-          if(teams[1]&&teams[1].alive){ teams[1].targetX=teams[1].cx+inputDir.x*200; teams[1].targetY=teams[1].cy+inputDir.y*200; }
-          updateAI(); updatePhysics();
+          if(teams[1]&&teams[1].alive){ 
+            teams[1].targetX=teams[1].cx+inputDir.x*220; 
+            teams[1].targetY=teams[1].cy+inputDir.y*220; 
+          }
+          updateAI(); 
+          updatePhysics();
         }
         ctx.clearRect(0,0,width,height);
         drawWorld();
         let sorted=Object.values(teams).filter(t=>t.count>0).sort((a,b)=>b.count-a.count);
-        updateUI(sorted); drawMinimap();
+        updateUI(sorted); 
+        drawMinimap();
         if(gameState==='PLAYING'&&(!teams[1]||teams[1].count<=0)) triggerGameOver("被网络暴力吞噬",sorted);
         else if(gameState==='PLAYING'&&sorted.length===1&&sorted[0].id===1) triggerGameOver("网络环境已肃清！",sorted);
         animationId=requestAnimationFrame(gameLoop);
