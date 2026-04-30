@@ -166,7 +166,7 @@
     <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">🎬</span><h2>今日课题：网络霸凌</h2></div><div class="video-wrapper"><iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">💡 观看影片，学习如何应对网络霸凌</p></div>
     <div class="board-card"><div class="board-header"><h2><span>🌙</span><span>心事匿名质询墙</span></h2><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><span class="board-badge badge-anonymous">🕶️ 完全匿名</span><button type="button" id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background:#a8c99b;color:#2d4e1e;border:none;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;cursor:pointer;">🔑 老师登录</button></div></div><div class="board-tip">💬 有心事、有疑问？在这里匿名倾诉。老师会看到并回复你。</div><div class="message-form"><textarea id="counselComment" placeholder="写下你的心事或问题……"></textarea><div style="display:flex;gap:0.4rem;margin-top:0.4rem;"><button type="button" class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex:2;">🌙 匿名发布</button><button type="button" class="btn-sm" id="teacherReplyIndicator" style="flex:1;background:#a8c99b;color:#2d4e1e;display:none;" disabled>👩‍🏫 老师模式</button></div></div><div class="message-list" id="counselList"><div class="message-status">正在加载...</div></div></div>
     <div class="board-card"><div class="board-header"><h2><span>🌟</span><span>名言鼓励墙</span></h2><span class="board-badge badge-signed">✏️ 署名分享</span></div><div class="board-tip">✨ 分享一句名言或鼓励的话，传递正能量。</div><div class="message-form"><textarea id="quoteComment" placeholder="写下你想分享的名言或鼓励……"></textarea><button type="button" class="btn-sm" id="quoteBtn" onclick="submitQuote()">🌟 署名发布</button></div><div class="message-list" id="quoteList"><div class="message-status">正在加载...</div></div></div>
-    <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>德育互动游戏</span></h2><span class="board-badge badge-anonymous">📱 手机可玩</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">🛡️ 网络卫士</option><option value="1">🛡️ 网络卫士 II</option><option value="2">🛡️ 网络卫士 III</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！</div></div></section>
+    <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>德育互动游戏</span></h2><span class="board-badge badge-anonymous">📱 手机可玩</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">🛡️ 网络卫士</option><option value="1">🛡️ 网络卫士 II</option><option value="2">🛡️ 网络卫士 III</option><option value="3">🛡️ 网络卫士 IIII</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！</div></div></section>
   </main>
   <footer><p>© 2026 德润童心 · 师范学校（课程作业） | 德育如细雨，润物细无声</p></footer>
 </div>
@@ -217,7 +217,8 @@ function goToQuiz(){
 var GAMES=[
   {src:'cyber-guardian.html',note:'🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！'},
   {src:'cyber-guardian2.html',note:'🛡️ 网络卫士 II · 第二关挑战'},
-  {src:'cyber-guardian3.html',note:'🛡️ 网络卫士 III · 终极挑战'}
+  {src:'cyber-guardian3.html',note:'🛡️ 网络卫士 III · 第三关挑战'}，
+  {src:'cyber-guardian4.html',note:'🛡️ 网络卫士 IIII · 终极挑战'}
 ];
 
 // ==================== 留言配置 ====================
