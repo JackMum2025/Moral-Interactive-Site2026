@@ -1,1037 +1,536 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>赛博空间：全图雷达疾速版</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>赛博空间：全图雷达疾速版</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
-        :root {
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-left: env(safe-area-inset-left, 0px);
-            --safe-right: env(safe-area-inset-right, 0px);
-        }
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
 
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #06060b;
-            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Tahoma, sans-serif;
-            touch-action: manipulation;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-        }
-        canvas {
-            display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        #ui-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #050510;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
 
-        #timer-container {
-            position: absolute;
-            top: calc(12px + var(--safe-top));
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(8, 15, 25, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1.5px solid rgba(0, 243, 255, 0.5);
-            border-radius: 20px;
-            color: #00f3ff;
-            padding: 8px 28px;
-            text-align: center;
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.25), inset 0 0 15px rgba(0, 243, 255, 0.06);
-            z-index: 20;
-            pointer-events: auto;
-        }
-        #timer-text {
-            font-family: 'Orbitron', 'PingFang SC', sans-serif;
-            font-size: 30px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            text-shadow: 0 0 14px #00f3ff, 0 0 30px rgba(0, 243, 255, 0.5);
-            line-height: 1.1;
-        }
-        #speed-indicator {
-            font-size: 13px;
-            color: #8ec8d0;
-            margin-top: 2px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-shadow: 0 0 6px rgba(0, 243, 255, 0.3);
-        }
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-        #leaderboard {
-            position: absolute;
-            top: calc(12px + var(--safe-top));
-            right: calc(10px + var(--safe-right));
-            width: 240px;
-            background: rgba(10, 12, 20, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 12px;
-            padding: 12px 14px;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-left: 3px solid #00f3ff;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 243, 255, 0.1);
-            z-index: 20;
-            pointer-events: auto;
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
-        }
-        .board-title {
-            font-size: 15px;
-            font-weight: 900;
-            margin-bottom: 10px;
-            text-align: center;
-            color: #fff;
-            letter-spacing: 2px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 8px;
-            font-family: 'Orbitron', 'PingFang SC', sans-serif;
-        }
-        .board-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 7px;
-            font-size: 13px;
-            font-weight: bold;
-            align-items: center;
-            gap: 6px;
-        }
-        .board-color {
-            width: 11px;
-            height: 11px;
-            border-radius: 3px;
-            display: inline-block;
-            margin-right: 8px;
-            box-shadow: 0 0 6px currentColor;
-            flex-shrink: 0;
-        }
-        .board-name {
-            flex-grow: 1;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            font-size: 12px;
-        }
-        .my-score {
-            background: rgba(0, 243, 255, 0.12);
-            padding: 5px 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 243, 255, 0.25);
-            margin-left: -6px;
-            margin-right: -6px;
-        }
+    #ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 20;
+    }
 
-        #minimap-container {
-            position: absolute;
-            bottom: calc(16px + var(--safe-bottom));
-            right: calc(10px + var(--safe-right));
-            width: 210px;
-            height: 210px;
-            background: rgba(4, 4, 8, 0.8);
-            border: 2px solid #333;
-            border-radius: 10px;
-            overflow: hidden;
-            pointer-events: auto;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7), 0 0 18px rgba(0, 243, 255, 0.15);
-            z-index: 20;
-        }
-        #minimap-container canvas {
-            width: 100%;
-            height: 100%;
-            border-radius: 8px;
-        }
+    /* 移动端操控提示 */
+    #mobile-control-hint {
+      position: absolute;
+      bottom: calc(40px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 243, 255, 0.15);
+      border: 1px solid rgba(0, 243, 255, 0.4);
+      border-radius: 30px;
+      padding: 8px 20px;
+      color: #00f3ff;
+      font-size: 13px;
+      letter-spacing: 1px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      pointer-events: none;
+      display: none; /* 默认隐藏，手机端显示 */
+      text-shadow: 0 0 8px rgba(0,243,255,0.5);
+      z-index: 25;
+    }
 
-        #game-over {
-            display: flex;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            pointer-events: auto;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 100;
-        }
-        .panel {
-            background: linear-gradient(180deg, #141424 0%, #0a0a14 100%);
-            padding: 40px 50px;
-            border-radius: 16px;
-            text-align: center;
-            color: white;
-            border: 1px solid #333;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 243, 255, 0.08);
-            max-width: 90vw;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-        .panel h1 {
-            margin: 0 0 16px 0;
-            font-size: 36px;
-            font-family: 'Orbitron', 'PingFang SC', sans-serif;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
-        }
-        .stats-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 30px;
-            font-size: 18px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 16px 20px;
-            border-radius: 10px;
-            min-width: 200px;
-        }
-        .stats-grid div {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
-            padding-bottom: 8px;
-            gap: 20px;
-        }
-        .stats-grid span {
-            font-weight: 900;
-            color: #00f3ff;
-            font-size: 22px;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
-        }
-        button {
-            padding: 14px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            background: transparent;
-            color: #00f3ff;
-            border: 2px solid #00f3ff;
-            border-radius: 25px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.25s;
-            box-shadow: 0 0 12px rgba(0, 243, 255, 0.2) inset;
-            font-family: 'Orbitron', 'PingFang SC', sans-serif;
-            touch-action: manipulation;
-        }
-        button:hover {
-            background: #00f3ff;
-            color: #000;
-            box-shadow: 0 0 28px rgba(0, 243, 255, 0.6);
-        }
-        button:active {
-            transform: scale(0.95);
-            transition: transform 0.1s;
-        }
+    /* 计时器 */
+    #timer-container {
+      position: absolute;
+      top: calc(10px + var(--safe-top));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(8, 15, 25, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(0, 243, 255, 0.6);
+      border-radius: 22px;
+      padding: 6px 24px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+      z-index: 22;
+      pointer-events: auto;
+    }
+    #timer-text {
+      font-family: 'Orbitron', monospace;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #00f3ff;
+      text-shadow: 0 0 12px #00f3ff;
+      line-height: 1.1;
+    }
+    #speed-indicator {
+      font-size: 11px;
+      color: #9ad7e0;
+      letter-spacing: 1px;
+    }
 
-        @media (max-width: 500px) {
-            #timer-container {
-                padding: 6px 18px;
-                border-radius: 14px;
-                top: calc(6px + var(--safe-top));
-            }
-            #timer-text {
-                font-size: 22px;
-                letter-spacing: 1px;
-            }
-            #speed-indicator {
-                font-size: 10px;
-            }
-            #leaderboard {
-                width: 155px;
-                padding: 8px 10px;
-                top: calc(70px + var(--safe-top));
-                right: calc(4px + var(--safe-right));
-                border-radius: 8px;
-                max-height: 40vh;
-            }
-            .board-title {
-                font-size: 12px;
-                letter-spacing: 1px;
-                margin-bottom: 6px;
-                padding-bottom: 5px;
-            }
-            .board-row {
-                font-size: 10px;
-                margin-bottom: 4px;
-                gap: 3px;
-            }
-            .board-color {
-                width: 8px;
-                height: 8px;
-                margin-right: 4px;
-                border-radius: 2px;
-            }
-            .board-name {
-                font-size: 10px;
-            }
-            .my-score {
-                padding: 3px 5px;
-                margin-left: -3px;
-                margin-right: -3px;
-            }
-            #minimap-container {
-                width: 130px;
-                height: 130px;
-                bottom: calc(10px + var(--safe-bottom));
-                right: calc(4px + var(--safe-right));
-                border-radius: 8px;
-                border-width: 1.5px;
-            }
-            .panel {
-                padding: 28px 24px;
-                border-radius: 12px;
-            }
-            .panel h1 {
-                font-size: 24px;
-            }
-            .stats-grid {
-                font-size: 15px;
-                padding: 12px 14px;
-                gap: 8px;
-            }
-            .stats-grid span {
-                font-size: 18px;
-            }
-            button {
-                padding: 12px 30px;
-                font-size: 15px;
-                letter-spacing: 1px;
-            }
-        }
+    /* 排行榜 - 手机端紧凑版 */
+    #leaderboard {
+      position: absolute;
+      top: calc(80px + var(--safe-top));
+      right: calc(10px + var(--safe-right));
+      background: rgba(10, 15, 22, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 10px 12px;
+      color: white;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+      z-index: 22;
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .board-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #aaa;
+      letter-spacing: 1px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 6px;
+      margin-bottom: 2px;
+    }
+    .board-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: bold;
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 4px 10px;
+    }
+    .board-row span:last-child {
+      color: #fff;
+      font-weight: 700;
+    }
+    .board-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      box-shadow: 0 0 6px currentColor;
+      flex-shrink: 0;
+    }
+    .my-score-row {
+      background: rgba(0, 243, 255, 0.15);
+      border: 1px solid rgba(0, 243, 255, 0.25);
+    }
 
-        @media (max-width: 370px) {
-            #leaderboard {
-                width: 125px;
-                padding: 6px 7px;
-            }
-            .board-row {
-                font-size: 9px;
-                margin-bottom: 3px;
-            }
-            .board-name {
-                font-size: 9px;
-                max-width: 55px;
-            }
-            #minimap-container {
-                width: 105px;
-                height: 105px;
-                bottom: calc(8px + var(--safe-bottom));
-            }
-            #timer-text {
-                font-size: 18px;
-            }
-            #timer-container {
-                padding: 5px 14px;
-            }
-        }
-    </style>
+    /* 小地图 */
+    #minimap-container {
+      position: absolute;
+      bottom: calc(14px + var(--safe-bottom));
+      right: calc(10px + var(--safe-right));
+      width: 180px;
+      height: 180px;
+      background: rgba(4,4,10,0.8);
+      border: 2px solid #333;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(0,0,0,0.7), 0 0 18px rgba(0,243,255,0.15);
+      z-index: 25;
+      pointer-events: auto;
+      transition: opacity 0.3s;
+    }
+    #minimap-container.hidden-mobile {
+      opacity: 0;
+      pointer-events: auto; /* 保留点击区域以唤醒 */
+    }
+    #minimap-container canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+    }
+
+    /* 结算面板 */
+    #game-over {
+      display: flex;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .panel {
+      background: #10121f;
+      padding: 30px 35px;
+      border-radius: 20px;
+      color: white;
+      border: 1px solid #2a2a3a;
+      text-align: center;
+      box-shadow: 0 20px 50px black;
+      max-width: 95vw;
+    }
+    .panel h1 {
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 20px;
+      font-size: 30px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 35px;
+      background: transparent;
+      border: 2px solid #00f3ff;
+      color: #00f3ff;
+      font-weight: bold;
+      border-radius: 30px;
+      font-size: 18px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:active { background: #00f3ff; color: #000; }
+
+    @media (max-width: 600px) {
+      #timer-container { padding: 4px 18px; border-radius: 18px; }
+      #timer-text { font-size: 22px; }
+      #leaderboard { top: calc(65px + var(--safe-top)); gap: 4px; padding: 8px 10px; }
+      .board-row { font-size: 10px; padding: 3px 8px; }
+      #minimap-container { width: 130px; height: 130px; }
+      #mobile-control-hint { display: block; }
+    }
+  </style>
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
-    <div id="ui-layer">
-        <div id="timer-container">
-            <div id="timer-text">05:00</div>
-            <div id="speed-indicator">网络流速 1.00x</div>
-        </div>
-        <div id="leaderboard">
-            <div class="board-title">净化进度榜</div>
-            <div id="board-content"></div>
-        </div>
-        <div id="minimap-container">
-            <canvas id="minimap"></canvas>
-        </div>
+  <canvas id="gameCanvas"></canvas>
+  <div id="ui-layer">
+    <div id="timer-container">
+      <div id="timer-text">05:00</div>
+      <div id="speed-indicator">网络流速 1.00x</div>
     </div>
-    <div id="game-over" style="display:none;">
-        <div class="panel">
-            <h1 id="result-title">连接已中断</h1>
-            <div class="stats-grid">
-                <div>生存排名 <span><span id="stat-rank">1</span> 名</span></div>
-                <div>感化网民 <span><span id="stat-max">0</span> 人</span></div>
-            </div>
-            <button onclick="startGame()">重新接入网络</button>
-        </div>
+    <div id="leaderboard">
+      <div class="board-title">净化进度</div>
+      <div id="board-content"></div>
     </div>
-
-    <script>
-        (function() {
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            const minimapCanvas = document.getElementById('minimap');
-            const minictx = minimapCanvas.getContext('2d');
-            const gameOverScreen = document.getElementById('game-over');
-
-            let width, height;
-
-            function resize() {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                canvas.width = width;
-                canvas.height = height;
-                const mmSize = Math.min(210, width < 500 ? (width < 370 ? 105 : 130) : 210);
-                minimapCanvas.width = mmSize;
-                minimapCanvas.height = mmSize;
-                const container = document.getElementById('minimap-container');
-                if (container) {
-                    container.style.width = mmSize + 'px';
-                    container.style.height = mmSize + 'px';
-                }
-            }
-            window.addEventListener('resize', resize);
-            resize();
-
-            const WORLD_SIZE = 3500;
-            const PERSON_RADIUS = 5;
-            const NUM_NEUTRALS = 650;
-            const NUM_AI_TEAMS = 7;
-
-            const TEAM_COLORS = [
-                '#555566', '#00f3ff', '#ff003c', '#bc13fe', '#ff71ce',
-                '#2962ff', '#39ff14', '#ffea00', '#ff6600'
-            ];
-            const TEAM_NAMES = [
-                "吃瓜网民", "道德正义使者", "霸凌者·暴怒", "霸凌者·阴阳",
-                "霸凌者·造谣", "霸凌者·键盘侠", "霸凌者·引战", "霸凌者·水军", "霸凌者·杠精"
-            ];
-
-            const MAX_GAME_TIME = 300;
-            let gameTimeLeft = MAX_GAME_TIME;
-            let speedMultiplier = 1.0;
-            let lastTime = 0;
-            let animationId = null;
-
-            let gameState = 'MENU';
-            let persons = [], teams = {}, particles = [], obstacles = [], powerups = [], superStars = [];
-            let camera = { x: WORLD_SIZE / 2, y: WORLD_SIZE / 2 };
-            let inputDir = { x: 0, y: 0 };
-
-            const SUPER_STAR_TYPES = [
-                { name: '老师', bonus: 10, radius: 13, glowColor: '#FFD700', glowIntensity: 18, spawnWeight: 45 },
-                { name: '训导主任', bonus: 20, radius: 17, glowColor: '#FFC107', glowIntensity: 24, spawnWeight: 25 },
-                { name: '校长', bonus: 30, radius: 21, glowColor: '#FFB300', glowIntensity: 30, spawnWeight: 15 },
-                { name: '家长', bonus: 40, radius: 26, glowColor: '#FFA000', glowIntensity: 38, spawnWeight: 8 }
-            ];
-
-            function getRandomSuperStarType() {
-                const totalWeight = SUPER_STAR_TYPES.reduce((s, t) => s + t.spawnWeight, 0);
-                let r = Math.random() * totalWeight;
-                for (const t of SUPER_STAR_TYPES) {
-                    r -= t.spawnWeight;
-                    if (r <= 0) return t;
-                }
-                return SUPER_STAR_TYPES[0];
-            }
-
-            // 输入处理
-            function handleInput(clientX, clientY) {
-                if (gameState !== 'PLAYING') return;
-                const dx = clientX - width / 2;
-                const dy = clientY - height / 2;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist > 20) {
-                    const factor = Math.min(dist / (Math.min(width, height) * 0.45), 1.0);
-                    inputDir.x = (dx / dist) * factor;
-                    inputDir.y = (dy / dist) * factor;
-                } else {
-                    inputDir.x = 0;
-                    inputDir.y = 0;
-                }
-            }
-            window.addEventListener('mousemove', e => handleInput(e.clientX, e.clientY));
-            window.addEventListener('touchmove', e => { if (e.touches.length) handleInput(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-            window.addEventListener('touchstart', e => { if (e.touches.length) handleInput(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-            window.addEventListener('touchend', () => { inputDir.x = 0; inputDir.y = 0; });
-            window.addEventListener('mouseleave', () => { inputDir.x = 0; inputDir.y = 0; });
-
-            class Person {
-                constructor(x, y, team) {
-                    this.x = x;
-                    this.y = y;
-                    this.vx = (Math.random() - 0.5) * 2;
-                    this.vy = (Math.random() - 0.5) * 2;
-                    this.team = team;
-                    this.baseSpeed = 3.5 + Math.random();
-                }
-                update() {
-                    let targetVx = 0, targetVy = 0;
-                    const currentMaxSpeed = this.baseSpeed * speedMultiplier;
-                    const currentNeutralSpeed = 1.0 * speedMultiplier;
-
-                    if (this.team === 0) {
-                        targetVx = this.vx + (Math.random() - 0.5) * 0.6;
-                        targetVy = this.vy + (Math.random() - 0.5) * 0.6;
-                    } else {
-                        const tInfo = teams[this.team];
-                        if (tInfo && tInfo.alive) {
-                            const dx = tInfo.targetX - this.x;
-                            const dy = tInfo.targetY - this.y;
-                            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-                            targetVx = (dx / dist) * currentMaxSpeed;
-                            targetVy = (dy / dist) * currentMaxSpeed;
-                        }
-                    }
-
-                    this.vx += (targetVx - this.vx) * 0.15;
-                    this.vy += (targetVy - this.vy) * 0.15;
-
-                    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                    const limit = this.team === 0 ? currentNeutralSpeed : currentMaxSpeed;
-                    if (speed > limit) {
-                        this.vx = (this.vx / speed) * limit;
-                        this.vy = (this.vy / speed) * limit;
-                    }
-
-                    this.x += this.vx;
-                    this.y += this.vy;
-
-                    if (this.x < 10) { this.x = 10; this.vx *= -0.7; }
-                    if (this.x > WORLD_SIZE - 10) { this.x = WORLD_SIZE - 10; this.vx *= -0.7; }
-                    if (this.y < 10) { this.y = 10; this.vy *= -0.7; }
-                    if (this.y > WORLD_SIZE - 10) { this.y = WORLD_SIZE - 10; this.vy *= -0.7; }
-                }
-                draw(ctx) {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, PERSON_RADIUS, 0, Math.PI * 2);
-                    ctx.fillStyle = TEAM_COLORS[this.team];
-                    if (this.team === 1) {
-                        ctx.shadowBlur = 5;
-                        ctx.shadowColor = TEAM_COLORS[1];
-                    }
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                }
-            }
-
-            class Particle {
-                constructor(x, y, color, size) {
-                    this.x = x;
-                    this.y = y;
-                    const angle = Math.random() * Math.PI * 2;
-                    const spd = Math.random() * 5 * speedMultiplier;
-                    this.vx = Math.cos(angle) * spd;
-                    this.vy = Math.sin(angle) * spd;
-                    this.color = color;
-                    this.life = 1.0;
-                    this.decay = Math.random() * 0.04 + 0.015;
-                    this.size = size || (Math.random() * 2.5 + 1);
-                }
-                update() { this.x += this.vx; this.y += this.vy; this.life -= this.decay; }
-                draw(ctx) {
-                    ctx.globalAlpha = Math.max(0, this.life);
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-
-            function generateMap() {
-                obstacles = [];
-                powerups = [];
-                superStars = [];
-                for (let i = 0; i < 35; i++) {
-                    obstacles.push({
-                        x: Math.random() * (WORLD_SIZE - 200) + 100,
-                        y: Math.random() * (WORLD_SIZE - 200) + 100,
-                        w: Math.random() * 120 + 60,
-                        h: Math.random() * 120 + 60
-                    });
-                }
-                for (let i = 0; i < 10; i++) spawnPowerup();
-                for (let i = 0; i < 16; i++) spawnSuperStar();
-            }
-
-            function spawnPowerup() {
-                powerups.push({
-                    x: Math.random() * (WORLD_SIZE - 100) + 50,
-                    y: Math.random() * (WORLD_SIZE - 100) + 50,
-                    pulse: Math.random() * Math.PI * 2
-                });
-            }
-
-            function spawnSuperStar() {
-                const starType = getRandomSuperStarType();
-                superStars.push({
-                    x: Math.random() * (WORLD_SIZE - 150) + 75,
-                    y: Math.random() * (WORLD_SIZE - 150) + 75,
-                    type: starType,
-                    pulse: Math.random() * Math.PI * 2
-                });
-            }
-
-            function startGame() {
-                if (animationId) cancelAnimationFrame(animationId);
-                persons = [];
-                particles = [];
-                teams = {};
-                obstacles = [];
-                powerups = [];
-                superStars = [];
-                inputDir = { x: 0, y: 0 };
-
-                gameState = 'PLAYING';
-                gameOverScreen.style.display = 'none';
-                gameTimeLeft = MAX_GAME_TIME;
-                speedMultiplier = 1.0;
-                lastTime = performance.now();
-
-                generateMap();
-
-                for (let i = 1; i <= NUM_AI_TEAMS + 1; i++) {
-                    let sx = Math.random() * WORLD_SIZE;
-                    let sy = Math.random() * WORLD_SIZE;
-                    if (i === 1) { sx = WORLD_SIZE / 2; sy = WORLD_SIZE / 2; }
-                    teams[i] = { id: i, count: 1, alive: true, targetX: sx, targetY: sy, cx: sx, cy: sy, sumX: 0, sumY: 0 };
-                    persons.push(new Person(sx, sy, i));
-                }
-                camera.x = WORLD_SIZE / 2;
-                camera.y = WORLD_SIZE / 2;
-                for (let i = 0; i < NUM_NEUTRALS; i++)
-                    persons.push(new Person(Math.random() * WORLD_SIZE, Math.random() * WORLD_SIZE, 0));
-
-                animationId = requestAnimationFrame(gameLoop);
-            }
-
-            function updateAI() {
-                for (let i = 2; i <= NUM_AI_TEAMS + 1; i++) {
-                    const t = teams[i];
-                    if (!t || !t.alive || t.count === 0) continue;
-
-                    const sightRadius = 450;
-                    let bestX = t.targetX + (Math.random() - 0.5) * 150;
-                    let bestY = t.targetY + (Math.random() - 0.5) * 150;
-                    let minDist = sightRadius * sightRadius;
-                    let found = false;
-
-                    for (const s of superStars) {
-                        const d = (s.x - t.cx) ** 2 + (s.y - t.cy) ** 2;
-                        if (d < minDist) { minDist = d; bestX = s.x; bestY = s.y; found = true; }
-                    }
-                    if (!found) {
-                        for (const p of powerups) {
-                            const d = (p.x - t.cx) ** 2 + (p.y - t.cy) ** 2;
-                            if (d < minDist) { minDist = d; bestX = p.x; bestY = p.y; found = true; }
-                        }
-                    }
-                    if (!found) {
-                        for (const p of persons) {
-                            if (p.team === i) continue;
-                            const d = (p.x - t.cx) ** 2 + (p.y - t.cy) ** 2;
-                            if (d < sightRadius * sightRadius) {
-                                const enemyCount = p.team === 0 ? 0 : (teams[p.team] ? teams[p.team].count : 0);
-                                if (t.count > enemyCount) {
-                                    if (d < minDist) { minDist = d; bestX = p.x; bestY = p.y; }
-                                } else if (t.count < enemyCount) {
-                                    bestX = t.cx - (p.x - t.cx);
-                                    bestY = t.cy - (p.y - t.cy);
-                                    minDist = 0;
-                                }
-                            }
-                        }
-                    }
-
-                    t.targetX += (bestX - t.targetX) * 0.08 * speedMultiplier;
-                    t.targetY += (bestY - t.targetY) * 0.08 * speedMultiplier;
-                    t.targetX = Math.max(0, Math.min(WORLD_SIZE, t.targetX));
-                    t.targetY = Math.max(0, Math.min(WORLD_SIZE, t.targetY));
-                }
-            }
-
-            function updatePhysics() {
-                for (let i = 1; i <= NUM_AI_TEAMS + 1; i++) {
-                    if (teams[i]) { teams[i].count = 0; teams[i].sumX = 0; teams[i].sumY = 0; }
-                }
-
-                const CELL_SIZE = 60; // 增大网格提升性能
-                const gridCols = Math.ceil(WORLD_SIZE / CELL_SIZE);
-                const gridRows = Math.ceil(WORLD_SIZE / CELL_SIZE);
-                const grid = new Array(gridCols * gridRows).fill().map(() => []);
-
-                for (const p of persons) {
-                    if (p.team > 0 && teams[p.team]) {
-                        teams[p.team].count++;
-                        teams[p.team].sumX += p.x;
-                        teams[p.team].sumY += p.y;
-                    }
-                    const idx = Math.floor(p.x / CELL_SIZE) + Math.floor(p.y / CELL_SIZE) * gridCols;
-                    if (idx >= 0 && idx < grid.length) grid[idx].push(p);
-                }
-
-                for (let i = 1; i <= NUM_AI_TEAMS + 1; i++) {
-                    if (teams[i]) {
-                        if (teams[i].count > 0) {
-                            teams[i].cx = teams[i].sumX / teams[i].count;
-                            teams[i].cy = teams[i].sumY / teams[i].count;
-                        } else {
-                            teams[i].alive = false;
-                        }
-                    }
-                }
-
-                const minDist = PERSON_RADIUS * 2.2;
-
-                for (const p1 of persons) {
-                    for (const obs of obstacles) {
-                        if (p1.x > obs.x - PERSON_RADIUS && p1.x < obs.x + obs.w + PERSON_RADIUS &&
-                            p1.y > obs.y - PERSON_RADIUS && p1.y < obs.y + obs.h + PERSON_RADIUS) {
-                            const cx = obs.x + obs.w / 2, cy = obs.y + obs.h / 2;
-                            p1.x += (p1.x > cx ? 3 : -3);
-                            p1.y += (p1.y > cy ? 3 : -3);
-                        }
-                    }
-
-                    if (p1.team > 0) {
-                        for (let k = powerups.length - 1; k >= 0; k--) {
-                            const pw = powerups[k];
-                            if ((p1.x - pw.x) ** 2 + (p1.y - pw.y) ** 2 < 400) {
-                                powerups.splice(k, 1);
-                                for (let i = 0; i < 4; i++) particles.push(new Particle(pw.x, pw.y, '#fff', 2));
-                                for (let b = 0; b < 6; b++)
-                                    persons.push(new Person(p1.x + (Math.random() - 0.5) * 30, p1.y + (Math.random() - 0.5) * 30, p1.team));
-                                spawnPowerup();
-                            }
-                        }
-
-                        for (let k = superStars.length - 1; k >= 0; k--) {
-                            const ss = superStars[k];
-                            const collectDist = ss.type.radius + PERSON_RADIUS + 6;
-                            if ((p1.x - ss.x) ** 2 + (p1.y - ss.y) ** 2 < collectDist * collectDist) {
-                                const bonus = ss.type.bonus;
-                                superStars.splice(k, 1);
-                                for (let i = 0; i < 8; i++) particles.push(new Particle(ss.x, ss.y, ss.type.glowColor, 3));
-                                for (let b = 0; b < bonus; b++) {
-                                    const angle = Math.random() * Math.PI * 2;
-                                    const dist = Math.random() * 35;
-                                    persons.push(new Person(ss.x + Math.cos(angle) * dist, ss.y + Math.sin(angle) * dist, p1.team));
-                                }
-                                spawnSuperStar();
-                            }
-                        }
-                    }
-
-                    const cellX = Math.floor(p1.x / CELL_SIZE);
-                    const cellY = Math.floor(p1.y / CELL_SIZE);
-                    for (let nx = -1; nx <= 1; nx++) {
-                        for (let ny = -1; ny <= 1; ny++) {
-                            const idx = (cellX + nx) + (cellY + ny) * gridCols;
-                            if (idx < 0 || idx >= grid.length) continue;
-                            const cell = grid[idx];
-                            for (const p2 of cell) {
-                                if (p1 === p2) continue;
-                                const dx = p1.x - p2.x;
-                                const dy = p1.y - p2.y;
-                                const distSq = dx * dx + dy * dy;
-                                if (distSq < minDist * minDist) {
-                                    const dist = Math.sqrt(distSq) || 0.1;
-                                    if (p1.team !== p2.team) {
-                                        const c1 = p1.team === 0 ? 0 : (teams[p1.team] ? teams[p1.team].count : 0);
-                                        const c2 = p2.team === 0 ? 0 : (teams[p2.team] ? teams[p2.team].count : 0);
-                                        if (c1 > c2 && p1.team !== 0) {
-                                            for (let i = 0; i < 2; i++) particles.push(new Particle(p2.x, p2.y, TEAM_COLORS[p2.team], 1.5));
-                                            p2.team = p1.team;
-                                        }
-                                    } else {
-                                        const force = (minDist - dist) * 0.25;
-                                        p1.x += (dx / dist) * force;
-                                        p1.y += (dy / dist) * force;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (particles.length > 150) particles.splice(0, particles.length - 150);
-            }
-
-            function isVisible(x, y, margin = 40) {
-                const left = camera.x - width / 2 - margin;
-                const right = camera.x + width / 2 + margin;
-                const top = camera.y - height / 2 - margin;
-                const bottom = camera.y + height / 2 + margin;
-                return x > left && x < right && y > top && y < bottom;
-            }
-
-            function drawWorld() {
-                ctx.save();
-                if (teams[1] && teams[1].alive && teams[1].count > 0) {
-                    camera.x += (teams[1].cx - camera.x) * 0.1;
-                    camera.y += (teams[1].cy - camera.y) * 0.1;
-                }
-                ctx.translate(width / 2 - camera.x, height / 2 - camera.y);
-
-                // 背景与网格
-                ctx.fillStyle = '#08080f';
-                ctx.fillRect(0, 0, WORLD_SIZE, WORLD_SIZE);
-                ctx.strokeStyle = 'rgba(20,25,40,0.5)';
-                ctx.lineWidth = 1;
-                for (let gx = 0; gx < WORLD_SIZE; gx += 120) {
-                    ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, WORLD_SIZE); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(0, gx); ctx.lineTo(WORLD_SIZE, gx); ctx.stroke();
-                }
-                ctx.strokeStyle = 'rgba(0,243,255,0.4)';
-                ctx.lineWidth = 4;
-                ctx.strokeRect(0, 0, WORLD_SIZE, WORLD_SIZE);
-
-                // 障碍物
-                for (const obs of obstacles) {
-                    if (!isVisible(obs.x, obs.y, 200)) continue;
-                    ctx.fillStyle = '#0e0e16';
-                    ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-                    ctx.strokeStyle = '#2a2a3a';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(obs.x, obs.y, obs.w, obs.h);
-                }
-
-                // 普通能量核心
-                for (const p of powerups) {
-                    if (!isVisible(p.x, p.y, 30)) continue;
-                    p.pulse += 0.08;
-                    const r = 9 + Math.sin(p.pulse) * 2.5;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-                    ctx.fillStyle = '#fff';
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = '#fff';
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                }
-
-                // 超级星星
-                for (const ss of superStars) {
-                    if (!isVisible(ss.x, ss.y, 50)) continue;
-                    ss.pulse += 0.06;
-                    const baseR = ss.type.radius;
-                    const r = baseR + Math.sin(ss.pulse) * 4;
-                    const alpha = 0.7 + Math.sin(ss.pulse * 1.3) * 0.3;
-
-                    ctx.beginPath();
-                    ctx.arc(ss.x, ss.y, r + 10, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255,200,50,${0.12 * alpha})`;
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(ss.x, ss.y, r + 5, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255,215,0,${0.25 * alpha})`;
-                    ctx.fill();
-
-                    const grad = ctx.createRadialGradient(ss.x - r * 0.3, ss.y - r * 0.3, r * 0.1, ss.x, ss.y, r);
-                    grad.addColorStop(0, '#FFFDE7');
-                    grad.addColorStop(0.25, '#FFD740');
-                    grad.addColorStop(0.6, '#FFA000');
-                    grad.addColorStop(1, '#E65100');
-                    ctx.beginPath();
-                    ctx.arc(ss.x, ss.y, r, 0, Math.PI * 2);
-                    ctx.fillStyle = grad;
-                    ctx.shadowBlur = ss.type.glowIntensity;
-                    ctx.shadowColor = ss.type.glowColor;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                    ctx.beginPath();
-                    ctx.arc(ss.x - r * 0.3, ss.y - r * 0.35, r * 0.28, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-                    ctx.fill();
-
-                    ctx.font = 'bold 13px "PingFang SC","Microsoft YaHei",sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'bottom';
-                    ctx.fillStyle = '#FFE082';
-                    ctx.shadowBlur = 6;
-                    ctx.shadowColor = 'rgba(255,180,0,0.8)';
-                    ctx.fillText(ss.type.name, ss.x, ss.y - r - 6);
-                    ctx.shadowBlur = 0;
-                    ctx.font = 'bold 10px "Orbitron",sans-serif';
-                    ctx.fillStyle = '#fff';
-                    ctx.fillText('+' + ss.type.bonus, ss.x, ss.y - r - 20);
-                }
-
-                // 粒子
-                ctx.globalAlpha = 1;
-                for (const p of particles) {
-                    p.update();
-                    if (p.life <= 0) continue;
-                    p.draw(ctx);
-                }
-                particles = particles.filter(p => p.life > 0);
-
-                // 人物（视口裁剪）
-                for (const p of persons) {
-                    p.update();
-                    if (!isVisible(p.x, p.y, PERSON_RADIUS + 5)) continue;
-                    p.draw(ctx);
-                }
-
-                // 队伍标签
-                const sorted = Object.values(teams).filter(t => t.count > 0).sort((a, b) => b.count - a.count);
-                const topTeam = sorted[0];
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'bottom';
-                for (const t of Object.values(teams)) {
-                    if (t.count > 0 && t.id > 0 && isVisible(t.cx, t.cy, 60)) {
-                        if (topTeam && topTeam.id === t.id && t.count > 10) {
-                            ctx.font = '26px sans-serif';
-                            ctx.fillText('👑', t.cx, t.cy - 38);
-                        }
-                        ctx.font = 'bold 20px "PingFang SC","Microsoft YaHei",sans-serif';
-                        ctx.fillStyle = TEAM_COLORS[t.id];
-                        ctx.shadowBlur = 6;
-                        ctx.shadowColor = '#000';
-                        ctx.strokeStyle = '#000';
-                        ctx.lineWidth = 3;
-                        const txt = `${TEAM_NAMES[t.id]}: ${t.count}`;
-                        ctx.strokeText(txt, t.cx, t.cy - 12);
-                        ctx.shadowBlur = t.id === 1 ? 10 : 0;
-                        ctx.shadowColor = TEAM_COLORS[t.id];
-                        ctx.fillText(txt, t.cx, t.cy - 12);
-                        ctx.shadowBlur = 0;
-                    }
-                }
-
-                ctx.restore();
-            }
-
-            function drawMinimap() {
-                const w = minimapCanvas.width, h = minimapCanvas.height;
-                minictx.clearRect(0, 0, w, h);
-                const scale = w / WORLD_SIZE;
-                minictx.fillStyle = 'rgba(4,4,10,0.9)';
-                minictx.fillRect(0, 0, w, h);
-                minictx.strokeStyle = 'rgba(255,255,255,0.15)';
-                minictx.strokeRect(0, 0, w, h);
-
-                for (const obs of obstacles) {
-                    minictx.fillStyle = 'rgba(30,30,45,0.6)';
-                    minictx.fillRect(obs.x * scale, obs.y * scale, Math.max(1, obs.w * scale), Math.max(1, obs.h * scale));
-                }
-                minictx.strokeStyle = 'rgba(0,243,255,0.7)';
-                minictx.lineWidth = 1.5;
-                minictx.strokeRect((camera.x - width / 2) * scale, (camera.y - height / 2) * scale, width * scale, height * scale);
-
-                for (const p of persons) {
-                    minictx.fillStyle = TEAM_COLORS[p.team];
-                    const s = p.team === 1 ? 3 : (p.team === 0 ? 1.2 : 1.8);
-                    minictx.fillRect(p.x * scale - s / 2, p.y * scale - s / 2, s, s);
-                }
-                minictx.fillStyle = '#FFD740';
-                for (const ss of superStars) {
-                    minictx.beginPath();
-                    minictx.arc(ss.x * scale, ss.y * scale, 3, 0, Math.PI * 2);
-                    minictx.fill();
-                }
-                minictx.fillStyle = '#fff';
-                for (const pw of powerups) {
-                    minictx.beginPath();
-                    minictx.arc(pw.x * scale, pw.y * scale, 1.8, 0, Math.PI * 2);
-                    minictx.fill();
-                }
-            }
-
-            function updateUI(sortedTeams) {
-                if (gameState !== 'PLAYING') return;
-                const now = performance.now();
-                const dt = Math.min((now - lastTime) / 1000, 0.1);
-                lastTime = now;
-                gameTimeLeft -= dt;
-                if (gameTimeLeft <= 0) { gameTimeLeft = 0; triggerGameOver("终局裁决", sortedTeams); }
-
-                speedMultiplier = 1.0 + ((MAX_GAME_TIME - gameTimeLeft) / MAX_GAME_TIME) * 1.4;
-                const mins = Math.floor(gameTimeLeft / 60).toString().padStart(2, '0');
-                const secs = Math.floor(gameTimeLeft % 60).toString().padStart(2, '0');
-                document.getElementById('timer-text').innerText = `${mins}:${secs}`;
-                document.getElementById('speed-indicator').innerText = `网络流速 ${speedMultiplier.toFixed(2)}x`;
-                document.getElementById('timer-text').style.color = gameTimeLeft <= 60 ? '#ff4466' : '#00f3ff';
-
-                let html = '';
-                const maxShow = width < 500 ? 6 : 8;
-                for (let i = 0; i < Math.min(sortedTeams.length, maxShow); i++) {
-                    const t = sortedTeams[i];
-                    const isMe = t.id === 1;
-                    html += `<div class="board-row ${isMe ? 'my-score' : ''}">
-                        <div style="display:flex;align-items:center;overflow:hidden;flex:1;">
-                            <span style="width:22px;color:#888;">#${i + 1}</span>
-                            <span class="board-color" style="background:${TEAM_COLORS[t.id]};"></span>
-                            <span class="board-name" style="color:${isMe ? '#00f3ff' : '#ddd'}">${TEAM_NAMES[t.id]}</span>
-                        </div>
-                        <span>${t.count}</span>
-                    </div>`;
-                }
-                document.getElementById('board-content').innerHTML = html;
-            }
-
-            function checkEnd(sortedTeams) {
-                if (gameState !== 'PLAYING') return;
-                if (!teams[1] || teams[1].count <= 0) triggerGameOver("被网络暴力吞噬", sortedTeams);
-                else if (sortedTeams.length === 1 && sortedTeams[0].id === 1) triggerGameOver("网络环境已肃清！", sortedTeams);
-            }
-
-            function triggerGameOver(title, sortedTeams) {
-                gameState = 'GAMEOVER';
-                let rank = sortedTeams.findIndex(t => t.id === 1) + 1;
-                if (rank === 0) rank = sortedTeams.length + 1;
-                document.getElementById('result-title').innerText = title;
-                document.getElementById('result-title').style.color = (title.includes('吞噬') || title.includes('中断')) ? '#ff4466' : '#00f3ff';
-                document.getElementById('stat-rank').innerText = rank;
-                document.getElementById('stat-max').innerText = (teams[1] && teams[1].count > 0 ? teams[1].count : 0);
-                gameOverScreen.style.display = 'flex';
-            }
-
-            function gameLoop(ts) {
-                if (!lastTime) lastTime = ts;
-                if (gameState === 'PLAYING') {
-                    if (teams[1] && teams[1].alive && teams[1].count > 0) {
-                        const lead = 200 * speedMultiplier;
-                        teams[1].targetX = teams[1].cx + inputDir.x * lead;
-                        teams[1].targetY = teams[1].cy + inputDir.y * lead;
-                    }
-                    updateAI();
-                    updatePhysics();
-                }
-
-                ctx.clearRect(0, 0, width, height);
-                drawWorld();
-
-                const sorted = Object.values(teams).filter(t => t.count > 0).sort((a, b) => b.count - a.count);
-                updateUI(sorted);
-                drawMinimap();
-                checkEnd(sorted);
-
-                if (gameState === 'PLAYING' || gameState === 'GAMEOVER') {
-                    animationId = requestAnimationFrame(gameLoop);
-                }
-            }
-
-            startGame();
-            window.startGame = startGame;
-        })();
-    </script>
+    <div id="minimap-container" class="hidden-mobile">
+      <canvas id="minimap"></canvas>
+    </div>
+    <div id="mobile-control-hint">◈ 滑动屏幕移动 ◈</div>
+  </div>
+  <div id="game-over" style="display:none;">
+    <div class="panel">
+      <h1 id="result-title">连接已中断</h1>
+      <div>排名 <span id="stat-rank">1</span> · 人数 <span id="stat-max">0</span></div>
+      <button onclick="startGame()">重新接入网络</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const minimapCanvas = document.getElementById('minimap');
+      const minictx = minimapCanvas.getContext('2d');
+      const gameOverScreen = document.getElementById('game-over');
+      const mmContainer = document.getElementById('minimap-container');
+      const hint = document.getElementById('mobile-control-hint');
+
+      let width, height;
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 600;
+
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        const mmSize = isMobile ? 130 : 180;
+        minimapCanvas.width = mmSize;
+        minimapCanvas.height = mmSize;
+        mmContainer.style.width = mmSize + 'px';
+        mmContainer.style.height = mmSize + 'px';
+        
+        if (isMobile) {
+          hint.style.display = 'block';
+          mmContainer.classList.add('hidden-mobile');
+        } else {
+          hint.style.display = 'none';
+          mmContainer.classList.remove('hidden-mobile');
+        }
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      // 移动端小地图唤醒
+      mmContainer.addEventListener('click', () => {
+        if (isMobile) {
+          mmContainer.classList.remove('hidden-mobile');
+          clearTimeout(mmContainer._hideTimeout);
+          mmContainer._hideTimeout = setTimeout(() => mmContainer.classList.add('hidden-mobile'), 4000);
+        }
+      });
+
+      const WORLD_SIZE = 3500;
+      const PERSON_RADIUS = 5;
+      const NUM_NEUTRALS = 650;
+      const NUM_AI_TEAMS = 7;
+
+      const TEAM_COLORS = [
+        '#555566','#00f3ff','#ff003c','#bc13fe','#ff71ce',
+        '#2962ff','#39ff14','#ffea00','#ff6600'
+      ];
+      const TEAM_NAMES = [
+        "吃瓜网民","道德正义使者","霸凌者·暴怒","霸凌者·阴阳",
+        "霸凌者·造谣","霸凌者·键盘侠","霸凌者·引战","霸凌者·水军","霸凌者·杠精"
+      ];
+
+      const MAX_GAME_TIME = 300;
+      let gameTimeLeft = MAX_GAME_TIME;
+      let speedMultiplier = 1.0;
+      let lastTime = 0;
+      let animationId = null;
+
+      let gameState = 'MENU';
+      let persons = [], teams = {}, particles = [], obstacles = [], powerups = [], superStars = [];
+      let camera = { x: WORLD_SIZE/2, y: WORLD_SIZE/2 };
+      let inputDir = { x: 0, y: 0 };
+
+      const SUPER_STAR_TYPES = [
+        { name:'老师', bonus:10, radius:13, glowColor:'#FFD700', glowIntensity:18, weight:45 },
+        { name:'训导主任', bonus:20, radius:17, glowColor:'#FFC107', glowIntensity:24, weight:25 },
+        { name:'校长', bonus:30, radius:21, glowColor:'#FFB300', glowIntensity:30, weight:15 },
+        { name:'家长', bonus:40, radius:26, glowColor:'#FFA000', glowIntensity:38, weight:8 }
+      ];
+
+      function getRandomSuperStarType() {
+        let total = SUPER_STAR_TYPES.reduce((s,t)=>s+t.weight,0);
+        let r = Math.random()*total;
+        for(const t of SUPER_STAR_TYPES) if((r-=t.weight)<=0) return t;
+        return SUPER_STAR_TYPES[0];
+      }
+
+      // === 移动端完美操控：基于滑动方向 ===
+      let touchActive = false;
+      window.addEventListener('touchstart', e => {
+        e.preventDefault();
+        if(e.touches.length) {
+          touchActive = true;
+          updateInputFromTouch(e.touches[0]);
+        }
+      }, {passive: false});
+      window.addEventListener('touchmove', e => {
+        e.preventDefault();
+        if(touchActive && e.touches.length) updateInputFromTouch(e.touches[0]);
+      }, {passive: false});
+      window.addEventListener('touchend', e => {
+        e.preventDefault();
+        touchActive = false;
+        inputDir.x = 0; inputDir.y = 0;
+      });
+      window.addEventListener('touchcancel', () => { touchActive = false; inputDir.x = 0; inputDir.y = 0; });
+
+      function updateInputFromTouch(touch) {
+        if(gameState !== 'PLAYING') return;
+        let dx = touch.clientX - width/2;
+        let dy = touch.clientY - height/2;
+        let dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist > 15) {
+          inputDir.x = (dx/dist) * Math.min(1, dist/150);
+          inputDir.y = (dy/dist) * Math.min(1, dist/150);
+        } else {
+          inputDir.x = 0; inputDir.y = 0;
+        }
+      }
+
+      // 桌面端鼠标支持
+      window.addEventListener('mousemove', e => {
+        if(touchActive) return;
+        if(gameState !== 'PLAYING') return;
+        let dx = e.clientX - width/2, dy = e.clientY - height/2;
+        let dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist > 20) { inputDir.x = dx/dist; inputDir.y = dy/dist; }
+        else { inputDir.x = 0; inputDir.y = 0; }
+      });
+      window.addEventListener('mouseleave', ()=>{ if(!touchActive){inputDir.x=0; inputDir.y=0;} });
+
+      class Person {
+        constructor(x,y,team){ this.x=x; this.y=y; this.vx=(Math.random()-0.5)*2; this.vy=(Math.random()-0.5)*2; this.team=team; this.baseSpeed=3.5+Math.random(); }
+        update(){
+          let tx=0,ty=0;
+          const ms = this.baseSpeed * speedMultiplier;
+          if(this.team===0){ tx=this.vx+(Math.random()-0.5)*0.6; ty=this.vy+(Math.random()-0.5)*0.6; }
+          else { let t=teams[this.team]; if(t&&t.alive){ let d=Math.sqrt((t.targetX-this.x)**2+(t.targetY-this.y)**2)||1; tx=(t.targetX-this.x)/d*ms; ty=(t.targetY-this.y)/d*ms; } }
+          this.vx+=(tx-this.vx)*0.15; this.vy+=(ty-this.vy)*0.15;
+          let sp=Math.sqrt(this.vx**2+this.vy**2), lim=this.team===0?1.0*ms:ms;
+          if(sp>lim){ this.vx=this.vx/sp*lim; this.vy=this.vy/sp*lim; }
+          this.x+=this.vx; this.y+=this.vy;
+          if(this.x<10){this.x=10; this.vx*=-0.7;} if(this.x>WORLD_SIZE-10){this.x=WORLD_SIZE-10; this.vx*=-0.7;}
+          if(this.y<10){this.y=10; this.vy*=-0.7;} if(this.y>WORLD_SIZE-10){this.y=WORLD_SIZE-10; this.vy*=-0.7;}
+        }
+        draw(ctx){
+          ctx.beginPath(); ctx.arc(this.x,this.y,PERSON_RADIUS,0,Math.PI*2);
+          ctx.fillStyle=TEAM_COLORS[this.team];
+          if(this.team===1){ ctx.shadowBlur=6; ctx.shadowColor=TEAM_COLORS[1]; }
+          ctx.fill(); ctx.shadowBlur=0;
+        }
+      }
+      class Particle {
+        constructor(x,y,color,size){ this.x=x; this.y=y; let a=Math.random()*Math.PI*2,s=Math.random()*5; this.vx=Math.cos(a)*s; this.vy=Math.sin(a)*s; this.color=color; this.life=1; this.decay=0.03+Math.random()*0.03; this.size=size||2; }
+        update(){this.x+=this.vx; this.y+=this.vy; this.life-=this.decay;}
+        draw(ctx){if(this.life<=0)return; ctx.globalAlpha=this.life; ctx.fillStyle=this.color; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1;}
+      }
+
+      function generateMap(){
+        obstacles=[]; powerups=[]; superStars=[];
+        for(let i=0;i<35;i++) obstacles.push({x:Math.random()*(WORLD_SIZE-200)+100,y:Math.random()*(WORLD_SIZE-200)+100,w:60+Math.random()*120,h:60+Math.random()*120});
+        for(let i=0;i<10;i++) powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:Math.random()*Math.PI*2});
+        for(let i=0;i<16;i++) superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:Math.random()*Math.PI*2});
+      }
+
+      function startGame(){
+        if(animationId) cancelAnimationFrame(animationId);
+        persons=[]; particles=[]; teams={}; obstacles=[]; powerups=[]; superStars=[];
+        gameState='PLAYING'; gameOverScreen.style.display='none';
+        gameTimeLeft=MAX_GAME_TIME; speedMultiplier=1.0; lastTime=performance.now();
+        generateMap();
+        for(let i=1;i<=NUM_AI_TEAMS+1;i++){
+          let sx=Math.random()*WORLD_SIZE,sy=Math.random()*WORLD_SIZE;
+          if(i===1){sx=WORLD_SIZE/2; sy=WORLD_SIZE/2;}
+          teams[i]={id:i,count:1,alive:true,targetX:sx,targetY:sy,cx:sx,cy:sy};
+          persons.push(new Person(sx,sy,i));
+        }
+        camera.x=WORLD_SIZE/2; camera.y=WORLD_SIZE/2;
+        for(let i=0;i<NUM_NEUTRALS;i++) persons.push(new Person(Math.random()*WORLD_SIZE,Math.random()*WORLD_SIZE,0));
+        animationId=requestAnimationFrame(gameLoop);
+      }
+
+      function updateAI(){
+        for(let i=2;i<=NUM_AI_TEAMS+1;i++){
+          let t=teams[i]; if(!t||!t.alive) continue;
+          let bx=t.targetX+(Math.random()-0.5)*150, by=t.targetY+(Math.random()-0.5)*150, min=450*450, found=false;
+          [...superStars,...powerups].forEach(o=>{ let d=(o.x-t.cx)**2+(o.y-t.cy)**2; if(d<min){min=d; bx=o.x; by=o.y; found=true;} });
+          if(!found) persons.forEach(p=>{ if(p.team===i)return; let d=(p.x-t.cx)**2+(p.y-t.cy)**2; if(d<min){ let ec=p.team===0?0:(teams[p.team]?teams[p.team].count:0); if(t.count>ec){min=d; bx=p.x; by=p.y;} else if(t.count<ec){ bx=t.cx-(p.x-t.cx); by=t.cy-(p.y-t.cy); min=0; } } });
+          t.targetX+=(bx-t.targetX)*0.08*speedMultiplier; t.targetY+=(by-t.targetY)*0.08*speedMultiplier;
+        }
+      }
+
+      function updatePhysics(){
+        for(let i=1;i<=NUM_AI_TEAMS+1;i++) if(teams[i]){teams[i].count=0; teams[i].sumX=0; teams[i].sumY=0;}
+        const CS=60, gC=Math.ceil(WORLD_SIZE/CS), grid=new Array(gC*gC).fill().map(()=>[]);
+        persons.forEach(p=>{ if(p.team>0&&teams[p.team]){teams[p.team].count++; teams[p.team].sumX+=p.x; teams[p.team].sumY+=p.y;} let idx=Math.floor(p.x/CS)+Math.floor(p.y/CS)*gC; if(grid[idx])grid[idx].push(p); });
+        for(let i=1;i<=NUM_AI_TEAMS+1;i++) if(teams[i]&&teams[i].count>0){teams[i].cx=teams[i].sumX/teams[i].count; teams[i].cy=teams[i].sumY/teams[i].count;} else if(teams[i])teams[i].alive=false;
+        persons.forEach(p1=>{
+          obstacles.forEach(o=>{ if(p1.x>o.x-5&&p1.x<o.x+o.w+5&&p1.y>o.y-5&&p1.y<o.y+o.h+5){ p1.x+=(p1.x>o.x+o.w/2?3:-3); p1.y+=(p1.y>o.y+o.h/2?3:-3); } });
+          if(p1.team>0){
+            for(let k=powerups.length-1;k>=0;k--){ let pw=powerups[k]; if((p1.x-pw.x)**2+(p1.y-pw.y)**2<400){ powerups.splice(k,1); for(let b=0;b<6;b++) persons.push(new Person(p1.x+(Math.random()-0.5)*30,p1.y+(Math.random()-0.5)*30,p1.team)); powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:0}); } }
+            for(let k=superStars.length-1;k>=0;k--){ let ss=superStars[k]; if((p1.x-ss.x)**2+(p1.y-ss.y)**2<(ss.type.radius+8)**2){ let bonus=ss.type.bonus; superStars.splice(k,1); for(let b=0;b<bonus;b++) persons.push(new Person(ss.x+(Math.random()-0.5)*35,ss.y+(Math.random()-0.5)*35,p1.team)); superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:0}); } }
+          }
+          let cx=Math.floor(p1.x/CS),cy=Math.floor(p1.y/CS);
+          for(let nx=-1;nx<=1;nx++) for(let ny=-1;ny<=1;ny++){ let idx=(cx+nx)+(cy+ny)*gC; if(!grid[idx])continue; grid[idx].forEach(p2=>{ if(p1===p2)return; let dx=p1.x-p2.x,dy=p1.y-p2.y,distSq=dx*dx+dy*dy; if(distSq<121){ if(p1.team!==p2.team){ let c1=p1.team===0?0:(teams[p1.team]?teams[p1.team].count:0),c2=p2.team===0?0:(teams[p2.team]?teams[p2.team].count:0); if(c1>c2&&p1.team!==0) p2.team=p1.team; } else { let d=Math.sqrt(distSq)||0.1; p1.x+=(dx/d)*0.5; p1.y+=(dy/d)*0.5; } } }); }
+        });
+      }
+
+      function drawWorld(){
+        ctx.save();
+        if(teams[1]&&teams[1].alive) camera.x+=(teams[1].cx-camera.x)*0.1, camera.y+=(teams[1].cy-camera.y)*0.1;
+        // 手机端拉远视野
+        const viewScale = isMobile ? 0.35 : 1.0;
+        ctx.translate(width/2 - camera.x * viewScale, height/2 - camera.y * viewScale);
+        ctx.scale(viewScale, viewScale);
+        
+        ctx.fillStyle='#08080f'; ctx.fillRect(0,0,WORLD_SIZE,WORLD_SIZE);
+        obstacles.forEach(o=>{ ctx.fillStyle='#0e0e16'; ctx.fillRect(o.x,o.y,o.w,o.h); });
+        powerups.forEach(p=>{ p.pulse+=0.08; ctx.beginPath(); ctx.arc(p.x,p.y,9+Math.sin(p.pulse)*2.5,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.shadowBlur=10; ctx.shadowColor='#fff'; ctx.fill(); ctx.shadowBlur=0; });
+        superStars.forEach(s=>{ s.pulse+=0.06; let r=s.type.radius+Math.sin(s.pulse)*4; ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2); let g=ctx.createRadialGradient(s.x,s.y,r*0.2,s.x,s.y,r); g.addColorStop(0,'#FFFDE7'); g.addColorStop(0.4,'#FFB300'); g.addColorStop(1,'#E65100'); ctx.fillStyle=g; ctx.shadowBlur=s.type.glowIntensity; ctx.shadowColor=s.type.glowColor; ctx.fill(); ctx.shadowBlur=0; });
+        persons.forEach(p=>{ p.update(); p.draw(ctx); });
+        ctx.restore();
+      }
+
+      function drawMinimap(){
+        let w=minimapCanvas.width, h=minimapCanvas.height, s=w/WORLD_SIZE;
+        minictx.clearRect(0,0,w,h); minictx.fillStyle='#000'; minictx.fillRect(0,0,w,h);
+        persons.forEach(p=>{ minictx.fillStyle=TEAM_COLORS[p.team]; minictx.fillRect(p.x*s-1,p.y*s-1,2,2); });
+        minictx.strokeStyle='rgba(0,243,255,0.8)'; minictx.strokeRect((camera.x-width/2)*s,(camera.y-height/2)*s,width*s,height*s);
+      }
+
+      function updateUI(sorted){
+        if(gameState!=='PLAYING') return;
+        let now=performance.now(), dt=Math.min((now-lastTime)/1000,0.1); lastTime=now;
+        gameTimeLeft-=dt; if(gameTimeLeft<=0){gameTimeLeft=0; triggerGameOver("终局裁决",sorted);}
+        speedMultiplier=1.0+((MAX_GAME_TIME-gameTimeLeft)/MAX_GAME_TIME)*1.4;
+        document.getElementById('timer-text').innerText=`${Math.floor(gameTimeLeft/60).toString().padStart(2,'0')}:${Math.floor(gameTimeLeft%60).toString().padStart(2,'0')}`;
+        document.getElementById('speed-indicator').innerText=`网络流速 ${speedMultiplier.toFixed(2)}x`;
+        let html=''; const maxShow=isMobile?3:5;
+        for(let i=0;i<Math.min(sorted.length,maxShow);i++){
+          let t=sorted[i], isMe=t.id===1;
+          html+=`<div class="board-row ${isMe?'my-score-row':''}"><span class="board-color-dot" style="background:${TEAM_COLORS[t.id]};color:${TEAM_COLORS[t.id]};"></span><span style="flex:1;color:#ccc;">${TEAM_NAMES[t.id]}</span><span>${t.count}</span></div>`;
+        }
+        document.getElementById('board-content').innerHTML=html;
+      }
+
+      function triggerGameOver(title,sorted){
+        gameState='GAMEOVER'; let rank=sorted.findIndex(t=>t.id===1)+1||1;
+        document.getElementById('result-title').innerText=title;
+        document.getElementById('stat-rank').innerText=rank;
+        document.getElementById('stat-max').innerText=teams[1]?teams[1].count:0;
+        gameOverScreen.style.display='flex';
+      }
+
+      function gameLoop(){
+        if(gameState==='PLAYING'){
+          if(teams[1]&&teams[1].alive){ teams[1].targetX=teams[1].cx+inputDir.x*200; teams[1].targetY=teams[1].cy+inputDir.y*200; }
+          updateAI(); updatePhysics();
+        }
+        ctx.clearRect(0,0,width,height);
+        drawWorld();
+        let sorted=Object.values(teams).filter(t=>t.count>0).sort((a,b)=>b.count-a.count);
+        updateUI(sorted); drawMinimap();
+        if(gameState==='PLAYING'&&(!teams[1]||teams[1].count<=0)) triggerGameOver("被网络暴力吞噬",sorted);
+        else if(gameState==='PLAYING'&&sorted.length===1&&sorted[0].id===1) triggerGameOver("网络环境已肃清！",sorted);
+        animationId=requestAnimationFrame(gameLoop);
+      }
+
+      startGame();
+      window.startGame = startGame;
+    })();
+  </script>
 </body>
 </html>
