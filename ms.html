@@ -18,6 +18,7 @@
     input, textarea { user-select: text; -webkit-user-select: text; }
     select, input, textarea, button { font-size: 16px !important; }
     .btn, .btn-sm, .quiz-option, .dropdown-item { min-height: 44px; }
+
     .screen {
       position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100dvh;
       background: linear-gradient(145deg, #e6f0e2 0%, #f8fbf7 100%);
@@ -67,7 +68,7 @@
     }
     .privacy-note { margin-top: 0.8rem; font-size: 0.75rem; color: #9bb88b; text-align: center; }
     .error-message { color: #c44; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
-    #quizScreen, #mainContent { display: none; }
+    #quizScreen, #mainContent, #classroomPage { display: none; }
     header { background-color: #d9e6d3; padding: 0.8rem 1rem; border-bottom: 3px solid #9bb88b; }
     header h1 { font-size: 1.5rem; font-weight: 500; color: #2d4e1e; display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
     .user-welcome { background: #a8c99b; padding: 0.2rem 0.8rem; border-radius: 30px; font-size: 0.8rem; color: #2d4e1e; }
@@ -120,6 +121,43 @@
     #rotateOverlay .rotate-icon { font-size: 5rem; animation: rotatePhone 1.5s ease-in-out infinite; }
     @keyframes rotatePhone { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(90deg);} }
     #rotateOverlay p { margin-top: 1.5rem; font-size: 1.3rem; color: #e0e7ff; font-weight: 500; }
+
+    /* 今日课堂页面样式 */
+    .classroom-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem 0.8rem 2rem;
+    }
+    .case-img {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 0.8rem;
+    }
+    .section-title span:first-child { font-size: 1.3rem; }
+    .section-title span:last-child { font-weight: 700; color: #2d4e1e; }
+    .back-button {
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 40px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+      display: block;
+    }
+    .back-button:hover { background: #5b8c4e; }
   </style>
 </head>
 <body>
@@ -158,35 +196,114 @@
 <!-- Halaman Utama -->
 <div id="mainContent">
   <header><h1>Menyuburkan Moral Muda<span class="user-welcome" id="userWelcomeDisplay"></span></h1>
-    <div class="nav-bar"><div class="dropdown"><button type="button" class="dropdown-btn" onclick="toggleDropdown()">Topik Lain</button><div class="dropdown-content" id="dropdownMenu"><div id="gradeList"><div class="dropdown-item" onclick="showCourses('一年级')">Tahun 1</div><div class="dropdown-item" onclick="showCourses('二年级')">Tahun 2</div><div class="dropdown-item" onclick="showCourses('三年级')">Tahun 3</div><div class="dropdown-item" onclick="showCourses('四年级')">Tahun 4</div><div class="dropdown-item" onclick="showCourses('五年级')">Tahun 5</div><div class="dropdown-item" onclick="showCourses('六年级')">Tahun 6</div></div><div id="courseList" style="display:none;"><div class="dropdown-item back-btn" onclick="backToGrades()">Kembali</div><div id="courseItems"></div></div></div></div><div class="today-topic">Topik Hari Ini: Buli Siber</div></div></header>
-  <main>
-    <div style="text-align:center;margin-bottom:1.2rem;"><img src="https://i.ibb.co/VWxhBjJQ/Cute-Slogan.jpg" alt="Slogan Moral" style="width:100%;max-width:800px;border-radius:20px;box-shadow:0 6px 16px rgba(0,0,0,0.08);"></div>
-    <!-- 新增：真实新闻案例区域 -->
-<div style="background:#fef8e7; border-radius:20px; padding:1rem 0.8rem; margin-bottom:1.2rem; border-left:5px solid #e67e22;">
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:0.8rem; padding-left:0.5rem;">
-        <span style="font-size:1.3rem;">📰</span>
-        <span style="font-weight:700; color:#c0392b; font-size:0.95rem;">Kes Sebenar · Kesan Buli Siber</span>
+    <div class="nav-bar">
+      <div class="dropdown">
+        <button type="button" class="dropdown-btn" onclick="toggleDropdown()">Topik Lain ▼</button>
+        <div class="dropdown-content" id="dropdownMenu">
+          <div id="gradeList">
+            <div class="dropdown-item" onclick="showCourses('一年级')">📖 Tahun 1</div>
+            <div class="dropdown-item" onclick="showCourses('二年级')">📖 Tahun 2</div>
+            <div class="dropdown-item" onclick="showCourses('三年级')">📖 Tahun 3</div>
+            <div class="dropdown-item" onclick="showCourses('四年级')">📖 Tahun 4</div>
+            <div class="dropdown-item" onclick="showCourses('五年级')">📖 Tahun 5</div>
+            <div class="dropdown-item" onclick="showCourses('六年级')">📖 Tahun 6</div>
+          </div>
+          <div id="courseList" style="display:none;">
+            <div class="dropdown-item back-btn" onclick="backToGrades()">← Kembali</div>
+            <div id="courseItems"></div>
+          </div>
+        </div>
+      </div>
+      <div class="today-topic">📌 Topik Hari Ini: Buli Siber</div>
+      <button id="openClassroomBtn" style="background:#7fa86a; color:white; border:none; padding:0.3rem 1rem; border-radius:30px; font-size:0.8rem; cursor:pointer;">📖 Masuki Kelas Hari Ini →</button>
     </div>
-   <div style="display:flex; flex-direction:column; align-items:center; gap:0.8rem;">
-    <img src="https://i.ibb.co/35crzWnX/PG-2-1.jpg" alt="新闻案例 1" style="width:100%;max-width:800px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-    <img src="https://i.ibb.co/rRZStjbM/image.jpg" alt="新闻案例 2" style="width:100%;max-width:800px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-    <img src="https://i.ibb.co/RGjNjV4k/Pg-1-1.jpg" alt="新闻案例 3" style="width:100%;max-width:800px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-</div>
-    <p style="color:#8aa67d; font-size:0.75rem; text-align:center; margin-top:0.8rem;">📰 Kes di atas adalah kes berita sebenar. Waspada terhadap buli siber.</p>
-</div>
-    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">▶️</span><h2>Video Buli Siber</h2></div><div class="video-wrapper"><iframe src="https://www.youtube.com/embed/ZZKRRh9TjKo" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">Tonton video, kenali buli siber</p></div>
-    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">🎬</span><h2>Topik Hari Ini: Buli Siber</h2></div><div class="video-wrapper"><iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">Tonton video, belajar cara hadapi buli siber</p></div>
+  </header>
+  <main>
+    <!-- Slogan -->
+    <div style="text-align:center;margin-bottom:1.2rem;"><img src="https://i.ibb.co/VWxhBjJQ/Cute-Slogan.jpg" alt="Slogan" style="width:100%;max-width:800px;border-radius:20px;box-shadow:0 6px 16px rgba(0,0,0,0.08);"></div>
+
+    <!-- ========== Permainan Interaktif Moral ========== -->
+    <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>Permainan Interaktif Moral</span></h2><span class="board-badge badge-anonymous">📱 Boleh Guna Telefon</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">🛡️ Pengawal Siber</option><option value="1">🛡️ Pengawal Siber II</option><option value="2">🛡️ Pengawal Siber III</option><option value="3">🛡️ Pengawal Siber IIII</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">🛡️ Pengawal Siber - Halang buli, lindungi dunia siber!</div></div></section>
+
+    <!-- ========== Dinding Luahan Tanpa Nama ========== -->
     <div class="board-card"><div class="board-header"><h2><span>🌙</span><span>Dinding Luahan Tanpa Nama</span></h2><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><span class="board-badge badge-anonymous">Tanpa Nama</span><button type="button" id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background:#a8c99b;color:#2d4e1e;border:none;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;cursor:pointer;">Log Masuk Guru</button></div></div><div class="board-tip">Ada masalah atau soalan? Luah di sini tanpa nama. Guru akan lihat dan balas.</div><div class="message-form"><textarea id="counselComment" placeholder="Tulis masalah atau soalan anda..."></textarea><div style="display:flex;gap:0.4rem;margin-top:0.4rem;"><button type="button" class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex:2;">Hantar Tanpa Nama</button><button type="button" class="btn-sm" id="teacherReplyIndicator" style="flex:1;background:#a8c99b;color:#2d4e1e;display:none;" disabled>Mod Guru</button></div></div><div class="message-list" id="counselList"><div class="message-status">Sedang memuat...</div></div></div>
+
+    <!-- ========== Dinding Kata Semangat ========== -->
     <div class="board-card"><div class="board-header"><h2><span>🌟</span><span>Dinding Kata Semangat</span></h2><span class="board-badge badge-signed">Kongsi Beridentiti</span></div><div class="board-tip">Kongsi kata mutiara atau semangat, sebarkan positif.</div><div class="message-form"><textarea id="quoteComment" placeholder="Tulis kata mutiara atau semangat..."></textarea><button type="button" class="btn-sm" id="quoteBtn" onclick="submitQuote()">Hantar Beridentiti</button></div><div class="message-list" id="quoteList"><div class="message-status">Sedang memuat...</div></div></div>
-    <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>Permainan Interaktif Moral</span></h2><span class="board-badge badge-anonymous">Boleh Guna Telefon</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">Pengawal Siber</option><option value="1">Pengawal Siber II</option><option value="2">Pengawal Siber III</option><option value="3">Pengawal Siber IIII</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">Pengawal Siber - Halang buli, lindungi dunia siber!</div></div></section>
   </main>
   <footer><p>2026 Menyuburkan Moral Muda - Tugasan Kursus IPG | Moral bagai hujan renyai, menyubur tanpa bunyi</p></footer>
+</div>
+
+<!-- Halaman Kelas Hari Ini -->
+<div id="classroomPage" style="display:none;">
+  <div style="background: #f8fbf7; min-height: 100vh; padding-bottom: 2rem;">
+    <div style="background: #d9e6d3; padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <h1 style="color:#2d4e1e; font-size: 1.3rem; margin:0;">📖 Kelas Hari Ini · Buli Siber</h1>
+      <button id="closeClassroomBtn" style="background:#c44; color:white; border:none; padding:0.3rem 1rem; border-radius:30px; cursor:pointer;">✕ Tutup</button>
+    </div>
+    <div class="classroom-container">
+      <!-- 1. Kes Sebenar -->
+      <div style="margin-bottom: 1.8rem;">
+        <div class="section-title">
+          <span>📰</span>
+          <span>Kes Sebenar · Kesan Buli Siber</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem;">
+          <img src="https://i.ibb.co/RGjNjV4k/Pg-1-1.jpg" alt="Kes 1" class="case-img">
+          <img src="https://i.ibb.co/rRZStjbM/image.jpg" alt="Kes 2" class="case-img">
+          <img src="https://i.ibb.co/35crzWnX/PG-2-1.jpg" alt="Kes 3" class="case-img">
+        </div>
+        <p style="color:#8aa67d; font-size:0.75rem; text-align:center; margin-top:0.5rem;">Kes di atas adalah kes berita sebenar. Waspada terhadap buli siber.</p>
+      </div>
+
+      <!-- 2. Video YouTube -->
+      <div style="margin-bottom: 1.8rem;">
+        <div class="section-title">
+          <span>▶️</span>
+          <span>Video Buli Siber</span>
+        </div>
+        <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+          <iframe src="https://www.youtube.com/embed/ZZKRRh9TjKo" style="width:100%; height:400px; border:none;" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <!-- 3. PPT (akan diganti) -->
+      <div style="margin-bottom: 1.8rem;">
+        <div class="section-title">
+          <span>📊</span>
+          <span>PPT Kelas · Buli Siber</span>
+        </div>
+        <div style="background:#e8f0e3; border-radius:16px; padding:1rem; text-align:center;">
+          <p style="color:#5b8c4e; margin-bottom:0.5rem;">📎 PPT belum dimuat naik</p>
+          <p style="color:#8aa67d; font-size:0.8rem;">Gantikan pautan selepas upload</p>
+        </div>
+        <!-- <iframe src="pautanPPT" style="width:100%; height:450px; border:none; border-radius:16px;"></iframe> -->
+      </div>
+
+      <!-- 4. LearningApps -->
+      <div style="margin-bottom: 1.8rem;">
+        <div class="section-title">
+          <span>🎬</span>
+          <span>Pembelajaran Interaktif</span>
+        </div>
+        <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+          <iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="width:100%; height:450px; border:none;" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <!-- 5. Butang Kembali -->
+      <div style="text-align:center; margin-top: 1rem;">
+        <button id="backToMainBtn" class="back-button">⬅ Seterusnya: Dinding Luahan Tanpa Nama & Permainan Interaktif Moral</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
 // ==================== Global ====================
 let currentUser = null;
 
+// ==================== Orientation ====================
 function isTouchDevice(){return 'ontouchstart' in window||navigator.maxTouchPoints>0;}
 function checkOrientation(){
   var o=document.getElementById('rotateOverlay');
@@ -196,6 +313,7 @@ function checkOrientation(){
 window.addEventListener('orientationchange',checkOrientation);
 window.addEventListener('resize',checkOrientation);
 
+// ==================== Content Protection ====================
 document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
 document.addEventListener('copy',function(e){e.preventDefault();return false;});
 document.addEventListener('cut',function(e){e.preventDefault();return false;});
@@ -210,6 +328,18 @@ document.addEventListener('keydown',function(e){
   if(e.ctrlKey&&e.shiftKey&&e.key==='C'){e.preventDefault();return false;}
 });
 
+// ==================== Classroom Page Toggle ====================
+function showClassroomPage() {
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('classroomPage').style.display = 'block';
+    window.scrollTo(0, 0);
+}
+function hideClassroomPage() {
+    document.getElementById('classroomPage').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+}
+
+// ==================== Page Navigation ====================
 function goToQuiz(){
   var grade=document.getElementById('grade').value;
   var role=document.getElementById('role').value;
@@ -222,6 +352,7 @@ function goToQuiz(){
   document.getElementById('quizScreen').style.display='flex';
 }
 
+// ==================== Games ====================
 var GAMES=[
   {src:'cyber-guardian.html',note:'Pengawal Siber - Halang buli, lindungi dunia siber!'},
   {src:'cyber-guardian2.html',note:'Pengawal Siber II - Cabaran Kedua'},
@@ -229,11 +360,13 @@ var GAMES=[
   {src:'cyber-guardian4.html',note:'Pengawal Siber IIII - Cabaran Terakhir'}
 ];
 
+// ==================== Config ====================
 var CONFIG={
   googleScriptUrl:"https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
   sheetApiUrl:"https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1"
 };
 
+// ==================== Bad Words Filter ====================
 var BANNED_WORDS={
   chinese:['傻逼','傻b','sb','白痴','笨蛋','蠢货','去死','滚蛋','废物','垃圾','混蛋','王八蛋','操你','妈的','他妈','尼玛','脑残','弱智','低能','畜生','禽兽','杂种','贱人','婊子','骚货','下贱','无耻','干你','靠北','塞你','丢你','顶你','叼你','屌你','七早八早'],
   english:['fuck','fck','fuk','fcu','f*k','f**k','shit','sh1t','sh!t','sht','bitch','b1tch','b!tch','btch','asshole','ass','arse','bastard','damn','dumb','stupid','idiot','moron','retard','piss','crap','hell','nigger','nigga','faggot','fag','slut','whore','cunt','dick','pussy','cock','penis','vagina','motherfucker','mofo','wtf','stfu'],
@@ -245,19 +378,30 @@ var flatBannedWords=[],bannedPatterns=[];
 function initBannedWords(){
   flatBannedWords=[];
   var allWords=BANNED_WORDS.chinese.concat(BANNED_WORDS.english,BANNED_WORDS.malay);
-  allWords.forEach(function(word){var n=normalizeText(word);if(flatBannedWords.indexOf(n)===-1)flatBannedWords.push(n);});
+  allWords.forEach(function(word){
+    var normalized=normalizeText(word);
+    if(flatBannedWords.indexOf(normalized)===-1)flatBannedWords.push(normalized);
+  });
   bannedPatterns=flatBannedWords.map(function(word){return{pattern:new RegExp(escapeRegex(word),'gi'),word:word};});
 }
-function normalizeText(text){if(!text)return'';var n=text.toLowerCase().trim();for(var c in CHAR_MAP){n=n.split(c).join(CHAR_MAP[c]);}return n.replace(/(.)\1+/g,'$1');}
+function normalizeText(text){
+  if(!text)return'';
+  var normalized=text.toLowerCase().trim();
+  for(var char in CHAR_MAP){normalized=normalized.split(char).join(CHAR_MAP[char]);}
+  return normalized.replace(/(.)\1+/g,'$1');
+}
 function escapeRegex(str){return str.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
 function containsBannedWord(text){
   if(!text)return{found:false,word:''};
-  var nt=normalizeText(text);
-  for(var i=0;i<bannedPatterns.length;i++){if(bannedPatterns[i].pattern.test(nt)){bannedPatterns[i].pattern.lastIndex=0;return{found:true,word:bannedPatterns[i].word};}}
-  for(var j=0;j<flatBannedWords.length;j++){if(nt.indexOf(flatBannedWords[j])!==-1)return{found:true,word:flatBannedWords[j]};}
+  var normalizedText=normalizeText(text);
+  for(var i=0;i<bannedPatterns.length;i++){
+    if(bannedPatterns[i].pattern.test(normalizedText)){bannedPatterns[i].pattern.lastIndex=0;return{found:true,word:bannedPatterns[i].word};}
+  }
+  for(var j=0;j<flatBannedWords.length;j++){if(normalizedText.indexOf(flatBannedWords[j])!==-1)return{found:true,word:flatBannedWords[j]};}
   return{found:false,word:''};
 }
 
+// ==================== Violation ====================
 var violationCount=parseInt(localStorage.getItem('moral_violation_count')||'0');
 function addViolation(){violationCount++;localStorage.setItem('moral_violation_count',violationCount);return violationCount;}
 function resetViolations(){violationCount=0;localStorage.setItem('moral_violation_count','0');}
@@ -267,6 +411,7 @@ function getViolationWarning(){
   return"Mesej mengandungi bahasa tidak sopan, tidak boleh dihantar.";
 }
 
+// ==================== Cooldown ====================
 var lastSubmitTime=parseInt(localStorage.getItem('moral_last_submit')||'0');
 var SUBMIT_COOLDOWN=10000;
 function canSubmit(){
@@ -276,19 +421,34 @@ function canSubmit(){
 }
 function recordSubmit(){lastSubmitTime=Date.now();localStorage.setItem('moral_last_submit',lastSubmitTime);}
 
-var TEACHER_PASSWORD="123456",isTeacherMode=false;
+// ==================== Teacher Mode ====================
+var TEACHER_PASSWORD="123456";
+var isTeacherMode=false;
 function toggleTeacherMode(){
   if(isTeacherMode){isTeacherMode=false;updateTeacherUI();alert("Telah keluar mod guru");}
-  else{var pw=prompt("Sila masukkan kata laluan guru:");if(pw===TEACHER_PASSWORD){isTeacherMode=true;resetViolations();updateTeacherUI();alert("Mod guru dibuka! Anda boleh balas sebagai Cikgu Mao.");}else if(pw!==null){alert("Kata laluan salah!");}}
+  else{
+    var pw=prompt("Sila masukkan kata laluan guru:");
+    if(pw===TEACHER_PASSWORD){isTeacherMode=true;resetViolations();updateTeacherUI();alert("Mod guru dibuka! Anda boleh balas sebagai Cikgu Mao.");}
+    else if(pw!==null){alert("Kata laluan salah!");}
+  }
 }
 function updateTeacherUI(){
   var tb=document.getElementById('teacherToggleBtn'),ind=document.getElementById('teacherReplyIndicator'),cb=document.getElementById('counselBtn');
-  if(isTeacherMode){tb.textContent='Mod Guru (Klik keluar)';tb.style.background='#5b8c4e';tb.style.color='white';ind.style.display='block';cb.textContent='Balas Guru';cb.style.background='#5b8c4e';}
-  else{tb.textContent='Log Masuk Guru';tb.style.background='#a8c99b';tb.style.color='#2d4e1e';ind.style.display='none';cb.textContent='Hantar Tanpa Nama';cb.style.background='#7fa86a';}
+  if(isTeacherMode){
+    tb.textContent='Mod Guru (Klik keluar)';tb.style.background='#5b8c4e';tb.style.color='white';
+    ind.style.display='block';cb.textContent='Balas Guru';cb.style.background='#5b8c4e';
+  }else{
+    tb.textContent='Log Masuk Guru';tb.style.background='#a8c99b';tb.style.color='#2d4e1e';
+    ind.style.display='none';cb.textContent='Hantar Tanpa Nama';cb.style.background='#7fa86a';
+  }
 }
 
-function selectOption(element){var p=element.parentElement;p.querySelectorAll('.quiz-option').forEach(function(opt){opt.classList.remove('selected');});element.classList.add('selected');element.querySelector('input').checked=true;}
-
+// ==================== Quiz ====================
+function selectOption(element){
+  var parent=element.parentElement;
+  parent.querySelectorAll('.quiz-option').forEach(function(opt){opt.classList.remove('selected');});
+  element.classList.add('selected');element.querySelector('input').checked=true;
+}
 function submitQuiz(){
   var q1=document.querySelector('input[name="q1"]:checked'),q2=document.querySelector('input[name="q2"]:checked'),q3=document.querySelector('input[name="q3"]:checked'),q4=document.querySelector('input[name="q4"]:checked'),q5=document.querySelector('input[name="q5"]:checked');
   if(!q1||!q2||!q3||!q4||!q5){document.getElementById('quizError').textContent='Sila jawab semua soalan';document.getElementById('quizError').style.display='block';return;}
@@ -305,7 +465,6 @@ function submitQuiz(){
   localStorage.setItem('moralQuizAnswers',JSON.stringify({q1:q1.value,q2:q2.value,q3:q3.value,q4:q4.value,q5:q5.value,score:score}));
   showQuizFeedback(score,{q1:q1.value,q2:q2.value,q3:q3.value,q4:q4.value,q5:q5.value},answers,answerTexts);
 }
-
 function showQuizFeedback(score,ua,ca,at){
   var overlay=document.createElement('div');overlay.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
   var modal=document.createElement('div');modal.style.cssText='background:white;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:1.5rem 1.2rem;border-radius:24px;box-shadow:0 20px 40px rgba(0,0,0,0.2);';
@@ -317,7 +476,6 @@ function showQuizFeedback(score,ua,ca,at){
   document.getElementById('enterMainFromFeedback').onclick=function(){overlay.remove();enterMainContent(score);};
   overlay.onclick=function(e){if(e.target===overlay){overlay.remove();enterMainContent(score);}};
 }
-
 function enterMainContent(score){
   document.getElementById('quizScreen').style.display='none';document.getElementById('mainContent').style.display='block';
   var st=score===5?'Markah Penuh '+score+'/5':'Markah '+score+'/5';
@@ -325,22 +483,13 @@ function enterMainContent(score){
   loadAllMessages();setInterval(loadAllMessages,30000);
 }
 
+// ==================== Dropdown ====================
 function toggleDropdown(){var m=document.getElementById('dropdownMenu');m.classList.toggle('show');document.getElementById('gradeList').style.display='block';document.getElementById('courseList').style.display='none';}
-
-// 修改：年级标题映射
 function showCourses(grade){
-  var gradeNames = {
-    '一年级': 'Tahun 1',
-    '二年级': 'Tahun 2',
-    '三年级': 'Tahun 3',
-    '四年级': 'Tahun 4',
-    '五年级': 'Tahun 5',
-    '六年级': 'Tahun 6'
-  };
+  var gradeNames = {'一年级':'Tahun 1','二年级':'Tahun 2','三年级':'Tahun 3','四年级':'Tahun 4','五年级':'Tahun 5','六年级':'Tahun 6'};
   var displayGrade = gradeNames[grade] || grade;
   var cbg={
-    '一年级':[{malay:'Pegangan Hidup Saya'},{malay:'Baik Hati Amalan Saya'},{malay:'Tanggungjawab Suresh'},{malay:'Terima Kasih, Kawan-kawan'},{malay:'Budi Bahasa Amalan Saya'},{malay:'Hormati Diri Disanjung Tinggi'},{malay:'Sayangi Diri Sendiri'},{malay:'Adil Membawa Sejahtera'},{malay:'Berani Menghadapi Cabaran'},{malay:'Kok Heng Yang Jujur'},{malay:'Blog Kerajinan'},{malay:'Kerjasama Membawa Berkat'},{malay:'Pesanan Nenek'},{malay:'Bertolak Ansur Amalan Saya'}],'二年级':[{malay:'Ajaran Agama Keluarga Saya'},{malay:'Baik Hati Keluarga Bahagia'},{malay:'Tanggungjawab Saya Dalam Keluarga'},{malay:'Terima Kasih, Keluargaku'},{malay:'Hemah Tinggi Dalam Keluarga'},{malay:'Hormati Keluarga Hidup Gembira'},{malay:'Keluarga Bahagia'},{malay:'Keluarga yang Adil Hidup Sejahtera'},{malay:'Berani Demi Nama Baik Keluarga'},{malay:'Jujur Selalu'},{malay:'Sikap Rajin Amalan Keluarga'},{malay:'Kerjasama Meringankan Beban Keluarga'},{malay:'Bersederhana Amalan Keluarga'},{malay:'Toleransi Sesama Ahli Keluarga'}],'三年级':[{malay:'Perayaan Warga Sekolah'},{malay:'Baik Hati Nilai Mulia'},{malay:'Murid Bertanggungjawab'},{malay:'Berterima Kasih Amalan Mulia'},{malay:'Beradab Sopan Pekerti Terpuji'},{malay:'Hormati Semua Amalan Kami'},{malay:'Sekolah Kebanggaanku'},{malay:'Sikap Adil Sekolah Sejahtera'},{malay:'Hadapi Cabaran Demi Sekolah'},{malay:'Jujur Amalan Warga Sekolah'},{malay:'Rajin Tangga Kejayaan'},{malay:'Kerjasama Budaya Kami'},{malay:'Amalan Hidup di Sekolah'},{malay:'Toleransi Sesama Warga Sekolah'}],'四年级':[{malay:'Hayati Amalan Agama dan Kepercayaan Jiran'},{malay:'Sikap Prihatin Amalan Mulia'},{malay:'Tanggungjawab Hidup Berjiran'},{malay:'Hargai Jiran Hubungan Erat'},{malay:'Sopan Santun dengan Jiran'},{malay:'Semaikan Amalan Menghormati Jiran'},{malay:'Sayangi Jiran'},{malay:'Bersikap Adil Sesama Jiran'},{malay:'Bertindak Berani demi Kesejahteraan Kejiranan'},{malay:'Kejujuran Amalan Hidup Bersama-sama Jiran'},{malay:'Usaha Berterusan Membawa Kesejahteraan'},{malay:'Muafakat Membawa Berkat'},{malay:'Kesederhanaan Menjalin Kemesraan Sesama Jiran'},{malay:'Bertolak Ansur Amalan Terpuji'}],'五年级':[{malay:'Keunikan Masyarakatku'},{malay:'Penyeri Jiwa Masyarakat'},{malay:'Kehijauan Alam Tanggungjawab Bersama'},{malay:'Hargai Jasa dan Sumbangan'},{malay:'Pupuk Amalan Berbudi Pekerti Mulia'},{malay:'Budaya Masyarakat Patut Dihormati'},{malay:'Sajak Kasih Sayang'},{malay:'Suri Teladan Dicontohi Masyarakat'},{malay:'Berani Pertahankan Cabaran'},{malay:'Beradab dengan Jujurnya'},{malay:'Berkat Kerajinan'},{malay:'Amalan Kerjasama, Kebaikan Bersama'},{malay:'Bersederhana Menjamin Kebahagiaan'},{malay:'Bertoleransi Membawa Kesejahteraan'}],'六年级':[{malay:'Kepercayaan Kepada Tuhan Menjamin Kesejahteraan Negara'},{malay:'Bantuan Dan Sokongan Moral Kepada Negara'},{malay:'Tanggungjawab Sebagai Warganegara'},{malay:'Hargai Keunikan Negara'},{malay:'Amalan Hemah Tinggi Meningkatkan Imej Negara'},{malay:'Hormati Identiti Negara'},{malay:'Cinta Akan Negara'},{malay:'Amalan Adil Demi Kesejahteraan Negara'},{malay:'Berani Mempertahankan Maruah Negara'},{malay:'Kejujuran Demi Kesejahteraan Negara'}]
-  };
+    '一年级':[{malay:'Pegangan Hidup Saya'},{malay:'Baik Hati Amalan Saya'},{malay:'Tanggungjawab Suresh'},{malay:'Terima Kasih, Kawan-kawan'},{malay:'Budi Bahasa Amalan Saya'},{malay:'Hormati Diri Disanjung Tinggi'},{malay:'Sayangi Diri Sendiri'},{malay:'Adil Membawa Sejahtera'},{malay:'Berani Menghadapi Cabaran'},{malay:'Kok Heng Yang Jujur'},{malay:'Blog Kerajinan'},{malay:'Kerjasama Membawa Berkat'},{malay:'Pesanan Nenek'},{malay:'Bertolak Ansur Amalan Saya'}],'二年级':[{malay:'Ajaran Agama Keluarga Saya'},{malay:'Baik Hati Keluarga Bahagia'},{malay:'Tanggungjawab Saya Dalam Keluarga'},{malay:'Terima Kasih, Keluargaku'},{malay:'Hemah Tinggi Dalam Keluarga'},{malay:'Hormati Keluarga Hidup Gembira'},{malay:'Keluarga Bahagia'},{malay:'Keluarga yang Adil Hidup Sejahtera'},{malay:'Berani Demi Nama Baik Keluarga'},{malay:'Jujur Selalu'},{malay:'Sikap Rajin Amalan Keluarga'},{malay:'Kerjasama Meringankan Beban Keluarga'},{malay:'Bersederhana Amalan Keluarga'},{malay:'Toleransi Sesama Ahli Keluarga'}],'三年级':[{malay:'Perayaan Warga Sekolah'},{malay:'Baik Hati Nilai Mulia'},{malay:'Murid Bertanggungjawab'},{malay:'Berterima Kasih Amalan Mulia'},{malay:'Beradab Sopan Pekerti Terpuji'},{malay:'Hormati Semua Amalan Kami'},{malay:'Sekolah Kebanggaanku'},{malay:'Sikap Adil Sekolah Sejahtera'},{malay:'Hadapi Cabaran Demi Sekolah'},{malay:'Jujur Amalan Warga Sekolah'},{malay:'Rajin Tangga Kejayaan'},{malay:'Kerjasama Budaya Kami'},{malay:'Amalan Hidup di Sekolah'},{malay:'Toleransi Sesama Warga Sekolah'}],'四年级':[{malay:'Hayati Amalan Agama dan Kepercayaan Jiran'},{malay:'Sikap Prihatin Amalan Mulia'},{malay:'Tanggungjawab Hidup Berjiran'},{malay:'Hargai Jiran Hubungan Erat'},{malay:'Sopan Santun dengan Jiran'},{malay:'Semaikan Amalan Menghormati Jiran'},{malay:'Sayangi Jiran'},{malay:'Bersikap Adil Sesama Jiran'},{malay:'Bertindak Berani demi Kesejahteraan Kejiranan'},{malay:'Kejujuran Amalan Hidup Bersama-sama Jiran'},{malay:'Usaha Berterusan Membawa Kesejahteraan'},{malay:'Muafakat Membawa Berkat'},{malay:'Kesederhanaan Menjalin Kemesraan Sesama Jiran'},{malay:'Bertolak Ansur Amalan Terpuji'}],'五年级':[{malay:'Keunikan Masyarakatku'},{malay:'Penyeri Jiwa Masyarakat'},{malay:'Kehijauan Alam Tanggungjawab Bersama'},{malay:'Hargai Jasa dan Sumbangan'},{malay:'Pupuk Amalan Berbudi Pekerti Mulia'},{malay:'Budaya Masyarakat Patut Dihormati'},{malay:'Sajak Kasih Sayang'},{malay:'Suri Teladan Dicontohi Masyarakat'},{malay:'Berani Pertahankan Cabaran'},{malay:'Beradab dengan Jujurnya'},{malay:'Berkat Kerajinan'},{malay:'Amalan Kerjasama, Kebaikan Bersama'},{malay:'Bersederhana Menjamin Kebahagiaan'},{malay:'Bertoleransi Membawa Kesejahteraan'}],'六年级':[{malay:'Kepercayaan Kepada Tuhan Menjamin Kesejahteraan Negara'},{malay:'Bantuan Dan Sokongan Moral Kepada Negara'},{malay:'Tanggungjawab Sebagai Warganegara'},{malay:'Hargai Keunikan Negara'},{malay:'Amalan Hemah Tinggi Meningkatkan Imej Negara'},{malay:'Hormati Identiti Negara'},{malay:'Cinta Akan Negara'},{malay:'Amalan Adil Demi Kesejahteraan Negara'},{malay:'Berani Mempertahankan Maruah Negara'},{malay:'Kejujuran Demi Kesejahteraan Negara'}]};
   var courses=cbg[grade]||[];
   var html='<div style="padding:0.4rem 1.2rem;color:#6b7c63;font-size:0.85rem;background:#f8fbf7;">'+displayGrade+'</div>';
   courses.forEach(function(c,i){html+='<div class="dropdown-item" onclick="selectCourse(\''+grade+'\',\'Pelajaran '+(i+1)+': '+c.malay+'\')">Pelajaran '+(i+1)+': '+c.malay+'</div>';});
@@ -349,7 +498,6 @@ function showCourses(grade){
 function backToGrades(){document.getElementById('gradeList').style.display='block';document.getElementById('courseList').style.display='none';}
 function selectCourse(grade,course){
   document.getElementById('dropdownMenu').classList.remove('show');
-  // 在这里把中文grade转成马来文再传给弹窗
   var gradeNames = {'一年级':'Tahun 1','二年级':'Tahun 2','三年级':'Tahun 3','四年级':'Tahun 4','五年级':'Tahun 5','六年级':'Tahun 6'};
   var displayGrade = gradeNames[grade] || grade;
   showContactModal(displayGrade, course);
@@ -364,8 +512,14 @@ function showContactModal(grade,course){
 }
 document.addEventListener('click',function(e){if(!e.target.closest('.dropdown'))document.getElementById('dropdownMenu').classList.remove('show');});
 
-function switchGame(index){index=parseInt(index);var game=GAMES[index];var wrapper=document.getElementById('gameWrapper');wrapper.innerHTML='<iframe src="'+game.src+'" style="width:100%;height:500px;border:none;" allowfullscreen></iframe>';document.getElementById('gameNote').innerHTML=game.note;}
+// ==================== Game Switch ====================
+function switchGame(index){
+  index=parseInt(index);var game=GAMES[index];var wrapper=document.getElementById('gameWrapper');
+  wrapper.innerHTML='<iframe src="'+game.src+'" style="width:100%;height:500px;border:none;" allowfullscreen></iframe>';
+  document.getElementById('gameNote').innerHTML=game.note;
+}
 
+// ==================== Submit Messages ====================
 async function submitCounsel(){
   var ta=document.getElementById('counselComment'),btn=document.getElementById('counselBtn'),comment=ta.value.trim();
   if(!comment){alert('Sila isi kandungan');return;}
@@ -376,7 +530,6 @@ async function submitCounsel(){
   catch(e){alert('Hantar gagal');}
   finally{btn.disabled=false;btn.textContent=isTeacherMode?'Balas Guru':'Hantar Tanpa Nama';}
 }
-
 async function submitQuote(){
   var ta=document.getElementById('quoteComment'),btn=document.getElementById('quoteBtn'),comment=ta.value.trim();
   if(!comment){alert('Sila isi kandungan');return;}
@@ -387,7 +540,6 @@ async function submitQuote(){
   catch(e){alert('Hantar gagal');}
   finally{btn.disabled=false;btn.textContent='Hantar Beridentiti';}
 }
-
 async function loadAllMessages(){
   try{
     var res=await fetch(CONFIG.sheetApiUrl);var data=await res.json();var counsel=[],quote=[];
@@ -400,8 +552,18 @@ async function loadAllMessages(){
 }
 function escapeHtml(text){var div=document.createElement('div');div.textContent=text;return div.innerHTML;}
 
+// ==================== Bind Classroom Buttons ====================
 document.addEventListener('DOMContentLoaded',function(){
   initBannedWords();checkOrientation();
+  
+  var openBtn = document.getElementById('openClassroomBtn');
+  var closeBtn = document.getElementById('closeClassroomBtn');
+  var backBtn = document.getElementById('backToMainBtn');
+  
+  if (openBtn) openBtn.onclick = showClassroomPage;
+  if (closeBtn) closeBtn.onclick = hideClassroomPage;
+  if (backBtn) backBtn.onclick = hideClassroomPage;
+  
   var saved=localStorage.getItem('moralEduUserInfo');
   if(saved){
     currentUser=JSON.parse(saved);var sq=localStorage.getItem('moralQuizAnswers');
