@@ -68,7 +68,7 @@
     }
     .privacy-note { margin-top: 0.8rem; font-size: 0.75rem; color: #9bb88b; text-align: center; }
     .error-message { color: #c44; font-size: 0.85rem; margin-top: 0.3rem; display: none; }
-    #quizScreen, #mainContent { display: none; }
+    #quizScreen, #mainContent, #classroomPage { display: none; }
     header { background-color: #d9e6d3; padding: 0.8rem 1rem; border-bottom: 3px solid #9bb88b; }
     header h1 { font-size: 1.5rem; font-weight: 500; color: #2d4e1e; display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
     .user-welcome { background: #a8c99b; padding: 0.2rem 0.8rem; border-radius: 30px; font-size: 0.8rem; color: #2d4e1e; }
@@ -121,6 +121,43 @@
     #rotateOverlay .rotate-icon { font-size: 5rem; animation: rotatePhone 1.5s ease-in-out infinite; }
     @keyframes rotatePhone { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(90deg);} }
     #rotateOverlay p { margin-top: 1.5rem; font-size: 1.3rem; color: #e0e7ff; font-weight: 500; }
+
+    /* 今日课堂页面样式 */
+    .classroom-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem 0.8rem 2rem;
+    }
+    .case-img {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 0.8rem;
+    }
+    .section-title span:first-child { font-size: 1.3rem; }
+    .section-title span:last-child { font-weight: 700; color: #2d4e1e; }
+    .back-button {
+      background: #7fa86a;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 40px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+      display: block;
+    }
+    .back-button:hover { background: #5b8c4e; }
   </style>
 </head>
 <body>
@@ -159,16 +196,101 @@
 <!-- 主页面 -->
 <div id="mainContent">
   <header><h1>🌱 德润童心<span class="user-welcome" id="userWelcomeDisplay"></span></h1>
-    <div class="nav-bar"><div class="dropdown"><button type="button" class="dropdown-btn" onclick="toggleDropdown()">📚 其他课题 ▼</button><div class="dropdown-content" id="dropdownMenu"><div id="gradeList"><div class="dropdown-item" onclick="showCourses('一年级')">📖 一年级</div><div class="dropdown-item" onclick="showCourses('二年级')">📖 二年级</div><div class="dropdown-item" onclick="showCourses('三年级')">📖 三年级</div><div class="dropdown-item" onclick="showCourses('四年级')">📖 四年级</div><div class="dropdown-item" onclick="showCourses('五年级')">📖 五年级</div><div class="dropdown-item" onclick="showCourses('六年级')">📖 六年级</div></div><div id="courseList" style="display:none;"><div class="dropdown-item back-btn" onclick="backToGrades()">← 返回年级</div><div id="courseItems"></div></div></div></div><div class="today-topic">📌 今日课题：网络霸凌</div></div></header>
+    <div class="nav-bar">
+      <div class="dropdown">
+        <button type="button" class="dropdown-btn" onclick="toggleDropdown()">📚 其他课题 ▼</button>
+        <div class="dropdown-content" id="dropdownMenu">
+          <div id="gradeList">
+            <div class="dropdown-item" onclick="showCourses('一年级')">📖 一年级</div>
+            <div class="dropdown-item" onclick="showCourses('二年级')">📖 二年级</div>
+            <div class="dropdown-item" onclick="showCourses('三年级')">📖 三年级</div>
+            <div class="dropdown-item" onclick="showCourses('四年级')">📖 四年级</div>
+            <div class="dropdown-item" onclick="showCourses('五年级')">📖 五年级</div>
+            <div class="dropdown-item" onclick="showCourses('六年级')">📖 六年级</div>
+          </div>
+          <div id="courseList" style="display:none;">
+            <div class="dropdown-item back-btn" onclick="backToGrades()">← 返回年级</div>
+            <div id="courseItems"></div>
+          </div>
+        </div>
+      </div>
+      <div class="today-topic">📌 今日课题：网络霸凌</div>
+      <button id="openClassroomBtn" style="background:#7fa86a; color:white; border:none; padding:0.3rem 1rem; border-radius:30px; font-size:0.8rem; cursor:pointer;">📖 进入今日课堂 →</button>
+    </div>
+  </header>
   <main>
     <div style="text-align:center;margin-bottom:1.2rem;"><img src="https://i.ibb.co/VWxhBjJQ/Cute-Slogan.jpg" alt="德育 Slogan" style="width:100%;max-width:800px;border-radius:20px;box-shadow:0 6px 16px rgba(0,0,0,0.08);"></div>
-    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">▶️</span><h2>网络霸凌宣传影片</h2></div><div class="video-wrapper"><iframe src="https://www.youtube.com/embed/ZZKRRh9TjKo" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">💡 观看影片，了解网络霸凌</p></div>
-    <div class="video-container"><div class="video-header"><span style="font-size:1.5rem;">🎬</span><h2>今日课题：网络霸凌</h2></div><div class="video-wrapper"><iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="border:0px;width:100%;height:500px" allowfullscreen></iframe></div><p style="color:#8aa67d;font-size:0.8rem;text-align:center;margin-top:0.6rem;">💡 观看影片，学习如何应对网络霸凌</p></div>
     <div class="board-card"><div class="board-header"><h2><span>🌙</span><span>心事匿名质询墙</span></h2><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><span class="board-badge badge-anonymous">🕶️ 完全匿名</span><button type="button" id="teacherToggleBtn" onclick="toggleTeacherMode()" style="background:#a8c99b;color:#2d4e1e;border:none;padding:0.2rem 0.8rem;border-radius:30px;font-size:0.7rem;cursor:pointer;">🔑 老师登录</button></div></div><div class="board-tip">💬 有心事、有疑问？在这里匿名倾诉。老师会看到并回复你。</div><div class="message-form"><textarea id="counselComment" placeholder="写下你的心事或问题……"></textarea><div style="display:flex;gap:0.4rem;margin-top:0.4rem;"><button type="button" class="btn-sm" id="counselBtn" onclick="submitCounsel()" style="flex:2;">🌙 匿名发布</button><button type="button" class="btn-sm" id="teacherReplyIndicator" style="flex:1;background:#a8c99b;color:#2d4e1e;display:none;" disabled>👩‍🏫 老师模式</button></div></div><div class="message-list" id="counselList"><div class="message-status">正在加载...</div></div></div>
     <div class="board-card"><div class="board-header"><h2><span>🌟</span><span>名言鼓励墙</span></h2><span class="board-badge badge-signed">✏️ 署名分享</span></div><div class="board-tip">✨ 分享一句名言或鼓励的话，传递正能量。</div><div class="message-form"><textarea id="quoteComment" placeholder="写下你想分享的名言或鼓励……"></textarea><button type="button" class="btn-sm" id="quoteBtn" onclick="submitQuote()">🌟 署名发布</button></div><div class="message-list" id="quoteList"><div class="message-status">正在加载...</div></div></div>
     <section class="game-section"><div class="section-header"><h2><span>🎮</span><span>德育互动游戏</span></h2><span class="board-badge badge-anonymous">📱 手机可玩</span></div><div class="game-selector"><select id="gameSelect" onchange="switchGame(this.value)"><option value="0">🛡️ 网络卫士</option><option value="1">🛡️ 网络卫士 II</option><option value="2">🛡️ 网络卫士 III</option><option value="3">🛡️ 网络卫士 IIII</option></select></div><div class="game-container"><div class="game-wrapper" id="gameWrapper"><iframe src="cyber-guardian.html" style="width:100%;height:500px;border:none;" allowfullscreen></iframe></div><div class="game-note" id="gameNote">🛡️ 网络卫士 · 拦截霸凌言论，守护网络世界！</div></div></section>
   </main>
   <footer><p>© 2026 德润童心 · 师范学校（课程作业） | 德育如细雨，润物细无声</p></footer>
+</div>
+
+<!-- 今日课堂独立页面 -->
+<div id="classroomPage" style="display:none;">
+  <div style="background: #f8fbf7; min-height: 100vh; padding-bottom: 2rem;">
+    <div style="background: #d9e6d3; padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <h1 style="color:#2d4e1e; font-size: 1.3rem; margin:0;">📖 今日课堂 · 网络霸凌</h1>
+      <button id="closeClassroomBtn" style="background:#c44; color:white; border:none; padding:0.3rem 1rem; border-radius:30px; cursor:pointer;">✕ 关闭</button>
+    </div>
+    <div class="classroom-container">
+      <!-- 1. 真实新闻案例 -->
+      <div style="margin-bottom: 1.8rem;">
+        <div class="section-title">
+          <span>📰</span>
+          <span>真实案例 · 网络霸凌的代价</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem;">
+          <img src="https://i.ibb.co/RGjNjV4k/Pg-1-1.jpg" alt="新闻案例 1" class="case-img">
+          <img src="https://i.ibb.co/rRZStjbM/image.jpg" alt="新闻案例 2" class="case-img">
+          <img src="https://i.ibb.co/35crzWnX/PG-2-1.jpg" alt="新闻案例 3" class="case-img">
+        </div>
+        <p style="color:#8aa67d; font-size:0.75rem; text-align:center; margin-top:0.5rem;">以上为真实新闻案例，警惕网络霸凌</p>
+      </div>
+
+      <!-- 2. YouTube影片 -->
+      <div style="margin-bottom: 1.8rem;">
+        <div class="section-title">
+          <span>▶️</span>
+          <span>网络霸凌宣传影片</span>
+        </div>
+        <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+          <iframe src="https://www.youtube.com/embed/ZZKRRh9TjKo" style="width:100%; height:400px; border:none;" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <!-- 3. PPT 占位（你之后替换link） -->
+      <div style="margin-bottom: 1.8rem;">
+        <div class="section-title">
+          <span>📊</span>
+          <span>课堂PPT · 网络霸凌</span>
+        </div>
+        <div style="background:#e8f0e3; border-radius:16px; padding:1rem; text-align:center;">
+          <p style="color:#5b8c4e; margin-bottom:0.5rem;">📎 PPT 待上传</p>
+          <p style="color:#8aa67d; font-size:0.8rem;">完成后将链接替换此区域</p>
+        </div>
+        <!-- 等你有了PPT链接，替换成下面的iframe -->
+        <!-- <iframe src="你的PPT链接" style="width:100%; height:450px; border:none; border-radius:16px;"></iframe> -->
+      </div>
+
+      <!-- 4. LearningApps 互动学习 -->
+      <div style="margin-bottom: 1.8rem;">
+        <div class="section-title">
+          <span>🎬</span>
+          <span>互动学习：如何应对网络霸凌</span>
+        </div>
+        <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+          <iframe src="https://learningapps.org/watch?v=pgfbevg3a26" style="width:100%; height:450px; border:none;" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <!-- 5. 返回按钮 -->
+      <div style="text-align:center; margin-top: 1rem;">
+        <button id="backToMainBtn" class="back-button">⬅ 下一步：匿名留言与鼓励墙 + 道德互动游戏</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -199,6 +321,17 @@ document.addEventListener('keydown',function(e){
   if(e.ctrlKey&&e.shiftKey&&e.key==='J'){e.preventDefault();return false;}
   if(e.ctrlKey&&e.shiftKey&&e.key==='C'){e.preventDefault();return false;}
 });
+
+// ==================== 今日课堂页面切换 ====================
+function showClassroomPage() {
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('classroomPage').style.display = 'block';
+    window.scrollTo(0, 0);
+}
+function hideClassroomPage() {
+    document.getElementById('classroomPage').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+}
 
 // ==================== 页面切换 ====================
 function goToQuiz(){
@@ -381,7 +514,7 @@ function switchGame(index){
   document.getElementById('gameNote').innerHTML=game.note;
 }
 
-// ==================== 双留言板（从工作版本提取） ====================
+// ==================== 双留言板 ====================
 async function submitCounsel(){
   var textarea=document.getElementById('counselComment');
   var btn=document.getElementById('counselBtn');
@@ -436,9 +569,18 @@ async function loadAllMessages(){
 }
 function escapeHtml(text){var div=document.createElement('div');div.textContent=text;return div.innerHTML;}
 
-// ==================== 初始化 ====================
+// ==================== 绑定今日课堂按钮 ====================
 document.addEventListener('DOMContentLoaded',function(){
   initBannedWords();checkOrientation();
+  
+  var openBtn = document.getElementById('openClassroomBtn');
+  var closeBtn = document.getElementById('closeClassroomBtn');
+  var backBtn = document.getElementById('backToMainBtn');
+  
+  if (openBtn) openBtn.onclick = showClassroomPage;
+  if (closeBtn) closeBtn.onclick = hideClassroomPage;
+  if (backBtn) backBtn.onclick = hideClassroomPage;
+  
   var saved=localStorage.getItem('moralEduUserInfo');
   if(saved){
     currentUser=JSON.parse(saved);var savedQuiz=localStorage.getItem('moralQuizAnswers');
