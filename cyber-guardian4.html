@@ -167,13 +167,17 @@
 
       const WORLD_SIZE = 3500, PERSON_RADIUS = 5, NUM_NEUTRALS = 650, NUM_AI_TEAMS = 7;
       const TEAM_COLORS = ['#555566','#00f3ff','#ff003c','#bc13fe','#ff71ce','#2962ff','#39ff14','#ffea00','#ff6600'];
-      const TEAM_NAMES = ["吃瓜网民","道德正义使者","霸凌者·暴怒","霸凌者·阴阳","霸凌者·造谣","霸凌者·键盘侠","霸凌者·引战","霸凌者·水军","霸凌者·杠精"];
+      const TEAM_NAMES = [
+        "吃瓜网民", "道德正义使者", 
+        "网络喷子", "人肉搜索", "造谣传谣", 
+        "羞辱谩骂", "恶意引战", "水军刷屏", "杠精抬杠"
+      ];
       const MAX_GAME_TIME = 300;
       let gameTimeLeft = MAX_GAME_TIME, speedMultiplier = 1.0, lastTime = 0, animationId = null;
       let gameState = 'MENU', persons = [], teams = {}, particles = [], obstacles = [], powerups = [], superStars = [];
       let camera = { x: WORLD_SIZE/2, y: WORLD_SIZE/2 }, inputDir = { x:0, y:0 };
 
-      // 预渲染球体图像 (大幅提升性能)
+      // 预渲染球体图像
       const teamBallImages = {};
       function createBallImage(color) {
         const offCanvas = document.createElement('canvas');
@@ -192,9 +196,9 @@
 
       const SUPER_STAR_TYPES = [
         { name:'老师', bonus:10, radius:15, glowColor:'#FFD700', glowIntensity:22, weight:45 },
-        { name:'训导主任', bonus:20, radius:19, glowColor:'#FFC107', glowIntensity:28, weight:25 },
-        { name:'校长', bonus:30, radius:24, glowColor:'#FFB300', glowIntensity:34, weight:15 },
-        { name:'家长', bonus:40, radius:30, glowColor:'#FFA000', glowIntensity:42, weight:8 }
+        { name:'训导主任', bonus:10, radius:19, glowColor:'#FFC107', glowIntensity:28, weight:25 },
+        { name:'校长', bonus:10, radius:24, glowColor:'#FFB300', glowIntensity:34, weight:15 },
+        { name:'家长', bonus:10, radius:30, glowColor:'#FFA000', glowIntensity:42, weight:8 }
       ];
       function getRandomSuperStarType() {
         let total = SUPER_STAR_TYPES.reduce((s,t)=>s+t.weight,0);
@@ -237,7 +241,8 @@
         obstacles=[]; powerups=[]; superStars=[];
         for(let i=0;i<45;i++) obstacles.push({x:Math.random()*(WORLD_SIZE-200)+100, y:Math.random()*(WORLD_SIZE-200)+100, w:40+Math.random()*100, h:40+Math.random()*100});
         for(let i=0;i<10;i++) powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:Math.random()*Math.PI*2});
-        for(let i=0;i<20;i++) superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:Math.random()*Math.PI*2});
+        // 超级星星减半：10个
+        for(let i=0;i<10;i++) superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:Math.random()*Math.PI*2});
       }
 
       function startGame(){
@@ -275,13 +280,12 @@
         persons.forEach(p1=>{
           obstacles.forEach(o=>{ if(p1.x>o.x-5&&p1.x<o.x+o.w+5&&p1.y>o.y-5&&p1.y<o.y+o.h+5){ p1.x+=(p1.x>o.x+o.w/2?3:-3); p1.y+=(p1.y>o.y+o.h/2?3:-3); } });
           if(p1.team>0){
-            for(let k=powerups.length-1;k>=0;k--){ let pw=powerups[k]; if((p1.x-pw.x)**2+(p1.y-pw.y)**2<400){ powerups.splice(k,1); for(let b=0;b<6;b++) persons.push(new Person(p1.x+(Math.random()-0.5)*30,p1.y+(Math.random()-0.5)*30,p1.team)); powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:0}); } }
+            for(let k=powerups.length-1;k>=0;k--){ let pw=powerups[k]; if((p1.x-pw.x)**2+(p1.y-pw.y)**2<400){ powerups.splice(k,1); for(let b=0;b<3;b++) persons.push(new Person(p1.x+(Math.random()-0.5)*30,p1.y+(Math.random()-0.5)*30,p1.team)); powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:0}); } }
             for(let k=superStars.length-1;k>=0;k--){ let ss=superStars[k]; if((p1.x-ss.x)**2+(p1.y-ss.y)**2<(ss.type.radius+8)**2){ let bonus=ss.type.bonus; superStars.splice(k,1); for(let b=0;b<bonus;b++) persons.push(new Person(ss.x+(Math.random()-0.5)*35,ss.y+(Math.random()-0.5)*35,p1.team)); superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:0}); } }
           }
           let cx=Math.floor(p1.x/CS),cy=Math.floor(p1.y/CS);
           for(let nx=-1;nx<=1;nx++) for(let ny=-1;ny<=1;ny++){ let idx=(cx+nx)+(cy+ny)*gC; if(!grid[idx])continue; grid[idx].forEach(p2=>{ if(p1===p2)return; let dx=p1.x-p2.x,dy=p1.y-p2.y,distSq=dx*dx+dy*dy; if(distSq<121){ if(p1.team!==p2.team){ let c1=p1.team===0?0:(teams[p1.team]?teams[p1.team].count:0),c2=p2.team===0?0:(teams[p2.team]?teams[p2.team].count:0); if(c1>c2&&p1.team!==0) p2.team=p1.team; } else { let d=Math.sqrt(distSq)||0.1; p1.x+=(dx/d)*0.5; p1.y+=(dy/d)*0.5; } } }); }
         });
-        // 限制粒子数量
         if (particles.length > 80) particles.splice(0, particles.length - 80);
       }
 
@@ -320,14 +324,11 @@
           ctx.shadowBlur = 0;
         });
 
-        // 先绘制粒子，再绘制人物
         particles.forEach(p=>{ p.update(); p.draw(ctx); });
         particles = particles.filter(p => p.life > 0);
         
-        // 绘制人物 (使用预渲染图像)
         persons.forEach(p=>{ p.update(); p.draw(ctx); });
 
-        // 队伍总人数标签
         const teamFontSize = (isMobile ? 28 : 24) / viewScale;
         for(let i=1;i<=NUM_AI_TEAMS+1;i++){
           const t = teams[i];
