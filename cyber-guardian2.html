@@ -8,16 +8,76 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     html,body { width:100%; height:100%; overflow:hidden; background:#1a1a2e; font-family:'Microsoft YaHei',sans-serif; touch-action:none; -webkit-user-select:none; user-select:none; }
     canvas { display:block; width:100%; height:100%; cursor:pointer; }
+    .music-btn {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 100;
+        background: rgba(0,0,0,0.45);
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        font-size: 24px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
 </style>
 </head>
 <body>
 <canvas id="gameCanvas"></canvas>
+<div class="music-btn" id="musicBtn" title="音乐开关">🎵</div>
 
 <script>
 (function(){
     "use strict";
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    const musicBtn = document.getElementById('musicBtn');
+
+    // ==================== 背景音乐 ====================
+    const bgMusic = new Audio('https://jackmum2025.github.io/forMiao/gagaga.mp3');
+    bgMusic.loop = true;
+    bgMusic.volume = 0.5; // 音量50%
+    let musicPlaying = false;
+
+    function toggleMusic() {
+        if (musicPlaying) {
+            bgMusic.pause();
+            musicPlaying = false;
+            musicBtn.textContent = '🔇';
+        } else {
+            // 移动端需要用户手势触发播放
+            bgMusic.play().then(() => {
+                musicPlaying = true;
+                musicBtn.textContent = '🎵';
+            }).catch(e => {
+                console.log('音乐播放需要用户交互');
+            });
+        }
+    }
+    musicBtn.addEventListener('click', toggleMusic);
+    musicBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        toggleMusic();
+    });
+
+    // 游戏开始时尝试播放音乐（需在用户手势中）
+    function tryPlayMusic() {
+        if (!musicPlaying) {
+            bgMusic.play().then(() => {
+                musicPlaying = true;
+                musicBtn.textContent = '🎵';
+            }).catch(e => {
+                console.log('自动播放被阻止，请点击音乐按钮');
+            });
+        }
+    }
 
     // ==================== 图片配置 ====================
     const IMAGES = {
@@ -36,8 +96,7 @@
     }
     function getImage(k){ const u=IMAGES[k]; return u&&loadedImages[u]&&loadedImages[u].complete&&loadedImages[u].naturalWidth>0?loadedImages[u]:null; }
 
-    // ==================== 优化后的词库 ====================
-    // 善意词汇（收集品）：对抗霸凌的鼓励话语
+    // ==================== 词库 ====================
     const POSITIVE_WORDS = [
         "🌟 停止霸凌","💪 勇敢举报","❤️ 支持受害者","🤗 你不是一个人","✨ 拒绝沉默",
         "🌈 尊重差异","🎉 传播善意","🌸 温柔说话","🕊️ 和平上网","⭐ 相信正义",
@@ -45,8 +104,6 @@
         "🌺 网络文明","☀️ 真相会赢","🌙 关闭恶意私信","⚡ 保留证据","🍀 治愈心灵",
         "🎵 用爱化解","📚 学习尊重","🎨 创造美好","🤝 团结同学","💖 抵制网暴"
     ];
-    
-    // 障碍词汇：网络霸凌的恶毒攻击字眼
     const NEGATIVE_WORDS = [
         "💢 去死吧","👎 你好丑","😠 威胁你全家","💔 造谣污蔑","🌪️ 人肉搜索",
         "🔇 集体孤立","👊 键盘暴力","📛 骂你猪","🚫 滚出网络","⚡ 羞辱取乐",
@@ -57,13 +114,12 @@
     // ==================== 全局变量 ====================
     let W,H,gameState='start',frame=0,score=0,kindness=0,bestScore=0,survivalTime=0;
     let lastCollectedWord='',collectBubbleTimer=0,comboCount=0,comboTimer=0;
-    try{bestScore=parseInt(localStorage.getItem('kr_v10'))||0}catch(e){}
+    try{bestScore=parseInt(localStorage.getItem('kr_v11'))||0}catch(e){}
 
     let baseSpeed=6.5,currentSpeed=baseSpeed;
     const MAX_SPEED=22,LANES=[-1,0,1];
     let currentLane=0,targetLane=0;
 
-    // 弯道与冲刺状态
     let roadCurve=0, roadCurveTarget=0;
     let isBoostActive=false, boostTimer=0;
     let screenShake=0;
@@ -115,11 +171,15 @@
             color:['#FFD700','#FFB6C1','#87CEEB','#98FB98','#DDA0DD'][Math.floor(Math.random()*5)]
         });
     }
-    function startGame(){resetGame();gameState='playing'}
+    function startGame(){
+        resetGame();
+        gameState='playing';
+        tryPlayMusic(); // 尝试播放音乐
+    }
     function gameOver(){
         if(gameState!=='playing')return;gameState='gameover';
         score=Math.floor(survivalTime*10)+kindness*50;
-        if(score>bestScore){bestScore=score;try{localStorage.setItem('kr_v10',bestScore)}catch(e){}}
+        if(score>bestScore){bestScore=score;try{localStorage.setItem('kr_v11',bestScore)}catch(e){}}
         const px=getX(currentLane,0.9);
         for(let i=0;i<30;i++)particles.push({
             x:px+(Math.random()-.5)*120,y:player.y+(Math.random()-.5)*120,
@@ -128,12 +188,11 @@
         });
     }
 
-    // ==================== 游戏逻辑（保持原有刺激玩法） ====================
+    // ==================== 游戏逻辑 ====================
     function update(){
         if(gameState!=='playing')return;
         frame++;
 
-        // 弯道变化
         if(frame%200===0) roadCurveTarget=(Math.random()-.5)*2;
         roadCurve+=(roadCurveTarget-roadCurve)*0.008;
 
@@ -179,13 +238,11 @@
         }
         if(player.sliding){player.slideTimer--;if(player.slideTimer<=0)player.sliding=false;}
 
-        // 生成善意词（高频）
         posTimer--;
         if(posTimer<=0){
             spawnPositive();if(Math.random()<.6)spawnPositive();if(Math.random()<.3)spawnPositive();
             posTimer=Math.max(14,Math.floor(POS_INTERVAL-currentSpeed*.3));
         }
-        // 生成障碍词（恶毒攻击）
         negTimer--;
         if(negTimer<=0){
             spawnNegative();
@@ -193,7 +250,6 @@
             negTimer=Math.max(45,Math.floor(NEG_INTERVAL-currentSpeed*.4));
         }
 
-        // 更新障碍碰撞
         for(let i=negativeWords.length-1;i>=0;i--){
             const w=negativeWords[i];
             w.z+=0.008+currentSpeed*0.0012;
@@ -203,7 +259,6 @@
             }
         }
 
-        // 更新善意词收集
         for(let i=positiveWords.length-1;i>=0;i--){
             const w=positiveWords[i];
             w.z+=0.01+currentSpeed*0.0014;
@@ -234,7 +289,6 @@
             }
         }
 
-        // 更新粒子
         for(let i=particles.length-1;i>=0;i--){
             const p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.vx*=.98;
             p.life--;p.size*=p.decay||.97;
@@ -257,10 +311,12 @@
         });
     }
     function spawnNegative(){
+        // 障碍物尺寸缩小：宽度0.12，高度0.08
         negativeWords.push({
             lane:LANES[Math.floor(Math.random()*3)],z:.04,
             text:NEGATIVE_WORDS[Math.floor(Math.random()*NEGATIVE_WORDS.length)],
-            width:.16,height:.10
+            width:0.12,   // 原来0.16
+            height:0.08   // 原来0.10
         });
     }
 
@@ -288,13 +344,18 @@
         const px=getX(currentLane,0.92);
         let pw,ph,py;
         if(player.sliding){
-            pw=player.width*.5;ph=22;py=player.y+20;
+            // 滑铲碰撞箱更矮
+            pw=player.width*.5; ph=18; py=player.y+22;
         }else if(player.jumping){
-            pw=player.width*.4;ph=player.height*.4;py=player.y+player.height*.1;
+            // 跳跃时碰撞箱更小
+            pw=player.width*.35; ph=player.height*.35; py=player.y+player.height*.15;
         }else{
-            pw=player.width*.45;ph=player.height*.5;py=player.y+player.height*.15;
+            pw=player.width*.45; ph=player.height*.45; py=player.y+player.height*.18;
         }
-        const s=getS(obs.z),ow=W*obs.width*s*.7,oh=H*obs.height*s*.7;
+        const s=getS(obs.z);
+        // 障碍物碰撞箱也缩小系数0.6
+        const ow=W*obs.width*s*0.6;
+        const oh=H*obs.height*s*0.6;
         const ox=getX(obs.lane,obs.z),oy=getY(obs.z)-oh;
         if(Math.abs(px-ox)>(pw+ow)/2)return false;
         if(py+ph<oy+oh*.15)return false;
@@ -305,14 +366,14 @@
     function checkCollection(word){
         const px=getX(currentLane,0.92);
         let pw,ph,py;
-        if(player.sliding){pw=player.width*.55;ph=22;py=player.y+20;}
+        if(player.sliding){pw=player.width*.55;ph=18;py=player.y+22;}
         else{pw=player.width*.5;ph=player.height*.5;py=player.y+player.height*.15;}
         const s=getS(word.z),ww=W*.14*s,wh=38*s;
         const wx=getX(word.lane,word.z),wy=getY(word.z)-wh-10;
         return Math.abs(px-wx)<(pw+ww)/2&&Math.abs(py-wy)<(ph+wh)/2;
     }
 
-    // ==================== 输入（优化手机触屏） ====================
+    // ==================== 输入 ====================
     function moveLeft(){if(gameState==='start')startGame();if(gameState!=='playing')return;targetLane=Math.max(-1,targetLane-1)}
     function moveRight(){if(gameState==='start')startGame();if(gameState!=='playing')return;targetLane=Math.min(1,targetLane+1)}
     function jump(){
@@ -358,7 +419,7 @@
     canvas.addEventListener('mousedown',()=>{if(gameState!=='playing')startGame()});
     canvas.addEventListener('contextmenu',(e)=>e.preventDefault());
 
-    // ==================== 渲染（与之前一致） ====================
+    // ==================== 渲染 ====================
     function draw(){
         const shakeX=screenShake>0?(Math.random()-.5)*screenShake:0;
         const shakeY=screenShake>0?(Math.random()-.5)*screenShake:0;
