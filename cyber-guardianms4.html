@@ -65,6 +65,19 @@
       border: 2px solid rgba(0,243,255,0.6); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 15px rgba(0,243,255,0.3); pointer-events: none;
     }
 
+    #sound-controls {
+      position: absolute; top: calc(10px + var(--safe-top)); right: calc(10px + var(--safe-right));
+      z-index: 30; pointer-events: auto; display: flex; gap: 8px;
+    }
+    .sound-btn {
+      padding: 6px 12px; font-size: 11px; font-weight: bold;
+      background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.25);
+      color: white; border-radius: 15px; cursor: pointer;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      transition: all 0.2s;
+    }
+    .sound-btn:active { background: rgba(0,243,255,0.3); border-color: #00f3ff; }
+
     #game-over { display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 100; }
     .panel { background: #10121f; padding: 30px 35px; border-radius: 20px; color: white; border: 1px solid #2a2a3a; text-align: center; box-shadow: 0 20px 50px black; max-width: 95vw; }
     .panel h1 { font-family: 'Orbitron', 'PingFang SC', sans-serif; margin-bottom: 20px; font-size: 30px; }
@@ -82,6 +95,8 @@
       #joystick-thumb { width: 50px; height: 50px; }
       .panel h1 { font-size: 24px; }
       .panel .encourage { font-size: 16px; }
+      #sound-controls { gap: 4px; }
+      .sound-btn { padding: 5px 10px; font-size: 10px; }
     }
   </style>
 </head>
@@ -96,6 +111,10 @@
       <div class="board-title">Kemajuan Pembersihan</div>
       <div id="board-content"></div>
     </div>
+    <div id="sound-controls">
+      <button class="sound-btn" id="btn-toggle-sound">🔊 SFX</button>
+      <button class="sound-btn" id="btn-toggle-bgm">🎵 Muzik</button>
+    </div>
     <div id="minimap-container"><canvas id="minimap"></canvas></div>
     <div id="joystick-container"><div id="joystick-thumb"></div></div>
   </div>
@@ -109,6 +128,83 @@
 
   <script>
     (function() {
+      // ==================== 音效管理器 ====================
+      const SOUND_BASE = 'https://raw.githubusercontent.com/JackMum2025/Moral-Interactive-Site2026/main/';
+      const soundFiles = {
+        collect: SOUND_BASE + 'collect.mp3',
+        levelup: SOUND_BASE + 'levelup.mp3',
+        swoosh: SOUND_BASE + 'swoosh.mp3',
+        failure: SOUND_BASE + 'failure.mp3',
+        success: SOUND_BASE + 'success.mp3',
+        bgm: SOUND_BASE + 'bgm.mp3'
+      };
+
+      class SoundManager {
+        constructor() {
+          this.sounds = {};
+          this.soundEnabled = true;
+          this.bgmEnabled = true;
+          this.bgmAudio = null;
+          this.bgmPlaying = false;
+          this.loadAll();
+        }
+
+        loadAll() {
+          for (const [key, url] of Object.entries(soundFiles)) {
+            const audio = new Audio(url);
+            audio.preload = 'auto';
+            audio.addEventListener('error', () => {
+              console.warn('Gagal memuatkan audio: ' + key);
+            });
+            this.sounds[key] = audio;
+          }
+          this.bgmAudio = this.sounds['bgm'];
+          if (this.bgmAudio) {
+            this.bgmAudio.loop = true;
+            this.bgmAudio.volume = 0.35;
+          }
+        }
+
+        play(name) {
+          if (!this.soundEnabled) return;
+          const s = this.sounds[name];
+          if (!s) return;
+          const clone = s.cloneNode();
+          clone.volume = (name === 'bgm') ? 0.35 : 0.75;
+          clone.play().catch(() => {});
+        }
+
+        playBGM() {
+          if (!this.bgmEnabled || !this.bgmAudio || this.bgmPlaying) return;
+          this.bgmAudio.currentTime = 0;
+          this.bgmAudio.play().catch(() => {});
+          this.bgmPlaying = true;
+        }
+
+        stopBGM() {
+          if (this.bgmAudio) {
+            this.bgmAudio.pause();
+            this.bgmAudio.currentTime = 0;
+            this.bgmPlaying = false;
+          }
+        }
+
+        toggleSound() {
+          this.soundEnabled = !this.soundEnabled;
+          return this.soundEnabled;
+        }
+
+        toggleBGM() {
+          this.bgmEnabled = !this.bgmEnabled;
+          if (this.bgmEnabled) this.playBGM();
+          else this.stopBGM();
+          return this.bgmEnabled;
+        }
+      }
+
+      const soundMgr = new SoundManager();
+
+      // ==================== 游戏核心代码 ====================
       const canvas = document.getElementById('gameCanvas');
       const ctx = canvas.getContext('2d');
       const minimapCanvas = document.getElementById('minimap');
@@ -134,6 +230,17 @@
       window.addEventListener('resize', resize);
       resize();
 
+      // 音效按钮事件
+      document.getElementById('btn-toggle-sound').addEventListener('click', function() {
+        const on = soundMgr.toggleSound();
+        this.textContent = on ? '🔊 SFX' : '🔇 SFX';
+      });
+      document.getElementById('btn-toggle-bgm').addEventListener('click', function() {
+        const on = soundMgr.toggleBGM();
+        this.textContent = on ? '🎵 Muzik' : '🎵 Mati';
+      });
+
+      // 虚拟摇杆
       let joystickActive = false, joystickId = null;
       function handleJoystickStart(e) { e.preventDefault(); joystickActive = true; joystickId = e.pointerId; }
       function handleJoystickMove(e) {
@@ -175,6 +282,7 @@
       let gameTimeLeft = MAX_GAME_TIME, speedMultiplier = 1.0, lastTime = 0, animationId = null;
       let gameState = 'MENU', persons = [], teams = {}, particles = [], obstacles = [], powerups = [], superStars = [];
       let camera = { x: WORLD_SIZE/2, y: WORLD_SIZE/2 }, inputDir = { x:0, y:0 };
+      let lastConvertSoundTime = 0;
 
       const teamBallImages = {};
       function createBallImage(color) {
@@ -247,6 +355,7 @@
         persons=[]; particles=[]; teams={}; obstacles=[]; powerups=[]; superStars=[];
         gameState='PLAYING'; gameOverScreen.style.display='none';
         gameTimeLeft=MAX_GAME_TIME; speedMultiplier=1.0; lastTime=performance.now();
+        lastConvertSoundTime = 0;
         generateMap();
         for(let i=1;i<=NUM_AI_TEAMS+1;i++){
           let sx=Math.random()*WORLD_SIZE,sy=Math.random()*WORLD_SIZE;
@@ -256,6 +365,7 @@
         }
         camera.x=WORLD_SIZE/2; camera.y=WORLD_SIZE/2;
         for(let i=0;i<NUM_NEUTRALS;i++) persons.push(new Person(Math.random()*WORLD_SIZE,Math.random()*WORLD_SIZE,0));
+        soundMgr.playBGM();
         animationId=requestAnimationFrame(gameLoop);
       }
 
@@ -277,11 +387,63 @@
         persons.forEach(p1=>{
           obstacles.forEach(o=>{ if(p1.x>o.x-5&&p1.x<o.x+o.w+5&&p1.y>o.y-5&&p1.y<o.y+o.h+5){ p1.x+=(p1.x>o.x+o.w/2?3:-3); p1.y+=(p1.y>o.y+o.h/2?3:-3); } });
           if(p1.team>0){
-            for(let k=powerups.length-1;k>=0;k--){ let pw=powerups[k]; if((p1.x-pw.x)**2+(p1.y-pw.y)**2<400){ powerups.splice(k,1); for(let b=0;b<3;b++) persons.push(new Person(p1.x+(Math.random()-0.5)*30,p1.y+(Math.random()-0.5)*30,p1.team)); powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:0}); } }
-            for(let k=superStars.length-1;k>=0;k--){ let ss=superStars[k]; if((p1.x-ss.x)**2+(p1.y-ss.y)**2<(ss.type.radius+8)**2){ let bonus=ss.type.bonus; superStars.splice(k,1); for(let b=0;b<bonus;b++) persons.push(new Person(ss.x+(Math.random()-0.5)*35,ss.y+(Math.random()-0.5)*35,p1.team)); superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:0}); } }
+            // 收集普通能量道具 (仅玩家触发音效)
+            for(let k=powerups.length-1;k>=0;k--){ 
+              let pw=powerups[k]; 
+              if((p1.x-pw.x)**2+(p1.y-pw.y)**2<400){ 
+                powerups.splice(k,1); 
+                for(let b=0;b<3;b++) persons.push(new Person(p1.x+(Math.random()-0.5)*30,p1.y+(Math.random()-0.5)*30,p1.team));
+                if(p1.team === 1) soundMgr.play('collect');  // 只有玩家才播放
+                powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:0}); 
+              } 
+            }
+            // 收集超级星星 (仅玩家触发音效)
+            for(let k=superStars.length-1;k>=0;k--){ 
+              let ss=superStars[k]; 
+              if((p1.x-ss.x)**2+(p1.y-ss.y)**2<(ss.type.radius+8)**2){ 
+                let bonus=ss.type.bonus; 
+                superStars.splice(k,1); 
+                for(let b=0;b<bonus;b++) persons.push(new Person(ss.x+(Math.random()-0.5)*35,ss.y+(Math.random()-0.5)*35,p1.team));
+                if(p1.team === 1) soundMgr.play('levelup');  // 只有玩家才播放
+                superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:0}); 
+              } 
+            }
           }
           let cx=Math.floor(p1.x/CS),cy=Math.floor(p1.y/CS);
-          for(let nx=-1;nx<=1;nx++) for(let ny=-1;ny<=1;ny++){ let idx=(cx+nx)+(cy+ny)*gC; if(!grid[idx])continue; grid[idx].forEach(p2=>{ if(p1===p2)return; let dx=p1.x-p2.x,dy=p1.y-p2.y,distSq=dx*dx+dy*dy; if(distSq<121){ if(p1.team!==p2.team){ let c1=p1.team===0?0:(teams[p1.team]?teams[p1.team].count:0),c2=p2.team===0?0:(teams[p2.team]?teams[p2.team].count:0); if(c1>c2&&p1.team!==0) p2.team=p1.team; } else { let d=Math.sqrt(distSq)||0.1; p1.x+=(dx/d)*0.5; p1.y+=(dy/d)*0.5; } } }); }
+          for(let nx=-1;nx<=1;nx++) for(let ny=-1;ny<=1;ny++){ 
+            let idx=(cx+nx)+(cy+ny)*gC; 
+            if(!grid[idx])continue; 
+            grid[idx].forEach(p2=>{ 
+              if(p1===p2)return; 
+              let dx=p1.x-p2.x,dy=p1.y-p2.y,distSq=dx*dx+dy*dy; 
+              if(distSq<121){ 
+                if(p1.team!==p2.team){ 
+                  let c1=p1.team===0?0:(teams[p1.team]?teams[p1.team].count:0),
+                      c2=p2.team===0?0:(teams[p2.team]?teams[p2.team].count:0); 
+                  if(c1>c2&&p1.team!==0) { 
+                    const oldTeam2 = p2.team; // 保存被转化方的原队伍
+                    p2.team = p1.team;
+                    // 只有玩家吞并时播放，根据被转化方类型选择音效
+                    if(p1.team === 1) {
+                      const now = performance.now();
+                      if (now - lastConvertSoundTime > 150) {
+                        if (oldTeam2 === 0) {
+                          soundMgr.play('collect');   // 吞并灰色网民 -> collect
+                        } else {
+                          soundMgr.play('swoosh');    // 吞并敌方队伍 -> swoosh
+                        }
+                        lastConvertSoundTime = now;
+                      }
+                    }
+                  } 
+                } else { 
+                  let d=Math.sqrt(distSq)||0.1; 
+                  p1.x+=(dx/d)*0.5; 
+                  p1.y+=(dy/d)*0.5; 
+                } 
+              } 
+            }); 
+          }
         });
         if (particles.length > 80) particles.splice(0, particles.length - 80);
       }
@@ -370,15 +532,15 @@
 
       function triggerGameOver(title, sorted) {
         gameState = 'GAMEOVER';
-        if (title.includes('Ditenggelami') || title.includes('Gangguan')) {
-          resultTitle.innerText = 'Sambungan Terputus';
-          resultMessage.innerText = 'Jangan mengalah kepada pembuli. Ingatlah untuk mendapatkan bantuan daripada ibu bapa, guru, pengetua disiplin, dan pengetua sekolah.';
-        } else if (title.includes('Dibersihkan')) {
+        soundMgr.stopBGM();
+        if (sorted.length === 1 && sorted[0].id === 1) {
+          soundMgr.play('success');
           resultTitle.innerText = 'Persekitaran Rangkaian Telah Dibersihkan!';
           resultMessage.innerText = 'Tahniah! Anda berjaya menentang pembuli. Teruskan berjuang, jangan pernah berputus asa!';
         } else {
-          resultTitle.innerText = title;
-          resultMessage.innerText = 'Permainan Tamat';
+          soundMgr.play('failure');
+          resultTitle.innerText = 'Sambungan Terputus';
+          resultMessage.innerText = 'Jangan mengalah kepada pembuli. Ingatlah untuk mendapatkan bantuan daripada ibu bapa, guru, pengetua disiplin, dan pengetua sekolah.';
         }
         gameOverScreen.style.display = 'flex';
       }
