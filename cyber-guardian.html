@@ -60,6 +60,7 @@
       <p class="menu-subtitle">拦截霸凌言论，守护网络世界！</p>
       <p class="menu-subtitle" style="font-size: clamp(0.875rem, 3vw, 1rem); color: #64748b; margin-top: 1.5rem;">💻 鼠标移动 / 📱 手指滑动 · 点击射击</p>
       <button class="menu-button mt-6" onclick="startGame()">开始防御</button>
+      <button id="muteToggle" class="menu-button mt-3" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); font-size:0.9rem;" onclick="toggleMute()">🔊 音效：开</button>
     </div>
   </div>
   <div class="canvas-wrapper">
@@ -92,20 +93,24 @@
     const gameCanvas = document.getElementById('gameCanvas');
     const ctx = gameCanvas.getContext('2d');
 
+    // 负面词汇库
     const badWords = ['废物','垃圾','丑八怪','肥猪','矮冬瓜','四眼狗','书呆子','穷鬼','脑残','智障','傻逼','白痴','神经病','变态','娘炮','男人婆','绿茶','渣男','小三','狐狸精','没人要','单身狗','loser','失败者','滚出去','去死吧','恶心','想吐','别活了','社会垃圾','寄生虫','吸血鬼','啃老族','躺平废物','键盘侠','杠精','喷子','柠檬精','学渣','垫底','倒数第一','没人缘','被孤立','小丑','笑话','装什么','你配吗','不自量力','癞蛤蟆','做梦吧','下辈子吧','恶心死了','看到你就烦','离我远点','别碰我','晦气','扫把星'];
 
+    // ========== 音效系统（默认关闭，可手动开启） ==========
+    let soundEnabled = false; // 默认关闭音效
     const soundBuffers = {};
     const lastPlayTime = { destroy:0, normalShoot:0, laserShoot:0, rapidShoot:0 };
-    const MIN_SOUND_INTERVAL = 100;
+    const MIN_SOUND_INTERVAL = 130;
 
     function loadSound(name, url) {
       const audio = new Audio(url);
       audio.preload = 'auto';
-      audio.volume = 0.6;
+      audio.volume = 0.5;
       soundBuffers[name] = audio;
     }
 
     function playSound(name) {
+      if (!soundEnabled) return; // 静音跳过
       const now = Date.now();
       if (now - lastPlayTime[name] < MIN_SOUND_INTERVAL) return;
       const audio = soundBuffers[name];
@@ -118,15 +123,25 @@
       } catch(e) {}
     }
 
+    // 预加载音效（但不播放）
     loadSound('destroy', 'https://jackmum2025.github.io/forMiao/destroy.mp3');
     loadSound('normalShoot', 'https://jackmum2025.github.io/forMiao/Normalshoot.mp3');
     loadSound('laserShoot', 'https://jackmum2025.github.io/forMiao/Skillshoot.mp3');
     loadSound('rapidShoot', 'https://jackmum2025.github.io/forMiao/machinegun.mp3');
 
+    function toggleMute() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('muteToggle');
+      btn.textContent = soundEnabled ? '🔊 音效：开' : '🔇 音效：关';
+    }
+    window.toggleMute = toggleMute; // 暴露到全局
+
+    // 玩家图片
     const playerImage = new Image();
     playerImage.crossOrigin = 'anonymous';
     playerImage.src = 'https://s1.aigei.com/src/img/png/58/58358bb3e0e84bcea2dbdec731e6f675.png?watermark/3/image/aHR0cHM6Ly9zMS5haWdlaS5jb20vd2F0ZXJtYXJrL21pZGRsZS5wbmc_ZT0yMDUxMDIwODAwJnRva2VuPVA3UzJYcHpmejExdkFrQVNMVGtmSE43Rnctb09aQmVjcWVKYXh5cEw6aUtTNHV4LUU0bjBsdU1fdmlIZnlUQUhVLUE0PQ==/dissolve/100/gravity/Center/dx/15/dy/1&e=2051020800&token=P7S2Xpzfz11vAkASLTkfHN7Fw-oOZBecqeJaxypL:9QV8OkJHR-QwptvP4Olp-iMq7i4=';
 
+    // 游戏状态
     const state = {
       running: false, width: 0, height: 0,
       player: { x:0, y:0, w:0, h:0 },
@@ -142,7 +157,7 @@
       lastSpeedUpTime: 0
     };
     let particles = [];
-    const MAX_PARTICLES = 80;
+    const MAX_PARTICLES = 60; // 进一步减少粒子
 
     function initCanvas() {
       const wrapper = document.querySelector('.canvas-wrapper');
@@ -168,10 +183,10 @@
         state.lastSpeedUpTime = secElapsed;
       }
       state.difficulty = 1 + progress * 2;
-      state.bulletSpeed = state.height * 0.01;
-      state.baseEnemySpeed = state.height * 0.003;
+      state.bulletSpeed = state.height * 0.012;
+      state.baseEnemySpeed = state.height * 0.0028;
       state.enemySpeed = state.baseEnemySpeed * state.speedMultiplier * state.difficulty;
-      state.spawnRate = Math.max(45, 120 - Math.floor(progress * 75));
+      state.spawnRate = Math.max(50, 130 - Math.floor(progress * 80));
     }
 
     function showSpeedUpHint(m) {
@@ -208,9 +223,8 @@
       gameCanvas.addEventListener('contextmenu', e => e.preventDefault());
     }
 
-    // 修复：允许激光模式下手动射击
     function tryShoot() {
-      if (state.rapidMode) return; // 连击模式自动射击，手动无效
+      if (state.rapidMode) return;
       if (state.shootCooldown > 0) return;
       shootBullet();
       state.shootCooldown = state.shootCooldownMax;
@@ -243,7 +257,7 @@
     }
 
     function spawnEnemy() {
-      const cnt = Math.min(4, 1 + Math.floor(state.difficulty * 1.2));
+      const cnt = Math.min(4, 1 + Math.floor(state.difficulty * 1.1));
       for (let i=0; i<cnt; i++)
         state.enemies.push({x: Math.random()*(state.width-50), y:-60-i*60, w:50, h:50, text:badWords[Math.floor(Math.random()*badWords.length)], health:1});
     }
@@ -263,22 +277,22 @@
 
     function createExplosion(x,y) {
       playSound('destroy');
-      for (let i=0; i<5; i++) {
-        const a = Math.PI*2*i/5, v = 3+Math.random()*2;
-        addParticle(x,y, Math.cos(a)*v, Math.sin(a)*v, 20, ['#34d399','#fbbf24'][Math.floor(Math.random()*2)], 3);
+      for (let i=0; i<4; i++) {
+        const a = Math.PI*2*i/4, v = 2+Math.random()*2;
+        addParticle(x,y, Math.cos(a)*v, Math.sin(a)*v, 18, ['#34d399','#fbbf24'][i%2], 2.5);
       }
     }
     function createMissEffect(x,y) {
-      for (let i=0; i<4; i++) {
-        const a = Math.PI*2*i/4;
-        addParticle(x,y, Math.cos(a)*2, Math.sin(a)*2, 18, '#fca5a5', 2);
+      for (let i=0; i<3; i++) {
+        const a = Math.PI*2*i/3;
+        addParticle(x,y, Math.cos(a)*1.5, Math.sin(a)*1.5, 15, '#fca5a5', 2);
       }
     }
     function createPowerUpEffect(x,y,type) {
       const cols = {health:'#34d399',laser:'#fbbf24',rapid:'#f97316'};
-      for (let i=0; i<8; i++) {
-        const a = Math.PI*2*i/8;
-        addParticle(x,y, Math.cos(a)*2.5, Math.sin(a)*2.5, 22, cols[type], 3);
+      for (let i=0; i<6; i++) {
+        const a = Math.PI*2*i/6;
+        addParticle(x,y, Math.cos(a)*2, Math.sin(a)*2, 20, cols[type], 2.5);
       }
     }
 
@@ -308,6 +322,7 @@
         return p.y < state.height;
       });
 
+      // 碰撞检测
       for (let bi = state.bullets.length-1; bi >= 0; bi--) {
         const b = state.bullets[bi];
         for (let ei = state.enemies.length-1; ei >= 0; ei--) {
@@ -348,16 +363,11 @@
     }
 
     function draw() {
-      ctx.fillStyle = 'rgba(10,14,39,0.3)';
+      // 背景
+      ctx.fillStyle = '#0a0e27';
       ctx.fillRect(0,0,state.width,state.height);
 
-      ctx.strokeStyle = 'rgba(99,102,241,0.04)';
-      ctx.lineWidth = 1;
-      const gridSize = Math.max(60, state.width*0.12);
-      for (let i=0; i<state.width; i+=gridSize) {
-        ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,state.height); ctx.stroke();
-      }
-
+      // 玩家
       const px = state.player.x + state.player.w/2;
       const py = state.player.y + state.player.h/2;
       const pr = state.player.w/2;
@@ -373,6 +383,7 @@
         ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI*2); ctx.fill();
       }
 
+      // 子弹
       state.bullets.forEach(b => {
         if (b.isLaser) {
           ctx.fillStyle = '#fbbf24';
@@ -386,6 +397,7 @@
         }
       });
 
+      // 敌人
       state.enemies.forEach(e => {
         ctx.fillStyle = 'rgba(248,113,113,0.85)';
         ctx.beginPath(); ctx.arc(e.x+e.w/2, e.y+e.h/2, e.w/2, 0, Math.PI*2); ctx.fill();
@@ -395,6 +407,7 @@
         ctx.fillText(e.text, e.x+e.w/2, e.y+e.h/2);
       });
 
+      // 道具
       state.powerUps.forEach(p => {
         const cols = {health:'#34d399',laser:'#fbbf24',rapid:'#f97316'};
         ctx.fillStyle = cols[p.type];
@@ -405,8 +418,9 @@
         ctx.fillText(p.icon, p.x+p.w/2, p.y+p.h/2);
       });
 
+      // 粒子
       particles.forEach(p => {
-        ctx.globalAlpha = p.life / 22;
+        ctx.globalAlpha = p.life / 20;
         ctx.fillStyle = p.color;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
       });
@@ -415,7 +429,7 @@
 
     function updateParticles() {
       particles = particles.filter(p => {
-        p.x += p.vx; p.y += p.vy; p.vy += 0.08;
+        p.x += p.vx; p.y += p.vy; p.vy += 0.06;
         p.life--;
         return p.life > 0;
       });
