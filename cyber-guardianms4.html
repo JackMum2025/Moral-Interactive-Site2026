@@ -65,6 +65,19 @@
       border: 2px solid rgba(0,243,255,0.6); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 15px rgba(0,243,255,0.3); pointer-events: none;
     }
 
+    #sound-controls {
+      position: absolute; top: calc(10px + var(--safe-top)); right: calc(10px + var(--safe-right));
+      z-index: 30; pointer-events: auto; display: flex; gap: 8px;
+    }
+    .sound-btn {
+      padding: 6px 12px; font-size: 11px; font-weight: bold;
+      background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.25);
+      color: white; border-radius: 15px; cursor: pointer;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      transition: all 0.2s;
+    }
+    .sound-btn:active { background: rgba(0,243,255,0.3); border-color: #00f3ff; }
+
     #start-screen {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       display: flex; justify-content: center; align-items: center;
@@ -108,13 +121,13 @@
       .start-panel h1 { font-size: 24px; }
       .start-panel p { font-size: 14px; }
       .start-panel button { font-size: 18px; padding: 12px 30px; }
+      .sound-btn { padding: 5px 10px; font-size: 10px; }
     }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas"></canvas>
   
-  <!-- 开始界面 -->
   <div id="start-screen">
     <div class="start-panel">
       <h1>Ruang Siber</h1>
@@ -140,13 +153,13 @@
     <div class="panel">
       <h1 id="result-title"></h1>
       <div class="encourage" id="result-message"></div>
-      <button onclick="startGame()">Sambung Semula ke Rangkaian</button>
+      <button id="btn-restart">Sambung Semula ke Rangkaian</button>
     </div>
   </div>
 
   <script>
     (function() {
-      // ==================== 音效管理器（无BGM） ====================
+      // ==================== 音效管理器（音频池优化） ====================
       const SOUND_BASE = 'https://raw.githubusercontent.com/JackMum2025/Moral-Interactive-Site2026/main/';
       const soundFiles = {
         collect: SOUND_BASE + 'collect.mp3',
@@ -158,29 +171,40 @@
 
       class SoundManager {
         constructor() {
-          this.sounds = {};
+          this.pools = {};
           this.soundEnabled = true;
-          this.loadAll();
+          this.poolSize = window.innerWidth < 600 ? 3 : 4; // 移动端稍小池
+          this.initPools();
         }
 
-        loadAll() {
+        initPools() {
           for (const [key, url] of Object.entries(soundFiles)) {
-            const audio = new Audio(url);
-            audio.preload = 'auto';
-            audio.addEventListener('error', () => {
-              console.warn('Gagal memuatkan audio: ' + key);
-            });
-            this.sounds[key] = audio;
+            this.pools[key] = [];
+            for (let i = 0; i < this.poolSize; i++) {
+              const audio = new Audio(url);
+              audio.preload = 'auto';
+              audio.volume = 0.65; // 稍微降低音量防止破音
+              audio.addEventListener('error', () => {
+                console.warn('Gagal memuatkan audio: ' + key);
+              });
+              this.pools[key].push(audio);
+            }
           }
         }
 
         play(name) {
           if (!this.soundEnabled) return;
-          const s = this.sounds[name];
-          if (!s) return;
-          const clone = s.cloneNode();
-          clone.volume = 0.75;
-          clone.play().catch(() => {});
+          const pool = this.pools[name];
+          if (!pool || pool.length === 0) return;
+          // 找一个空闲或播放结束的实例
+          let audio = pool.find(a => a.paused || a.ended);
+          if (!audio) {
+            // 如果没有空闲的，从头开始复用一个（可能会中断）
+            audio = pool[0];
+            audio.pause();
+            audio.currentTime = 0;
+          }
+          audio.play().catch(() => {});
         }
 
         toggleSound() {
@@ -203,6 +227,7 @@
       const joystickThumb = document.getElementById('joystick-thumb');
       const startScreen = document.getElementById('start-screen');
       const btnStart = document.getElementById('btn-start-game');
+      const btnRestart = document.getElementById('btn-restart');
 
       let width, height;
       const isMobile = window.innerWidth < 600;
@@ -221,7 +246,7 @@
       window.addEventListener('resize', resize);
       resize();
 
-      // 音效开关（仅保留音效按钮，移除BGM）
+      // 音效开关按钮
       const soundBtn = document.createElement('button');
       soundBtn.className = 'sound-btn';
       soundBtn.textContent = '🔊 SFX';
@@ -268,8 +293,7 @@
       window.addEventListener('mouseleave', () => { if(!joystickActive) { inputDir.x=0; inputDir.y=0; } });
 
       const WORLD_SIZE = 3500, PERSON_RADIUS = 5;
-      // 移动端性能优化：减少实体数量
-      const NUM_NEUTRALS = isMobile ? 350 : 650;
+      const NUM_NEUTRALS = isMobile ? 300 : 650;
       const NUM_AI_TEAMS = 7;
       const TEAM_COLORS = ['#555566','#00f3ff','#ff003c','#bc13fe','#ff71ce','#2962ff','#39ff14','#ffea00','#ff6600'];
       const TEAM_NAMES = [
@@ -344,22 +368,40 @@
 
       function generateMap(){
         obstacles=[]; powerups=[]; superStars=[];
-        const obsCount = isMobile ? 25 : 45;
-        const powerCount = isMobile ? 6 : 10;
-        const starCount = isMobile ? 6 : 10;
+        const obsCount = isMobile ? 20 : 45;
+        const powerCount = isMobile ? 5 : 10;
+        const starCount = isMobile ? 5 : 10;
         for(let i=0;i<obsCount;i++) obstacles.push({x:Math.random()*(WORLD_SIZE-200)+100, y:Math.random()*(WORLD_SIZE-200)+100, w:40+Math.random()*100, h:40+Math.random()*100});
         for(let i=0;i<powerCount;i++) powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:Math.random()*Math.PI*2});
         for(let i=0;i<starCount;i++) superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:Math.random()*Math.PI*2});
       }
 
-      function startGame(){
-        if(animationId) cancelAnimationFrame(animationId);
-        persons=[]; particles=[]; teams={}; obstacles=[]; powerups=[]; superStars=[];
-        gameState='PLAYING'; 
-        gameOverScreen.style.display='none';
-        startScreen.style.display='none';  // 隐藏开始界面
-        gameTimeLeft=MAX_GAME_TIME; speedMultiplier=1.0; lastTime=performance.now();
+      function resetGame() {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+        persons = [];
+        particles = [];
+        teams = {};
+        obstacles = [];
+        powerups = [];
+        superStars = [];
         lastConvertSoundTime = 0;
+        gameState = 'PLAYING';
+        gameTimeLeft = MAX_GAME_TIME;
+        speedMultiplier = 1.0;
+        inputDir.x = 0;
+        inputDir.y = 0;
+        camera.x = WORLD_SIZE/2;
+        camera.y = WORLD_SIZE/2;
+      }
+
+      function startGame(){
+        resetGame();
+        gameOverScreen.style.display = 'none';
+        startScreen.style.display = 'none';
+        lastTime = performance.now();
         generateMap();
         for(let i=1;i<=NUM_AI_TEAMS+1;i++){
           let sx=Math.random()*WORLD_SIZE,sy=Math.random()*WORLD_SIZE;
@@ -367,14 +409,13 @@
           teams[i]={id:i,count:1,alive:true,targetX:sx,targetY:sy,cx:sx,cy:sy};
           persons.push(new Person(sx,sy,i));
         }
-        camera.x=WORLD_SIZE/2; camera.y=WORLD_SIZE/2;
         for(let i=0;i<NUM_NEUTRALS;i++) persons.push(new Person(Math.random()*WORLD_SIZE,Math.random()*WORLD_SIZE,0));
-        // 点击开始后音效即可正常播放（用户交互已发生）
-        animationId=requestAnimationFrame(gameLoop);
+        animationId = requestAnimationFrame(gameLoop);
       }
 
-      // 绑定开始按钮
+      // 绑定开始与重新开始按钮
       btnStart.addEventListener('click', startGame);
+      btnRestart.addEventListener('click', startGame);
 
       function updateAI(){
         for(let i=2;i<=NUM_AI_TEAMS+1;i++){
@@ -446,15 +487,13 @@
             }); 
           }
         });
-        // 移动端进一步减少粒子数量
-        const maxParticles = isMobile ? 40 : 80;
+        const maxParticles = isMobile ? 30 : 80;
         if (particles.length > maxParticles) particles.splice(0, particles.length - maxParticles);
       }
 
       function drawWorld(){
         ctx.save();
         if(teams[1]&&teams[1].alive) { camera.x+=(teams[1].cx-camera.x)*0.12; camera.y+=(teams[1].cy-camera.y)*0.12; }
-        // 移动端视野缩放调整，减少同屏绘制
         const viewScale = isMobile ? 0.52 : 1.0;
         ctx.translate(width/2 - camera.x * viewScale, height/2 - camera.y * viewScale);
         ctx.scale(viewScale, viewScale);
@@ -471,7 +510,7 @@
           ctx.beginPath(); 
           ctx.arc(p.x,p.y,9+Math.sin(p.pulse)*2.5,0,Math.PI*2); 
           ctx.fillStyle='#fff'; 
-          if(!isMobile) { ctx.shadowBlur=10; ctx.shadowColor='#fff'; } // 移动端去掉阴影
+          if(!isMobile) { ctx.shadowBlur=10; ctx.shadowColor='#fff'; }
           ctx.fill(); 
           if(!isMobile) ctx.shadowBlur=0; 
         });
@@ -491,7 +530,7 @@
           ctx.font = `bold ${nameFontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
           ctx.textAlign = 'center';
           ctx.fillStyle = '#ffffff'; 
-          ctx.shadowBlur = isMobile ? 5 : 10; 
+          ctx.shadowBlur = isMobile ? 4 : 10; 
           ctx.shadowColor = '#000';
           ctx.fillText(s.type.name, s.x, s.y - r - 6);
           ctx.font = `bold ${bonusFontSize}px "Orbitron",sans-serif`;
@@ -511,7 +550,7 @@
             ctx.font = `bold ${teamFontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
             ctx.textAlign = 'center';
             ctx.fillStyle = TEAM_COLORS[i];
-            ctx.shadowBlur = isMobile ? 5 : 12; 
+            ctx.shadowBlur = isMobile ? 4 : 12; 
             ctx.shadowColor = '#000';
             ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
             const txt = t.count.toString();
@@ -575,7 +614,7 @@
         animationId=requestAnimationFrame(gameLoop);
       }
 
-      // 初始时绘制一个简单的静态背景（可选）
+      // 初始静态背景
       ctx.fillStyle='#050510';
       ctx.fillRect(0,0,width,height);
       ctx.fillStyle='#00f3ff';
