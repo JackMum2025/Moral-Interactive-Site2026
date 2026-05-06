@@ -65,48 +65,12 @@
       border: 2px solid rgba(0,243,255,0.6); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 15px rgba(0,243,255,0.3); pointer-events: none;
     }
 
-    #sound-controls {
-      position: absolute; top: calc(10px + var(--safe-top)); right: calc(10px + var(--safe-right));
-      z-index: 30; pointer-events: auto; display: flex; gap: 8px;
-    }
-    .sound-btn {
-      padding: 6px 12px; font-size: 11px; font-weight: bold;
-      background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.25);
-      color: white; border-radius: 15px; cursor: pointer;
-      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-      transition: all 0.2s;
-    }
-    .sound-btn:active { background: rgba(0,243,255,0.3); border-color: #00f3ff; }
-
-    #start-screen {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      display: flex; justify-content: center; align-items: center;
-      background: rgba(5,5,16,0.95); backdrop-filter: blur(10px);
-      z-index: 200; pointer-events: auto;
-    }
-    .start-panel {
-      background: #10121f; padding: 35px 40px; border-radius: 24px;
-      color: white; border: 1px solid #2a2a3a; text-align: center;
-      box-shadow: 0 20px 50px black; max-width: 95vw;
-    }
-    .start-panel h1 {
-      font-family: 'Orbitron', 'PingFang SC', sans-serif;
-      font-size: 30px; margin-bottom: 10px; color: #00f3ff;
-    }
-    .start-panel p {
-      font-size: 16px; color: #ccc; margin: 10px 0 25px;
-    }
-    .start-panel button {
-      padding: 14px 40px; background: transparent; border: 2px solid #00f3ff;
-      color: #00f3ff; font-weight: bold; border-radius: 30px; font-size: 20px;
-      letter-spacing: 1px; cursor: pointer; transition: 0.2s;
-    }
-    .start-panel button:active { background: #00f3ff; color: #000; }
-
     #game-over { display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 100; }
     .panel { background: #10121f; padding: 30px 35px; border-radius: 20px; color: white; border: 1px solid #2a2a3a; text-align: center; box-shadow: 0 20px 50px black; max-width: 95vw; }
     .panel h1 { font-family: 'Orbitron', 'PingFang SC', sans-serif; margin-bottom: 20px; font-size: 30px; }
     .panel .encourage { font-size: 18px; color: #ccc; margin: 15px 0 25px; line-height: 1.5; }
+    button { padding: 12px 35px; background: transparent; border: 2px solid #00f3ff; color: #00f3ff; font-weight: bold; border-radius: 30px; font-size: 18px; letter-spacing: 1px; cursor: pointer; transition: 0.2s; }
+    button:active { background: #00f3ff; color: #000; }
 
     @media (max-width: 600px) {
       #timer-container { padding: 4px 18px; }
@@ -118,24 +82,11 @@
       #joystick-thumb { width: 50px; height: 50px; }
       .panel h1 { font-size: 24px; }
       .panel .encourage { font-size: 16px; }
-      .start-panel h1 { font-size: 24px; }
-      .start-panel p { font-size: 14px; }
-      .start-panel button { font-size: 18px; padding: 12px 30px; }
-      .sound-btn { padding: 5px 10px; font-size: 10px; }
     }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas"></canvas>
-  
-  <div id="start-screen">
-    <div class="start-panel">
-      <h1>Ruang Siber</h1>
-      <p>Radar Peta Penuh · Edisi Pantas</p>
-      <button id="btn-start-game">Mula Permainan</button>
-    </div>
-  </div>
-
   <div id="ui-layer">
     <div id="timer-container">
       <div id="timer-text">05:00</div>
@@ -148,74 +99,16 @@
     <div id="minimap-container"><canvas id="minimap"></canvas></div>
     <div id="joystick-container"><div id="joystick-thumb"></div></div>
   </div>
-  
   <div id="game-over" style="display:none;">
     <div class="panel">
       <h1 id="result-title"></h1>
       <div class="encourage" id="result-message"></div>
-      <button id="btn-restart">Sambung Semula ke Rangkaian</button>
+      <button onclick="startGame()">Sambung Semula ke Rangkaian</button>
     </div>
   </div>
 
   <script>
     (function() {
-      // ==================== 音效管理器（音频池优化） ====================
-      const SOUND_BASE = 'https://raw.githubusercontent.com/JackMum2025/Moral-Interactive-Site2026/main/';
-      const soundFiles = {
-        collect: SOUND_BASE + 'collect.mp3',
-        levelup: SOUND_BASE + 'levelup.mp3',
-        swoosh: SOUND_BASE + 'swoosh.mp3',
-        failure: SOUND_BASE + 'failure.mp3',
-        success: SOUND_BASE + 'success.mp3'
-      };
-
-      class SoundManager {
-        constructor() {
-          this.pools = {};
-          this.soundEnabled = true;
-          this.poolSize = window.innerWidth < 600 ? 3 : 4; // 移动端稍小池
-          this.initPools();
-        }
-
-        initPools() {
-          for (const [key, url] of Object.entries(soundFiles)) {
-            this.pools[key] = [];
-            for (let i = 0; i < this.poolSize; i++) {
-              const audio = new Audio(url);
-              audio.preload = 'auto';
-              audio.volume = 0.65; // 稍微降低音量防止破音
-              audio.addEventListener('error', () => {
-                console.warn('Gagal memuatkan audio: ' + key);
-              });
-              this.pools[key].push(audio);
-            }
-          }
-        }
-
-        play(name) {
-          if (!this.soundEnabled) return;
-          const pool = this.pools[name];
-          if (!pool || pool.length === 0) return;
-          // 找一个空闲或播放结束的实例
-          let audio = pool.find(a => a.paused || a.ended);
-          if (!audio) {
-            // 如果没有空闲的，从头开始复用一个（可能会中断）
-            audio = pool[0];
-            audio.pause();
-            audio.currentTime = 0;
-          }
-          audio.play().catch(() => {});
-        }
-
-        toggleSound() {
-          this.soundEnabled = !this.soundEnabled;
-          return this.soundEnabled;
-        }
-      }
-
-      const soundMgr = new SoundManager();
-
-      // ==================== 游戏核心代码 ====================
       const canvas = document.getElementById('gameCanvas');
       const ctx = canvas.getContext('2d');
       const minimapCanvas = document.getElementById('minimap');
@@ -225,19 +118,14 @@
       const resultMessage = document.getElementById('result-message');
       const joystickContainer = document.getElementById('joystick-container');
       const joystickThumb = document.getElementById('joystick-thumb');
-      const startScreen = document.getElementById('start-screen');
-      const btnStart = document.getElementById('btn-start-game');
-      const btnRestart = document.getElementById('btn-restart');
 
       let width, height;
-      const isMobile = window.innerWidth < 600;
-
       function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
         canvas.width = width;
         canvas.height = height;
-        const mmSize = isMobile ? 130 : 180;
+        const mmSize = window.innerWidth < 600 ? 130 : 180;
         minimapCanvas.width = mmSize;
         minimapCanvas.height = mmSize;
         document.getElementById('minimap-container').style.width = mmSize + 'px';
@@ -246,22 +134,6 @@
       window.addEventListener('resize', resize);
       resize();
 
-      // 音效开关按钮
-      const soundBtn = document.createElement('button');
-      soundBtn.className = 'sound-btn';
-      soundBtn.textContent = '🔊 SFX';
-      soundBtn.style.position = 'absolute';
-      soundBtn.style.top = 'calc(10px + var(--safe-top))';
-      soundBtn.style.right = 'calc(10px + var(--safe-right))';
-      soundBtn.style.zIndex = '30';
-      soundBtn.style.pointerEvents = 'auto';
-      document.getElementById('ui-layer').appendChild(soundBtn);
-      soundBtn.addEventListener('click', () => {
-        const on = soundMgr.toggleSound();
-        soundBtn.textContent = on ? '🔊 SFX' : '🔇 SFX';
-      });
-
-      // 虚拟摇杆
       let joystickActive = false, joystickId = null;
       function handleJoystickStart(e) { e.preventDefault(); joystickActive = true; joystickId = e.pointerId; }
       function handleJoystickMove(e) {
@@ -292,9 +164,7 @@
       });
       window.addEventListener('mouseleave', () => { if(!joystickActive) { inputDir.x=0; inputDir.y=0; } });
 
-      const WORLD_SIZE = 3500, PERSON_RADIUS = 5;
-      const NUM_NEUTRALS = isMobile ? 300 : 650;
-      const NUM_AI_TEAMS = 7;
+      const WORLD_SIZE = 3500, PERSON_RADIUS = 5, NUM_NEUTRALS = 650, NUM_AI_TEAMS = 7;
       const TEAM_COLORS = ['#555566','#00f3ff','#ff003c','#bc13fe','#ff71ce','#2962ff','#39ff14','#ffea00','#ff6600'];
       const TEAM_NAMES = [
         "Pengguna Internet Biasa", "Pembela Moral",
@@ -305,7 +175,6 @@
       let gameTimeLeft = MAX_GAME_TIME, speedMultiplier = 1.0, lastTime = 0, animationId = null;
       let gameState = 'MENU', persons = [], teams = {}, particles = [], obstacles = [], powerups = [], superStars = [];
       let camera = { x: WORLD_SIZE/2, y: WORLD_SIZE/2 }, inputDir = { x:0, y:0 };
-      let lastConvertSoundTime = 0;
 
       const teamBallImages = {};
       function createBallImage(color) {
@@ -368,40 +237,16 @@
 
       function generateMap(){
         obstacles=[]; powerups=[]; superStars=[];
-        const obsCount = isMobile ? 20 : 45;
-        const powerCount = isMobile ? 5 : 10;
-        const starCount = isMobile ? 5 : 10;
-        for(let i=0;i<obsCount;i++) obstacles.push({x:Math.random()*(WORLD_SIZE-200)+100, y:Math.random()*(WORLD_SIZE-200)+100, w:40+Math.random()*100, h:40+Math.random()*100});
-        for(let i=0;i<powerCount;i++) powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:Math.random()*Math.PI*2});
-        for(let i=0;i<starCount;i++) superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:Math.random()*Math.PI*2});
-      }
-
-      function resetGame() {
-        if (animationId) {
-          cancelAnimationFrame(animationId);
-          animationId = null;
-        }
-        persons = [];
-        particles = [];
-        teams = {};
-        obstacles = [];
-        powerups = [];
-        superStars = [];
-        lastConvertSoundTime = 0;
-        gameState = 'PLAYING';
-        gameTimeLeft = MAX_GAME_TIME;
-        speedMultiplier = 1.0;
-        inputDir.x = 0;
-        inputDir.y = 0;
-        camera.x = WORLD_SIZE/2;
-        camera.y = WORLD_SIZE/2;
+        for(let i=0;i<45;i++) obstacles.push({x:Math.random()*(WORLD_SIZE-200)+100, y:Math.random()*(WORLD_SIZE-200)+100, w:40+Math.random()*100, h:40+Math.random()*100});
+        for(let i=0;i<10;i++) powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:Math.random()*Math.PI*2});
+        for(let i=0;i<10;i++) superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:Math.random()*Math.PI*2});
       }
 
       function startGame(){
-        resetGame();
-        gameOverScreen.style.display = 'none';
-        startScreen.style.display = 'none';
-        lastTime = performance.now();
+        if(animationId) cancelAnimationFrame(animationId);
+        persons=[]; particles=[]; teams={}; obstacles=[]; powerups=[]; superStars=[];
+        gameState='PLAYING'; gameOverScreen.style.display='none';
+        gameTimeLeft=MAX_GAME_TIME; speedMultiplier=1.0; lastTime=performance.now();
         generateMap();
         for(let i=1;i<=NUM_AI_TEAMS+1;i++){
           let sx=Math.random()*WORLD_SIZE,sy=Math.random()*WORLD_SIZE;
@@ -409,13 +254,10 @@
           teams[i]={id:i,count:1,alive:true,targetX:sx,targetY:sy,cx:sx,cy:sy};
           persons.push(new Person(sx,sy,i));
         }
+        camera.x=WORLD_SIZE/2; camera.y=WORLD_SIZE/2;
         for(let i=0;i<NUM_NEUTRALS;i++) persons.push(new Person(Math.random()*WORLD_SIZE,Math.random()*WORLD_SIZE,0));
-        animationId = requestAnimationFrame(gameLoop);
+        animationId=requestAnimationFrame(gameLoop);
       }
-
-      // 绑定开始与重新开始按钮
-      btnStart.addEventListener('click', startGame);
-      btnRestart.addEventListener('click', startGame);
 
       function updateAI(){
         for(let i=2;i<=NUM_AI_TEAMS+1;i++){
@@ -435,66 +277,20 @@
         persons.forEach(p1=>{
           obstacles.forEach(o=>{ if(p1.x>o.x-5&&p1.x<o.x+o.w+5&&p1.y>o.y-5&&p1.y<o.y+o.h+5){ p1.x+=(p1.x>o.x+o.w/2?3:-3); p1.y+=(p1.y>o.y+o.h/2?3:-3); } });
           if(p1.team>0){
-            for(let k=powerups.length-1;k>=0;k--){ 
-              let pw=powerups[k]; 
-              if((p1.x-pw.x)**2+(p1.y-pw.y)**2<400){ 
-                powerups.splice(k,1); 
-                for(let b=0;b<3;b++) persons.push(new Person(p1.x+(Math.random()-0.5)*30,p1.y+(Math.random()-0.5)*30,p1.team));
-                if(p1.team === 1) soundMgr.play('collect');
-                powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:0}); 
-              } 
-            }
-            for(let k=superStars.length-1;k>=0;k--){ 
-              let ss=superStars[k]; 
-              if((p1.x-ss.x)**2+(p1.y-ss.y)**2<(ss.type.radius+8)**2){ 
-                let bonus=ss.type.bonus; 
-                superStars.splice(k,1); 
-                for(let b=0;b<bonus;b++) persons.push(new Person(ss.x+(Math.random()-0.5)*35,ss.y+(Math.random()-0.5)*35,p1.team));
-                if(p1.team === 1) soundMgr.play('levelup');
-                superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:0}); 
-              } 
-            }
+            for(let k=powerups.length-1;k>=0;k--){ let pw=powerups[k]; if((p1.x-pw.x)**2+(p1.y-pw.y)**2<400){ powerups.splice(k,1); for(let b=0;b<3;b++) persons.push(new Person(p1.x+(Math.random()-0.5)*30,p1.y+(Math.random()-0.5)*30,p1.team)); powerups.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,pulse:0}); } }
+            for(let k=superStars.length-1;k>=0;k--){ let ss=superStars[k]; if((p1.x-ss.x)**2+(p1.y-ss.y)**2<(ss.type.radius+8)**2){ let bonus=ss.type.bonus; superStars.splice(k,1); for(let b=0;b<bonus;b++) persons.push(new Person(ss.x+(Math.random()-0.5)*35,ss.y+(Math.random()-0.5)*35,p1.team)); superStars.push({x:Math.random()*WORLD_SIZE,y:Math.random()*WORLD_SIZE,type:getRandomSuperStarType(),pulse:0}); } }
           }
           let cx=Math.floor(p1.x/CS),cy=Math.floor(p1.y/CS);
-          for(let nx=-1;nx<=1;nx++) for(let ny=-1;ny<=1;ny++){ 
-            let idx=(cx+nx)+(cy+ny)*gC; 
-            if(!grid[idx])continue; 
-            grid[idx].forEach(p2=>{ 
-              if(p1===p2)return; 
-              let dx=p1.x-p2.x,dy=p1.y-p2.y,distSq=dx*dx+dy*dy; 
-              if(distSq<121){ 
-                if(p1.team!==p2.team){ 
-                  let c1=p1.team===0?0:(teams[p1.team]?teams[p1.team].count:0),
-                      c2=p2.team===0?0:(teams[p2.team]?teams[p2.team].count:0); 
-                  if(c1>c2&&p1.team!==0) { 
-                    const oldTeam2 = p2.team;
-                    p2.team = p1.team;
-                    if(p1.team === 1) {
-                      const now = performance.now();
-                      if (now - lastConvertSoundTime > 150) {
-                        if (oldTeam2 === 0) soundMgr.play('collect');
-                        else soundMgr.play('swoosh');
-                        lastConvertSoundTime = now;
-                      }
-                    }
-                  } 
-                } else { 
-                  let d=Math.sqrt(distSq)||0.1; 
-                  p1.x+=(dx/d)*0.5; 
-                  p1.y+=(dy/d)*0.5; 
-                } 
-              } 
-            }); 
-          }
+          for(let nx=-1;nx<=1;nx++) for(let ny=-1;ny<=1;ny++){ let idx=(cx+nx)+(cy+ny)*gC; if(!grid[idx])continue; grid[idx].forEach(p2=>{ if(p1===p2)return; let dx=p1.x-p2.x,dy=p1.y-p2.y,distSq=dx*dx+dy*dy; if(distSq<121){ if(p1.team!==p2.team){ let c1=p1.team===0?0:(teams[p1.team]?teams[p1.team].count:0),c2=p2.team===0?0:(teams[p2.team]?teams[p2.team].count:0); if(c1>c2&&p1.team!==0) p2.team=p1.team; } else { let d=Math.sqrt(distSq)||0.1; p1.x+=(dx/d)*0.5; p1.y+=(dy/d)*0.5; } } }); }
         });
-        const maxParticles = isMobile ? 30 : 80;
-        if (particles.length > maxParticles) particles.splice(0, particles.length - maxParticles);
+        if (particles.length > 80) particles.splice(0, particles.length - 80);
       }
 
       function drawWorld(){
         ctx.save();
         if(teams[1]&&teams[1].alive) { camera.x+=(teams[1].cx-camera.x)*0.12; camera.y+=(teams[1].cy-camera.y)*0.12; }
-        const viewScale = isMobile ? 0.52 : 1.0;
+        const isMobile = window.innerWidth < 600;
+        const viewScale = isMobile ? 0.38 : 1.0;
         ctx.translate(width/2 - camera.x * viewScale, height/2 - camera.y * viewScale);
         ctx.scale(viewScale, viewScale);
 
@@ -505,33 +301,20 @@
           ctx.strokeStyle='rgba(0,243,255,0.15)'; ctx.lineWidth=4; ctx.strokeRect(o.x-2, o.y-2, o.w+4, o.h+4);
         });
 
-        powerups.forEach(p=>{ 
-          p.pulse+=0.08; 
-          ctx.beginPath(); 
-          ctx.arc(p.x,p.y,9+Math.sin(p.pulse)*2.5,0,Math.PI*2); 
-          ctx.fillStyle='#fff'; 
-          if(!isMobile) { ctx.shadowBlur=10; ctx.shadowColor='#fff'; }
-          ctx.fill(); 
-          if(!isMobile) ctx.shadowBlur=0; 
-        });
+        powerups.forEach(p=>{ p.pulse+=0.08; ctx.beginPath(); ctx.arc(p.x,p.y,9+Math.sin(p.pulse)*2.5,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.shadowBlur=10; ctx.shadowColor='#fff'; ctx.fill(); ctx.shadowBlur=0; });
 
-        const nameFontSize = (isMobile ? 24 : 20) / viewScale;
-        const bonusFontSize = (isMobile ? 17 : 13) / viewScale;
+        const nameFontSize = (isMobile ? 22 : 20) / viewScale;
+        const bonusFontSize = (isMobile ? 15 : 13) / viewScale;
         superStars.forEach(s=>{
           s.pulse+=0.06;
           let r=s.type.radius+Math.sin(s.pulse)*4;
           ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2);
           let g=ctx.createRadialGradient(s.x,s.y,r*0.2,s.x,s.y,r);
           g.addColorStop(0,'#FFFDE7'); g.addColorStop(0.4,'#FFB300'); g.addColorStop(1,'#E65100');
-          ctx.fillStyle=g; 
-          if(!isMobile) { ctx.shadowBlur=s.type.glowIntensity; ctx.shadowColor=s.type.glowColor; }
-          ctx.fill(); 
-          ctx.shadowBlur=0;
+          ctx.fillStyle=g; ctx.shadowBlur=s.type.glowIntensity; ctx.shadowColor=s.type.glowColor; ctx.fill(); ctx.shadowBlur=0;
           ctx.font = `bold ${nameFontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
           ctx.textAlign = 'center';
-          ctx.fillStyle = '#ffffff'; 
-          ctx.shadowBlur = isMobile ? 4 : 10; 
-          ctx.shadowColor = '#000';
+          ctx.fillStyle = '#ffffff'; ctx.shadowBlur = 10; ctx.shadowColor = '#000';
           ctx.fillText(s.type.name, s.x, s.y - r - 6);
           ctx.font = `bold ${bonusFontSize}px "Orbitron",sans-serif`;
           ctx.fillText('+'+s.type.bonus, s.x, s.y - r - 6 - nameFontSize*0.8);
@@ -550,8 +333,7 @@
             ctx.font = `bold ${teamFontSize}px "PingFang SC","Microsoft YaHei",sans-serif`;
             ctx.textAlign = 'center';
             ctx.fillStyle = TEAM_COLORS[i];
-            ctx.shadowBlur = isMobile ? 4 : 12; 
-            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 12; ctx.shadowColor = '#000';
             ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
             const txt = t.count.toString();
             ctx.strokeText(txt, t.cx, t.cy - 32);
@@ -578,7 +360,7 @@
         speedMultiplier=1.0+((MAX_GAME_TIME-gameTimeLeft)/MAX_GAME_TIME)*1.6;
         document.getElementById('timer-text').innerText=`${Math.floor(gameTimeLeft/60).toString().padStart(2,'0')}:${Math.floor(gameTimeLeft%60).toString().padStart(2,'0')}`;
         document.getElementById('speed-indicator').innerText=`Kelajuan Rangkaian ${speedMultiplier.toFixed(2)}x`;
-        let html=''; const maxShow=isMobile?3:5;
+        let html=''; const maxShow=window.innerWidth<600?3:5;
         for(let i=0;i<Math.min(sorted.length,maxShow);i++){
           let t=sorted[i], isMe=t.id===1;
           html+=`<div class="board-row ${isMe?'my-score-row':''}"><span class="board-color-dot" style="background:${TEAM_COLORS[t.id]};color:${TEAM_COLORS[t.id]};"></span><span style="flex:1;color:#ccc;">${TEAM_NAMES[t.id]}</span><span>${t.count}</span></div>`;
@@ -588,14 +370,15 @@
 
       function triggerGameOver(title, sorted) {
         gameState = 'GAMEOVER';
-        if (sorted.length === 1 && sorted[0].id === 1) {
-          soundMgr.play('success');
+        if (title.includes('Ditenggelami') || title.includes('Gangguan')) {
+          resultTitle.innerText = 'Sambungan Terputus';
+          resultMessage.innerText = 'Jangan mengalah kepada pembuli. Ingatlah untuk mendapatkan bantuan daripada ibu bapa, guru, pengetua disiplin, dan pengetua sekolah.';
+        } else if (title.includes('Dibersihkan')) {
           resultTitle.innerText = 'Persekitaran Rangkaian Telah Dibersihkan!';
           resultMessage.innerText = 'Tahniah! Anda berjaya menentang pembuli. Teruskan berjuang, jangan pernah berputus asa!';
         } else {
-          soundMgr.play('failure');
-          resultTitle.innerText = 'Sambungan Terputus';
-          resultMessage.innerText = 'Jangan mengalah kepada pembuli. Ingatlah untuk mendapatkan bantuan daripada ibu bapa, guru, pengetua disiplin, dan pengetua sekolah.';
+          resultTitle.innerText = title;
+          resultMessage.innerText = 'Permainan Tamat';
         }
         gameOverScreen.style.display = 'flex';
       }
@@ -614,15 +397,8 @@
         animationId=requestAnimationFrame(gameLoop);
       }
 
-      // 初始静态背景
-      ctx.fillStyle='#050510';
-      ctx.fillRect(0,0,width,height);
-      ctx.fillStyle='#00f3ff';
-      ctx.font = 'bold 24px "Orbitron"';
-      ctx.textAlign = 'center';
-      ctx.fillText('Ruang Siber', width/2, height/2-40);
-      ctx.font = '16px "PingFang SC","Microsoft YaHei"';
-      ctx.fillText('Tekan butang untuk mula', width/2, height/2+10);
+      startGame();
+      window.startGame = startGame;
     })();
   </script>
 </body>
