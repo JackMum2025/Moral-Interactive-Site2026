@@ -1,467 +1,1078 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Moral Fantastic</title>
-  <!-- 预加载主 GIF，提升首屏体验 -->
-  <link rel="preload" as="image" href="https://jackmum2025.github.io/forMM/title.gif">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Nunito', 'Segoe UI', 'Quicksand', system-ui, sans-serif;
-      background: #ffffff;
-      color: #2d4e1e;
-      line-height: 1.5;
-    }
-    .sticky-header {
-      position: sticky; top: 0; z-index: 1000;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(10px);
-      border-bottom: 2px solid #c8dcc0;
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .logo-area { display: flex; align-items: center; gap: 12px; }
-    .logo-icon { font-size: 32px; animation: bounce 2s ease-in-out infinite; }
-    @keyframes bounce { 0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);} }
-    .logo-text { font-size: 1.6rem; font-weight: 800; color: #2d4e1e; letter-spacing: -0.5px; }
-    .tagline {
-      background: #e8f0e3; border-radius: 40px; padding: 6px 16px;
-      font-size: 0.8rem; font-weight: 600; color: #4a6e3a;
-    }
-    .container { max-width: 100%; margin: 0 auto; }
-    .full-image { width: 100%; display: block; }
-    @media (min-width: 768px) {
-      .full-image { max-width: 50%; margin: 20px auto; border-radius: 16px; overflow: hidden; }
-    }
-    @media (max-width: 767px) { .full-image { max-width: 100%; margin: 0; } }
-    .full-image img { width: 100%; height: auto; display: block; object-fit: cover; }
-    /* 懒加载占位背景 */
-    .lazy-placeholder {
-      background: linear-gradient(135deg, #e8f0e3, #d4e6ca);
-      min-height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 24px;
-      width: 100%;
-    }
-    .buttons-section {
-      padding: 48px 20px; text-align: center; background: #ffffff;
-      opacity: 0; transform: translateY(20px);
-      transition: opacity 0.6s ease-out, transform 0.5s ease-out;
-    }
-    .buttons-section.visible { opacity: 1; transform: translateY(0); }
-    .btn-group {
-      display: flex; flex-wrap: wrap; justify-content: center;
-      gap: 20px; max-width: 500px; margin: 0 auto;
-    }
-    .btn {
-      padding: 14px 28px; border: none; border-radius: 60px;
-      font-size: 1.1rem; font-weight: 700; cursor: pointer;
-      transition: all 0.25s ease; text-decoration: none;
-      display: inline-block; text-align: center; font-family: inherit;
-      flex: 1; min-width: 200px;
-    }
-    .btn-trial { background: #7fa86a; color: white; box-shadow: 0 6px 14px rgba(127, 168, 106, 0.35); }
-    .btn-trial:hover { background: #5b8c4e; transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 24px rgba(91, 140, 78, 0.4); }
-    .btn-master { background: #a8c99b; color: #2d4e1e; box-shadow: 0 6px 14px rgba(127, 168, 106, 0.2); }
-    .btn-master:hover { background: #8aaf7a; transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 24px rgba(127, 168, 106, 0.3); }
-    .btn-small-desc { display: block; font-size: 0.7rem; font-weight: normal; opacity: 0.85; margin-top: 4px; }
-
-    .extra-features { background: #f8fbf6; padding: 48px 20px; text-align: center; }
-    .features-grid { max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
-    .feature-card {
-      background: white; border-radius: 32px; padding: 28px 24px; flex: 1;
-      min-width: 250px; border: 1px solid #d4e6ca; transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-    }
-    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(127, 168, 106, 0.15); border-color: #7fa86a; }
-    .feature-icon { font-size: 3rem; margin-bottom: 16px; }
-    .feature-card h3 { color: #2d4e1e; font-size: 1.3rem; margin-bottom: 12px; }
-    .feature-card p { color: #6b7c63; font-size: 0.9rem; line-height: 1.5; }
-
-    .footer-nav { background: #eef5ea; padding: 40px 20px 20px; margin-top: 0; }
-    .footer-grid { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
-    .footer-section { flex: 1; min-width: 180px; }
-    .footer-section h4 { color: #2d4e1e; font-size: 1.1rem; margin-bottom: 16px; font-weight: 700; position: relative; padding-bottom: 8px; }
-    .footer-section h4::after { content: ''; position: absolute; bottom: 0; left: 0; width: 40px; height: 3px; background: #7fa86a; border-radius: 3px; }
-    .footer-section a { display: block; color: #5a6e53; text-decoration: none; margin-bottom: 10px; font-size: 0.85rem; transition: 0.2s; }
-    .footer-section a:hover { color: #7fa86a; transform: translateX(5px); }
-    .contact-info { color: #5a6e53; font-size: 0.85rem; margin-bottom: 8px; }
-    .back-to-top { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #c8dcc0; }
-    .back-to-top button { background: #7fa86a; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .back-to-top button:hover { background: #5b8c4e; transform: translateY(-2px); }
-    .copyright { text-align: center; padding: 20px; color: #9bb88b; font-size: 0.75rem; }
-    .grade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .grade-grid a { font-size: 0.8rem; padding: 4px 0; }
-    .grade-sub {
-      font-size: 0.65rem;
-      color: #8aa67d;
-      font-weight: normal;
-      display: block;
-      margin-top: 2px;
-    }
-
-    /* 弹窗样式 */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 2000; animation: fadeIn 0.2s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .master-modal {
-      background: white; border-radius: 48px; max-width: 380px; width: 90%;
-      padding: 2rem 1.5rem; text-align: center;
-      box-shadow: 0 28px 48px rgba(0,0,0,0.2);
-      animation: bounceIn 0.4s cubic-bezier(0.34,1.2,0.64,1);
-      border: 1px solid #c8dcc0;
-    }
-    @keyframes bounceIn {
-      0% { opacity: 0; transform: scale(0.8); }
-      80% { transform: scale(1.02); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-    .master-modal h3 { color: #2d4e1e; font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .master-modal p { color: #6b7c63; font-size: 0.85rem; margin-bottom: 1rem; }
-    .master-modal input { width: 100%; padding: 14px 16px; margin: 0.5rem 0 1rem; border: 2px solid #d9e6d3; border-radius: 60px; font-size: 1rem; text-align: center; letter-spacing: 2px; font-family: monospace; transition: 0.2s; }
-    .master-modal input:focus { outline: none; border-color: #7fa86a; box-shadow: 0 0 0 3px rgba(127,168,106,0.2); }
-    .modal-buttons { display: flex; gap: 12px; margin-top: 0.5rem; }
-    .modal-btn { flex: 1; padding: 12px; border: none; border-radius: 60px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-    .modal-login { background: #7fa86a; color: white; }
-    .modal-login:hover { background: #5b8c4e; transform: translateY(-2px); }
-    .modal-cancel { background: #f0f0f0; color: #666; }
-    .modal-cancel:hover { background: #e0e0e0; transform: translateY(-2px); }
-    .language-modal {
-      background: white; border-radius: 48px; max-width: 450px; width: 90%;
-      padding: 2rem 1.5rem; text-align: center; box-shadow: 0 28px 48px rgba(0,0,0,0.2);
-      animation: bounceIn 0.4s cubic-bezier(0.34,1.2,0.64,1);
-      border: 1px solid #c8dcc0;
-    }
-    .language-modal h3 { color: #2d4e1e; font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .lang-link { display: block; padding: 14px; border-radius: 60px; margin-bottom: 12px; font-weight: 700; text-decoration: none; transition: 0.2s; font-size: 1.1rem; }
-    .lang-link.cn { background: #7fa86a; color: white; }
-    .lang-link.cn:hover { background: #5b8c4e; transform: translateY(-2px); }
-    .lang-link.ms { background: #a8c99b; color: #2d4e1e; }
-    .lang-link.ms:hover { background: #8aaf7a; transform: translateY(-2px); }
-
-    #rotateOverlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.88); z-index: 99999;
-      justify-content: center; align-items: center; flex-direction: column;
-      color: white; text-align: center;
-    }
-    #rotateOverlay.active { display: flex; }
-    #rotateOverlay .rotate-icon { font-size: 5rem; animation: rotatePhone 1.5s ease-in-out infinite; }
-    @keyframes rotatePhone { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(90deg);} }
-    @media (max-width: 600px) {
-      .sticky-header { padding: 10px 16px; }
-      .logo-text { font-size: 1.3rem; }
-      .logo-icon { font-size: 28px; }
-      .btn { padding: 12px 20px; font-size: 1rem; min-width: 160px; }
-      .buttons-section { padding: 32px 16px; }
-      .features-grid { flex-direction: column; }
-      .footer-grid { flex-direction: column; gap: 24px; }
-      .grade-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-
-<div id="rotateOverlay"><div class="rotate-icon">📱</div><p>Please rotate your phone to portrait mode<br>请将手机转回竖屏模式</p></div>
-
-<div class="sticky-header">
-  <div class="logo-area"><div class="logo-icon">🍀</div><div class="logo-text">Moral Fantastic</div></div>
-  <div class="tagline">Learn Moral · Fun Way</div>
-</div>
-
-<div class="container">
-  <!-- 图片 1 - GIF 动画（预加载已优化） -->
-  <div class="full-image" id="image1">
-    <img id="heroGif" src="https://jackmum2025.github.io/forMM/title.gif" alt="Moral Fantastic Banner" style="width:100%; height:auto; display:block;">
-  </div>
-
-  <!-- 按钮区域（延迟淡入） -->
-  <div class="buttons-section" id="buttonsSection">
-    <div class="btn-group">
-      <a href="#" id="freeTrialBtn" class="btn btn-trial">
-        🎓 FREE TRIAL CLASS
-        <span class="btn-small-desc">Start Learning Now</span>
-      </a>
-      <button id="masterKeyBtn" class="btn btn-master">
-        🔐 MASTER KEY LOGIN
-        <span class="btn-small-desc">Special Access</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 图片 2~6：使用懒加载 + 轻量占位 -->
-  <div class="full-image" id="image2"><div class="lazy-placeholder" data-src="https://jackmum2025.github.io/forMM/picture1.gif" data-alt="Moral Fantastic Illustration 2"></div></div>
-  <div class="full-image" id="image3"><div class="lazy-placeholder" data-src="https://jackmum2025.github.io/forMM/picture2.gif" data-alt="Moral Fantastic Illustration 3"></div></div>
-  <div class="full-image" id="image4"><div class="lazy-placeholder" data-src="https://jackmum2025.github.io/forMM/picture3.gif" data-alt="Moral Fantastic Illustration 4"></div></div>
-  <div class="full-image" id="image5"><div class="lazy-placeholder" data-src="https://jackmum2025.github.io/forMM/picture4.gif" data-alt="Moral Fantastic Illustration 5"></div></div>
-  <div class="full-image" id="image6"><div class="lazy-placeholder" data-src="https://jackmum2025.github.io/forMM/picture5.gif" data-alt="Moral Fantastic Illustration 6"></div></div>
-
-  <div class="extra-features">
-    <div class="features-grid">
-      <div class="feature-card"><div class="feature-icon">🌙</div><h3>Anonymous Question Wall</h3><p>Share your concerns, struggles, or questions anonymously. Teachers will see and respond to you in a safe, supportive environment.</p></div>
-      <div class="feature-card"><div class="feature-icon">🌟</div><h3>Encouragement Quote Wall</h3><p>Share inspiring quotes or words of encouragement with your name. Spread positivity and motivate fellow learners.</p></div>
-    </div>
-  </div>
-
-  <div class="footer-nav">
-    <div class="footer-grid">
-      <div class="footer-section"><h4>Contact Us</h4><div class="contact-info">📧 nexusgt.my@gmail.com</div><div class="contact-info">📞 +6012-345 6789</div><div class="contact-info">📍 IPG Kampus Ilmu</div></div>
-      <div class="footer-section"><h4>Lower Primary</h4><div class="grade-grid"><a href="javascript:void(0)" onclick="showGradeModal('一年级')">一年级<br><span class="grade-sub">Tahun 1</span></a><a href="javascript:void(0)" onclick="showGradeModal('二年级')">二年级<br><span class="grade-sub">Tahun 2</span></a><a href="javascript:void(0)" onclick="showGradeModal('三年级')">三年级<br><span class="grade-sub">Tahun 3</span></a></div></div>
-      <div class="footer-section"><h4>Upper Primary</h4><div class="grade-grid"><a href="javascript:void(0)" onclick="showGradeModal('四年级')">四年级<br><span class="grade-sub">Tahun 4</span></a><a href="javascript:void(0)" onclick="showGradeModal('五年级')">五年级<br><span class="grade-sub">Tahun 5</span></a><a href="javascript:void(0)" onclick="showGradeModal('六年级')">六年级<br><span class="grade-sub">Tahun 6</span></a></div></div>
-      <div class="footer-section"><h4>Quick Links</h4><a href="#" onclick="scrollToTop()">⬆ Back to Top</a><a href="#" id="freeTrialFooterBtn">🎓 FREE TRIAL CLASS</a><a href="#" id="masterKeyFooterBtn">🔐 MASTER KEY LOGIN</a></div>
-    </div>
-    <div class="back-to-top"><button onclick="scrollToTop()">⬆ Back to Top</button></div>
-    <div class="copyright">🌱 Nurturing Young Hearts · Moral Education Made Fun © 2026 Moral Fantastic</div>
-  </div>
-</div>
-
-<script>
-  // ==================== GIF 加载完成后淡入按钮 ====================
-  (function() {
-    const gif = document.getElementById('heroGif');
-    const buttonsSection = document.getElementById('buttonsSection');
-    if (gif.complete && gif.naturalHeight !== 0) {
-      setTimeout(() => buttonsSection.classList.add('visible'), 200);
-    } else {
-      gif.addEventListener('load', () => setTimeout(() => buttonsSection.classList.add('visible'), 200));
-      setTimeout(() => { if (!buttonsSection.classList.contains('visible')) buttonsSection.classList.add('visible'); }, 2500);
-    }
-  })();
-
-  // ==================== 懒加载图片 2-6（使用 Intersection Observer）====================
-  function initLazyLoad() {
-    const placeholders = document.querySelectorAll('.lazy-placeholder');
-    if (!placeholders.length) return;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const div = entry.target;
-          const src = div.dataset.src;
-          const alt = div.dataset.alt || '';
-          if (src && div.querySelector('img') === null) {
-            const img = document.createElement('img');
-            img.src = src;
-            img.alt = alt;
-            img.style.width = '100%';
-            img.style.height = 'auto';
-            img.style.display = 'block';
-            img.style.borderRadius = 'inherit';
-            div.innerHTML = '';
-            div.appendChild(img);
-          }
-          observer.unobserve(div);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 小老板的大决战！(Cabaran Usahawan Muda!)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
-      });
-    }, { rootMargin: '200px' });
-    placeholders.forEach(p => observer.observe(p));
-  }
+        .title-font {
+            font-family: 'Fredoka One', 'Inter', sans-serif;
+        }
+        .gold-glow {
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-4 md:p-8 text-slate-800">
 
-  // ==================== 双语课程数据 ====================
-  const courseData = {
-    '一年级': [
-      { zh: '我的宗教信仰', ms: 'Pegangan Hidup Saya' },
-      { zh: '助人小天使', ms: 'Baik Hati Amalan Saya' },
-      { zh: '我已经长大', ms: 'Tanggungjawab Suresh' },
-      { zh: '欢喜说谢谢', ms: 'Terima Kasih, Kawan-kawan' },
-      { zh: '人人夸我有礼貌', ms: 'Budi Bahasa Amalan Saya' },
-      { zh: '我喜欢我自己', ms: 'Hormati Diri Disanjung Tinggi' },
-      { zh: '爱惜自己', ms: 'Sayangi Diri Sendiri' },
-      { zh: '处处讲公正', ms: 'Adil Membawa Sejahtera' },
-      { zh: '我是勇敢的小孩', ms: 'Berani Menghadapi Cabaran' },
-      { zh: '花瓶是我打破的', ms: 'Kok Heng Yang Jujur' },
-      { zh: '天天要勤劳', ms: 'Blog Kerajinan' },
-      { zh: '分工合作真欢喜', ms: 'Kerjasama Membawa Berkat' },
-      { zh: '凡事都要刚刚好', ms: 'Pesanan Nenek' },
-      { zh: '我懂得礼让', ms: 'Bertolak Ansur Amalan Saya' }
-    ],
-    '二年级': [
-      { zh: '美好的时光', ms: 'Ajaran Agama Keluarga Saya' },
-      { zh: '贴心小举动', ms: 'Baik Hati Keluarga Bahagia' },
-      { zh: '长大了，学做事', ms: 'Tanggungjawab Saya Dalam Keluarga' },
-      { zh: '心里暖暖的', ms: 'Terima Kasih, Keluargaku' },
-      { zh: '爸爸妈妈都夸我', ms: 'Hemah Tinggi Dalam Keluarga' },
-      { zh: '看重家人的感受', ms: 'Hormati Keluarga Hidup Gembira' },
-      { zh: '可爱的家庭', ms: 'Keluarga Bahagia' },
-      { zh: '公平又正直', ms: 'Keluarga yang Adil Hidup Sejahtera' },
-      { zh: '学做小勇士', ms: 'Berani Demi Nama Baik Keluarga' },
-      { zh: '踏实的心', ms: 'Jujur Selalu' },
-      { zh: '勤劳的收获', ms: 'Sikap Rajin Amalan Keluarga' },
-      { zh: '合作乐无穷', ms: 'Kerjasama Meringankan Beban Keluarga' },
-      { zh: '跟我这样生活吧', ms: 'Bersederhana Amalan Keluarga' },
-      { zh: '退一步想想', ms: 'Toleransi Sesama Ahli Keluarga' }
-    ],
-    '三年级': [
-      { zh: '欢喜庆佳节', ms: 'Perayaan Warga Sekolah' },
-      { zh: '助人为乐', ms: 'Baik Hati Nilai Mulia' },
-      { zh: '责任小尖兵', ms: 'Murid Bertanggungjawab' },
-      { zh: '感恩饼干', ms: 'Berterima Kasih Amalan Mulia' },
-      { zh: '礼貌花朵校园开', ms: 'Beradab Sopan Pekerti Terpuji' },
-      { zh: '互相尊重暖人心', ms: 'Hormati Semua Amalan Kami' },
-      { zh: '关爱满校园', ms: 'Sekolah Kebanggaanku' },
-      { zh: '大公无私', ms: 'Sikap Adil Sekolah Sejahtera' },
-      { zh: '我能够做到！', ms: 'Hadapi Cabaran Demi Sekolah' },
-      { zh: '诚实是宝', ms: 'Jujur Amalan Warga Sekolah' },
-      { zh: '最甜美的果实', ms: 'Rajin Tangga Kejayaan' },
-      { zh: '团结力量大', ms: 'Kerjasama Budaya Kami' },
-      { zh: '刚刚好，真美好', ms: 'Amalan Hidup di Sekolah' },
-      { zh: '一团和气', ms: 'Toleransi Sesama Warga Sekolah' }
-    ],
-    '四年级': [
-      { zh: '和谐乐融融', ms: 'Hayati Amalan Agama dan Kepercayaan Jiran' },
-      { zh: '欢喜来助人', ms: 'Sikap Prihatin Amalan Mulia' },
-      { zh: '尽责不自私', ms: 'Tanggungjawab Hidup Berjiran' },
-      { zh: '感恩有您', ms: 'Hargai Jiran Hubungan Erat' },
-      { zh: '谦让你的赞美', ms: 'Sopan Santun dengan Jiran' },
-      { zh: '一生受用的礼物', ms: 'Semaikan Amalan Menghormati Jiran' },
-      { zh: '好邻居，无价宝', ms: 'Sayangi Jiran' },
-      { zh: '花卉才艺赛', ms: 'Bersikap Adil Sesama Jiran' },
-      { zh: '有理无惧', ms: 'Bertindak Berani demi Kesejahteraan Kejiranan' },
-      { zh: '线条上的密码', ms: 'Kejujuran Amalan Hidup Bersama-sama Jiran' },
-      { zh: '晚霞里最美的笑容', ms: 'Usaha Berterusan Membawa Kesejahteraan' },
-      { zh: '幸福的传电波', ms: 'Muafakat Membawa Berkat' },
-      { zh: '讨人喜欢的白雪', ms: 'Kesederhanaan Menjalin Kemesraan Sesama Jiran' },
-      { zh: '礼让乐开怀', ms: 'Bertolak Ansur Amalan Terpuji' }
-    ],
-    '五年级': [
-      { zh: '同一条路上', ms: 'Keunikan Masyarakatku' },
-      { zh: '种希望', ms: 'Penyeri Jiwa Masyarakat' },
-      { zh: '破窗效应', ms: 'Kehijauan Alam Tanggungjawab Bersama' },
-      { zh: '说不出口的"谢谢"', ms: 'Hargai Jasa dan Sumbangan' },
-      { zh: '懂礼貌，守规矩', ms: 'Pupuk Amalan Berbudi Pekerti Mulia' },
-      { zh: '尊重乐开怀', ms: 'Budaya Masyarakat Patut Dihormati' },
-      { zh: '让青山更翠绿', ms: 'Sajak Kasih Sayang' },
-      { zh: '公正在人心', ms: 'Suri Teladan Dicontohi Masyarakat' },
-      { zh: '见义勇为', ms: 'Berani Pertahankan Cabaran' },
-      { zh: '诚信无价', ms: 'Beradab dengan Jujurnya' },
-      { zh: '勤奋坚毅', ms: 'Berkat Kerajinan' },
-      { zh: '守望相助', ms: 'Amalan Kerjasama, Kebaikan Bersama' },
-      { zh: '中庸之星', ms: 'Bersederhana Menjamin Kebahagiaan' },
-      { zh: '礼让之城', ms: 'Bertoleransi Membawa Kesejahteraan' }
-    ],
-    '六年级': [
-      { zh: '和谐心欢畅', ms: 'Kepercayaan Kepada Tuhan Menjamin Kesejahteraan Negara' },
-      { zh: '我为你送暖', ms: 'Bantuan Dan Sokongan Moral Kepada Negara' },
-      { zh: '为了您，马来西亚', ms: 'Tanggungjawab Sebagai Warganegara' },
-      { zh: '感恩之旅', ms: 'Hargai Keunikan Negara' },
-      { zh: '权利代言人', ms: 'Amalan Hemah Tinggi Meningkatkan Imej Negara' },
-      { zh: '我的保护伞', ms: 'Hormati Identiti Negara' },
-      { zh: '月亮一样圆', ms: 'Cinta Akan Negara' },
-      { zh: '以理服人', ms: 'Amalan Adil Demi Kesejahteraan Negara' },
-      { zh: '奔跑吧！小勇士', ms: 'Berani Mempertahankan Maruah Negara' },
-      { zh: '最美丽的外套', ms: 'Kejujuran Demi Kesejahteraan Negara' },
-      { zh: '汗水年年', ms: 'Usaha Berterusan' },
-      { zh: '小手牵大手', ms: 'Kerjasama Seimbang' },
-      { zh: '不偏不倚', ms: 'Keadilan' },
-      { zh: '礼让不委屈', ms: 'Toleransi' }
-    ]
-  };
+    <script>
+        // Web Audio API Sound Synthesizer for game effects
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+            }
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+            playCorrect() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.55);
+            }
+            playWrong() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now); // A3
+                osc.frequency.linearRampToValueAtTime(110, now + 0.3); // Downward slide
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            }
+            playCoin() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, now); // B5
+                osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            }
+            playLevelUp() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc1 = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc1.type = 'sine';
+                osc2.type = 'triangle';
+                
+                osc1.frequency.setValueAtTime(523.25, now); // C5
+                osc1.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc1.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                osc1.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                
+                osc2.frequency.setValueAtTime(261.63, now); // C4
+                osc2.frequency.setValueAtTime(329.63, now + 0.1); // E4
+                osc2.frequency.setValueAtTime(392.00, now + 0.2); // G4
+                osc2.frequency.setValueAtTime(523.25, now + 0.3); // C5
+                
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+                
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(this.ctx.destination);
+                
+                osc1.start(now);
+                osc2.start(now);
+                
+                osc1.stop(now + 0.8);
+                osc2.stop(now + 0.8);
+            }
+        }
+        const sfx = new SoundFX();
+    </script>
 
-  // ==================== 显示年级课程弹窗（双语） ====================
-  function showGradeModal(grade) {
-    const courses = courseData[grade] || [];
-    let coursesHtml = '<div style="max-height:350px; overflow-y:auto;">';
-    courses.forEach((c, i) => {
-      coursesHtml += `
-        <div style="padding:12px; border-bottom:1px solid #e2ecd9;">
-          <div style="font-weight:700; margin-bottom:4px;">📚 第${i+1}课 · ${c.zh}</div>
-          <div style="font-size:0.75rem; color:#7fa86a;">${c.ms}</div>
+    <div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col justify-between min-h-[85vh]">
+        
+        <!-- Header / Stats Bar -->
+        <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 md:p-6 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-400 text-slate-900 w-12 h-12 rounded-full flex items-center justify-center text-2xl font-bold border-2 border-white animate-bounce">
+                    🪙
+                </div>
+                <div>
+                    <h1 class="title-font text-lg md:text-xl font-bold tracking-wide">Cabaran Usahawan Muda!</h1>
+                    <p class="text-xs text-blue-100 font-semibold">五年级线上写作复习游戏</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Coin Counter -->
+                <div class="bg-indigo-800 px-4 py-2 rounded-2xl flex items-center gap-2 border border-indigo-500">
+                    <span class="text-amber-400 font-bold">🪙 第一桶金:</span>
+                    <span id="global-coins" class="font-extrabold text-xl text-yellow-300">0</span>
+                </div>
+                <!-- API Setting Button -->
+                <button onclick="toggleApiModal()" class="bg-indigo-600 hover:bg-indigo-500 p-2.5 rounded-xl transition duration-150 flex items-center justify-center" title="教师AI批改密钥设置">
+                    <i class="fa-solid fa-key"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="flex-grow p-4 md:p-8 flex flex-col justify-center items-center">
+            
+            <!-- STAGE 0: Intro Screen -->
+            <section id="screen-intro" class="w-full text-center py-6">
+                <div class="max-w-2xl mx-auto">
+                    <span class="bg-blue-100 text-blue-800 text-sm font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">Tahun 5 Bahasa Melayu</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 mt-4 mb-4 title-font">小老板的大决战！</h2>
+                    
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 mb-8 text-left leading-relaxed">
+                        <h3 class="text-lg font-bold text-amber-800 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-bullhorn"></i> 游戏背景设定：
+                        </h3>
+                        <p class="text-slate-700 text-base">
+                            “同学们，今天我们都是 <strong>‘小老板’ (Usahawan Muda)</strong>！我们要用今天学到的马来文超能力，来解决开店遇到的各种挑战，赢取我们的第一桶金！”
+                        </p>
+                        <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-semibold text-slate-600">
+                            <div class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 flex items-center gap-2">
+                                <span class="text-green-500 text-lg">🍰</span> 1. 摆摊卖糕点动作
+                            </div>
+                            <div class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 flex items-center gap-2">
+                                <span class="text-blue-500 text-lg">📅</span> 2. 日记格式的动作
+                            </div>
+                            <div class="bg-white p-2 rounded-lg shadow-sm border border-slate-100 flex items-center gap-2">
+                                <span class="text-purple-500 text-lg">💡</span> 3. 少年企业家好处
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="startGame()" class="bg-gradient-to-r from-emerald-500 to-green-600 text-white font-extrabold text-xl py-4 px-10 rounded-2xl shadow-lg hover:shadow-xl hover:from-emerald-400 hover:to-green-500 transform hover:-translate-y-1 transition duration-150 gold-glow">
+                        开始大决战！ <i class="fa-solid fa-play ml-2 animate-ping"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- STAGE 1: Word Puzzles (Siapa Cepat, Dia Dapat!) -->
+            <section id="screen-lvl1" class="hidden w-full max-w-2xl">
+                <div class="text-center mb-6">
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">🎲 第一关 / Tahap 1</span>
+                    <h3 class="text-2xl font-black text-slate-800 mt-2">词汇拼图 (Siapa Cepat, Dia Dapat!)</h3>
+                    <p class="text-slate-500 text-sm mt-1">请在以下框中拼出正确答案，每答对一题可获得 <strong>20 🪙</strong>！</p>
+                </div>
+
+                <!-- Puzzle 1 -->
+                <div id="puz-1" class="bg-white rounded-2xl border-2 border-slate-100 shadow-sm p-5 mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-slate-400">题目 1 / Soalan 1</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-md">⭐ 提示：摆放糕点</span>
+                    </div>
+                    <p class="text-lg font-bold text-slate-700 mb-4">m _ _ _ _ _ _ n &nbsp;&nbsp; k _ _ h &nbsp;&nbsp; m _ _ h</p>
+                    <div class="flex flex-col gap-3">
+                        <input type="text" id="ans-puz1" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-3 text-lg font-semibold tracking-wide text-center uppercase focus:border-indigo-500 focus:bg-white outline-none transition" placeholder="在此输入完整答案...">
+                        <button onclick="checkPuzzle(1, 'menyusun kuih-muih', 'ans-puz1')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl transition text-sm">提交答案</button>
+                    </div>
+                    <div id="puz1-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                </div>
+
+                <!-- Puzzle 2 -->
+                <div id="puz-2" class="hidden bg-white rounded-2xl border-2 border-slate-100 shadow-sm p-5 mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-slate-400">题目 2 / Soalan 2</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-md">⭐ 提示：把这两个字拼成一个形容很勤劳的成语 (Simpulan Bahasa)</span>
+                    </div>
+                    <p class="text-lg font-bold text-slate-700 mb-4">单词：<span class="bg-blue-50 text-blue-800 px-3 py-1.5 rounded-lg border border-blue-100">tulang</span> 与 <span class="bg-blue-50 text-blue-800 px-3 py-1.5 rounded-lg border border-blue-100">ringan</span></p>
+                    
+                    <!-- Card Click Arrangement Area -->
+                    <div class="flex justify-center gap-3 my-4">
+                        <button onclick="addWordToUnscramble('ringan')" id="btn-word-ringan" class="bg-indigo-100 hover:bg-indigo-200 border-2 border-indigo-300 text-indigo-800 text-lg font-extrabold px-6 py-3 rounded-xl transition">ringan</button>
+                        <button onclick="addWordToUnscramble('tulang')" id="btn-word-tulang" class="bg-indigo-100 hover:bg-indigo-200 border-2 border-indigo-300 text-indigo-800 text-lg font-extrabold px-6 py-3 rounded-xl transition">tulang</button>
+                    </div>
+                    
+                    <div class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-4 text-center min-h-[3.5rem] flex items-center justify-center mb-4">
+                        <p id="unscramble-current" class="text-xl font-extrabold tracking-wide text-slate-800 uppercase"></p>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="clearUnscramble()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl transition text-xs">清除重新选择</button>
+                        <button onclick="checkUnscramble()" class="flex-grow bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl transition text-sm">检查结果</button>
+                    </div>
+                    <div id="puz2-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                </div>
+
+                <!-- Puzzle 3 -->
+                <div id="puz-3" class="hidden bg-white rounded-2xl border-2 border-slate-100 shadow-sm p-5 mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-slate-400">题目 3 / Soalan 3</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-md">⭐ 提示：企业家的技能</span>
+                    </div>
+                    <p class="text-lg font-bold text-slate-700 mb-4">k _ _ _ _ _ _ a n &nbsp;&nbsp; k _ _ _ _ _ _ _ w _ _ _ n</p>
+                    <div class="flex flex-col gap-3">
+                        <input type="text" id="ans-puz3" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-3 text-lg font-semibold tracking-wide text-center uppercase focus:border-indigo-500 focus:bg-white outline-none transition" placeholder="在此输入完整答案...">
+                        <button onclick="checkPuzzle(3, ['kemahiran keusahawanan', 'kemahiran keusahawan'], 'ans-puz3')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl transition text-sm">提交答案</button>
+                    </div>
+                    <div id="puz3-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button id="btn-next-lvl1" class="hidden bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold py-3 px-8 rounded-xl transition shadow hover:shadow-md" onclick="goToLvl2()">
+                        进入第二关 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- STAGE 2: Diary Clock & Actions (Detik Catatan) -->
+            <section id="screen-lvl2" class="hidden w-full max-w-2xl">
+                <div class="text-center mb-6">
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">🎲 第二关 / Tahap 2</span>
+                    <h3 class="text-2xl font-black text-slate-800 mt-2">日记时钟答一答 (Detik Catatan)</h3>
+                    <p class="text-slate-500 text-sm mt-1">模拟日记动作，协助小老板度过成功的一天！</p>
+                </div>
+
+                <!-- Clock Section 1: Morning setup -->
+                <div id="lvl2-part1" class="bg-white rounded-2xl border-2 border-slate-100 shadow-sm p-6 mb-6">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <!-- Simulated clock graphic -->
+                        <div class="bg-indigo-550 border-4 border-indigo-200 rounded-full w-28 h-28 flex flex-col justify-center items-center shadow-inner shrink-0">
+                            <span class="text-2xl">⏰</span>
+                            <span class="text-sm font-black text-indigo-800 mt-1 bg-white px-2 py-0.5 rounded-full">06:30 AM</span>
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">早上 6:30 pagi：</h4>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                                “我帮妈妈把各种糕点（mengemas kuih-muih）整齐地排列准备摆摊。请点击选择下方的 <strong>3 种糕点</strong> 放入我们的盒子中！”
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Cake selection -->
+                    <div class="bg-slate-50 rounded-xl p-4 mb-4">
+                        <span class="text-xs font-bold text-slate-400 block mb-3">我们的糕点柜台 (Pilihan Kuih-muih):</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <button id="cake-donut" onclick="selectCake('donut')" class="bg-white hover:bg-slate-100 border border-slate-200 rounded-lg p-2.5 transition flex flex-col items-center gap-1">
+                                <span class="text-2xl">🍩</span>
+                                <span class="text-xs font-semibold text-slate-700">donut</span>
+                            </button>
+                            <button id="cake-karipap" onclick="selectCake('karipap')" class="bg-white hover:bg-slate-100 border border-slate-200 rounded-lg p-2.5 transition flex flex-col items-center gap-1">
+                                <span class="text-2xl">🥟</span>
+                                <span class="text-xs font-semibold text-slate-700">karipap</span>
+                            </button>
+                            <button id="cake-lapis" onclick="selectCake('kuih lapis')" class="bg-white hover:bg-slate-100 border border-slate-200 rounded-lg p-2.5 transition flex flex-col items-center gap-1">
+                                <span class="text-2xl">🍰</span>
+                                <span class="text-xs font-semibold text-slate-700">kuih lapis</span>
+                            </button>
+                            <button id="cake-pisang" onclick="selectCake('pisang goreng')" class="bg-white hover:bg-slate-100 border border-slate-200 rounded-lg p-2.5 transition flex flex-col items-center gap-1">
+                                <span class="text-2xl">🍌</span>
+                                <span class="text-xs font-semibold text-slate-700">pisang goreng</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sentence complete box -->
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-slate-700 text-sm italic font-mono mb-4">
+                        Saya membantu ibu mengemas kuih-muih seperti <span id="span-cakes" class="text-indigo-700 font-bold underline">_________ , _________ , _________</span> dan sebagainya.
+                    </div>
+
+                    <button onclick="checkCakesSelection()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition text-sm shadow">确认摆好柜台 🧁</button>
+                    <div id="lvl2-p1-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                </div>
+
+                <!-- Clock Section 2: Closing shop -->
+                <div id="lvl2-part2" class="hidden bg-white rounded-2xl border-2 border-slate-100 shadow-sm p-6 mb-6">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="bg-indigo-550 border-4 border-indigo-200 rounded-full w-28 h-28 flex flex-col justify-center items-center shadow-inner shrink-0">
+                            <span class="text-2xl">⏰</span>
+                            <span class="text-sm font-black text-indigo-800 mt-1 bg-white px-2 py-0.5 rounded-full">12:00 PM</span>
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">中午 12:00 tengah hari：</h4>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                                “买卖结束了，我们要收拾东西并回家去。点击或拖动选择下方最贴切的两个动作卡片填补句子的空格！”
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+                        <button id="act-1" onclick="selectAction('mengemas barang')" class="bg-white hover:bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold text-slate-700 shadow-sm transition">mengemas barang (收拾东西)</button>
+                        <button id="act-2" onclick="selectAction('pulang ke rumah')" class="bg-white hover:bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold text-slate-700 shadow-sm transition">pulang ke rumah (回家)</button>
+                        <button id="act-3" onclick="selectAction('tidur di kedai')" class="bg-white hover:bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold text-slate-700 shadow-sm transition">tidur di kedai (在店里睡觉)</button>
+                    </div>
+
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-slate-700 text-sm italic font-mono mb-4 leading-relaxed">
+                        Kami <span id="span-act-1" class="text-indigo-700 font-bold underline">_____________</span> dan <span id="span-act-2" class="text-indigo-700 font-bold underline">_____________</span>. Ibu berterima kasih kepada saya kerana membantu.
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="resetActionsSelection()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl transition text-xs">清除重新选择</button>
+                        <button onclick="checkActionsSelection()" class="flex-grow bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition text-sm shadow">确认收拾并收工 🚚</button>
+                    </div>
+                    <div id="lvl2-p2-feedback" class="mt-3 text-sm font-semibold hidden"></div>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button id="btn-next-lvl2" class="hidden bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold py-3 px-8 rounded-xl transition shadow hover:shadow-md" onclick="goToLvl3()">
+                        进入第三关 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- STAGE 3: Essay & Opinion AI (Dilema Pilihan Saya) -->
+            <section id="screen-lvl3" class="hidden w-full max-w-3xl">
+                <div class="text-center mb-6">
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">🎲 第三关 / Tahap 3</span>
+                    <h3 class="text-2xl font-black text-slate-800 mt-2">终极两难选择题 (Dilema Pilihan Saya)</h3>
+                    <p class="text-slate-500 text-sm mt-1">运用今天学会的万能公式表达意见，支持 AI 老师智能在线批改！</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
+                    <h4 class="font-bold text-amber-800 mb-2 flex items-center gap-1.5 text-base">
+                        <i class="fa-solid fa-lightbulb animate-pulse"></i> 终极挑战情境：
+                    </h4>
+                    <p class="text-slate-700 text-sm leading-relaxed">
+                        你的 <strong>Kelab Usahawan Muda</strong> 举办活动。你必须做出选择并表达自己的意见（不少过20字，且不超过40字）：
+                    </p>
+                    
+                    <!-- Choice Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div id="card-choice-a" onclick="selectScenario('A')" class="bg-white border-2 border-slate-200 hover:border-indigo-400 rounded-xl p-4 cursor-pointer transition relative">
+                            <span class="absolute top-2 right-2 bg-indigo-100 text-indigo-800 text-xs font-black px-2 py-0.5 rounded">选项 A</span>
+                            <span class="text-3xl">🥤</span>
+                            <h5 class="font-extrabold text-slate-800 mt-2">Menjual minuman</h5>
+                            <p class="text-xs text-slate-500 mt-1">卖饮料：操作简单，适合消暑解渴，深受同学们喜欢。</p>
+                        </div>
+                        <div id="card-choice-b" onclick="selectScenario('B')" class="bg-white border-2 border-slate-200 hover:border-indigo-400 rounded-xl p-4 cursor-pointer transition relative">
+                            <span class="absolute top-2 right-2 bg-indigo-100 text-indigo-800 text-xs font-black px-2 py-0.5 rounded">选项 B</span>
+                            <span class="text-3xl">🔖</span>
+                            <h5 class="font-extrabold text-slate-800 mt-2">Menjual penanda buku</h5>
+                            <p class="text-xs text-slate-500 mt-1">卖书签：需要手工设计，能提高创新思维和学习态度。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template helper reminder -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
+                    <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">⭐ 万能公式提示 (Formula Wajib)</h5>
+                    <div class="text-xs font-semibold text-slate-600 space-y-1">
+                        <p class="font-mono text-indigo-700">Saya memilih [A/B] kerana [原因 1]. Selain itu, saya dapat [原因 2].</p>
+                        <p class="text-[11px] text-slate-400">词汇推荐：belajar asas perniagaan (学习商业基础), menerapkan sikap murni (培养高尚品德), kemahiran keusahawanan (企业家技能)</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <label for="student-essay" class="text-sm font-bold text-slate-700">✍️ 请在下方写出你的完整意见：</label>
+                    <textarea id="student-essay" rows="4" class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 text-base font-medium focus:border-indigo-500 focus:bg-white outline-none transition leading-relaxed" placeholder="例如：Saya memilih menjual... kerana... Selain itu, saya dapat..."></textarea>
+                    
+                    <div class="flex flex-wrap items-center justify-between gap-4 mt-2">
+                        <!-- Word count display -->
+                        <span class="text-xs font-bold text-slate-400">📝 当前字数：<span id="essay-word-count" class="text-slate-600">0</span> 个词 (最理想是 20 到 35 个词左右)</span>
+                        
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <!-- Helper button to quickly paste structure -->
+                            <button onclick="insertTemplate()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl transition text-xs">插入基础框架</button>
+                            <button onclick="evaluateEssay()" class="flex-grow sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 px-8 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> AI 智能批改评估
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Evaluation results display -->
+                <div id="ai-evaluation-box" class="hidden mt-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-extrabold text-indigo-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap"></i> AI 老师批改反馈
+                        </h4>
+                        <!-- Simulated score badge -->
+                        <div class="bg-white border-2 border-indigo-300 text-indigo-700 font-extrabold px-4 py-2 rounded-2xl flex items-center gap-1.5 shadow-sm text-lg">
+                            💯 <span id="ai-score" class="text-indigo-900 text-xl font-black">9</span>/10
+                        </div>
+                    </div>
+                    
+                    <div class="prose text-sm text-slate-700 leading-relaxed space-y-3" id="ai-feedback-text">
+                        正在加载评估，请稍候...
+                    </div>
+                </div>
+
+                <!-- Complete navigation -->
+                <div class="flex justify-end mt-8 border-t border-slate-100 pt-6">
+                    <button id="btn-finish-game" class="hidden bg-gradient-to-r from-amber-500 to-yellow-600 text-white font-extrabold py-3.5 px-10 rounded-2xl transition shadow-lg gold-glow" onclick="showResults()">
+                        ✨ 完成大决战，领取奖励！
+                    </button>
+                </div>
+            </section>
+
+            <!-- STAGE 4: Final Reward Screen -->
+            <section id="screen-results" class="hidden w-full max-w-xl text-center py-6">
+                <div class="bg-gradient-to-br from-amber-400 to-yellow-500 rounded-3xl p-8 shadow-xl text-white relative overflow-hidden">
+                    
+                    <!-- Decorative golden coin background -->
+                    <div class="absolute -right-10 -bottom-10 opacity-15 text-[150px]">🪙</div>
+                    
+                    <span class="text-5xl animate-bounce inline-block mb-4">🏆</span>
+                    <h3 class="text-3xl font-black title-font mb-2">🎉 恭喜你，小老板！</h3>
+                    <p class="text-amber-100 text-sm font-semibold mb-6">你用无懈可击的马来文超能力克服了开店的所有挑战！</p>
+                    
+                    <div class="bg-white bg-opacity-15 rounded-2xl p-5 border border-white border-opacity-20 mb-6">
+                        <span class="text-xs uppercase tracking-widest font-extrabold text-amber-200">总共获得第一桶金</span>
+                        <div class="text-5xl font-black my-2">🪙 <span id="final-coins">0</span></div>
+                        <p class="text-xs text-amber-50">这笔金币将转化为你未来商业大亨的重要基础！</p>
+                    </div>
+
+                    <div class="text-xs text-amber-100 bg-amber-800 bg-opacity-35 p-3.5 rounded-xl text-left leading-relaxed">
+                        <span class="font-bold text-white block mb-1">📝 今日复习成果卡 (Set 26 & 27):</span>
+                        ✅ 掌握了糕点铺常用动作：menyusun kuih-muih, mengira duit.<br>
+                        ✅ 熟练使用成语：ringan tulang 来描述好习惯。<br>
+                        ✅ 学会使用万能写作公式表达意见与抉择理由。
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-3 mt-8 w-full">
+                    <button onclick="resetGame()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3.5 px-8 rounded-xl transition text-sm">
+                        重新挑战一遍 <i class="fa-solid fa-rotate-right ml-1"></i>
+                    </button>
+                    <button onclick="shareResult()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3.5 px-8 rounded-xl transition text-sm shadow">
+                        复制今日成果给老师 📋
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-slate-50 border-t border-slate-100 p-4 text-center text-xs text-slate-400 font-medium">
+            <p>©️ 2026 Sim Educare & Learning. 专属五年级线上复习工具 (Set 26 & 27) - 11位学生专用</p>
+        </footer>
+    </div>
+
+    <!-- API configuration modal -->
+    <div id="modal-api-settings" class="fixed inset-0 bg-slate-900 bg-opacity-55 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+            <div class="flex justify-between items-start mb-4">
+                <h4 class="text-lg font-bold text-slate-800">🔑 教师 AI 智能批改配置 (可选)</h4>
+                <button onclick="toggleApiModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+                如果您想在第三关让学生体验真实的 AI 实时个性化华文评语，请在这里配置您的 <strong>Gemini API Key</strong>。如果不配置此项，我们将使用本地规则检测引擎批改作文。
+            </p>
+            <div class="flex flex-col gap-3">
+                <label for="input-api-key" class="text-xs font-bold text-slate-600">Gemini API 密钥 (Gemini API Key):</label>
+                <input type="password" id="input-api-key" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:border-indigo-500 outline-none font-mono" placeholder="AIzaSy...">
+                
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-slate-700 text-xs leading-relaxed space-y-1">
+                    <strong>📌 说明：</strong>
+                    <p>1. 如果是 Canvas 网页环境下，留空也会在后台自动为您代理分配临时密钥！</p>
+                    <p>2. 此密钥直接保存在您浏览器的本地存储中，不会上传至任何第三方服务器。</p>
+                </div>
+                
+                <button onclick="saveApiKey()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition text-sm">保存设置</button>
+            </div>
         </div>
-      `;
-    });
-    coursesHtml += '</div>';
-    
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.innerHTML = `
-      <div class="language-modal" style="max-width:480px;">
-        <div style="font-size:2rem;">📖</div>
-        <h3>${grade}</h3>
-        <div style="font-size:0.7rem; color:#8aa67d; margin-bottom:8px;">华语 / Bahasa Melayu</div>
-        ${coursesHtml}
-        <button class="modal-cancel" style="margin-top:16px; width:100%;">关闭</button>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-    overlay.querySelector('.modal-cancel').onclick = () => overlay.remove();
-    overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
-  }
+    </div>
 
-  function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    <!-- Custom Dialog Modal to replace browser alerts -->
+    <div id="modal-alert" class="fixed inset-0 bg-slate-900 bg-opacity-40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-slate-100 text-center">
+            <span id="alert-icon" class="text-5xl block mb-3">⭐</span>
+            <h4 id="alert-title" class="text-lg font-bold text-slate-800 mb-2">通知</h4>
+            <p id="alert-message" class="text-sm text-slate-600 mb-5 leading-relaxed">消息内容</p>
+            <button onclick="closeAlert()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-8 rounded-xl transition text-sm">好的</button>
+        </div>
+    </div>
 
-  // 横屏检测
-  function isTouchDevice(){return 'ontouchstart' in window||navigator.maxTouchPoints>0;}
-  function checkOrientation(){
-    var o = document.getElementById('rotateOverlay');
-    if(!isTouchDevice()){o.classList.remove('active');return;}
-    if(window.innerWidth>window.innerHeight) o.classList.add('active');
-    else o.classList.remove('active');
-  }
-  window.addEventListener('orientationchange', checkOrientation);
-  window.addEventListener('resize', checkOrientation);
-  checkOrientation();
+    <!-- MAIN GAME ENGINE & CONTROL LOGIC -->
+    <script>
+        // Game state variables
+        let totalCoins = 0;
+        let puz2Chosen = [];
+        let selectedCakes = [];
+        let selectedActions = [];
+        let selectedScenario = '';
+        
+        // 智能匹配对比函数（剥离所有非字母数字字符，忽略大小写、空格和连字符）
+        function isAnswerMatch(userVal, correctVal) {
+            const clean = str => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (Array.isArray(correctVal)) {
+                return correctVal.some(ans => clean(ans) === clean(userVal));
+            }
+            return clean(correctVal) === clean(userVal);
+        }
 
-  // FREE TRIAL 语言选择
-  function showLanguageModal() {
-    const modalOverlay = document.createElement('div');
-    modalOverlay.className = 'modal-overlay';
-    modalOverlay.innerHTML = `<div class="language-modal" style="max-width:360px;"><div style="font-size: 3rem;">🌍</div><h3>Choose Language</h3><p style="color: #6b7c63; margin-bottom: 1rem;">Please select your preferred language</p><a href="zh.html" class="lang-link cn">🇨🇳 Chinese (中文版)</a><a href="ms.html" class="lang-link ms">🇲🇾 Malay (Bahasa Melayu)</a><button class="modal-cancel" style="width: 100%; padding: 12px; background: #f0f0f0; border: none; border-radius: 60px; cursor: pointer; font-weight: 600;">Cancel</button></div>`;
-    document.body.appendChild(modalOverlay);
-    const cancelBtn = modalOverlay.querySelector('.modal-cancel');
-    cancelBtn.onclick = () => modalOverlay.remove();
-    modalOverlay.onclick = (e) => { if (e.target === modalOverlay) modalOverlay.remove(); };
-  }
-  function handleFreeTrial(e) { e.preventDefault(); showLanguageModal(); }
-  document.getElementById('freeTrialBtn').addEventListener('click', handleFreeTrial);
-  const footerTrialBtn = document.getElementById('freeTrialFooterBtn');
-  if (footerTrialBtn) footerTrialBtn.addEventListener('click', handleFreeTrial);
+        // 强行跳过或直接进入下一题的辅助函数
+        function forceNextPuzzle(id) {
+            const feedbackEl = document.getElementById(`puz${id}-feedback`);
+            if (feedbackEl) feedbackEl.classList.add('hidden');
+            
+            if (id === 1) {
+                document.getElementById('puz-1').classList.add('hidden');
+                document.getElementById('puz-2').classList.remove('hidden');
+                clearUnscramble();
+            } else if (id === 2) {
+                document.getElementById('puz-2').classList.add('hidden');
+                document.getElementById('puz-3').classList.remove('hidden');
+            } else if (id === 3) {
+                document.getElementById('puz-3').classList.add('hidden');
+                document.getElementById('btn-next-lvl1').classList.remove('hidden');
+                showCustomAlert('准备进入下一关！', '现在准备进入第二关：日记时钟模拟！', '🏆');
+            }
+        }
 
-  // MASTER KEY LOGIN
-  function showMasterKeyModal() {
-    const modalOverlay = document.createElement('div');
-    modalOverlay.className = 'modal-overlay';
-    modalOverlay.innerHTML = `<div class="master-modal"><div style="font-size: 2.5rem;">🔐</div><h3>Master Key Login</h3><p>Enter 8-digit master key</p><input type="password" id="masterPassword" maxlength="8" placeholder="········" autocomplete="off"><div class="modal-buttons"><button id="modalLoginBtn" class="modal-btn modal-login">Login</button><button id="modalCancelBtn" class="modal-btn modal-cancel">Cancel</button></div></div>`;
-    document.body.appendChild(modalOverlay);
-    const passwordInput = modalOverlay.querySelector('#masterPassword');
-    const loginBtn = modalOverlay.querySelector('#modalLoginBtn');
-    const cancelBtn = modalOverlay.querySelector('#modalCancelBtn');
-    loginBtn.onclick = () => {
-      const pwd = passwordInput.value.trim();
-      if (pwd.length === 8) {
-        alert('❌ Invalid Master Key');
-        passwordInput.value = '';
-        passwordInput.focus();
-        const modal = modalOverlay.querySelector('.master-modal');
-        modal.style.animation = 'none';
-        setTimeout(() => modal.style.animation = 'bounceIn 0.4s cubic-bezier(0.34,1.2,0.64,1)', 10);
-      } else {
-        alert('Please enter exactly 8 characters');
-        passwordInput.value = '';
-        passwordInput.focus();
-      }
-    };
-    cancelBtn.onclick = () => modalOverlay.remove();
-    modalOverlay.onclick = (e) => { if (e.target === modalOverlay) modalOverlay.remove(); };
-    passwordInput.focus();
-  }
-  document.getElementById('masterKeyBtn').addEventListener('click', showMasterKeyModal);
-  const footerMasterBtn = document.getElementById('masterKeyFooterBtn');
-  if (footerMasterBtn) footerMasterBtn.addEventListener('click', showMasterKeyModal);
+        // Initialize State on Load
+        window.onload = function() {
+            // Load saved API key if present
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('input-api-key').value = savedKey;
+            }
+            
+            // Listen to input count in textarea
+            const essayArea = document.getElementById('student-essay');
+            essayArea.addEventListener('input', function() {
+                const text = this.value.trim();
+                const count = text ? text.split(/\s+/).length : 0;
+                document.getElementById('essay-word-count').innerText = count;
+            });
+        };
 
-  // 页面加载完成后初始化懒加载
-  document.addEventListener('DOMContentLoaded', initLazyLoad);
-</script>
+        // Utility alert replace
+        function showCustomAlert(title, message, icon = '💡') {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-message').innerText = message;
+            document.getElementById('alert-icon').innerText = icon;
+            document.getElementById('modal-alert').classList.remove('hidden');
+        }
+
+        function closeAlert() {
+            document.getElementById('modal-alert').classList.add('hidden');
+        }
+
+        // Toggle Settings Modal
+        function toggleApiModal() {
+            const modal = document.getElementById('modal-api-settings');
+            modal.classList.toggle('hidden');
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('input-api-key').value.trim();
+            localStorage.setItem('gemini_api_key', key);
+            showCustomAlert('设置成功', '密钥已安全地保存在本地缓存中！', '🔑');
+            toggleApiModal();
+        }
+
+        function getApiKey() {
+            return localStorage.getItem('gemini_api_key') || '';
+        }
+
+        // Start Game
+        function startGame() {
+            sfx.playLevelUp();
+            document.getElementById('screen-intro').classList.add('hidden');
+            document.getElementById('screen-lvl1').classList.remove('hidden');
+        }
+
+        // Reset Game
+        function resetGame() {
+            totalCoins = 0;
+            puz2Chosen = [];
+            selectedCakes = [];
+            selectedActions = [];
+            selectedScenario = '';
+            
+            document.getElementById('global-coins').innerText = '0';
+            document.getElementById('ans-puz1').value = '';
+            document.getElementById('ans-puz1').disabled = false;
+            document.getElementById('ans-puz3').value = '';
+            document.getElementById('ans-puz3').disabled = false;
+            
+            document.getElementById('puz-1').classList.remove('hidden');
+            document.getElementById('puz-2').classList.add('hidden');
+            document.getElementById('puz-3').classList.add('hidden');
+            document.getElementById('btn-next-lvl1').classList.add('hidden');
+            
+            document.getElementById('span-cakes').innerText = '_________ , _________ , _________';
+            document.getElementById('lvl2-part1').classList.remove('hidden');
+            document.getElementById('lvl2-part2').classList.add('hidden');
+            document.getElementById('btn-next-lvl2').classList.add('hidden');
+            
+            document.getElementById('student-essay').value = '';
+            document.getElementById('ai-evaluation-box').classList.add('hidden');
+            document.getElementById('btn-finish-game').classList.add('hidden');
+            
+            // Reset UI states
+            document.querySelectorAll('#screen-lvl1 [id$="-feedback"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById('lvl2-p1-feedback').classList.add('hidden');
+            document.getElementById('lvl2-p2-feedback').classList.add('hidden');
+            
+            // Reset active styles for cakes
+            document.querySelectorAll('[id^="cake-"]').forEach(el => {
+                el.classList.remove('bg-indigo-100');
+                el.classList.add('bg-white');
+            });
+            document.querySelectorAll('[id^="act-"]').forEach(el => el.className = el.className.replace('bg-indigo-100 border-indigo-500', 'bg-white border-slate-200'));
+            
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('screen-intro').classList.remove('hidden');
+        }
+
+        // Add Coins helper
+        function addCoins(amount) {
+            totalCoins += amount;
+            document.getElementById('global-coins').innerText = totalCoins;
+            sfx.playCoin();
+        }
+
+        // Puzzle validation (第一关拼图验证)
+        function checkPuzzle(id, correctAnswers, inputId) {
+            const userAns = document.getElementById(inputId).value;
+            const feedbackEl = document.getElementById(`puz${id}-feedback`);
+            
+            // 使用智能宽容匹配
+            const isCorrect = isAnswerMatch(userAns, correctAnswers);
+
+            feedbackEl.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackEl.className = "mt-3 text-sm font-semibold text-green-600";
+                feedbackEl.innerHTML = `🎉 太棒了！答对了。 <strong>+20 🪙</strong>`;
+                document.getElementById(inputId).disabled = true;
+                addCoins(20);
+                sfx.playCorrect();
+
+                // Advance sub puzzles
+                setTimeout(() => {
+                    forceNextPuzzle(id);
+                }, 1500);
+            } else {
+                feedbackEl.className = "mt-3 text-sm font-semibold text-rose-600 animate-pulse flex flex-col items-center gap-2";
+                feedbackEl.innerHTML = `
+                    <span>❌ 答案不对哦，请再试一次！</span>
+                    <button onclick="forceNextPuzzle(${id})" class="mt-1 bg-slate-500 hover:bg-slate-600 text-white font-bold py-1.5 px-4 rounded-xl transition text-xs shadow-sm">
+                        直接进入下一题 ➔
+                    </button>
+                `;
+                sfx.playWrong();
+            }
+        }
+
+        // Unscramble puzzle interaction
+        function addWordToUnscramble(word) {
+            sfx.playCoin();
+            if (puz2Chosen.includes(word)) return;
+            puz2Chosen.push(word);
+            document.getElementById(`btn-word-${word}`).className = "opacity-50 border-2 border-slate-300 text-slate-400 text-lg font-extrabold px-6 py-3 rounded-xl transition cursor-not-allowed";
+            document.getElementById('unscramble-current').innerText = puz2Chosen.join(' ');
+        }
+
+        function clearUnscramble() {
+            puz2Chosen = [];
+            document.getElementById('unscramble-current').innerText = '';
+            
+            // Restore buttons
+            ['ringan', 'tulang'].forEach(word => {
+                const btn = document.getElementById(`btn-word-${word}`);
+                if (btn) {
+                    btn.className = "bg-indigo-100 hover:bg-indigo-200 border-2 border-indigo-300 text-indigo-800 text-lg font-extrabold px-6 py-3 rounded-xl transition";
+                }
+            });
+        }
+
+        function checkUnscramble() {
+            const finalString = puz2Chosen.join(' ');
+            const feedbackEl = document.getElementById('puz2-feedback');
+            feedbackEl.classList.remove('hidden');
+
+            if (finalString === 'ringan tulang') {
+                feedbackEl.className = "mt-3 text-sm font-semibold text-green-600";
+                feedbackEl.innerHTML = `🎉 答对啦！ <strong>ringan tulang</strong> 意为形容很勤劳。 <strong>+20 🪙</strong>`;
+                addCoins(20);
+                sfx.playCorrect();
+
+                setTimeout(() => {
+                    forceNextPuzzle(2);
+                }, 1500);
+            } else {
+                feedbackEl.className = "mt-3 text-sm font-semibold text-rose-600 animate-pulse flex flex-col items-center gap-2";
+                feedbackEl.innerHTML = `
+                    <span>❌ 顺序不太对，成语应当是什么？请点击重新选择！</span>
+                    <button onclick="forceNextPuzzle(2)" class="mt-1 bg-slate-500 hover:bg-slate-600 text-white font-bold py-1.5 px-4 rounded-xl transition text-xs shadow-sm">
+                        直接进入下一题 ➔
+                    </button>
+                `;
+                sfx.playWrong();
+            }
+        }
+
+        function goToLvl2() {
+            sfx.playLevelUp();
+            document.getElementById('screen-lvl1').classList.add('hidden');
+            document.getElementById('screen-lvl2').classList.remove('hidden');
+        }
+
+        // Level 2 Cakes Selection (OPTIMIZED & BUG-FREE)
+        function selectCake(cake) {
+            sfx.playCoin();
+            
+            // 建立名称与按钮ID的绝对安全映射
+            const idMap = {
+                'donut': 'cake-donut',
+                'karipap': 'cake-karipap',
+                'kuih lapis': 'cake-lapis',
+                'pisang goreng': 'cake-pisang'
+            };
+            
+            const btn = document.getElementById(idMap[cake]);
+            if (!btn) return;
+            
+            if (selectedCakes.includes(cake)) {
+                // 取消选择 (Deselect)
+                selectedCakes = selectedCakes.filter(c => c !== cake);
+                btn.classList.remove('bg-indigo-100');
+                btn.classList.add('bg-white');
+            } else {
+                // 限制最多只能选3个
+                if (selectedCakes.length >= 3) {
+                    showCustomAlert('限选3个', '我们的点心盒只能刚好装下三种糕点哦。', '🥧');
+                    return;
+                }
+                // 加入选择 (Select)
+                selectedCakes.push(cake);
+                btn.classList.remove('bg-white');
+                btn.classList.add('bg-indigo-100');
+            }
+
+            // Update displayed sentence
+            const spanText = selectedCakes.length > 0 ? selectedCakes.join(' , ') : '_________ , _________ , _________';
+            document.getElementById('span-cakes').innerText = spanText;
+        }
+
+        function checkCakesSelection() {
+            const feedbackEl = document.getElementById('lvl2-p1-feedback');
+            feedbackEl.classList.remove('hidden');
+
+            if (selectedCakes.length === 3) {
+                feedbackEl.className = "mt-3 text-sm font-semibold text-green-600";
+                feedbackEl.innerHTML = `🎉 完美摆柜！这三种糕点一定会大受欢迎！ <strong>+25 🪙</strong>`;
+                addCoins(25);
+                sfx.playCorrect();
+
+                setTimeout(() => {
+                    document.getElementById('lvl2-part1').classList.add('hidden');
+                    document.getElementById('lvl2-part2').classList.remove('hidden');
+                }, 1800);
+            } else {
+                feedbackEl.className = "mt-3 text-sm font-semibold text-rose-600 animate-pulse";
+                feedbackEl.innerHTML = `❌ 请确保选择满 3 种糕点再收拾摆摊！`;
+                sfx.playWrong();
+            }
+        }
+
+        // Level 2 Part 2 Actions selection
+        function selectAction(action) {
+            sfx.playCoin();
+            if (selectedActions.includes(action)) {
+                // Deselect
+                selectedActions = selectedActions.filter(a => a !== action);
+                const item = document.querySelectorAll(`[onclick*="${action}"]`)[0];
+                item.className = item.className.replace('bg-indigo-100 border-indigo-500', 'bg-white border-slate-200');
+            } else {
+                if (selectedActions.length >= 2) {
+                    showCustomAlert('限选两个', '填补句子的空格只需要两个最完美的动作。', '🚚');
+                    return;
+                }
+                selectedActions.push(action);
+                const item = document.querySelectorAll(`[onclick*="${action}"]`)[0];
+                item.className = item.className.replace('bg-white border-slate-200', 'bg-indigo-100 border-indigo-500');
+            }
+
+            // Update display
+            document.getElementById('span-act-1').innerText = selectedActions[0] || '_____________';
+            document.getElementById('span-act-2').innerText = selectedActions[1] || '_____________';
+        }
+
+        function resetActionsSelection() {
+            selectedActions = [];
+            document.getElementById('span-act-1').innerText = '_____________';
+            document.getElementById('span-act-2').innerText = '_____________';
+            
+            document.getElementById('act-1').className = document.getElementById('act-1').className.replace('bg-indigo-100 border-indigo-500', 'bg-white border-slate-200');
+            document.getElementById('act-2').className = document.getElementById('act-2').className.replace('bg-indigo-100 border-indigo-500', 'bg-white border-slate-200');
+            document.getElementById('act-3').className = document.getElementById('act-3').className.replace('bg-indigo-100 border-indigo-500', 'bg-white border-slate-200');
+        }
+
+        function checkActionsSelection() {
+            const feedbackEl = document.getElementById('lvl2-p2-feedback');
+            feedbackEl.classList.remove('hidden');
+
+            const hasMengemas = selectedActions.includes('mengemas barang');
+            const hasPulang = selectedActions.includes('pulang ke rumah');
+
+            if (hasMengemas && hasPulang && selectedActions.length === 2) {
+                feedbackEl.className = "mt-3 text-sm font-semibold text-green-600";
+                feedbackEl.innerHTML = `🎉 收工大吉！今天又是满载而归、学有所获的一天！ <strong>+25 🪙</strong>`;
+                addCoins(25);
+                sfx.playCorrect();
+
+                setTimeout(() => {
+                    document.getElementById('lvl2-part2').classList.add('hidden');
+                    document.getElementById('btn-next-lvl2').classList.remove('hidden');
+                    showCustomAlert('第二关通关！', '极佳的理解！日记写作的各种动作你都牢记于心了。准备进行最后的商业决策！', '🏆');
+                }, 1800);
+            } else {
+                feedbackEl.className = "mt-3 text-sm font-semibold text-rose-600 animate-pulse";
+                feedbackEl.innerHTML = `❌ 糟糕！在店里睡觉或动作不完整是不适合用来充实日记的哦，再检查一下！`;
+                sfx.playWrong();
+            }
+        }
+
+        function goToLvl3() {
+            sfx.playLevelUp();
+            document.getElementById('screen-lvl2').classList.add('hidden');
+            document.getElementById('screen-lvl3').classList.remove('hidden');
+        }
+
+        // Level 3 interactive setup
+        function selectScenario(type) {
+            sfx.playCoin();
+            selectedScenario = type;
+            
+            const cardA = document.getElementById('card-choice-a');
+            const cardB = document.getElementById('card-choice-b');
+            
+            if (type === 'A') {
+                cardA.className = cardA.className.replace('border-slate-200', 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-200');
+                cardB.className = cardB.className.replace('border-indigo-600 bg-indigo-50 ring-2 ring-indigo-200', 'border-slate-200');
+            } else {
+                cardB.className = cardB.className.replace('border-slate-200', 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-200');
+                cardA.className = cardA.className.replace('border-indigo-600 bg-indigo-50 ring-2 ring-indigo-200', 'border-slate-200');
+            }
+        }
+
+        function insertTemplate() {
+            if (!selectedScenario) {
+                showCustomAlert('提示', '请先点击选择上方的“选项A”或“选项B”决定你要卖什么，然后再生成结构模板！', '💡');
+                return;
+            }
+            
+            const chosenActivity = selectedScenario === 'A' ? 'menjual minuman' : 'menjual penanda buku';
+            const reason1 = selectedScenario === 'A' ? 'modalnya sangat rendah' : 'kita boleh belajar memupuk pemikiran kreatif';
+            const reason2 = selectedScenario === 'A' ? 'belajar asas perniagaan yang berguna' : 'menerapkan sikap murni dalam kalangan murid';
+
+            document.getElementById('student-essay').value = `Saya memilih ${chosenActivity} kerana ${reason1}. Selain itu, saya dapat ${reason2}.`;
+            
+            // trigger word count change
+            const evt = new Event('input');
+            document.getElementById('student-essay').dispatchEvent(evt);
+        }
+
+        // AI Grading and Rule-based Fallback grading
+        async function evaluateEssay() {
+            const essayText = document.getElementById('student-essay').value.trim();
+            
+            if (essayText.length < 15) {
+                showCustomAlert('字数太短了', '请至少输入一段完整的句子（建议多达 15 到 40 个词），确保套用公式噢。', '⚠️');
+                return;
+            }
+
+            const evalBox = document.getElementById('ai-evaluation-box');
+            const feedbackText = document.getElementById('ai-feedback-text');
+            const scoreEl = document.getElementById('ai-score');
+            
+            evalBox.classList.remove('hidden');
+            feedbackText.innerHTML = `<div class="flex items-center gap-2"><i class="fa-solid fa-spinner animate-spin"></i> <strong>AI 老师正在认真审阅并批改你的作文，请稍候...</strong></div>`;
+
+            // Check if API key exists
+            const apiKey = getApiKey();
+            
+            if (apiKey) {
+                // Make real API call to Gemini
+                try {
+                    const systemPrompt = `You are an expert Year 5 Malay language tutor (Bahasa Melayu Tahun 5). 
+                    Your task is to grade a student's opinion essay based on their "Kelab Usahawan Muda" choice.
+                    The expected formula is: "Saya memilih... kerana... Selain itu, saya dapat...".
+                    The length should be around 20 to 50 words.
+                    Give feedback entirely in Chinese (华文) in a warm, encouraging teacher-like manner suitable for an 11-year-old.
+                    Provide a score out of 10 based on standard penulisan guidelines (grammar, spelling, vocabulary, formula completeness).
+                    Output format MUST be JSON with properties: "score" (number out of 10), and "feedback" (string with HTML tags like <p>, <strong>, <br> to make it look premium).`;
+
+                    const userQuery = `Sila semak karangan pendapat murid Tahun 5 ini:
+                    "${essayText}"`;
+
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                    const payload = {
+                        contents: [{ parts: [{ text: userQuery }] }],
+                        systemInstruction: {
+                            parts: [{ text: systemPrompt }]
+                        },
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: "OBJECT",
+                                properties: {
+                                    score: { type: "INTEGER" },
+                                    feedback: { type: "STRING" }
+                                },
+                                required: ["score", "feedback"]
+                            }
+                        }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('API Request failed, fallback to offline grader');
+                    }
+
+                    const result = await response.json();
+                    const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    const parsed = JSON.parse(jsonText);
+
+                    scoreEl.innerText = parsed.score;
+                    feedbackText.innerHTML = parsed.feedback;
+                    addCoins(parsed.score * 5); // Reward based on performance
+
+                } catch (err) {
+                    console.error("Gemini API error:", err);
+                    runFallbackGrader(essayText);
+                }
+            } else {
+                // Use advanced local rule-based fallback grader
+                setTimeout(() => {
+                    runFallbackGrader(essayText);
+                }, 1500);
+            }
+
+            // Show final complete button
+            document.getElementById('btn-finish-game').classList.remove('hidden');
+        }
+
+        // Rules-based evaluator when API key is offline
+        function runFallbackGrader(text) {
+            const lower = text.toLowerCase();
+            const scoreEl = document.getElementById('ai-score');
+            const feedbackText = document.getElementById('ai-feedback-text');
+            
+            let score = 5; // base score
+            let points = [];
+            let missing = [];
+
+            // Check formula keys
+            if (lower.includes('saya memilih')) {
+                score += 1;
+                points.push("正确开头：使用了 <strong>'Saya memilih'</strong> 定位选择。");
+            } else {
+                missing.push("建议补充核心句首：<strong>'Saya memilih'</strong>（我选择...）");
+            }
+
+            if (lower.includes('kerana')) {
+                score += 1;
+                points.push("正确原因连接：使用了 <strong>'kerana'</strong> 来陈述第一条理由。");
+            } else {
+                missing.push("缺少核心因果词：<strong>'kerana'</strong>（因为...）");
+            }
+
+            if (lower.includes('selain itu')) {
+                score += 1;
+                points.push("正确递进：使用了递进词 <strong>'Selain itu'</strong> 引入第二原因。");
+            } else {
+                missing.push("建议补充段落连接词：<strong>'Selain itu'</strong>（除此之外...）");
+            }
+
+            if (lower.includes('saya dapat') || lower.includes('kita dapat') || lower.includes('kita boleh') || lower.includes('supaya') || lower.includes('agar')) {
+                score += 1;
+                points.push("完美细节扩充：使用了解释好处的辅助词汇。");
+            }
+
+            // Word count scoring
+            const wordCount = text.split(/\s+/).length;
+            if (wordCount >= 20 && wordCount <= 40) {
+                score += 1;
+                points.push(`理想字数：当前字数 <strong>${wordCount}</strong> 词，符合五年级标准。`);
+            } else if (wordCount > 40) {
+                score -= 1;
+                points.push(`警惕字数超标：当前 <strong>${wordCount}</strong> 词，小心考试被扣分噢。`);
+            }
+
+            // Cap the score at 10
+            if (score > 10) score = 10;
+            if (score < 3) score = 3;
+
+            scoreEl.innerText = score;
+            addCoins(score * 5); // Reward
+
+            // Generate Chinese output
+            let html = `<p class="font-bold text-slate-800 text-sm">🌟 本地智能语法评估系统诊断结论：</p>`;
+            
+            html += `<p class="mt-2 text-indigo-800 font-bold">优点摘要 (Kelebihan):</p><ul class="list-disc list-inside text-xs text-slate-600 space-y-1">`;
+            points.forEach(p => { html += `<li>${p}</li>`; });
+            html += `</ul>`;
+
+            if (missing.length > 0) {
+                html += `<p class="mt-3 text-rose-800 font-bold">改进方案 (Cadangan Penambahbaikan):</p><ul class="list-disc list-inside text-xs text-slate-600 space-y-1">`;
+                missing.forEach(m => { html += `<li>${m}</li>`; });
+                html += `</ul>`;
+            } else {
+                html += `<p class="mt-3 text-emerald-700 font-bold">🌟 完美契合：今日所授公式完整度 100%！老师为你感到非常骄傲！</p>`;
+            }
+
+            html += `<p class="mt-4 text-xs text-slate-400 border-t border-slate-100 pt-3">（提示：如果配置了教师 Gemini API Key 之后，将获得真人老师般的个性化国语语法诊断噢）</p>`;
+            feedbackText.innerHTML = html;
+            sfx.playLevelUp();
+        }
+
+        // Show Final Results
+        function showResults() {
+            sfx.playLevelUp();
+            document.getElementById('screen-lvl3').classList.add('hidden');
+            document.getElementById('screen-results').classList.remove('hidden');
+            document.getElementById('final-coins').innerText = totalCoins;
+        }
+
+        // Share今日成果 clipboard logic (requires document.execCommand fallback as per CSP rules)
+        function shareResult() {
+            const shareText = `📚 我在《小老板的大决战！》五年级马来文写作复习游戏中表现优异！\n💰 总共赢取第一桶金：🪙 ${totalCoins} 个金币！\n📅 完成了 Set 26 & 27 的核心词汇拼图与写作日记复习！`;
+            
+            // Create temporary input element for copying
+            const el = document.createElement('textarea');
+            el.value = shareText;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showCustomAlert('已复制！', '复习报告已成功复制到剪切板，可以发送至 Zoom 聊天框汇报给老师啦！', '📋');
+        }
+    </script>
 </body>
 </html>
