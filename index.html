@@ -1,886 +1,1463 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>终极造句魔法仪式 - Tahun 5 Bina Ayat</title>
+    <title>Aplikasi Kosa Kata Bahasa Melayu Tahun 5</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            sky: '#0284c7',
+                            purple: '#9333ea',
+                            amber: '#f59e0b',
+                            rose: '#f43f5e'
+                        }
+                    },
+                    boxShadow: {
+                        '3d': '0 8px 0 0 rgba(0,0,0,0.15)',
+                        '3d-sm': '0 4px 0 0 rgba(0,0,0,0.15)',
+                        '3d-green': '0 6px 0 0 #15803d',
+                        '3d-blue': '0 6px 0 0 #0369a1',
+                        '3d-purple': '0 6px 0 0 #7e22ce',
+                        '3d-amber': '0 6px 0 0 #b45309',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #120c1f;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #fef3c7 100%);
+            min-height: 100vh;
         }
-        .pixel-font {
-            font-family: 'Press Start 2P', monospace;
+
+        .font-headline {
+            font-family: 'Fredoka', cursive;
         }
-        /* 经典暗紫金边复古框体 */
-        .magic-board {
-            background-color: #26162d;
-            border: 4px solid #f4d03f;
-            box-shadow: 0 12px 0 #120716, 0 0 20px rgba(244, 208, 63, 0.15);
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        /* 魔法水晶按钮 */
-        .btn-magic {
-            background: linear-gradient(135deg, #f4d03f 0%, #d4ac0d 100%);
-            border: 3px solid #9a7d0a;
-            box-shadow: 0 4px 0 #5d4a04;
-            color: #120c1f;
-            transition: all 0.1s ease;
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
         }
-        .btn-magic:hover:not(:disabled) {
-            transform: translateY(1px);
-            box-shadow: 0 3px 0 #5d4a04;
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
         }
-        .btn-magic:active:not(:disabled) {
-            transform: translateY(4px);
-            box-shadow: none;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
-        .btn-magic:disabled {
-            background: #4a4535;
-            border-color: #3a362a;
-            box-shadow: none;
-            color: #7a7565;
-            cursor: not-allowed;
+
+        /* Flashcard Flip Animation */
+        .perspective-1000 {
+            perspective: 1000px;
         }
-        /* 槽位闪烁动画 */
-        @keyframes pulse-border {
-            0%, 100% { border-color: rgba(244, 208, 63, 0.4); }
-            50% { border-color: rgba(244, 208, 63, 1); }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .slot-active {
-            animation: pulse-border 1.5s infinite;
-            box-shadow: 0 0 15px rgba(244, 208, 63, 0.3);
+        .backface-hidden {
+            backface-visibility: hidden;
         }
-        .text-shadow-pixel {
-            text-shadow: 2px 2px 0 #000;
+        .rotate-y-180 {
+            transform: rotateY(180deg);
         }
-        /* 可自由思考点击的卡牌通用发光效果 */
-        .card-playable {
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            background: #2a1b35;
-            border: 2px solid #8e44ad;
+
+        /* Bounce & Ripple FX */
+        .hover-bounce:hover {
+            transform: translateY(-4px);
         }
-        .card-playable:hover {
-            transform: scale(1.05);
-            border-color: #f4d03f;
-            box-shadow: 0 0 15px rgba(244, 208, 63, 0.4);
-            background: #391e4a;
-        }
-        .card-playable:active {
+        .active-push:active {
             transform: translateY(2px);
+            box-shadow: 0 2px 0 0 rgba(0,0,0,0.1);
         }
-        /* 错误警告时的卡牌闪烁抖动 */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-        .shake-element {
-            animation: shake 0.3s ease-in-out 2;
+
+        /* Particle Confetti CSS */
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between overflow-x-hidden text-white">
+<body class="text-slate-800 pb-12 antialiased selection:bg-green-200 selection:text-green-900">
 
-    <header class="w-full bg-[#1b0e22] p-4 text-center border-b-4 border-[#120716]">
-        <div class="max-w-4xl mx-auto flex flex-wrap justify-between items-center gap-4">
-            <div class="text-left">
-                <h1 class="text-lg md:text-2xl font-bold text-[#f4d03f] tracking-wide flex items-center gap-2">
-                    <span>✨ 终极造句魔法仪式 ✨</span>
-                </h1>
-                <p class="text-xs text-gray-400">Akademi Sihir Bina Ayat — Tahun 5 (SK/SJKC)</p>
+    <!-- Modal Log Masuk Nama Murid -->
+    <div id="loginModal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full border-4 border-emerald-500 shadow-2xl text-center">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 border-2 border-emerald-300">
+                <i class="fa-solid fa-user-graduate"></i>
             </div>
-            <div class="flex items-center gap-3 bg-[#120716] px-4 py-2 rounded-lg border border-[#f4d03f]/30">
-                <span class="text-[#f4d03f] font-bold text-sm">得分 (Skor): <span id="game-score">0</span></span>
-                <span class="text-white text-xs bg-purple-700 px-2 py-1 rounded font-bold">关卡 <span id="current-level-indicator">1</span>/9</span>
+            <h2 class="font-headline text-2xl font-bold text-slate-800">Selamat Datang!</h2>
+            <p class="text-slate-600 text-sm mt-1 mb-6">Sila masukkan nama anda untuk memulakan 3 cabaran Bahasa Melayu Tahun 5.</p>
+            
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 text-left">Nama Murid:</label>
+                    <input type="text" id="loginNameInput" required placeholder="Contoh: Ahmad Zaki" 
+                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-2xl font-headline font-bold text-slate-800 focus:border-emerald-500 focus:outline-none text-center bg-slate-50 text-lg">
+                </div>
+                <button type="submit" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-headline font-bold text-lg rounded-2xl shadow-3d-green active-push flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Mula Belajar!
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-4 border-slate-200 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <!-- App Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('exercise')">
+                <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-3d-green font-bold font-headline">
+                    BM
+                </div>
+                <div>
+                    <h1 class="font-headline text-xl md:text-2xl font-bold text-slate-800 leading-none">
+                        Bijak Bahasa <span class="text-emerald-600">Tahun 5</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 font-semibold mt-0.5">Kosa Kata & Isi Tempat Kosong</p>
+                </div>
+            </div>
+
+            <!-- Score, Badge & Student Name -->
+            <div class="flex items-center gap-3">
+                <div id="studentHeaderBadge" class="hidden sm:flex items-center gap-2 bg-emerald-100 border-2 border-emerald-300 text-emerald-900 px-3 py-1.5 rounded-full font-bold text-xs">
+                    <i class="fa-solid fa-user-graduate text-emerald-600"></i>
+                    <span id="headerStudentName">Murid</span>
+                </div>
+                <div class="flex items-center gap-1.5 bg-amber-100 border-2 border-amber-300 text-amber-800 px-3 py-1.5 rounded-full font-bold text-sm shadow-sm">
+                    <i class="fa-solid fa-star text-amber-500 text-base animate-bounce"></i>
+                    <span id="starScore">0</span>
+                </div>
+                <button onclick="toggleAudioMute()" id="muteBtn" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 rounded-full flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-volume-high" id="muteIcon"></i>
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center p-4 max-w-4xl w-full mx-auto">
-        <div class="w-full magic-board rounded-2xl p-4 md:p-6 relative overflow-hidden">
-            
-            <!-- 关卡进度条 -->
-            <div class="mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-bold text-[#f4d03f] flex items-center gap-1">
-                        <span>🎯 任务进度 (Kemajuan):</span>
-                        <span id="level-title" class="text-white">正在初始化仪式...</span>
-                    </span>
-                    <span id="reward-badge" class="bg-purple-950 text-purple-300 text-[10px] px-2 py-0.5 rounded border border-purple-700 font-bold uppercase">正在积攒魔力</span>
-                </div>
-                <div class="w-full bg-gray-900 h-3 rounded-full border-2 border-[#120716] overflow-hidden">
-                    <div id="progress-bar" class="bg-gradient-to-r from-yellow-500 to-[#f4d03f] h-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
+    <main class="max-w-5xl mx-auto px-4 mt-6">
 
-            <!-- 公式说明及阶梯引导卡片 -->
-            <div id="tutorial-guide" class="bg-[#1b0e22] p-3 rounded-xl border border-purple-900/50 mb-4">
-                <h3 class="text-center text-[#f4d03f] text-xs md:text-sm font-bold mb-2">💡 阶梯式拼装机制：请先选【①谁】，再选【②动词】，以此类推！</h3>
-                <div class="grid grid-cols-4 gap-1 text-[10px] sm:text-xs text-center font-bold">
-                    <div id="guide-subjek" class="bg-rose-950/70 border-2 border-rose-500 text-rose-300 p-1.5 rounded-lg transition-all duration-300">
-                        <span class="block text-[8px] opacity-75">① 谁</span>Subjek
+        <!-- Navigation Menu Tabs (3 Games Only) -->
+        <nav class="flex flex-wrap items-center justify-center gap-2 mb-8" id="navTabs">
+            <button onclick="switchTab('exercise')" id="tab-exercise" class="tab-btn active font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-emerald-500 text-white border-emerald-600 shadow-3d-green">
+                <i class="fa-solid fa-pen-to-square text-emerald-100"></i> Latihan (12 Soalan)
+            </button>
+            <button onclick="switchTab('matching')" id="tab-matching" class="tab-btn font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-white text-slate-700 border-slate-200 hover:bg-slate-50">
+                <i class="fa-solid fa-puzzle-piece text-purple-500"></i> Padan Kata
+            </button>
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-white text-slate-700 border-slate-200 hover:bg-slate-50">
+                <i class="fa-solid fa-trophy text-amber-500"></i> Cabaran Kuiz
+            </button>
+        </nav>
+
+        <!-- VIEW 1: FILL IN THE BLANKS EXERCISE -->
+        <section id="view-exercise" class="view-section">
+            <!-- Exercise Header Card -->
+            <div class="bg-white rounded-3xl p-6 border-4 border-slate-200 shadow-lg mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-headline text-2xl font-bold text-slate-800">Isi Tempat Kosong (12 Soalan)</h2>
+                        <p class="text-sm text-slate-500">Lengkapkan ayat di bawah dengan perkataan yang paling sesuai.</p>
                     </div>
-                    <div id="guide-verb" class="bg-slate-900/40 border border-gray-800 text-gray-500 p-1.5 rounded-lg transition-all duration-300">
-                        <span class="block text-[8px] opacity-75">② 动词</span>Kata Kerja
-                    </div>
-                    <div id="guide-objek" class="bg-slate-900/40 border border-gray-800 text-gray-500 p-1.5 rounded-lg transition-all duration-300">
-                        <span class="block text-[8px] opacity-75">③ 东西</span>Objek
-                    </div>
-                    <div id="guide-penerangan" class="bg-slate-900/40 border border-gray-800 text-gray-500 p-1.5 rounded-lg transition-all duration-300">
-                        <span class="block text-[8px] opacity-75">④ 地点</span>Penerangan
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleWordBank()" id="wordBankToggleBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold text-xs md:text-sm px-4 py-2 rounded-xl transition border border-blue-300">
+                            <i class="fa-solid fa-eye mr-1"></i> Papar Bank Perkataan
+                        </button>
+                        <button onclick="resetExercise()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs md:text-sm px-4 py-2 rounded-xl transition border border-slate-300">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Semula
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- 目标提示面板 -->
-            <div class="mb-4 bg-black/40 p-4 rounded-xl border border-gray-800 min-h-[90px] flex flex-col justify-between">
-                <div>
-                    <span class="text-xs text-yellow-500 font-extrabold tracking-wider block mb-1">🔮 华文翻译提示 (Maksud):</span>
-                    <h2 id="target-sentence-cn" class="text-base md:text-lg font-bold text-white leading-relaxed">正在召唤魔法命题...</h2>
-                </div>
-            </div>
-
-            <!-- 智能语法纠错反馈条 -->
-            <div id="dynamic-error-feedback" class="hidden bg-rose-950/90 border-2 border-rose-500/80 p-3 rounded-xl mb-4 text-xs md:text-sm text-rose-200 transition-all duration-300 flex items-start gap-2 shadow-lg">
-                <span class="text-xl">🧙‍♂️⚠️</span>
-                <div>
-                    <span class="font-extrabold block text-rose-400">魔法导师的纠错反馈：</span>
-                    <p id="error-feedback-text">这里显示具体的语法纠正逻辑...</p>
+                <!-- Word Bank Drawer -->
+                <div id="wordBankContainer" class="hidden mt-5 p-4 bg-blue-50/80 rounded-2xl border-2 border-blue-200">
+                    <p class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2 flex items-center gap-1">
+                        <i class="fa-solid fa-lightbulb"></i> Bank Perkataan Pilihan:
+                    </p>
+                    <div class="flex flex-wrap gap-2" id="wordBankChips">
+                        <!-- Javascript generates chips -->
+                    </div>
                 </div>
             </div>
 
-            <div id="drag-drop-zone" class="mb-6">
-                <span class="text-xs text-gray-400 font-bold block mb-2">🧩 句子仪式轨 (Susunan Ayat):</span>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    
-                    <!-- 卡槽 1: Subjek -->
-                    <div id="slot-subjek" class="min-h-[80px] bg-rose-950/20 border-2 border-dashed border-rose-900/50 rounded-xl p-2 flex flex-col justify-between items-center transition-all slot-active">
-                        <span class="text-[9px] text-rose-400 font-bold tracking-widest uppercase">① Subjek (谁)</span>
-                        <div class="slot-content w-full flex justify-center items-center h-full min-h-[40px]">-</div>
-                    </div>
-
-                    <!-- 卡槽 2: Verb -->
-                    <div id="slot-verb" class="min-h-[80px] bg-slate-900/20 border-2 border-dashed border-gray-800 rounded-xl p-2 flex flex-col justify-between items-center transition-all opacity-40">
-                        <span class="text-[9px] text-gray-500 font-bold tracking-widest uppercase">② Kata Kerja (动词)</span>
-                        <div class="slot-content w-full flex justify-center items-center h-full min-h-[40px]">-</div>
-                    </div>
-
-                    <!-- 卡槽 3: Objek -->
-                    <div id="slot-objek" class="min-h-[80px] bg-slate-900/20 border-2 border-dashed border-gray-800 rounded-xl p-2 flex flex-col justify-between items-center transition-all opacity-40">
-                        <span class="text-[9px] text-gray-500 font-bold tracking-widest uppercase">③ Objek (东西)</span>
-                        <div class="slot-content w-full flex justify-center items-center h-full min-h-[40px]">-</div>
-                    </div>
-
-                    <!-- 卡槽 4: Penerangan -->
-                    <div id="slot-penerangan" class="min-h-[80px] bg-slate-900/20 border-2 border-dashed border-gray-800 rounded-xl p-2 flex flex-col justify-between items-center transition-all opacity-40">
-                        <span class="text-[9px] text-gray-500 font-bold tracking-widest uppercase">④ Penerangan (地点)</span>
-                        <div class="slot-content w-full flex justify-center items-center h-full min-h-[40px]">-</div>
-                    </div>
-
-                </div>
+            <!-- Questions Form -->
+            <div class="space-y-4" id="questionsContainer">
+                <!-- Javascript will render 12 questions here -->
             </div>
 
-            <!-- 手写输入魔法面板 (Level 6, 7, 8, 9) -->
-            <div id="typing-zone" class="mb-6 hidden">
-                <span class="text-xs text-yellow-500 font-bold block mb-2">⌨️ 终极手写魔法阵（请用键盘打出完整句子，注意首字母大写与末尾标点）：</span>
-                <div class="bg-[#1b0e22] p-4 rounded-xl border border-purple-900/60 shadow-inner">
-                    <input type="text" id="typing-input" class="w-full bg-[#120716] border-2 border-purple-900 text-yellow-300 font-bold py-3 px-4 rounded-lg focus:outline-none focus:border-[#f4d03f] transition-all text-base md:text-lg text-center" placeholder="在此处手写输入完整的马来文句子..." oninput="checkSubmitCapability()">
-                    
-                    <!-- 词汇提示宝箱 -->
-                    <div class="mt-4 p-3 bg-purple-950/40 rounded-lg border border-purple-900/30">
-                        <span class="text-[11px] text-purple-300 font-bold block mb-2">📦 纯华文词意宝箱 (Sebut Maksud Bahasa Cina) —— 请思考对应的马来文：</span>
-                        <div id="typing-word-bank" class="flex flex-wrap justify-center gap-2">
-                            <!-- 动态载入中文提示 -->
+            <!-- Submit Button & Feedback -->
+            <div class="mt-8 bg-white p-6 rounded-3xl border-4 border-slate-200 shadow-lg text-center">
+                <button onclick="checkExerciseAnswers()" class="w-full md:w-auto px-10 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-headline text-xl font-bold rounded-2xl shadow-3d-green active-push transition">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Semak Semua Jawapan
+                </button>
+
+                <div id="exerciseResultBox" class="hidden mt-6 p-6 rounded-2xl border-2 text-center">
+                    <h3 class="font-headline text-2xl font-bold" id="exerciseResultTitle"></h3>
+                    <p class="text-base font-semibold mt-1" id="exerciseResultScore"></p>
+                    <p class="text-sm mt-2 opacity-90" id="exerciseResultDesc"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: MATCHING GAME -->
+        <section id="view-matching" class="view-section hidden">
+            <div class="bg-white rounded-3xl p-6 border-4 border-slate-200 shadow-lg mb-6 text-center">
+                <h2 class="font-headline text-2xl font-bold text-slate-800">Padankan Bahasa Melayu & Maksud Mandarin</h2>
+                <p class="text-sm text-slate-500 mt-1">Klik satu perkataan Bahasa Melayu di sebelah kiri, kemudian klik maksud Mandarin yang betul di sebelah kanan!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="matchingGameContainer">
+                <!-- Left Column: Malay -->
+                <div class="space-y-3" id="matchingMalayCol"></div>
+                <!-- Right Column: Chinese -->
+                <div class="space-y-3" id="matchingChineseCol"></div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <button onclick="initMatchingGame()" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-headline font-bold rounded-2xl shadow-3d-purple active-push">
+                    <i class="fa-solid fa-arrows-rotate mr-2"></i> Muat Semula Permainan Padanan
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 3: QUIZ CHALLENGE -->
+        <section id="view-quiz" class="view-section hidden">
+            <div class="max-w-3xl mx-auto">
+                <!-- Quiz Intro Card -->
+                <div id="quizIntroCard" class="bg-white rounded-3xl p-8 border-4 border-slate-200 shadow-xl text-center">
+                    <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 border-2 border-amber-300 shadow-inner">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="font-headline text-3xl font-extrabold text-slate-800">Cabaran Kuiz Isi Tempat Kosong</h2>
+                    <p class="text-slate-600 text-sm md:text-base mt-2 leading-relaxed">
+                        Uji kepantasan dan pemahaman anda! Jawab kesemua 12 soalan isi tempat kosong kosa kata Bahasa Melayu untuk kumpul <strong>Bintang Emas 🌟</strong>!
+                    </p>
+
+                    <div class="mt-6 flex flex-wrap justify-center gap-3">
+                        <button onclick="startFillBlankQuiz()" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-slate-900 font-headline font-extrabold text-lg rounded-2xl shadow-3d-amber active-push flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> Mula Kuiz 12 Soalan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Playing Box -->
+                <div id="quizPlayBox" class="hidden bg-white rounded-3xl p-6 md:p-8 border-4 border-slate-200 shadow-xl">
+                    <!-- Header Status -->
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <span class="font-headline font-bold text-sm text-slate-500" id="quizProgressText">Soalan 1 / 12</span>
+                            <button onclick="speakCurrentQuizSentence()" class="w-8 h-8 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xs border border-emerald-200" title="Dengar sebutan ayat">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full border border-amber-200" id="quizTimerText">⏱️ 30s</span>
+                            <span class="font-bold text-xs bg-purple-100 text-purple-800 px-3 py-1 rounded-full border border-purple-200" id="quizStreakText">🔥 Streak: 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-6 border border-slate-200">
+                        <div id="quizProgressBar" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full w-0 transition-all duration-300"></div>
+                    </div>
+
+                    <!-- Chinese Hint & Question -->
+                    <div class="mb-6 bg-slate-50 p-5 rounded-2xl border-2 border-slate-200">
+                        <span class="bg-emerald-100 text-emerald-800 font-bold text-xs px-3 py-1 rounded-full uppercase" id="quizChineseHint"></span>
+                        <div class="font-headline text-lg md:text-2xl font-bold text-slate-800 mt-3 leading-relaxed" id="quizQuestionText">
+                            <!-- Question sentence generated here -->
+                        </div>
+                    </div>
+
+                    <!-- Input Box & Actions -->
+                    <div class="mb-6">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Taip atau klik kata pilihan di bawah:</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="quizAnswerInput" placeholder="Tekan pilihan di bawah atau taip di sini..." 
+                                class="flex-1 px-4 py-3 border-2 border-slate-300 rounded-2xl font-bold text-slate-800 text-base md:text-lg focus:border-emerald-500 focus:outline-none bg-white shadow-inner"
+                                autocomplete="off"
+                            >
+                            <button onclick="clearQuizInput()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-2xl border border-slate-300">
+                                <i class="fa-solid fa-eraser"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Clickable Word Bank Chips -->
+                    <div class="mb-6">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span><i class="fa-solid fa-hand-pointer mr-1"></i> Bank Kosa Kata Pilihan:</span>
+                            <span class="text-emerald-600 font-normal">Klik untuk isi tempat kosong</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2" id="quizWordBankChips">
+                            <!-- Clickable word buttons -->
+                        </div>
+                    </div>
+
+                    <!-- Submit & Feedback -->
+                    <div id="quizFeedbackBox" class="hidden mb-6 p-4 rounded-2xl text-sm font-bold"></div>
+
+                    <div class="flex items-center justify-end gap-3">
+                        <button onclick="submitQuizAnswer()" id="quizSubmitBtn" class="w-full md:w-auto px-8 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-headline text-lg font-bold rounded-2xl shadow-3d-green active-push flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Semak Jawapan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Results Box -->
+                <div id="quizResultBox" class="hidden bg-white rounded-3xl p-8 border-4 border-slate-200 shadow-xl text-center">
+                    <div class="text-6xl mb-3" id="quizResultEmoji">🎉</div>
+                    <h2 class="font-headline text-3xl font-bold text-slate-800" id="quizResultTitle">Syabas!</h2>
+                    <p class="text-xl font-headline font-bold text-emerald-600 mt-2" id="quizResultScoreText">Skor Anda: 12 / 12</p>
+                    <p class="text-sm text-slate-600 mt-2 max-w-md mx-auto" id="quizResultMessage">Anda telah berjaya menjawab soalan isi tempat kosong Bahasa Melayu dengan cemerlang!</p>
+
+                    <div class="mt-8 flex justify-center gap-4">
+                        <button onclick="startFillBlankQuiz()" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-headline font-bold rounded-2xl shadow-3d-amber active-push flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i> Cuba Semula Kuiz
+                        </button>
+                        <button onclick="switchTab('exercise')" class="px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-headline font-bold rounded-2xl shadow-3d-green active-push flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square"></i> Latihan Penuh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: TOTAL SCORE & CERTIFICATE SECTION -->
+        <section id="view-report" class="view-section hidden">
+            <div class="max-w-3xl mx-auto space-y-6">
+                <!-- Summary Card -->
+                <div class="bg-white rounded-3xl p-6 md:p-8 border-4 border-slate-200 shadow-xl text-center">
+                    <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-3 border-2 border-amber-300">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h2 class="font-headline text-3xl font-extrabold text-slate-800">Laporan Pencapaian & Sijil</h2>
+                    <p class="text-slate-500 text-sm mt-1">Selesaikan kesemua 3 latihan untuk membuka Sijil Pencapaian rasmi anda!</p>
+
+                    <!-- Overall Score Box -->
+                    <div class="mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="text-left">
+                            <p class="text-xs font-bold uppercase tracking-wider text-emerald-100">Jumlah Markah Terkumpul</p>
+                            <h3 class="font-headline text-3xl md:text-4xl font-extrabold" id="totalMarkText">0 / 30 Markah</h3>
+                            <p class="text-xs text-emerald-100 mt-1" id="totalPercentageText">Peratusan: 0%</p>
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-md px-5 py-3 rounded-xl border border-white/30 text-center">
+                            <span class="text-xs font-bold block text-emerald-100">Status Tugasan</span>
+                            <span class="font-headline text-xl font-bold" id="completedTaskCountText">0 / 3 Selesai</span>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown of 3 Tasks -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <!-- Task 1 -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-xs text-slate-500">1. Latihan</span>
+                                <span id="statusBadge1" class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">Belum</span>
+                            </div>
+                            <h4 class="font-headline font-bold text-slate-800 text-sm">Isi Tempat Kosong</h4>
+                            <p class="font-bold text-emerald-600 text-lg mt-1" id="scoreTask1">0 / 12</p>
+                        </div>
+
+                        <!-- Task 2 -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-xs text-slate-500">2. Permainan</span>
+                                <span id="statusBadge2" class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">Belum</span>
+                            </div>
+                            <h4 class="font-headline font-bold text-slate-800 text-sm">Padan Kata</h4>
+                            <p class="font-bold text-purple-600 text-lg mt-1" id="scoreTask2">0 / 6</p>
+                        </div>
+
+                        <!-- Task 3 -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-xs text-slate-500">3. Kuiz</span>
+                                <span id="statusBadge3" class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">Belum</span>
+                            </div>
+                            <h4 class="font-headline font-bold text-slate-800 text-sm">Cabaran Masa</h4>
+                            <p class="font-bold text-amber-600 text-lg mt-1" id="scoreTask3">0 / 12</p>
+                        </div>
+                    </div>
+
+                    <!-- Copy & Paste Section -->
+                    <div class="mt-6 pt-6 border-t-2 border-slate-100 text-left">
+                        <label class="block font-headline font-bold text-slate-800 text-sm mb-2">
+                            <i class="fa-solid fa-copy text-emerald-600 mr-1"></i> Salin Keputusan Lengkap (Untuk Hantar Kepada Guru / Ibu Bapa)
+                        </label>
+                        <div class="flex gap-2">
+                            <textarea readonly class="copy-report-textarea w-full h-24 p-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-mono text-slate-700 focus:outline-none resize-none"></textarea>
+                        </div>
+                        <div class="mt-2 flex items-center justify-between">
+                            <button onclick="copyResultsToClipboard()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-headline font-bold text-sm rounded-xl shadow-3d-green active-push flex items-center gap-2">
+                                <i class="fa-solid fa-paste"></i> Salin Keputusan (Copy Text)
+                            </button>
+                            <span class="copy-success-msg hidden text-xs font-bold text-emerald-600 flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check"></i> Berjaya disalin!
+                            </span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- 卡牌选择面板 -->
-            <div class="mb-6" id="shuffled-container-wrapper">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs text-yellow-500 font-bold">👉 请自主选择最符合当前句式位置的卡片（全部可点击，考验你的判断力）：</span>
-                    <span id="current-step-hint" class="text-xs text-rose-400 font-extrabold animate-pulse">🎯 当前任务：请选择 [谁 Subjek] 卡牌</span>
+                <!-- Certificate Generation Box -->
+                <div class="bg-white rounded-3xl p-6 md:p-8 border-4 border-slate-200 shadow-xl">
+                    <div class="text-center mb-6">
+                        <h3 class="font-headline text-2xl font-bold text-slate-800">Muat Turun Sijil Pencapaian</h3>
+                        <p class="text-xs md:text-sm text-slate-500 mt-1">Sila masukkan nama murid untuk menjana sijil rasmi yang boleh dimuat turun sebagai imej (PNG).</p>
+                    </div>
+
+                    <!-- Student Name Input -->
+                    <div class="max-w-md mx-auto mb-6">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Nama Murid:</label>
+                        <input type="text" id="certStudentName" placeholder="Masukkan nama penuh murid..." 
+                            value="Ahmad Zaki" oninput="renderCertificateCanvas()"
+                            class="w-full px-4 py-3 border-2 border-slate-300 rounded-2xl font-headline font-bold text-slate-800 focus:border-amber-500 focus:outline-none text-center bg-slate-50"
+                        >
+                    </div>
+
+                    <!-- Certificate Canvas Preview -->
+                    <div class="overflow-x-auto flex justify-center bg-slate-100 p-4 rounded-2xl border-2 border-slate-200">
+                        <canvas id="certCanvas" width="800" height="560" class="max-w-full h-auto rounded-xl shadow-md border border-slate-300 bg-white"></canvas>
+                    </div>
+
+                    <!-- Download Button -->
+                    <div class="mt-6 text-center">
+                        <button onclick="downloadCertificate()" id="downloadCertBtn" class="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-headline font-extrabold text-base rounded-2xl shadow-3d-amber active-push inline-flex items-center gap-2">
+                            <i class="fa-solid fa-download"></i> Muat Turun Sijil (PNG)
+                        </button>
+                        <p class="text-xs text-slate-400 mt-2" id="certLockNotice">Nota: Anda boleh memuat turun sijil pada bila-bila masa selepas mencuba latihan.</p>
+                    </div>
                 </div>
-                <div class="flex flex-wrap justify-center gap-3 p-4 bg-[#1b0e22] rounded-xl border border-purple-900/40 min-h-[110px]" id="shuffled-blocks-container">
-                    <!-- 卡片元素将由 JS 动态生成 -->
-                </div>
             </div>
+        </section>
 
-            <!-- 操作动作条 -->
-            <div class="flex justify-between items-center border-t border-purple-950 pt-4">
-                <button class="bg-rose-800 hover:bg-rose-900 border-2 border-rose-600 text-white font-bold py-2 px-5 rounded-lg text-xs transition-all flex items-center gap-1 shadow-md" onclick="resetCurrentSentence()">
-                    <span>🧹 撤销重选</span><span class="text-[10px] opacity-75">(Reset)</span>
-                </button>
-                <button class="btn-magic font-extrabold py-3 px-8 rounded-lg text-sm tracking-wider flex items-center gap-1 shadow-lg" id="submit-magic-btn" disabled onclick="castMagicSpell()">
-                    <span>🪄 施展造句魔法</span><span class="text-[10px] opacity-90">(Semak)</span>
-                </button>
-            </div>
-
-            <!-- 魔法阵右下角像素装饰 -->
-            <div class="absolute bottom-1 right-2 opacity-10 pointer-events-none hidden sm:block">
-                <svg class="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L2 22h20L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
-                </svg>
-            </div>
-
-        </div>
     </main>
 
-    <!-- 自定义魔法弹窗 -->
-    <div id="custom-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
-        <div class="w-full max-w-md bg-[#26162d] border-4 border-[#f4d03f] rounded-2xl p-6 text-center shadow-2xl relative">
-            <div id="modal-icon" class="text-5xl mb-4">✨</div>
-            <h3 id="modal-title" class="text-xl font-extrabold text-[#f4d03f] mb-2">造句成功！</h3>
-            <p id="modal-message" class="text-sm text-gray-300 leading-relaxed mb-6">做得太棒了，魔法阵完美共鸣！</p>
-            <button id="modal-btn" class="btn-magic font-bold py-2.5 px-8 rounded-lg text-sm" onclick="closeCustomModal()">
-                继续冒险
+    <!-- POPUP MODAL: SIJIL & LAPORAN PENCAPAIAN (Hanya keluar selepas selesai 3 tugasan) -->
+    <div id="completionReportModal" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md overflow-y-auto p-4 flex items-center justify-center">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-3xl w-full border-4 border-amber-400 shadow-2xl relative my-8">
+            <button onclick="closeReportModal()" class="absolute top-4 right-4 w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold border border-slate-300">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
+
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-3 border-2 border-amber-300 animate-bounce">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h2 class="font-headline text-3xl font-extrabold text-slate-800">Tahniah! Anda Selesai Semua 3 Tugasan!</h2>
+                <p class="text-slate-500 text-sm mt-1">Berikut ialah Laporan Pencapaian dan Sijil Rasmi anda.</p>
+            </div>
+
+            <!-- Overall Score Box -->
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+                <div class="text-left">
+                    <p class="text-xs font-bold uppercase tracking-wider text-emerald-100">Jumlah Markah Terkumpul</p>
+                    <h3 class="font-headline text-3xl md:text-4xl font-extrabold" id="totalMarkText">0 / 30 Markah</h3>
+                    <p class="text-xs text-emerald-100 mt-1" id="totalPercentageText">Peratusan: 0%</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-md px-5 py-3 rounded-xl border border-white/30 text-center">
+                    <span class="text-xs font-bold block text-emerald-100">Status Tugasan</span>
+                    <span class="font-headline text-xl font-bold" id="completedTaskCountText">3 / 3 Selesai</span>
+                </div>
+            </div>
+
+            <!-- Breakdown of 3 Tasks -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-xs text-slate-500">1. Latihan</span>
+                        <span id="statusBadge1" class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">Selesai ✓</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-slate-800 text-sm">Isi Tempat Kosong</h4>
+                    <p class="font-bold text-emerald-600 text-lg mt-1" id="scoreTask1">0 / 12</p>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-xs text-slate-500">2. Permainan</span>
+                        <span id="statusBadge2" class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">Selesai ✓</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-slate-800 text-sm">Padan Kata</h4>
+                    <p class="font-bold text-purple-600 text-lg mt-1" id="scoreTask2">0 / 6</p>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-xs text-slate-500">3. Kuiz</span>
+                        <span id="statusBadge3" class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">Selesai ✓</span>
+                    </div>
+                    <h4 class="font-headline font-bold text-slate-800 text-sm">Cabaran Masa</h4>
+                    <p class="font-bold text-amber-600 text-lg mt-1" id="scoreTask3">0 / 12</p>
+                </div>
+            </div>
+
+            <!-- Copy & Paste Section -->
+            <div class="mb-6 pt-4 border-t-2 border-slate-100 text-left">
+                <label class="block font-headline font-bold text-slate-800 text-sm mb-2">
+                    <i class="fa-solid fa-copy text-emerald-600 mr-1"></i> Salin Keputusan Lengkap (Untuk Hantar Kepada Guru / Ibu Bapa)
+                </label>
+                <textarea readonly class="copy-report-textarea w-full h-24 p-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-mono text-slate-700 focus:outline-none resize-none mb-2"></textarea>
+                <div class="flex items-center justify-between">
+                    <button onclick="copyResultsToClipboard()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-headline font-bold text-sm rounded-xl shadow-3d-green active-push flex items-center gap-2">
+                        <i class="fa-solid fa-paste"></i> Salin Keputusan (Copy Text)
+                    </button>
+                    <span class="copy-success-msg hidden text-xs font-bold text-emerald-600 flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check"></i> Berjaya disalin!
+                    </span>
+                </div>
+            </div>
+
+            <!-- Certificate Generation Box -->
+            <div class="pt-4 border-t-2 border-slate-100 text-center">
+                <h3 class="font-headline text-2xl font-bold text-slate-800 mb-1">Sijil Pencapaian Anda</h3>
+                <p class="text-xs text-slate-500 mb-4">Sijil di bawah telah dijana secara rasmi mengikut nama anda.</p>
+
+                <div class="overflow-x-auto flex justify-center bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 mb-4">
+                    <canvas id="certCanvas" width="800" height="560" class="max-w-full h-auto rounded-xl shadow-md border border-slate-300 bg-white"></canvas>
+                </div>
+
+                <div class="flex justify-center gap-3">
+                    <button onclick="downloadCertificate()" class="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-headline font-extrabold text-base rounded-2xl shadow-3d-amber active-push inline-flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> Muat Turun Sijil (PNG)
+                    </button>
+                    <button onclick="closeReportModal()" class="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-headline font-bold text-base rounded-2xl border border-slate-300 active-push">
+                        Tutup
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 页脚标注 -->
-    <footer class="bg-gradient-to-b from-[#5cb85c] to-[#4cae4c] border-t-4 border-[#3e8f3e] w-full py-4 text-center text-white relative">
-        <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center text-xs gap-2 font-bold text-shadow-pixel">
-            <span>📚 Tahun 5 Tatabahasa: S + KK + O + P</span>
-            <span>自主辨识・严格“主、谓、宾、状”顺序拼装仪式</span>
-        </div>
-    </footer>
-
     <script>
-        let audioCtx;
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        function playSynthSound(type) {
-            initAudio();
-            if (!audioCtx) return;
-            
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                const now = audioCtx.currentTime;
-
-                if (type === 'click') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(450, now);
-                    osc.frequency.exponentialRampToValueAtTime(900, now + 0.08);
-                    gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-                    osc.start(now);
-                    osc.stop(now + 0.09);
-                } else if (type === 'step') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(587.33, now); // D5
-                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                    osc.start(now);
-                    osc.stop(now + 0.13);
-                } else if (type === 'correct') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, now); // C5
-                    gain.gain.setValueAtTime(0.08, now);
-                    osc.start(now);
-                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
-                    osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
-                    osc.stop(now + 0.5);
-                } else if (type === 'wrong') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(220, now);
-                    osc.frequency.linearRampToValueAtTime(110, now + 0.3);
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
-                    osc.start(now);
-                    osc.stop(now + 0.35);
-                } else if (type === 'victory') {
-                    osc.type = 'square';
-                    const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 523.25, 659.25, 783.99, 1046.50];
-                    gain.gain.setValueAtTime(0.06, now);
-                    osc.start(now);
-                    notes.forEach((freq, idx) => {
-                        osc.frequency.setValueAtTime(freq, now + idx * 0.1);
-                    });
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
-                    osc.stop(now + 1.2);
-                }
-            } catch (e) {
-                console.warn("Audio Context error: ", e);
-            }
-        }
-
-        // 核心关卡数据库（1-5关为自主思考排序，6-9关为与第六关相同的纯手写挑战）
-        const LEVEL_DATABASE = [
+        // Core Vocabulary Dataset for Year 5 Bahasa Melayu
+        const vocabList = [
             {
                 id: 1,
-                type: "drag",
-                chineseHint: "弟弟在客厅看电视。",
-                formula: {
-                    subjek: { word: "Adik", cn: "弟弟", part: "subjek" },
-                    verb: { word: "menonton", cn: "看 (及物动词)", part: "verb" },
-                    objek: { word: "televisyen", cn: "电视 (物品)", part: "objek" },
-                    penerangan: { word: "di ruang tamu", cn: "在客厅 (地点)", part: "penerangan" }
-                }
+                malay: "menghijaukan kawasan sekolah",
+                chinese: "绿化学校环境",
+                emoji: "🌱",
+                sentence: "Murid-murid menanam pelbagai jenis pokok bunga untuk ___________.",
+                example: "Murid-murid menanam pelbagai jenis pokok bunga untuk menghijaukan kawasan sekolah.",
+                distractors: ["menceriakan kawasan sekolah", "merapatkan hubungan kekeluargaan", "membeli-belah"]
             },
             {
                 id: 2,
-                type: "drag",
-                chineseHint: "姐姐在庭院浇花。",
-                formula: {
-                    subjek: { word: "Kakak", cn: "姐姐", part: "subjek" },
-                    verb: { word: "menyiram", cn: "浇 (及物动词)", part: "verb" },
-                    objek: { word: "bunga", cn: "花 (物品)", part: "objek" },
-                    penerangan: { word: "di halaman rumah", cn: "在庭院 (地点)", part: "penerangan" }
-                }
+                malay: "menceriakan kawasan sekolah",
+                chinese: "美化学校环境",
+                emoji: "🎨",
+                sentence: "Gotong-royong itu bertujuan untuk ___________ supaya kelihatan indah dan bersih.",
+                example: "Gotong-royong itu bertujuan untuk menceriakan kawasan sekolah supaya kelihatan indah dan bersih.",
+                distractors: ["menghijaukan kawasan sekolah", "menghirup udara yang segar", "meminta maaf"]
             },
             {
                 id: 3,
-                type: "drag",
-                chineseHint: "妈妈在厨房洗盘子。",
-                formula: {
-                    subjek: { word: "Ibu", cn: "妈妈", part: "subjek" },
-                    verb: { word: "mencuci", cn: "洗 (及物动词)", part: "verb" },
-                    objek: { word: "pinggan", cn: "盘子 (物品)", part: "objek" },
-                    penerangan: { word: "di dapur", cn: "在厨房 (地点)", part: "penerangan" }
-                }
+                malay: "menghirup udara yang segar",
+                chinese: "呼吸新鲜的空气",
+                emoji: "🍃",
+                sentence: "Kami sekeluarga berjoging di taman rekreasi untuk ___________ pada waktu pagi.",
+                example: "Kami sekeluarga berjoging di taman rekreasi untuk menghirup udara yang segar pada waktu pagi.",
+                distractors: ["meningkatkan kemahiran komunikasi", "minggu depan", "berjanji"]
             },
             {
                 id: 4,
-                type: "drag",
-                chineseHint: "Siva把垃圾扔进垃圾桶里。",
-                formula: {
-                    subjek: { word: "Siva", cn: "Siva", part: "subjek" },
-                    verb: { word: "membuang", cn: "扔 (及物动词)", part: "verb" },
-                    objek: { word: "sampah", cn: "垃圾 (物品)", part: "objek" },
-                    penerangan: { word: "ke dalam tong sampah", cn: "进垃圾桶里 (地点)", part: "penerangan" }
-                }
+                malay: "meningkatkan keyakinan diri",
+                chinese: "提升自信心",
+                emoji: "💪",
+                sentence: "Menyertai pertandingan syarahan dapat ___________ semasa bercakap di hadapan orang ramai.",
+                example: "Menyertai pertandingan syarahan dapat meningkatkan keyakinan diri semasa bercakap di hadapan orang ramai.",
+                distractors: ["meningkatkan kemahiran komunikasi", "pengalaman", "membeli-belah"]
             },
             {
                 id: 5,
-                type: "drag",
-                chineseHint: "爸爸在庭院扫枯叶。",
-                formula: {
-                    subjek: { word: "Bapa", cn: "爸爸", part: "subjek" },
-                    verb: { word: "menyapu", cn: "扫 (及物动词)", part: "verb" },
-                    objek: { word: "daun kering", cn: "枯叶 (物品)", part: "objek" },
-                    penerangan: { word: "di halaman rumah", cn: "在庭院 (地点)", part: "penerangan" }
-                }
+                malay: "meningkatkan kemahiran komunikasi",
+                chinese: "提升表达能力",
+                emoji: "🗣️",
+                sentence: "Aktiviti pembentangan kumpulan membantu murid ___________ dengan rakan-rakan.",
+                example: "Aktiviti pembentangan kumpulan membantu murid meningkatkan kemahiran komunikasi dengan rakan-rakan.",
+                distractors: ["meningkatkan keyakinan diri", "kemahiran", "berjanji"]
             },
             {
                 id: 6,
-                type: "typing",
-                chineseHint: "哥哥在庭院洗自行车。(手写魔法关 ⌨️)",
-                correctSentence: "Abang mencuci basikal di halaman rumah.",
-                wordBank: [
-                    { cn: "① 谁: 哥哥" },
-                    { cn: "② 动词: 洗 (及物)" },
-                    { cn: "③ 东西: 自行车" },
-                    { cn: "④ 地点: 在庭院" }
-                ]
+                malay: "membeli-belah",
+                chinese: "买东西",
+                emoji: "🛍️",
+                sentence: "Ibu dan ayah pergi ke pusat ___________ untuk membeli barangan dapur.",
+                example: "Ibu dan ayah pergi ke pusat membeli-belah untuk membeli barangan dapur.",
+                distractors: ["pengalaman", "kemahiran", "minggu depan"]
             },
             {
                 id: 7,
-                type: "typing",
-                chineseHint: "学生们在学校整理教室。(手写魔法关 ⌨️)",
-                correctSentence: "Murid-murid mengemas kelas di sekolah.",
-                wordBank: [
-                    { cn: "① 谁: 学生们" },
-                    { cn: "② 动词: 整理 (及物)" },
-                    { cn: "③ 东西: 教室" },
-                    { cn: "④ 地点: 在学校" }
-                ]
+                malay: "merapatkan hubungan kekeluargaan",
+                chinese: "增进亲情关系",
+                emoji: "👨‍👩‍👧‍👦",
+                sentence: "Aktiviti perkelahan di tepi pantai ini dapat ___________ kami.",
+                example: "Aktiviti perkelahan di tepi pantai ini dapat merapatkan hubungan kekeluargaan kami.",
+                distractors: ["menceriakan kawasan sekolah", "meminta maaf", "menghijaukan kawasan sekolah"]
             },
             {
                 id: 8,
-                type: "typing",
-                chineseHint: "他们在教室里建造一个长屋模型。(手写魔法关 ⌨️)",
-                correctSentence: "Mereka membina sebuah replika rumah panjang di dalam kelas.",
-                wordBank: [
-                    { cn: "① 谁: 他们" },
-                    { cn: "② 动词: 建造 (及物)" },
-                    { cn: "③ 东西: 一个长屋模型" },
-                    { cn: "④ 地点: 在教室里" }
-                ]
+                malay: "pengalaman",
+                chinese: "经验",
+                emoji: "✨",
+                sentence: "Lawatan ke Muzium Negara memberi banyak ___________ berharga kepada kami.",
+                example: "Lawatan ke Muzium Negara memberi banyak pengalaman berharga kepada kami.",
+                distractors: ["kemahiran", "minggu depan", "berjanji"]
             },
             {
                 id: 9,
-                type: "typing",
-                chineseHint: "Zaid老师在办公室批改练习本。(终极手写魔法关 ⌨️)",
-                correctSentence: "Cikgu Zaid menyemak buku latihan di pejabat.",
-                wordBank: [
-                    { cn: "① 谁: Zaid老师" },
-                    { cn: "② 动词: 批改 (及物)" },
-                    { cn: "③ 东西: 练习本" },
-                    { cn: "④ 地点: 在办公室" }
-                ]
+                malay: "minggu depan",
+                chinese: "下周",
+                emoji: "📅",
+                sentence: "Ujian Bahasa Melayu akan diadakan pada ___________ di bilik darjah.",
+                example: "Ujian Bahasa Melayu akan diadakan pada minggu depan di bilik darjah.",
+                distractors: ["pengalaman", "kemahiran", "membeli-belah"]
+            },
+            {
+                id: 10,
+                malay: "meminta maaf",
+                chinese: "道歉",
+                emoji: "🙏",
+                sentence: "Mei Ling ___________ kepada cikgu kerana terlupa membawa buku latihan.",
+                example: "Mei Ling meminta maaf kepada cikgu kerana terlupa membawa buku latihan.",
+                distractors: ["berjanji", "pengalaman", "kemahiran"]
+            },
+            {
+                id: 11,
+                malay: "berjanji",
+                chinese: "答应 / 许诺",
+                emoji: "🤝",
+                sentence: "Adam ___________ akan belajar dengan bersungguh-sungguh untuk mendapat keputusan cemerlang.",
+                example: "Adam berjanji akan belajar dengan bersungguh-sungguh untuk mendapat keputusan cemerlang.",
+                distractors: ["meminta maaf", "pengalaman", "minggu depan"]
+            },
+            {
+                id: 12,
+                malay: "kemahiran",
+                chinese: "技能",
+                emoji: "🛠️",
+                sentence: "Kelas pertukangan itu dapat mengasah ___________ asas murid-murid.",
+                example: "Kelas pertukangan itu dapat mengasah kemahiran asas murid-murid.",
+                distractors: ["pengalaman", "minggu depan", "berjanji"]
             }
         ];
 
-        let currentLevelIndex = 0;
-        let score = 0;
-        
-        // 阶梯拼图序列：0=subjek, 1=verb, 2=objek, 3=penerangan
-        const SEQUENCE_STEPS = ['subjek', 'verb', 'objek', 'penerangan'];
-        let currentStepIndex = 0; 
+        let currentStars = 0;
+        let isMuted = false;
+        let studentName = "";
 
-        let slotsState = {
-            subjek: null,
-            verb: null,
-            objek: null,
-            penerangan: null
+        // Handle Login Submission
+        function handleLogin(e) {
+            e.preventDefault();
+            const input = document.getElementById('loginNameInput').value.trim();
+            if (input) {
+                studentName = input;
+                document.getElementById('headerStudentName').innerText = studentName;
+                document.getElementById('studentHeaderBadge').classList.remove('hidden');
+                document.getElementById('loginModal').classList.add('hidden');
+                playSound('star');
+            }
+        }
+
+        // Tracking Task Completion & Scores
+        let taskCompletion = {
+            exercise: false,
+            matching: false,
+            quiz: false
         };
 
-        let currentShuffledCards = [];
-        let onModalCloseCallback = null;
-
-        window.onload = function() {
-            loadLevel(0);
+        let taskScores = {
+            exercise: 0,
+            matching: 0,
+            quiz: 0
         };
 
-        function loadLevel(index) {
-            currentLevelIndex = index;
-            if (currentLevelIndex >= LEVEL_DATABASE.length) {
-                triggerFinalVictory();
+        // Check if all 3 tasks are completed
+        function checkAllTasksCompleted() {
+            if (taskCompletion.exercise && taskCompletion.matching && taskCompletion.quiz) {
+                updateReportUI();
+                setTimeout(() => {
+                    openReportModal();
+                }, 500);
+            }
+        }
+
+        function openReportModal() {
+            playSound('star');
+            document.getElementById('completionReportModal').classList.remove('hidden');
+            renderCertificateCanvas();
+        }
+
+        function closeReportModal() {
+            playSound('click');
+            document.getElementById('completionReportModal').classList.add('hidden');
+        }
+
+        // Sound Effects Engine using Web Audio API Synth
+        function playSound(type) {
+            if (isMuted) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.4);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(200, ctx.currentTime);
+                    osc.frequency.setValueAtTime(150, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.05);
+                } else if (type === 'star') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+                    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1); // A5
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.35);
+                }
+            } catch(e) {
+                console.log("Audio not supported or restricted", e);
+            }
+        }
+
+        // Speech Synthesis for Malay Pronunciation
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                alert("Pengeluaran audio tidak disokong pada pelayar ini.");
                 return;
             }
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ms-MY'; // Malay accent
+            utterance.rate = 0.9; // Slightly slower for clarity
+            window.speechSynthesis.speak(utterance);
+        }
 
-            const currentData = LEVEL_DATABASE[currentLevelIndex];
+        function toggleAudioMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteIcon').className = isMuted ? "fa-solid fa-volume-xmark text-rose-500" : "fa-solid fa-volume-high text-slate-600";
+        }
+
+        function addStars(amount) {
+            currentStars += amount;
+            document.getElementById('starScore').innerText = currentStars;
+            playSound('star');
+        }
+
+        function switchTab(tabId) {
+            playSound('click');
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-white text-slate-700 border-slate-200 hover:bg-slate-50";
+            });
+
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if(activeBtn) {
+                activeBtn.className = "tab-btn active font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-emerald-500 text-white border-emerald-600 shadow-3d-green";
+            }
+
+            if (tabId === 'matching') {
+                initMatchingGame();
+            }
+        }
+
+        function checkExerciseAnswers() {
+            let score = 0;
+            vocabList.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const userVal = input.value.trim().toLowerCase();
+                const correctVal = item.malay.toLowerCase();
+
+                feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+
+                if (userVal === correctVal) {
+                    score++;
+                    input.className = "mx-1 px-3 py-1.5 border-2 border-emerald-500 rounded-xl font-bold text-emerald-700 bg-emerald-50 w-full md:w-72";
+                    feedback.classList.add('bg-emerald-100', 'text-emerald-800');
+                    feedback.innerHTML = `<i class="fa-solid fa-check-circle mr-1"></i> Tahniah! Jawapan anda betul.`;
+                } else {
+                    input.className = "mx-1 px-3 py-1.5 border-2 border-rose-400 rounded-xl font-bold text-rose-700 bg-rose-50 w-full md:w-72";
+                    feedback.classList.add('bg-rose-100', 'text-rose-800');
+                    feedback.innerHTML = `<i class="fa-solid fa-xmark-circle mr-1"></i> Jawapan betul: <strong>${item.malay}</strong>`;
+                }
+            });
+
+            // Update Task 1 Status
+            taskCompletion.exercise = true;
+            taskScores.exercise = score;
+            checkAllTasksCompleted();
+
+            // Show Result Summary
+            const resultBox = document.getElementById('exerciseResultBox');
+            const title = document.getElementById('exerciseResultTitle');
+            const scoreText = document.getElementById('exerciseResultScore');
+            const desc = document.getElementById('exerciseResultDesc');
+
+            resultBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'bg-amber-50', 'border-amber-300');
+
+            if (score === 12) {
+                playSound('correct');
+                addStars(12);
+                resultBox.classList.add('bg-emerald-50', 'border-emerald-300');
+                title.className = "font-headline text-2xl font-bold text-emerald-800";
+                title.innerText = "🎉 Cemerlang! Sepenuhnya Betul!";
+                scoreText.innerText = `Skor Anda: ${score} / 12`;
+                desc.innerText = "Syabas! Anda telah menguasai kesemua 12 kosa kata Bahasa Melayu Tahun 5!";
+            } else {
+                playSound('wrong');
+                addStars(score);
+                resultBox.classList.add('bg-amber-50', 'border-amber-300');
+                title.className = "font-headline text-2xl font-bold text-amber-800";
+                title.innerText = "👍 Boleh Dipertingkatkan Lagi!";
+                scoreText.innerText = `Skor Anda: ${score} / 12`;
+                desc.innerText = "Sila semak semula soalan berkotak merah di atas dan cuba lagi.";
+            }
+
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetExercise() {
+            playSound('click');
+            vocabList.forEach(item => {
+                const input = document.getElementById(`input-${item.id}`);
+                const feedback = document.getElementById(`feedback-${item.id}`);
+                const hintBox = document.getElementById(`hint-${item.id}`);
+                if (input) {
+                    input.value = "";
+                    input.className = "mx-1 px-3 py-1.5 border-2 border-slate-300 rounded-xl font-bold text-emerald-700 focus:border-emerald-500 focus:outline-none w-full md:w-72 bg-slate-50 transition";
+                }
+                if (feedback) feedback.classList.add('hidden');
+                if (hintBox) hintBox.classList.add('hidden');
+            });
+            document.getElementById('exerciseResultBox').classList.add('hidden');
+        }
+
+        let selectedMalay = null;
+        let selectedChinese = null;
+        let correctMatches = 0;
+        let totalMatchingAttempts = 0;
+
+        function initMatchingGame() {
+            selectedMalay = null;
+            selectedChinese = null;
+            correctMatches = 0;
+            totalMatchingAttempts = 0;
+
+            // Pick 6 random vocab items for matching session
+            const sessionList = [...vocabList].sort(() => Math.random() - 0.5).slice(0, 6);
+            const malayShuffled = [...sessionList].sort(() => Math.random() - 0.5);
+            const chineseShuffled = [...sessionList].sort(() => Math.random() - 0.5);
+
+            const malayCol = document.getElementById('matchingMalayCol');
+            const chineseCol = document.getElementById('matchingChineseCol');
+
+            malayCol.innerHTML = malayShuffled.map(item => `
+                <button onclick="selectMatchMalay(${item.id}, this)" id="match-m-${item.id}" class="w-full text-left p-4 bg-white border-2 border-slate-200 rounded-2xl font-headline font-bold text-slate-800 shadow-3d-sm hover:border-purple-400 active-push transition flex items-center justify-between">
+                    <span>${item.malay}</span>
+                    <i class="fa-solid fa-circle text-slate-200 text-xs"></i>
+                </button>
+            `).join('');
+
+            chineseCol.innerHTML = chineseShuffled.map(item => `
+                <button onclick="selectMatchChinese(${item.id}, this)" id="match-c-${item.id}" class="w-full text-left p-4 bg-white border-2 border-slate-200 rounded-2xl font-headline font-bold text-purple-700 shadow-3d-sm hover:border-purple-400 active-push transition flex items-center justify-between">
+                    <span>${item.chinese}</span>
+                    <i class="fa-solid fa-circle text-slate-200 text-xs"></i>
+                </button>
+            `).join('');
+        }
+
+        function selectMatchMalay(id, btn) {
+            playSound('click');
+            if (btn.disabled) return;
+
+            document.querySelectorAll('#matchingMalayCol button').forEach(b => {
+                if (!b.disabled) b.className = "w-full text-left p-4 bg-white border-2 border-slate-200 rounded-2xl font-headline font-bold text-slate-800 shadow-3d-sm hover:border-purple-400 active-push transition flex items-center justify-between";
+            });
+
+            btn.className = "w-full text-left p-4 bg-purple-100 border-2 border-purple-500 rounded-2xl font-headline font-bold text-purple-900 shadow-3d-purple flex items-center justify-between";
+            selectedMalay = { id, btn };
+            checkMatchingPair();
+        }
+
+        function selectMatchChinese(id, btn) {
+            playSound('click');
+            if (btn.disabled) return;
+
+            document.querySelectorAll('#matchingChineseCol button').forEach(b => {
+                if (!b.disabled) b.className = "w-full text-left p-4 bg-white border-2 border-slate-200 rounded-2xl font-headline font-bold text-purple-700 shadow-3d-sm hover:border-purple-400 active-push transition flex items-center justify-between";
+            });
+
+            btn.className = "w-full text-left p-4 bg-purple-100 border-2 border-purple-500 rounded-2xl font-headline font-bold text-purple-900 shadow-3d-purple flex items-center justify-between";
+            selectedChinese = { id, btn };
+            checkMatchingPair();
+        }
+
+        function checkMatchingPair() {
+            if (selectedMalay && selectedChinese) {
+                totalMatchingAttempts++;
+
+                if (selectedMalay.id === selectedChinese.id) {
+                    // Correct Match
+                    playSound('correct');
+                    addStars(2);
+                    correctMatches++;
+
+                    selectedMalay.btn.className = "w-full text-left p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl font-headline font-bold text-emerald-900 opacity-70 flex items-center justify-between";
+                    selectedChinese.btn.className = "w-full text-left p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl font-headline font-bold text-emerald-900 opacity-70 flex items-center justify-between";
+
+                    selectedMalay.btn.disabled = true;
+                    selectedChinese.btn.disabled = true;
+                } else {
+                    // Wrong Match - Diteruskan main tanpa bagi peluang cuba semula padanan yang salah
+                    playSound('wrong');
+
+                    selectedMalay.btn.className = "w-full text-left p-4 bg-rose-100 border-2 border-rose-400 rounded-2xl font-headline font-bold text-rose-900 opacity-70 flex items-center justify-between";
+                    selectedChinese.btn.className = "w-full text-left p-4 bg-rose-100 border-2 border-rose-400 rounded-2xl font-headline font-bold text-rose-900 opacity-70 flex items-center justify-between";
+
+                    selectedMalay.btn.disabled = true;
+                    selectedChinese.btn.disabled = true;
+                }
+
+                selectedMalay = null;
+                selectedChinese = null;
+
+                if (totalMatchingAttempts === 6) {
+                    taskCompletion.matching = true;
+                    taskScores.matching = correctMatches;
+                    checkAllTasksCompleted();
+                    setTimeout(() => {
+                        alert(`Permainan Selesai! Anda berjaya padankan ${correctMatches} daripada 6 perkataan dengan betul.`);
+                    }, 300);
+                }
+            }
+        }
+
+        let quizQuestions = [];
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizStreak = 0;
+        let quizTimer = null;
+        let timeLeft = 30;
+
+        function startFillBlankQuiz() {
+            playSound('click');
+            document.getElementById('quizIntroCard').classList.add('hidden');
+            document.getElementById('quizResultBox').classList.add('hidden');
+            document.getElementById('quizPlayBox').classList.remove('hidden');
+
+            // Load all 12 vocabulary items in random order
+            quizQuestions = [...vocabList].sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            quizScore = 0;
+            quizStreak = 0;
+
+            loadFillBlankQuestion();
+        }
+
+        function loadFillBlankQuestion() {
+            if (quizTimer) clearInterval(quizTimer);
+
+            const q = quizQuestions[currentQuizIndex];
+            const total = quizQuestions.length;
+
+            // Timer setup
+            timeLeft = 30;
+            document.getElementById('quizTimerText').innerText = `⏱️ ${timeLeft}s`;
+            document.getElementById('quizStreakText').innerText = `🔥 Streak: ${quizStreak}`;
+
+            quizTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('quizTimerText').innerText = `⏱️ ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(quizTimer);
+                    submitQuizAnswer(true); // Timeout auto-submit
+                }
+            }, 1000);
+
+            // Progress bar & text
+            document.getElementById('quizProgressText').innerText = `Soalan ${currentQuizIndex + 1} daripada ${total}`;
+            const progressPercent = ((currentQuizIndex) / total) * 100;
+            document.getElementById('quizProgressBar').style.width = `${progressPercent}%`;
+
+            // Prompt & Hint
+            document.getElementById('quizChineseHint').innerText = `Maksud: ${q.chinese}`;
             
-            // 隐藏可能存在的动态错误反馈
-            hideDynamicErrorFeedback();
+            // Format sentence blank
+            const parts = q.sentence.split('___________');
+            document.getElementById('quizQuestionText').innerHTML = `
+                ${parts[0]} <span class="underline decoration-emerald-500 decoration-4 text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl shadow-inner font-extrabold">[ ___________ ]</span> ${parts[1]}
+            `;
 
-            // 更新关卡信息
-            document.getElementById('current-level-indicator').innerText = currentLevelIndex + 1;
-            document.getElementById('level-title').innerText = `正在拼造第 ${currentLevelIndex + 1}/9 组魔法`;
-            document.getElementById('target-sentence-cn').innerText = currentData.chineseHint;
+            // Reset input field
+            const input = document.getElementById('quizAnswerInput');
+            input.value = "";
+            input.disabled = false;
+            input.className = "flex-1 px-4 py-3 border-2 border-slate-300 rounded-2xl font-bold text-slate-800 text-base md:text-lg focus:border-emerald-500 focus:outline-none bg-white shadow-inner";
+
+            // Hide feedback
+            const feedback = document.getElementById('quizFeedbackBox');
+            feedback.className = "hidden mb-6 p-4 rounded-2xl text-sm font-bold";
+
+            // Enable submit button
+            const submitBtn = document.getElementById('quizSubmitBtn');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1"></i> Semak Jawapan`;
+            submitBtn.onclick = () => submitQuizAnswer(false);
+
+            // Populate clickable word bank chips
+            const wordChipsContainer = document.getElementById('quizWordBankChips');
+            const shuffledChips = [...vocabList].sort(() => Math.random() - 0.5);
             
-            const badges = ["造句学徒", "符文巫师", "语素行者", "空间术士", "大魔导师", "极光智者", "圣殿骑士", "星辰学者", "造句至尊"];
-            document.getElementById('reward-badge').innerText = `称号: ${badges[currentLevelIndex] || "探索者"}`;
+            wordChipsContainer.innerHTML = shuffledChips.map(item => `
+                <button onclick="selectQuizChip('${item.malay.replace(/'/g, "\\'")}')" class="bg-white hover:bg-emerald-50 border-2 border-slate-200 hover:border-emerald-400 text-slate-700 font-bold text-xs md:text-sm px-3.5 py-2 rounded-xl shadow-sm active-push transition">
+                    ${item.malay}
+                </button>
+            `).join('');
+        }
 
-            // 重设阶梯机制
-            currentStepIndex = 0;
-            resetCurrentSentenceState();
+        function selectQuizChip(word) {
+            playSound('click');
+            const input = document.getElementById('quizAnswerInput');
+            input.value = word;
+            input.focus();
+        }
 
-            if (currentData.type === "typing") {
-                // 打字模式开启
-                document.getElementById('drag-drop-zone').classList.add('hidden');
-                document.getElementById('shuffled-container-wrapper').classList.add('hidden');
-                document.getElementById('tutorial-guide').classList.add('hidden');
-                document.getElementById('typing-zone').classList.remove('hidden');
+        function clearQuizInput() {
+            playSound('click');
+            document.getElementById('quizAnswerInput').value = "";
+        }
 
-                // 渲染纯华文提示卡
-                const bankContainer = document.getElementById('typing-word-bank');
-                bankContainer.innerHTML = '';
-                currentData.wordBank.forEach(item => {
-                    const tag = document.createElement('span');
-                    tag.className = "bg-[#3c2246] border border-[#b7950b] text-yellow-300 font-bold px-3 py-2 rounded-lg text-xs md:text-sm shadow flex flex-col items-center justify-center min-w-[100px]";
-                    tag.innerHTML = `
-                        <span class="text-white text-[11px] font-bold">${item.cn}</span>
-                    `;
-                    bankContainer.appendChild(tag);
+        function speakCurrentQuizSentence() {
+            const q = quizQuestions[currentQuizIndex];
+            speakText(q.example);
+        }
+
+        function submitQuizAnswer(isTimeout = false) {
+            clearInterval(quizTimer);
+            const q = quizQuestions[currentQuizIndex];
+            const input = document.getElementById('quizAnswerInput');
+            const feedback = document.getElementById('quizFeedbackBox');
+            const submitBtn = document.getElementById('quizSubmitBtn');
+
+            const userVal = input.value.trim().toLowerCase();
+            const correctVal = q.malay.toLowerCase();
+
+            input.disabled = true;
+            feedback.classList.remove('hidden');
+
+            if (!isTimeout && userVal === correctVal) {
+                playSound('correct');
+                quizScore++;
+                quizStreak++;
+                addStars(2);
+
+                input.className = "flex-1 px-4 py-3 border-2 border-emerald-500 rounded-2xl font-bold text-emerald-800 text-base md:text-lg bg-emerald-50 shadow-inner";
+                feedback.className = "mb-6 p-4 rounded-2xl text-sm font-bold bg-emerald-100 text-emerald-800 border-2 border-emerald-300";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5 text-base"></i> Syabas! Jawapan tepat: "<strong>${q.malay}</strong>"`;
+            } else {
+                playSound('wrong');
+                quizStreak = 0;
+
+                input.className = "flex-1 px-4 py-3 border-2 border-rose-400 rounded-2xl font-bold text-rose-800 text-base md:text-lg bg-rose-50 shadow-inner";
+                feedback.className = "mb-6 p-4 rounded-2xl text-sm font-bold bg-rose-100 text-rose-800 border-2 border-rose-300";
+                feedback.innerHTML = isTimeout 
+                    ? `<i class="fa-solid fa-clock mr-1.5 text-base"></i> Masa tamat! Jawapan betul: "<strong>${q.malay}</strong>"`
+                    : `<i class="fa-solid fa-circle-xmark mr-1.5 text-base"></i> Kurang tepat. Jawapan betul: "<strong>${q.malay}</strong>"`;
+            }
+
+            document.getElementById('quizStreakText').innerText = `🔥 Streak: ${quizStreak}`;
+
+            // Transform button to Next
+            currentQuizIndex++;
+            if (currentQuizIndex < quizQuestions.length) {
+                submitBtn.innerHTML = `Seterusnya <i class="fa-solid fa-arrow-right ml-1"></i>`;
+                submitBtn.onclick = () => loadFillBlankQuestion();
+            } else {
+                submitBtn.innerHTML = `Lihat Keputusan <i class="fa-solid fa-trophy ml-1"></i>`;
+                submitBtn.onclick = () => showQuizResults();
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('quizPlayBox').classList.add('hidden');
+            document.getElementById('quizResultBox').classList.remove('hidden');
+
+            const total = quizQuestions.length;
+            document.getElementById('quizResultScoreText').innerText = `Skor Anda: ${quizScore} / ${total}`;
+            addStars(quizScore * 3);
+
+            // Update Task 3 Status
+            taskCompletion.quiz = true;
+            taskScores.quiz = quizScore;
+            checkAllTasksCompleted();
+
+            if (quizScore === total) {
+                document.getElementById('quizResultEmoji').innerText = "🏆";
+                document.getElementById('quizResultTitle').innerText = "Hebat Sekali!";
+                document.getElementById('quizResultMessage').innerText = "Skor sempurna 100%! Anda telah menguasai kesemua 12 kosa kata Bahasa Melayu Tahun 5!";
+            } else if (quizScore >= 8) {
+                document.getElementById('quizResultEmoji').innerText = "🌟";
+                document.getElementById('quizResultTitle').innerText = "Syabas & Tahniah!";
+                document.getElementById('quizResultMessage').innerText = "Keputusan yang sangat baik! Tingkatkan lagi sedikit usaha untuk capai skor sempurna.";
+            } else {
+                document.getElementById('quizResultEmoji').innerText = "💪";
+                document.getElementById('quizResultTitle').innerText = "Teruskan Usaha!";
+                document.getElementById('quizResultMessage').innerText = "Jangan putus asa. Anda boleh mengulang latihan untuk memperkukuhkan ingatan.";
+            }
+        }
+
+        // Update Total Report UI & Copyable Text
+        function updateReportUI() {
+            const totalScore = taskScores.exercise + taskScores.matching + taskScores.quiz;
+            const maxScore = 30; // 12 + 6 + 12
+            const percentage = Math.round((totalScore / maxScore) * 100);
+
+            let completedCount = 0;
+            if (taskCompletion.exercise) completedCount++;
+            if (taskCompletion.matching) completedCount++;
+            if (taskCompletion.quiz) completedCount++;
+
+            document.querySelectorAll('#totalMarkText').forEach(el => el.innerText = `${totalScore} / ${maxScore} Markah`);
+            document.querySelectorAll('#totalPercentageText').forEach(el => el.innerText = `Peratusan: ${percentage}%`);
+            document.querySelectorAll('#completedTaskCountText').forEach(el => el.innerText = `${completedCount} / 3 Selesai`);
+
+            // Individual Scores
+            document.querySelectorAll('#scoreTask1').forEach(el => el.innerText = `${taskScores.exercise} / 12`);
+            document.querySelectorAll('#scoreTask2').forEach(el => el.innerText = `${taskScores.matching} / 6`);
+            document.querySelectorAll('#scoreTask3').forEach(el => el.innerText = `${taskScores.quiz} / 12`);
+
+            // Formatted Copy/Paste Text
+            const displayName = studentName || "Murid Tahun 5";
+            const dateStr = new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            const summaryText = 
+`========================================
+LAPORAN PENCAPAIAN BAHASA MELAYU TAHUN 5
+Bijak Bahasa: Kosa Kata & Isi Tempat Kosong
+========================================
+Nama Murid : ${displayName}
+Tarikh     : ${dateStr}
+
+PERINCIAN MARKAH:
+1. Latihan Isi Tempat Kosong : ${taskScores.exercise} / 12
+2. Permainan Padan Kata     : ${taskScores.matching} / 6
+3. Cabaran Kuiz Masa        : ${taskScores.quiz} / 12
+
+JUMLAH MARKAH : ${totalScore} / ${maxScore} (${percentage}%)
+STATUS TUGASAN: ${completedCount} daripada 3 Selesai
+========================================`;
+
+            document.querySelectorAll('.copy-report-textarea').forEach(el => {
+                el.value = summaryText;
+            });
+
+            return summaryText;
+        }
+
+        // Copy Report Text to Clipboard
+        function copyResultsToClipboard() {
+            playSound('click');
+            const summaryText = updateReportUI();
+
+            function showSuccess() {
+                const successMsgs = document.querySelectorAll('.copy-success-msg');
+                successMsgs.forEach(msg => {
+                    msg.classList.remove('hidden');
+                    setTimeout(() => msg.classList.add('hidden'), 2500);
                 });
-
-                document.getElementById('typing-input').value = "";
-                document.getElementById('typing-input').focus();
-
-            } else {
-                // 卡牌拼接模式
-                document.getElementById('drag-drop-zone').classList.remove('hidden');
-                document.getElementById('shuffled-container-wrapper').classList.remove('hidden');
-                document.getElementById('tutorial-guide').classList.remove('hidden');
-                document.getElementById('typing-zone').classList.add('hidden');
-
-                // 收集当前关卡所有的拼图成分并打乱
-                const allBlocks = [
-                    currentData.formula.subjek,
-                    currentData.formula.verb,
-                    currentData.formula.objek,
-                    currentData.formula.penerangan
-                ];
-                currentShuffledCards = [...allBlocks].sort(() => Math.random() - 0.5);
-                
-                renderCardsAndSteps();
             }
 
-            updateLevelProgress();
-        }
+            const textAreas = document.querySelectorAll('.copy-report-textarea');
+            let success = false;
 
-        function getPartNameInChinese(part) {
-            switch (part) {
-                case 'subjek': return '谁 (Subjek)';
-                case 'verb': return '动词 (Kata Kerja)';
-                case 'objek': return '东西 (Objek)';
-                case 'penerangan': return '地点 (Penerangan)';
-                default: return part;
-            }
-        }
-
-        function renderCardsAndSteps() {
-            const activeStepName = SEQUENCE_STEPS[currentStepIndex];
-            
-            // 更新顶部公式卡片的高亮引导样式
-            const stepsMap = {
-                'subjek': { elId: 'guide-subjek', hint: '🎯 当前任务：请自主选择 [谁 Subjek] 卡牌', color: 'border-rose-500 bg-rose-950/70 text-rose-300' },
-                'verb': { elId: 'guide-verb', hint: '🎯 当前任务：请自主选择 [动词 Kata Kerja] 卡牌', color: 'border-sky-500 bg-sky-950/70 text-sky-300' },
-                'objek': { elId: 'guide-objek', hint: '🎯 当前任务：请自主选择 [东西 Objek] 卡牌', color: 'border-emerald-500 bg-emerald-950/70 text-emerald-300' },
-                'penerangan': { elId: 'guide-penerangan', hint: '🎯 当前任务：请自主选择 [地点 Penerangan] 卡牌', color: 'border-violet-500 bg-violet-950/70 text-violet-300' }
-            };
-
-            // 重设所有公式引导样式
-            Object.keys(stepsMap).forEach(key => {
-                const el = document.getElementById(stepsMap[key].elId);
-                if (key === activeStepName) {
-                    el.className = `p-1.5 rounded-lg border-2 text-center transition-all duration-300 font-bold ${stepsMap[key].color} scale-105 shadow-lg`;
-                } else {
-                    el.className = "bg-slate-900/40 border border-gray-800 text-gray-500 p-1.5 rounded-lg text-center transition-all duration-300 font-bold";
-                }
-            });
-
-            // 更新下方提示文本
-            const hintText = stepsMap[activeStepName] ? stepsMap[activeStepName].hint : "✨ 所有卡牌已归位，可以施展造句魔法！";
-            const hintColor = activeStepName === 'subjek' ? 'text-rose-400' :
-                              activeStepName === 'verb' ? 'text-sky-400' :
-                              activeStepName === 'objek' ? 'text-emerald-400' :
-                              activeStepName === 'penerangan' ? 'text-violet-400' : 'text-yellow-400';
-            
-            const hintEl = document.getElementById('current-step-hint');
-            hintEl.innerText = hintText;
-            hintEl.className = `text-xs font-extrabold animate-pulse ${hintColor}`;
-
-            // 渲染手牌（全部都可点击，供学生选择并进行深度思考！）
-            const container = document.getElementById('shuffled-blocks-container');
-            container.innerHTML = '';
-
-            currentShuffledCards.forEach((block) => {
-                const btn = document.createElement('button');
-                btn.id = `block-card-${block.word.replace(/\s+/g, '-')}`;
-                
-                // 判断卡片是否已经放入卡槽了
-                const isAlreadyUsed = slotsState[block.part] !== null;
-
-                let cardStyle = "border-2 py-3 px-4 rounded-xl text-xs md:text-sm shadow-md transition-all w-[45%] sm:w-auto text-center flex flex-col items-center justify-center gap-1 ";
-                
-                if (isAlreadyUsed) {
-                    // 已成功拼入的词汇，设为隐去状态，不能重复点击
-                    btn.disabled = true;
-                    btn.className = cardStyle + "opacity-20 cursor-not-allowed border-gray-800 bg-black/40 text-gray-500";
-                    btn.innerHTML = `
-                        <span class="block font-bold line-through">${block.word}</span>
-                        <span class="text-[9px] block">${block.cn}</span>
-                    `;
-                } else {
-                    // 所有手牌亮起并且完全可点击，引导学生独立判断！
-                    btn.disabled = false;
-                    btn.className = cardStyle + "card-playable text-white";
-                    btn.innerHTML = `
-                        <span class="block font-extrabold text-yellow-100 text-sm md:text-base tracking-wide">${block.word}</span>
-                        <span class="text-[9px] text-[#cca4eb] block font-semibold">${block.cn}</span>
-                    `;
-                    // 点击绑定评估逻辑
-                    btn.onclick = () => selectCard(block, btn);
-                }
-                
-                container.appendChild(btn);
-            });
-
-            // 渲染槽位现状
-            renderSlotsUI();
-        }
-
-        function selectCard(block, cardElement) {
-            const expectedPart = SEQUENCE_STEPS[currentStepIndex];
-            
-            // 隐藏旧的反馈
-            hideDynamicErrorFeedback();
-
-            // 如果学生选对了当前顺序对应的成分
-            if (block.part === expectedPart) {
-                playSynthSound('step');
-                
-                // 写入当前步骤的状态
-                slotsState[expectedPart] = block;
-
-                // 推进到下一步阶梯
-                currentStepIndex++;
-
-                // 重新刷新手牌和卡槽
-                renderCardsAndSteps();
-
-                // 检查是否全填满，若是则激活提交按钮
-                checkSubmitCapability();
-            } else {
-                // 点错了：触发生动的反馈纠错！重申造句逻辑
-                playSynthSound('wrong');
-
-                // 卡片抖动特效
-                cardElement.classList.add('shake-element', 'border-rose-500');
-                setTimeout(() => {
-                    cardElement.classList.remove('shake-element');
-                }, 600);
-
-                // 智能判定并撰写生动的语法解释
-                const clickedPartName = getPartNameInChinese(block.part);
-                const expectedPartName = getPartNameInChinese(expectedPart);
-
-                let customExplanation = "";
-                if (block.part === 'subjek') {
-                    customExplanation = `<b>“${block.word}” (${block.cn})</b> 是句子的<b>【人物/谁】</b>。我们拼句子要按照顺序，但现在我们要寻找的是 <b>【${expectedPartName}】</b> 哦！`;
-                } else if (block.part === 'verb') {
-                    customExplanation = `<b>“${block.word}” (${block.cn})</b> 是一个<b>【动作/正在做什么】</b>。我们要先完成前面的步骤，现在魔法阵需要的是 <b>【${expectedPartName}】</b>。`;
-                } else if (block.part === 'objek') {
-                    customExplanation = `<b>“${block.word}” (${block.cn})</b> 是被动作作用的<b>【东西/物品】</b>。不要急着给它配东西，我们现在要先把前面的 <b>【${expectedPartName}】</b> 找出来！`;
-                } else if (block.part === 'penerangan') {
-                    customExplanation = `<b>“${block.word}” (${block.cn})</b> 是句末的<b>【地点】</b>。地点通常是放在最后面作为修饰的。我们现在需要的步骤是 <b>【${expectedPartName}】</b>。`;
-                }
-
-                showDynamicErrorFeedback(customExplanation);
-            }
-        }
-
-        function showDynamicErrorFeedback(htmlContent) {
-            const feedbackEl = document.getElementById('dynamic-error-feedback');
-            const textEl = document.getElementById('error-feedback-text');
-            textEl.innerHTML = htmlContent;
-            feedbackEl.classList.remove('hidden');
-            feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function hideDynamicErrorFeedback() {
-            const feedbackEl = document.getElementById('dynamic-error-feedback');
-            feedbackEl.classList.add('hidden');
-        }
-
-        function renderSlotsUI() {
-            const parts = ['subjek', 'verb', 'objek', 'penerangan'];
-            const activePart = SEQUENCE_STEPS[currentStepIndex];
-
-            parts.forEach((part) => {
-                const slot = document.getElementById(`slot-${part}`);
-                const contentEl = slot.querySelector('.slot-content');
-                const state = slotsState[part];
-
-                if (state) {
-                    // 填入后样式
-                    slot.className = getSlotColorClass(part, true, false);
-                    contentEl.innerHTML = `
-                        <div class="text-center animate-bounce duration-300">
-                            <span class="block text-white font-extrabold text-sm md:text-base">${state.word}</span>
-                            <span class="text-[9px] block opacity-90">${state.cn}</span>
-                        </div>
-                    `;
-                } else {
-                    // 空白未填状态
-                    const isNextToFill = part === activePart;
-                    slot.className = getSlotColorClass(part, false, isNextToFill);
-                    
-                    if (isNextToFill) {
-                        contentEl.innerHTML = `<span class="text-xs text-[#f4d03f] font-bold animate-pulse">👈 正在寻找此部分</span>`;
-                    } else {
-                        contentEl.innerHTML = `<span class="text-xs text-gray-700">🔒 待解锁步骤</span>`;
+            textAreas.forEach(textArea => {
+                if (textArea) {
+                    textArea.value = summaryText;
+                    textArea.focus();
+                    textArea.select();
+                    textArea.setSelectionRange(0, 99999);
+                    try {
+                        success = document.execCommand('copy');
+                    } catch (err) {
+                        success = false;
                     }
                 }
             });
+
+            if (success) {
+                showSuccess();
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(summaryText).then(() => {
+                    showSuccess();
+                }).catch(err => {
+                    console.error('Gagal menyalin:', err);
+                });
+            }
         }
 
-        function getSlotColorClass(part, filled, active) {
-            const base = "min-h-[85px] border-2 rounded-xl p-2 flex flex-col justify-between items-center transition-all ";
+        // Render Certificate on Canvas
+        function renderCertificateCanvas() {
+            const canvas = document.getElementById('certCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const displayName = (studentName || "MURID TAHUN 5").toUpperCase();
+            const totalScore = taskScores.exercise + taskScores.matching + taskScores.quiz;
+            const maxScore = 30;
+            const percentage = Math.round((totalScore / maxScore) * 100);
+            const dateStr = new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            // Background Fill
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Outer Fancy Border
+            ctx.strokeStyle = "#15803d"; // Emerald green
+            ctx.lineWidth = 12;
+            ctx.strokeRect(15, 15, canvas.width - 30, canvas.height - 30);
+
+            ctx.strokeStyle = "#f59e0b"; // Gold border
+            ctx.lineWidth = 4;
+            ctx.strokeRect(26, 26, canvas.width - 52, canvas.height - 52);
+
+            // Corner Accents
+            ctx.fillStyle = "#15803d";
+            ctx.fillRect(15, 15, 35, 35);
+            ctx.fillRect(canvas.width - 50, 15, 35, 35);
+            ctx.fillRect(15, canvas.height - 50, 35, 35);
+            ctx.fillRect(canvas.width - 50, canvas.height - 50, 35, 35);
+
+            // Certificate Header
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 32px Fredoka, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("SIJIL PENCAPAAN", canvas.width / 2, 95);
+
+            ctx.fillStyle = "#16a34a";
+            ctx.font = "bold 16px Plus Jakarta Sans, sans-serif";
+            ctx.fillText("BAHASA MELAYU TAHUN 5 - KOSA KATA & ISI TEMPAT KOSONG", canvas.width / 2, 125);
+
+            // Divider Line
+            ctx.beginPath();
+            ctx.moveTo(180, 140);
+            ctx.lineTo(canvas.width - 180, 140);
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Subtitle Text
+            ctx.fillStyle = "#64748b";
+            ctx.font = "15px Plus Jakarta Sans, sans-serif";
+            ctx.fillText("Dengan ini diperakui bahawa", canvas.width / 2, 180);
+
+            // Student Name
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "extrabold 32px Plus Jakarta Sans, sans-serif";
+            ctx.fillText(displayName, canvas.width / 2, 230);
+
+            // Name Underline
+            const nameWidth = ctx.measureText(displayName).width;
+            ctx.beginPath();
+            ctx.moveTo((canvas.width / 2) - (nameWidth / 2) - 10, 242);
+            ctx.lineTo((canvas.width / 2) + (nameWidth / 2) + 10, 242);
+            ctx.strokeStyle = "#f59e0b";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Achievement Body
+            ctx.fillStyle = "#334155";
+            ctx.font = "16px Plus Jakarta Sans, sans-serif";
+            ctx.fillText("telah berjaya menyempurnakan Modul Latihan & Kuiz Kosa Kata", canvas.width / 2, 285);
+            ctx.fillText("Bahasa Melayu dengan pencapaian berikut:", canvas.width / 2, 310);
+
+            // Score Badge Box
+            ctx.fillStyle = "#f0fdf4";
+            ctx.strokeStyle = "#bbf7d0";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect((canvas.width / 2) - 160, 335, 320, 65, 12);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = "#15803d";
+            ctx.font = "bold 24px Fredoka, sans-serif";
+            ctx.fillText(`Jumlah Markah: ${totalScore} / ${maxScore} (${percentage}%)`, canvas.width / 2, 375);
+
+            // Gold Ribbon Badge on Bottom Left
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(120, 460, 38, 0, Math.PI * 2);
+            ctx.fillStyle = "#f59e0b";
+            ctx.fill();
+            ctx.strokeStyle = "#b45309";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 20px sans-serif";
+            ctx.fillText("★ 🏆 ★", 120, 467);
+            ctx.restore();
+
+            // Footer Details (Date & Signature)
+            ctx.fillStyle = "#64748b";
+            ctx.font = "13px Plus Jakarta Sans, sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(`Tarikh: ${dateStr}`, 200, 470);
+
+            ctx.textAlign = "right";
+            ctx.fillText("Aplikasi Bijak Bahasa BM", canvas.width - 100, 470);
+            ctx.font = "bold 13px Plus Jakarta Sans, sans-serif";
+            ctx.fillStyle = "#16a34a";
+            ctx.fillText("Anugerah Kecemerlangan", canvas.width - 100, 490);
+        }
+
+        // Download Canvas as PNG Image
+        function downloadCertificate() {
+            playSound('click');
+            renderCertificateCanvas();
+            const canvas = document.getElementById('certCanvas');
+            const image = canvas.toDataURL("image/png");
             
-            if (filled) {
-                if (part === 'subjek') return base + "bg-rose-900/60 border-rose-500 shadow-inner shadow-rose-950 opacity-100";
-                if (part === 'verb') return base + "bg-sky-900/60 border-sky-500 shadow-inner shadow-sky-950 opacity-100";
-                if (part === 'objek') return base + "bg-emerald-900/60 border-emerald-500 shadow-inner shadow-emerald-950 opacity-100";
-                if (part === 'penerangan') return base + "bg-violet-900/60 border-violet-500 shadow-inner shadow-violet-950 opacity-100";
+            const nameFile = (studentName || "Murid").replace(/\s+/g, '_');
+            const link = document.createElement('a');
+            link.download = `Sijil_Bahasa_Melayu_${nameFile}.png`;
+            link.href = image;
+            link.click();
+        }
+
+        // Render 12 Exercise Questions Dynamically
+        function renderExerciseQuestions() {
+            const container = document.getElementById('questionsContainer');
+            if (!container) return;
+
+            container.innerHTML = vocabList.map((item, index) => {
+                const parts = item.sentence.split('___________');
+                return `
+                    <div class="bg-white rounded-3xl p-5 md:p-6 border-4 border-slate-200 shadow-sm hover:border-emerald-300 transition">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-xl bg-emerald-500 text-white font-headline font-bold text-sm flex items-center justify-center">${index + 1}</span>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-200">
+                                    <i class="fa-solid fa-language mr-1"></i>${item.chinese}
+                                </span>
+                            </div>
+                            <button onclick="speakText('${item.example.replace(/'/g, "\\'")}')" class="w-8 h-8 bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 rounded-xl flex items-center justify-center text-xs transition border border-slate-200" title="Dengar sebutan">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </div>
+                        <div class="font-headline text-base md:text-lg text-slate-800 leading-relaxed">
+                            ${parts[0]}
+                            <input type="text" id="input-${item.id}" placeholder="taip / klik kata" 
+                                class="mx-1 px-3 py-1.5 border-2 border-slate-300 rounded-xl font-bold text-emerald-700 focus:border-emerald-500 focus:outline-none w-full md:w-72 bg-slate-50 transition"
+                                autocomplete="off"
+                            >
+                            ${parts[1] || ''}
+                        </div>
+                        <div id="feedback-${item.id}" class="hidden mt-3 p-3 rounded-xl text-xs font-bold"></div>
+                    </div>
+                `;
+            }).join('');
+
+            renderWordBankChips();
+        }
+
+        // Render Word Bank Chips for View 1
+        function renderWordBankChips() {
+            const chipContainer = document.getElementById('wordBankChips');
+            if (!chipContainer) return;
+
+            const sorted = [...vocabList].sort((a, b) => a.malay.localeCompare(b.malay));
+            chipContainer.innerHTML = sorted.map(item => `
+                <button onclick="fillExerciseInput('${item.malay.replace(/'/g, "\\'")}')" class="bg-white hover:bg-blue-100 border border-blue-200 text-blue-800 font-bold text-xs px-3 py-1.5 rounded-xl transition shadow-sm active-push">
+                    ${item.malay}
+                </button>
+            `).join('');
+        }
+
+        // Toggle Word Bank Drawer
+        function toggleWordBank() {
+            playSound('click');
+            const container = document.getElementById('wordBankContainer');
+            const btn = document.getElementById('wordBankToggleBtn');
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                btn.innerHTML = `<i class="fa-solid fa-eye-slash mr-1"></i> Sembunyi Bank Perkataan`;
             } else {
-                if (active) {
-                    // 当前需要被填充的亮起槽位
-                    if (part === 'subjek') return base + "bg-rose-950/20 border-rose-500/80 border-dashed slot-active opacity-100";
-                    if (part === 'verb') return base + "bg-sky-950/20 border-sky-500/80 border-dashed slot-active opacity-100";
-                    if (part === 'objek') return base + "bg-emerald-950/20 border-emerald-500/80 border-dashed slot-active opacity-100";
-                    if (part === 'penerangan') return base + "bg-violet-950/20 border-violet-500/80 border-dashed slot-active opacity-100";
-                } else {
-                    // 尚未解锁步骤的槽位
-                    return base + "bg-slate-900/10 border-gray-800 border-dashed opacity-30";
+                container.classList.add('hidden');
+                btn.innerHTML = `<i class="fa-solid fa-eye mr-1"></i> Papar Bank Perkataan`;
+            }
+        }
+
+        // Fill First Empty Input or Currently Focused Input
+        function fillExerciseInput(text) {
+            playSound('click');
+            let targetInput = document.activeElement;
+            if (!targetInput || targetInput.tagName !== 'INPUT' || !targetInput.id.startsWith('input-')) {
+                for (let item of vocabList) {
+                    const input = document.getElementById(`input-${item.id}`);
+                    if (input && !input.value.trim()) {
+                        targetInput = input;
+                        break;
+                    }
                 }
             }
-            return base;
-        }
-
-        function checkSubmitCapability() {
-            const currentData = LEVEL_DATABASE[currentLevelIndex];
-            if (currentData && currentData.type === 'typing') {
-                const textVal = document.getElementById('typing-input').value.trim();
-                document.getElementById('submit-magic-btn').disabled = (textVal.length === 0);
-            } else {
-                const allFilled = slotsState.subjek && slotsState.verb && slotsState.objek && slotsState.penerangan;
-                document.getElementById('submit-magic-btn').disabled = !allFilled;
+            if (targetInput && targetInput.id && targetInput.id.startsWith('input-')) {
+                targetInput.value = text;
+                targetInput.focus();
             }
         }
 
-        function resetCurrentSentenceState() {
-            slotsState = {
-                subjek: null,
-                verb: null,
-                objek: null,
-                penerangan: null
-            };
-            checkSubmitCapability();
-        }
-
-        function resetCurrentSentence() {
-            playSynthSound('click');
-            hideDynamicErrorFeedback();
-            const currentData = LEVEL_DATABASE[currentLevelIndex];
-            if (currentData && currentData.type === 'typing') {
-                document.getElementById('typing-input').value = "";
-                document.getElementById('typing-input').focus();
-            } else {
-                currentStepIndex = 0; // 重置步骤索引回到 Subjek
-                resetCurrentSentenceState();
-                renderCardsAndSteps();
-            }
-            checkSubmitCapability();
-        }
-
-        function updateLevelProgress() {
-            const percentage = (currentLevelIndex / LEVEL_DATABASE.length) * 100;
-            document.getElementById('progress-bar').style.width = `${percentage}%`;
-            document.getElementById('game-score').innerText = score;
-        }
-
-        function castMagicSpell() {
-            const currentData = LEVEL_DATABASE[currentLevelIndex];
-
-            if (currentData.type === 'typing') {
-                // 键盘手写关检测
-                const userTyped = document.getElementById('typing-input').value.trim();
-                
-                // 去除冗余空格及结尾句号，全转小写核对
-                const formattedTyped = userTyped.replace(/\s+/g, ' ').replace(/\.$/, '').toLowerCase();
-                const formattedCorrect = currentData.correctSentence.replace(/\s+/g, ' ').replace(/\.$/, '').toLowerCase();
-
-                if (formattedTyped === formattedCorrect) {
-                    playSynthSound('correct');
-                    score += 150; // 手写关卡给予丰厚的分值奖励！
-
-                    showCustomModal(
-                        "👑 终极手写拼造成功！",
-                        `太了不起了！你独立翻译并拼写出了：<br><br><span class="text-yellow-300 font-extrabold text-lg block my-2">${currentData.correctSentence}</span>完美契合了 <b>Subjek ➕ Kata Kerja ➕ Objek ➕ Penerangan</b> 的黄金序列！`,
-                        "🏆 开启下一魔法阵",
-                        "success",
-                        () => {
-                            loadLevel(currentLevelIndex + 1);
-                        }
-                    );
-                } else {
-                    playSynthSound('wrong');
-
-                    showCustomModal(
-                        "⚡ 能量流中断！拼写有误差",
-                        `拼写似乎有些偏差，请再次检查拼写、空格和顺序。加油，你可以拼出它的！<br><br><span class="text-gray-400 text-xs block mb-1">小助手提示正确答案：</span><span class="text-emerald-400 font-bold block">${currentData.correctSentence}</span>`,
-                        "⌨️ 重新尝试",
-                        "error",
-                        () => {
-                            document.getElementById('typing-input').focus();
-                        }
-                    );
-                }
-
-            } else {
-                // 1-5关拼卡牌逻辑
-                const isSubjekCorrect = slotsState.subjek.word === currentData.formula.subjek.word;
-                const isVerbCorrect = slotsState.verb.word === currentData.formula.verb.word;
-                const isObjekCorrect = slotsState.objek.word === currentData.formula.objek.word;
-                const isPeneranganCorrect = slotsState.penerangan.word === currentData.formula.penerangan.word;
-
-                if (isSubjekCorrect && isVerbCorrect && isObjekCorrect && isPeneranganCorrect) {
-                    playSynthSound('correct');
-                    score += 100;
-
-                    const fullSentence = `${slotsState.subjek.word} ${slotsState.verb.word} ${slotsState.objek.word} ${slotsState.penerangan.word}.`;
-                    
-                    showCustomModal(
-                        "🎉 拼装封印解开！",
-                        `自主思考成功！你成功拼成了完整句子：<br><br><span class="text-yellow-300 font-extrabold text-base md:text-lg block my-2">${fullSentence}</span>主谓宾状（S + KK + O + P）公式完全成型！`,
-                        "🔮 迈向下一阶",
-                        "success",
-                        () => {
-                            loadLevel(currentLevelIndex + 1);
-                        }
-                    );
-                } else {
-                    playSynthSound('wrong');
-                    
-                    showCustomModal(
-                        "💥 封印发生断裂！",
-                        "拼图顺序发生错误，请重来，严格牢记公式顺序：<br><b>谁 (Subjek) ➡️ 动词 (Kata Kerja) ➡️ 物品 (Objek) ➡️ 地点 (Penerangan)</b>",
-                        "🧹 重新排列",
-                        "error",
-                        () => {
-                            resetCurrentSentence();
-                        }
-                    );
-                }
-            }
-        }
-
-        function triggerFinalVictory() {
-            playSynthSound('victory');
-            document.getElementById('progress-bar').style.width = "100%";
-            
-            showCustomModal(
-                "👑 登顶造句之尊！",
-                `恭喜你！你完成了前5关的<b>自主卡牌拼装</b>，并在后4关成功完成了<b>高难度手写造句翻译</b>！<br><br><b>🎓 你的总得分：<span class="text-yellow-400 text-2xl">${score}分</span></b><br><br>你已深刻掌握：<br><b>Subjek + Kata Kerja + Objek + Penerangan</b><br>的造句拼写，你现在是真正的造句大宗师！`,
-                "🔄 重新冒险",
-                "victory",
-                () => {
-                    score = 0;
-                    loadLevel(0);
-                }
-            );
-        }
-
-        function showCustomModal(title, msg, btnText, type, onCloseCallback) {
-            document.getElementById('modal-title').innerHTML = title;
-            document.getElementById('modal-message').innerHTML = msg;
-            
-            const btn = document.getElementById('modal-btn');
-            btn.innerText = btnText;
-            
-            const iconEl = document.getElementById('modal-icon');
-            if (type === 'success') {
-                iconEl.innerText = "🧙‍♂️✨";
-                iconEl.className = "text-5xl mb-4 text-green-400 animate-pulse";
-            } else if (type === 'error') {
-                iconEl.innerText = "💥🔮";
-                iconEl.className = "text-5xl mb-4 text-rose-500";
-            } else if (type === 'victory') {
-                iconEl.innerText = "👑🏆";
-                iconEl.className = "text-6xl mb-4 text-yellow-400 animate-bounce";
-            }
-
-            onModalCloseCallback = onCloseCallback;
-            document.getElementById('custom-modal').classList.remove('hidden');
-        }
-
-        function closeCustomModal() {
-            playSynthSound('click');
-            document.getElementById('custom-modal').classList.add('hidden');
-            if (onModalCloseCallback) {
-                onModalCloseCallback();
-                onModalCloseCallback = null;
-            }
-        }
+        window.onload = function() {
+            renderExerciseQuestions();
+        };
     </script>
 </body>
 </html>
