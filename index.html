@@ -3,22 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Kosa Kata Bahasa Melayu Tahun 5</title>
-    <!-- Tailwind CSS -->
+    <title>Latihan Menaip Isi Karangan Hari Raya Aidilfitri</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        fredoka: ['Fredoka', 'sans-serif'],
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
                     colors: {
                         brand: {
                             50: '#f0fdf4',
@@ -26,1438 +20,373 @@
                             500: '#22c55e',
                             600: '#16a34a',
                             700: '#15803d',
-                            sky: '#0284c7',
-                            purple: '#9333ea',
-                            amber: '#f59e0b',
-                            rose: '#f43f5e'
+                            800: '#166534',
+                            gold: '#f59e0b'
                         }
                     },
-                    boxShadow: {
-                        '3d': '0 8px 0 0 rgba(0,0,0,0.15)',
-                        '3d-sm': '0 4px 0 0 rgba(0,0,0,0.15)',
-                        '3d-green': '0 6px 0 0 #15803d',
-                        '3d-blue': '0 6px 0 0 #0369a1',
-                        '3d-purple': '0 6px 0 0 #7e22ce',
-                        '3d-amber': '0 6px 0 0 #b45309',
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif']
                     }
                 }
             }
         }
     </script>
-
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #fef3c7 100%);
-            min-height: 100vh;
+            background-color: #f4fbf7;
+            background-image: radial-gradient(#dcfce7 1px, transparent 1px);
+            background-size: 24px 24px;
         }
-
-        .font-headline {
+        .heading-font {
             font-family: 'Fredoka', cursive;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* Flashcard Flip Animation */
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        .transform-style-3d {
-            transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
-
-        /* Bounce & Ripple FX */
-        .hover-bounce:hover {
-            transform: translateY(-4px);
-        }
-        .active-push:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 0 rgba(0,0,0,0.1);
-        }
-
-        /* Particle Confetti CSS */
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
-<body class="text-slate-800 pb-12 antialiased selection:bg-green-200 selection:text-green-900">
+<body class="min-h-screen flex flex-col text-slate-800">
 
-    <!-- Modal Log Masuk Nama Murid -->
-    <div id="loginModal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-md w-full border-4 border-emerald-500 shadow-2xl text-center">
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 border-2 border-emerald-300">
-                <i class="fa-solid fa-user-graduate"></i>
-            </div>
-            <h2 class="font-headline text-2xl font-bold text-slate-800">Selamat Datang!</h2>
-            <p class="text-slate-600 text-sm mt-1 mb-6">Sila masukkan nama anda untuk memulakan 3 cabaran Bahasa Melayu Tahun 5.</p>
-            
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 text-left">Nama Murid:</label>
-                    <input type="text" id="loginNameInput" required placeholder="Contoh: Ahmad Zaki" 
-                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-2xl font-headline font-bold text-slate-800 focus:border-emerald-500 focus:outline-none text-center bg-slate-50 text-lg">
-                </div>
-                <button type="submit" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-headline font-bold text-lg rounded-2xl shadow-3d-green active-push flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i> Mula Belajar!
-                </button>
-            </form>
-        </div>
-    </div>
+    <div id="app" class="flex-grow flex flex-col max-w-4xl mx-auto w-full p-4 md:p-6">
 
-    <!-- Navigation Bar -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-4 border-slate-200 shadow-sm">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <!-- App Logo -->
-            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('exercise')">
-                <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-3d-green font-bold font-headline">
-                    BM
+        <!-- Name Input Screen Modal -->
+        <div v-if="!isNameEntered" class="my-auto py-12 flex items-center justify-center">
+            <div class="bg-white p-8 md:p-10 rounded-3xl border border-emerald-100 shadow-2xl max-w-md w-full text-center space-y-6">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+                    <i class="fa-solid fa-user-graduate"></i>
                 </div>
                 <div>
-                    <h1 class="font-headline text-xl md:text-2xl font-bold text-slate-800 leading-none">
-                        Bijak Bahasa <span class="text-emerald-600">Tahun 5</span>
-                    </h1>
-                    <p class="text-xs text-slate-500 font-semibold mt-0.5">Kosa Kata & Isi Tempat Kosong</p>
+                    <h2 class="text-2xl font-bold text-slate-800 heading-font">Selamat Datang!</h2>
+                    <p class="text-sm text-slate-500 mt-1">Sila masukkan nama anda sebelum memulakan Latihan Menaip Isi Karangan.</p>
                 </div>
-            </div>
-
-            <!-- Score, Badge & Student Name -->
-            <div class="flex items-center gap-3">
-                <div id="studentHeaderBadge" class="hidden sm:flex items-center gap-2 bg-emerald-100 border-2 border-emerald-300 text-emerald-900 px-3 py-1.5 rounded-full font-bold text-xs">
-                    <i class="fa-solid fa-user-graduate text-emerald-600"></i>
-                    <span id="headerStudentName">Murid</span>
-                </div>
-                <div class="flex items-center gap-1.5 bg-amber-100 border-2 border-amber-300 text-amber-800 px-3 py-1.5 rounded-full font-bold text-sm shadow-sm">
-                    <i class="fa-solid fa-star text-amber-500 text-base animate-bounce"></i>
-                    <span id="starScore">0</span>
-                </div>
-                <button onclick="toggleAudioMute()" id="muteBtn" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 rounded-full flex items-center justify-center text-slate-600 transition">
-                    <i class="fa-solid fa-volume-high" id="muteIcon"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-5xl mx-auto px-4 mt-6">
-
-        <!-- Navigation Menu Tabs (3 Games Only) -->
-        <nav class="flex flex-wrap items-center justify-center gap-2 mb-8" id="navTabs">
-            <button onclick="switchTab('exercise')" id="tab-exercise" class="tab-btn active font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-emerald-500 text-white border-emerald-600 shadow-3d-green">
-                <i class="fa-solid fa-pen-to-square text-emerald-100"></i> Latihan (12 Soalan)
-            </button>
-            <button onclick="switchTab('matching')" id="tab-matching" class="tab-btn font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-white text-slate-700 border-slate-200 hover:bg-slate-50">
-                <i class="fa-solid fa-puzzle-piece text-purple-500"></i> Padan Kata
-            </button>
-            <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-white text-slate-700 border-slate-200 hover:bg-slate-50">
-                <i class="fa-solid fa-trophy text-amber-500"></i> Cabaran Kuiz
-            </button>
-        </nav>
-
-        <!-- VIEW 1: FILL IN THE BLANKS EXERCISE -->
-        <section id="view-exercise" class="view-section">
-            <!-- Exercise Header Card -->
-            <div class="bg-white rounded-3xl p-6 border-4 border-slate-200 shadow-lg mb-6">
-                <div class="flex flex-wrap items-center justify-between gap-4">
+                <form @submit.prevent="masukAplikasi" class="space-y-4">
                     <div>
-                        <h2 class="font-headline text-2xl font-bold text-slate-800">Isi Tempat Kosong (12 Soalan)</h2>
-                        <p class="text-sm text-slate-500">Lengkapkan ayat di bawah dengan perkataan yang paling sesuai.</p>
+                        <input type="text" 
+                               v-model="studentName" 
+                               placeholder="Taip nama anda di sini..." 
+                               class="w-full p-4 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-semibold text-lg"
+                               required />
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="toggleWordBank()" id="wordBankToggleBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold text-xs md:text-sm px-4 py-2 rounded-xl transition border border-blue-300">
-                            <i class="fa-solid fa-eye mr-1"></i> Papar Bank Perkataan
-                        </button>
-                        <button onclick="resetExercise()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs md:text-sm px-4 py-2 rounded-xl transition border border-slate-300">
-                            <i class="fa-solid fa-rotate-right mr-1"></i> Semula
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Word Bank Drawer -->
-                <div id="wordBankContainer" class="hidden mt-5 p-4 bg-blue-50/80 rounded-2xl border-2 border-blue-200">
-                    <p class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-2 flex items-center gap-1">
-                        <i class="fa-solid fa-lightbulb"></i> Bank Perkataan Pilihan:
-                    </p>
-                    <div class="flex flex-wrap gap-2" id="wordBankChips">
-                        <!-- Javascript generates chips -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questions Form -->
-            <div class="space-y-4" id="questionsContainer">
-                <!-- Javascript will render 12 questions here -->
-            </div>
-
-            <!-- Submit Button & Feedback -->
-            <div class="mt-8 bg-white p-6 rounded-3xl border-4 border-slate-200 shadow-lg text-center">
-                <button onclick="checkExerciseAnswers()" class="w-full md:w-auto px-10 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-headline text-xl font-bold rounded-2xl shadow-3d-green active-push transition">
-                    <i class="fa-solid fa-paper-plane mr-2"></i> Semak Semua Jawapan
-                </button>
-
-                <div id="exerciseResultBox" class="hidden mt-6 p-6 rounded-2xl border-2 text-center">
-                    <h3 class="font-headline text-2xl font-bold" id="exerciseResultTitle"></h3>
-                    <p class="text-base font-semibold mt-1" id="exerciseResultScore"></p>
-                    <p class="text-sm mt-2 opacity-90" id="exerciseResultDesc"></p>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW 2: MATCHING GAME -->
-        <section id="view-matching" class="view-section hidden">
-            <div class="bg-white rounded-3xl p-6 border-4 border-slate-200 shadow-lg mb-6 text-center">
-                <h2 class="font-headline text-2xl font-bold text-slate-800">Padankan Bahasa Melayu & Maksud Mandarin</h2>
-                <p class="text-sm text-slate-500 mt-1">Klik satu perkataan Bahasa Melayu di sebelah kiri, kemudian klik maksud Mandarin yang betul di sebelah kanan!</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="matchingGameContainer">
-                <!-- Left Column: Malay -->
-                <div class="space-y-3" id="matchingMalayCol"></div>
-                <!-- Right Column: Chinese -->
-                <div class="space-y-3" id="matchingChineseCol"></div>
-            </div>
-
-            <div class="mt-8 text-center">
-                <button onclick="initMatchingGame()" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-headline font-bold rounded-2xl shadow-3d-purple active-push">
-                    <i class="fa-solid fa-arrows-rotate mr-2"></i> Muat Semula Permainan Padanan
-                </button>
-            </div>
-        </section>
-
-        <!-- VIEW 3: QUIZ CHALLENGE -->
-        <section id="view-quiz" class="view-section hidden">
-            <div class="max-w-3xl mx-auto">
-                <!-- Quiz Intro Card -->
-                <div id="quizIntroCard" class="bg-white rounded-3xl p-8 border-4 border-slate-200 shadow-xl text-center">
-                    <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 border-2 border-amber-300 shadow-inner">
-                        <i class="fa-solid fa-trophy"></i>
-                    </div>
-                    <h2 class="font-headline text-3xl font-extrabold text-slate-800">Cabaran Kuiz Isi Tempat Kosong</h2>
-                    <p class="text-slate-600 text-sm md:text-base mt-2 leading-relaxed">
-                        Uji kepantasan dan pemahaman anda! Jawab kesemua 12 soalan isi tempat kosong kosa kata Bahasa Melayu untuk kumpul <strong>Bintang Emas 🌟</strong>!
-                    </p>
-
-                    <div class="mt-6 flex flex-wrap justify-center gap-3">
-                        <button onclick="startFillBlankQuiz()" class="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-slate-900 font-headline font-extrabold text-lg rounded-2xl shadow-3d-amber active-push flex items-center gap-2">
-                            <i class="fa-solid fa-bolt"></i> Mula Kuiz 12 Soalan
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Quiz Playing Box -->
-                <div id="quizPlayBox" class="hidden bg-white rounded-3xl p-6 md:p-8 border-4 border-slate-200 shadow-xl">
-                    <!-- Header Status -->
-                    <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-slate-100">
-                        <div class="flex items-center gap-2">
-                            <span class="font-headline font-bold text-sm text-slate-500" id="quizProgressText">Soalan 1 / 12</span>
-                            <button onclick="speakCurrentQuizSentence()" class="w-8 h-8 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xs border border-emerald-200" title="Dengar sebutan ayat">
-                                <i class="fa-solid fa-volume-high"></i>
-                            </button>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="font-bold text-xs bg-amber-100 text-amber-800 px-3 py-1 rounded-full border border-amber-200" id="quizTimerText">⏱️ 30s</span>
-                            <span class="font-bold text-xs bg-purple-100 text-purple-800 px-3 py-1 rounded-full border border-purple-200" id="quizStreakText">🔥 Streak: 0</span>
-                        </div>
-                    </div>
-
-                    <!-- Progress Bar -->
-                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden mb-6 border border-slate-200">
-                        <div id="quizProgressBar" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full w-0 transition-all duration-300"></div>
-                    </div>
-
-                    <!-- Chinese Hint & Question -->
-                    <div class="mb-6 bg-slate-50 p-5 rounded-2xl border-2 border-slate-200">
-                        <span class="bg-emerald-100 text-emerald-800 font-bold text-xs px-3 py-1 rounded-full uppercase" id="quizChineseHint"></span>
-                        <div class="font-headline text-lg md:text-2xl font-bold text-slate-800 mt-3 leading-relaxed" id="quizQuestionText">
-                            <!-- Question sentence generated here -->
-                        </div>
-                    </div>
-
-                    <!-- Input Box & Actions -->
-                    <div class="mb-6">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Taip atau klik kata pilihan di bawah:</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="quizAnswerInput" placeholder="Tekan pilihan di bawah atau taip di sini..." 
-                                class="flex-1 px-4 py-3 border-2 border-slate-300 rounded-2xl font-bold text-slate-800 text-base md:text-lg focus:border-emerald-500 focus:outline-none bg-white shadow-inner"
-                                autocomplete="off"
-                            >
-                            <button onclick="clearQuizInput()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-2xl border border-slate-300">
-                                <i class="fa-solid fa-eraser"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Clickable Word Bank Chips -->
-                    <div class="mb-6">
-                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
-                            <span><i class="fa-solid fa-hand-pointer mr-1"></i> Bank Kosa Kata Pilihan:</span>
-                            <span class="text-emerald-600 font-normal">Klik untuk isi tempat kosong</span>
-                        </div>
-                        <div class="flex flex-wrap gap-2" id="quizWordBankChips">
-                            <!-- Clickable word buttons -->
-                        </div>
-                    </div>
-
-                    <!-- Submit & Feedback -->
-                    <div id="quizFeedbackBox" class="hidden mb-6 p-4 rounded-2xl text-sm font-bold"></div>
-
-                    <div class="flex items-center justify-end gap-3">
-                        <button onclick="submitQuizAnswer()" id="quizSubmitBtn" class="w-full md:w-auto px-8 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-headline text-lg font-bold rounded-2xl shadow-3d-green active-push flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i> Semak Jawapan
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Quiz Results Box -->
-                <div id="quizResultBox" class="hidden bg-white rounded-3xl p-8 border-4 border-slate-200 shadow-xl text-center">
-                    <div class="text-6xl mb-3" id="quizResultEmoji">🎉</div>
-                    <h2 class="font-headline text-3xl font-bold text-slate-800" id="quizResultTitle">Syabas!</h2>
-                    <p class="text-xl font-headline font-bold text-emerald-600 mt-2" id="quizResultScoreText">Skor Anda: 12 / 12</p>
-                    <p class="text-sm text-slate-600 mt-2 max-w-md mx-auto" id="quizResultMessage">Anda telah berjaya menjawab soalan isi tempat kosong Bahasa Melayu dengan cemerlang!</p>
-
-                    <div class="mt-8 flex justify-center gap-4">
-                        <button onclick="startFillBlankQuiz()" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-headline font-bold rounded-2xl shadow-3d-amber active-push flex items-center gap-2">
-                            <i class="fa-solid fa-rotate-right"></i> Cuba Semula Kuiz
-                        </button>
-                        <button onclick="switchTab('exercise')" class="px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-headline font-bold rounded-2xl shadow-3d-green active-push flex items-center gap-2">
-                            <i class="fa-solid fa-pen-to-square"></i> Latihan Penuh
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW 4: TOTAL SCORE & CERTIFICATE SECTION -->
-        <section id="view-report" class="view-section hidden">
-            <div class="max-w-3xl mx-auto space-y-6">
-                <!-- Summary Card -->
-                <div class="bg-white rounded-3xl p-6 md:p-8 border-4 border-slate-200 shadow-xl text-center">
-                    <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-3 border-2 border-amber-300">
-                        <i class="fa-solid fa-award"></i>
-                    </div>
-                    <h2 class="font-headline text-3xl font-extrabold text-slate-800">Laporan Pencapaian & Sijil</h2>
-                    <p class="text-slate-500 text-sm mt-1">Selesaikan kesemua 3 latihan untuk membuka Sijil Pencapaian rasmi anda!</p>
-
-                    <!-- Overall Score Box -->
-                    <div class="mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div class="text-left">
-                            <p class="text-xs font-bold uppercase tracking-wider text-emerald-100">Jumlah Markah Terkumpul</p>
-                            <h3 class="font-headline text-3xl md:text-4xl font-extrabold" id="totalMarkText">0 / 30 Markah</h3>
-                            <p class="text-xs text-emerald-100 mt-1" id="totalPercentageText">Peratusan: 0%</p>
-                        </div>
-                        <div class="bg-white/20 backdrop-blur-md px-5 py-3 rounded-xl border border-white/30 text-center">
-                            <span class="text-xs font-bold block text-emerald-100">Status Tugasan</span>
-                            <span class="font-headline text-xl font-bold" id="completedTaskCountText">0 / 3 Selesai</span>
-                        </div>
-                    </div>
-
-                    <!-- Breakdown of 3 Tasks -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                        <!-- Task 1 -->
-                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-bold text-xs text-slate-500">1. Latihan</span>
-                                <span id="statusBadge1" class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">Belum</span>
-                            </div>
-                            <h4 class="font-headline font-bold text-slate-800 text-sm">Isi Tempat Kosong</h4>
-                            <p class="font-bold text-emerald-600 text-lg mt-1" id="scoreTask1">0 / 12</p>
-                        </div>
-
-                        <!-- Task 2 -->
-                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-bold text-xs text-slate-500">2. Permainan</span>
-                                <span id="statusBadge2" class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">Belum</span>
-                            </div>
-                            <h4 class="font-headline font-bold text-slate-800 text-sm">Padan Kata</h4>
-                            <p class="font-bold text-purple-600 text-lg mt-1" id="scoreTask2">0 / 6</p>
-                        </div>
-
-                        <!-- Task 3 -->
-                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-bold text-xs text-slate-500">3. Kuiz</span>
-                                <span id="statusBadge3" class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">Belum</span>
-                            </div>
-                            <h4 class="font-headline font-bold text-slate-800 text-sm">Cabaran Masa</h4>
-                            <p class="font-bold text-amber-600 text-lg mt-1" id="scoreTask3">0 / 12</p>
-                        </div>
-                    </div>
-
-                    <!-- Copy & Paste Section -->
-                    <div class="mt-6 pt-6 border-t-2 border-slate-100 text-left">
-                        <label class="block font-headline font-bold text-slate-800 text-sm mb-2">
-                            <i class="fa-solid fa-copy text-emerald-600 mr-1"></i> Salin Keputusan Lengkap (Untuk Hantar Kepada Guru / Ibu Bapa)
-                        </label>
-                        <div class="flex gap-2">
-                            <textarea readonly class="copy-report-textarea w-full h-24 p-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-mono text-slate-700 focus:outline-none resize-none"></textarea>
-                        </div>
-                        <div class="mt-2 flex items-center justify-between">
-                            <button onclick="copyResultsToClipboard()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-headline font-bold text-sm rounded-xl shadow-3d-green active-push flex items-center gap-2">
-                                <i class="fa-solid fa-paste"></i> Salin Keputusan (Copy Text)
-                            </button>
-                            <span class="copy-success-msg hidden text-xs font-bold text-emerald-600 flex items-center gap-1">
-                                <i class="fa-solid fa-circle-check"></i> Berjaya disalin!
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Certificate Generation Box -->
-                <div class="bg-white rounded-3xl p-6 md:p-8 border-4 border-slate-200 shadow-xl">
-                    <div class="text-center mb-6">
-                        <h3 class="font-headline text-2xl font-bold text-slate-800">Muat Turun Sijil Pencapaian</h3>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">Sila masukkan nama murid untuk menjana sijil rasmi yang boleh dimuat turun sebagai imej (PNG).</p>
-                    </div>
-
-                    <!-- Student Name Input -->
-                    <div class="max-w-md mx-auto mb-6">
-                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Nama Murid:</label>
-                        <input type="text" id="certStudentName" placeholder="Masukkan nama penuh murid..." 
-                            value="Ahmad Zaki" oninput="renderCertificateCanvas()"
-                            class="w-full px-4 py-3 border-2 border-slate-300 rounded-2xl font-headline font-bold text-slate-800 focus:border-amber-500 focus:outline-none text-center bg-slate-50"
-                        >
-                    </div>
-
-                    <!-- Certificate Canvas Preview -->
-                    <div class="overflow-x-auto flex justify-center bg-slate-100 p-4 rounded-2xl border-2 border-slate-200">
-                        <canvas id="certCanvas" width="800" height="560" class="max-w-full h-auto rounded-xl shadow-md border border-slate-300 bg-white"></canvas>
-                    </div>
-
-                    <!-- Download Button -->
-                    <div class="mt-6 text-center">
-                        <button onclick="downloadCertificate()" id="downloadCertBtn" class="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-headline font-extrabold text-base rounded-2xl shadow-3d-amber active-push inline-flex items-center gap-2">
-                            <i class="fa-solid fa-download"></i> Muat Turun Sijil (PNG)
-                        </button>
-                        <p class="text-xs text-slate-400 mt-2" id="certLockNotice">Nota: Anda boleh memuat turun sijil pada bila-bila masa selepas mencuba latihan.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- POPUP MODAL: SIJIL & LAPORAN PENCAPAIAN (Hanya keluar selepas selesai 3 tugasan) -->
-    <div id="completionReportModal" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md overflow-y-auto p-4 flex items-center justify-center">
-        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-3xl w-full border-4 border-amber-400 shadow-2xl relative my-8">
-            <button onclick="closeReportModal()" class="absolute top-4 right-4 w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold border border-slate-300">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-
-            <div class="text-center mb-6">
-                <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-3 border-2 border-amber-300 animate-bounce">
-                    <i class="fa-solid fa-award"></i>
-                </div>
-                <h2 class="font-headline text-3xl font-extrabold text-slate-800">Tahniah! Anda Selesai Semua 3 Tugasan!</h2>
-                <p class="text-slate-500 text-sm mt-1">Berikut ialah Laporan Pencapaian dan Sijil Rasmi anda.</p>
-            </div>
-
-            <!-- Overall Score Box -->
-            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-                <div class="text-left">
-                    <p class="text-xs font-bold uppercase tracking-wider text-emerald-100">Jumlah Markah Terkumpul</p>
-                    <h3 class="font-headline text-3xl md:text-4xl font-extrabold" id="totalMarkText">0 / 30 Markah</h3>
-                    <p class="text-xs text-emerald-100 mt-1" id="totalPercentageText">Peratusan: 0%</p>
-                </div>
-                <div class="bg-white/20 backdrop-blur-md px-5 py-3 rounded-xl border border-white/30 text-center">
-                    <span class="text-xs font-bold block text-emerald-100">Status Tugasan</span>
-                    <span class="font-headline text-xl font-bold" id="completedTaskCountText">3 / 3 Selesai</span>
-                </div>
-            </div>
-
-            <!-- Breakdown of 3 Tasks -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold text-xs text-slate-500">1. Latihan</span>
-                        <span id="statusBadge1" class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">Selesai ✓</span>
-                    </div>
-                    <h4 class="font-headline font-bold text-slate-800 text-sm">Isi Tempat Kosong</h4>
-                    <p class="font-bold text-emerald-600 text-lg mt-1" id="scoreTask1">0 / 12</p>
-                </div>
-
-                <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold text-xs text-slate-500">2. Permainan</span>
-                        <span id="statusBadge2" class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">Selesai ✓</span>
-                    </div>
-                    <h4 class="font-headline font-bold text-slate-800 text-sm">Padan Kata</h4>
-                    <p class="font-bold text-purple-600 text-lg mt-1" id="scoreTask2">0 / 6</p>
-                </div>
-
-                <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 text-left">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold text-xs text-slate-500">3. Kuiz</span>
-                        <span id="statusBadge3" class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">Selesai ✓</span>
-                    </div>
-                    <h4 class="font-headline font-bold text-slate-800 text-sm">Cabaran Masa</h4>
-                    <p class="font-bold text-amber-600 text-lg mt-1" id="scoreTask3">0 / 12</p>
-                </div>
-            </div>
-
-            <!-- Copy & Paste Section -->
-            <div class="mb-6 pt-4 border-t-2 border-slate-100 text-left">
-                <label class="block font-headline font-bold text-slate-800 text-sm mb-2">
-                    <i class="fa-solid fa-copy text-emerald-600 mr-1"></i> Salin Keputusan Lengkap (Untuk Hantar Kepada Guru / Ibu Bapa)
-                </label>
-                <textarea readonly class="copy-report-textarea w-full h-24 p-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-mono text-slate-700 focus:outline-none resize-none mb-2"></textarea>
-                <div class="flex items-center justify-between">
-                    <button onclick="copyResultsToClipboard()" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-headline font-bold text-sm rounded-xl shadow-3d-green active-push flex items-center gap-2">
-                        <i class="fa-solid fa-paste"></i> Salin Keputusan (Copy Text)
+                    <button type="submit" 
+                            :disabled="!studentName.trim()"
+                            :class="[
+                                'w-full py-4 rounded-2xl font-bold text-white shadow-lg transition flex items-center justify-center gap-2 text-base',
+                                studentName.trim() ? 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer' : 'bg-slate-300 cursor-not-allowed opacity-60'
+                            ]">
+                        <span>Mula Latihan</span>
+                        <i class="fa-solid fa-arrow-right"></i>
                     </button>
-                    <span class="copy-success-msg hidden text-xs font-bold text-emerald-600 flex items-center gap-1">
-                        <i class="fa-solid fa-circle-check"></i> Berjaya disalin!
-                    </span>
-                </div>
-            </div>
-
-            <!-- Certificate Generation Box -->
-            <div class="pt-4 border-t-2 border-slate-100 text-center">
-                <h3 class="font-headline text-2xl font-bold text-slate-800 mb-1">Sijil Pencapaian Anda</h3>
-                <p class="text-xs text-slate-500 mb-4">Sijil di bawah telah dijana secara rasmi mengikut nama anda.</p>
-
-                <div class="overflow-x-auto flex justify-center bg-slate-100 p-3 rounded-2xl border-2 border-slate-200 mb-4">
-                    <canvas id="certCanvas" width="800" height="560" class="max-w-full h-auto rounded-xl shadow-md border border-slate-300 bg-white"></canvas>
-                </div>
-
-                <div class="flex justify-center gap-3">
-                    <button onclick="downloadCertificate()" class="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-headline font-extrabold text-base rounded-2xl shadow-3d-amber active-push inline-flex items-center gap-2">
-                        <i class="fa-solid fa-download"></i> Muat Turun Sijil (PNG)
-                    </button>
-                    <button onclick="closeReportModal()" class="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-headline font-bold text-base rounded-2xl border border-slate-300 active-push">
-                        Tutup
-                    </button>
-                </div>
+                </form>
             </div>
         </div>
+
+        <!-- Main Application Screen -->
+        <template v-else>
+            <!-- Header -->
+            <header class="bg-gradient-to-r from-emerald-700 via-teal-700 to-green-800 text-white rounded-3xl p-6 mb-6 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 opacity-15 text-9xl">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </div>
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-amber-400 text-emerald-900 rounded-2xl flex items-center justify-center text-3xl shadow-lg font-bold border-2 border-amber-200 shrink-0">
+                            <i class="fa-solid fa-keyboard"></i>
+                        </div>
+                        <div>
+                            <span class="bg-amber-400/30 text-amber-200 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Latihan Menaip BM Tahun 5</span>
+                            <h1 class="text-2xl md:text-3xl font-bold heading-font text-white mt-1">Latihan Isi Karangan Hari Raya Aidilfitri</h1>
+                            <p class="text-emerald-100 text-sm mt-0.5">Taip jawapan Bahasa Melayu berdasarkan panduan Bahasa Cina (华文翻译)</p>
+                        </div>
+                    </div>
+                    <!-- Student Info Badge -->
+                    <div class="bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/20 flex items-center gap-3 shrink-0">
+                        <i class="fa-solid fa-id-card text-amber-300 text-xl"></i>
+                        <div class="text-left">
+                            <p class="text-xs text-emerald-200 uppercase tracking-wider font-semibold">Nama Murid</p>
+                            <p class="font-bold text-white text-sm md:text-base heading-font">{{ studentName }}</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="space-y-6">
+                <div class="bg-white p-6 md:p-8 rounded-3xl border border-emerald-100 shadow-md">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-6 gap-2">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800 heading-font flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-emerald-600"></i>
+                                Modul Latihan Menaip
+                            </h2>
+                            <p class="text-xs text-slate-500">Sila taipkan isi karangan yang betul (huruf besar/kecil dan simbol diabaikan semasa semakan).</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div v-for="(item, index) in items" :key="index" class="p-4 rounded-2xl border transition"
+                             :class="{
+                                 'bg-slate-50 border-slate-200': item.status === null,
+                                 'bg-emerald-50 border-emerald-300': item.status === 'correct',
+                                 'bg-amber-50 border-amber-300': item.status === 'partial',
+                                 'bg-rose-50 border-rose-300': item.status === 'wrong'
+                             }">
+                            
+                            <!-- Question Header -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
+                                <span class="font-bold text-emerald-800 text-base md:text-lg heading-font">
+                                    {{ item.title }}
+                                </span>
+                                <span class="text-slate-600 text-sm font-medium bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-sm inline-block">
+                                    <i class="fa-solid fa-language text-emerald-600 mr-1"></i> {{ item.zh }}
+                                </span>
+                            </div>
+
+                            <!-- Typing Area -->
+                            <div class="mt-3">
+                                <input type="text" 
+                                       v-model="item.userAnswer" 
+                                       :placeholder="'Taip ' + item.title + ' di sini...'"
+                                       class="w-full p-3 md:p-3.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base font-medium transition bg-white" />
+                            </div>
+
+                            <!-- Feedback -->
+                            <div class="mt-2.5 flex flex-wrap items-center justify-end gap-2 text-xs">
+                                <span v-if="item.status === 'correct'" class="text-emerald-700 font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-check"></i> Tepat sekali!
+                                </span>
+                                <span v-else-if="item.status === 'partial'" class="text-amber-700 font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Tepat (Semak ejaan)
+                                </span>
+                                <span v-else-if="item.status === 'wrong'" class="text-rose-700 font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-circle-xmark"></i> Sila cuba lagi
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <button @click="semakJawapan" 
+                                :disabled="!isAllAnswered"
+                                :class="[
+                                    'w-full sm:w-auto font-bold px-8 py-3.5 rounded-2xl shadow-md transition flex items-center justify-center gap-2',
+                                    isAllAnswered ? 'bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer' : 'bg-slate-300 text-slate-400 cursor-not-allowed opacity-60'
+                                ]">
+                            <i class="fa-solid fa-check-double"></i>
+                            <span>Semak Semua Jawapan</span>
+                        </button>
+
+                        <button @click="resetForm" class="w-full sm:w-auto bg-slate-200 text-slate-700 font-bold px-6 py-3.5 rounded-2xl hover:bg-slate-300 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>Padam & Mulakan Semula</span>
+                        </button>
+                    </div>
+
+                    <!-- Complete Essay Preview Section -->
+                    <div v-if="isCompleted" class="mt-8 p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl border border-emerald-200 shadow-inner">
+                        <h3 class="text-lg font-bold text-emerald-900 heading-font mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-file-signature text-amber-500"></i>
+                            Karangan Lengkap Hari Raya Aidilfitri
+                        </h3>
+                        <p class="text-slate-700 text-sm md:text-base leading-relaxed bg-white p-4 rounded-2xl border border-emerald-100 shadow-sm">
+                            {{ items.map(i => i.userAnswer || i.target).join(' ') }}
+                        </p>
+                    </div>
+
+                    <!-- Sijil Penyertaan Section -->
+                    <div id="sijil-container" v-if="isCompleted" class="mt-8 p-6 md:p-8 bg-amber-50 rounded-3xl border-4 border-double border-amber-400 text-center relative overflow-hidden shadow-xl">
+
+                        <div class="relative z-10 space-y-4">
+                            <div class="inline-block p-3 bg-amber-400 text-emerald-950 rounded-full shadow-lg">
+                                <i class="fa-solid fa-award text-4xl md:text-5xl"></i>
+                            </div>
+
+                            <p class="text-xs uppercase tracking-widest font-bold text-amber-800">Modul Pembelajaran Bahasa Melayu Tahun 5</p>
+                            
+                            <h3 class="text-2xl md:text-4xl font-extrabold heading-font text-emerald-900 uppercase tracking-wide">
+                                Sijil Penyertaan
+                            </h3>
+
+                            <p class="text-slate-600 text-sm md:text-base italic">Dengan ini disahkan bahawa</p>
+
+                            <div class="py-2">
+                                <span class="text-2xl md:text-3xl font-bold text-emerald-700 heading-font border-b-2 border-amber-400 pb-1 px-6 inline-block">
+                                    {{ studentName }}
+                                </span>
+                            </div>
+
+                            <p class="text-slate-700 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+                                telah berjaya menyelesaikan **Latihan Menaip Isi Karangan Hari Raya Aidilfitri** dengan penuh tekun dan cemerlang.
+                            </p>
+
+                            <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 text-xs text-slate-500 border-t border-amber-200 max-w-md mx-auto">
+                                <div>
+                                    <span class="font-semibold block text-slate-700">Tarikh Penyelesaian:</span>
+                                    <span>{{ tarikhPenyelesaian }}</span>
+                                </div>
+                                <div class="hidden sm:block text-amber-300">•</div>
+                                <div>
+                                    <span class="font-semibold block text-slate-700">Status:</span>
+                                    <span class="text-emerald-600 font-bold">Lulus & Tamat</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2" data-html2canvas-ignore="true">
+                                <button @click="muatTurunSijil" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-xl shadow transition text-xs md:text-sm inline-flex items-center gap-2 cursor-pointer">
+                                    <i class="fa-solid fa-download"></i>
+                                    <span>Muat Turun Sijil (PDF)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </template>
+
+        <footer class="mt-auto pt-6 text-center text-xs text-slate-400">
+            <p>© Modul Pembelajaran Bahasa Melayu Tahun 5 • Latihan Menaip Isi Karangan Hari Raya</p>
+        </footer>
+
     </div>
 
     <script>
-        // Core Vocabulary Dataset for Year 5 Bahasa Melayu
-        const vocabList = [
-            {
-                id: 1,
-                malay: "menghijaukan kawasan sekolah",
-                chinese: "绿化学校环境",
-                emoji: "🌱",
-                sentence: "Murid-murid menanam pelbagai jenis pokok bunga untuk ___________.",
-                example: "Murid-murid menanam pelbagai jenis pokok bunga untuk menghijaukan kawasan sekolah.",
-                distractors: ["menceriakan kawasan sekolah", "merapatkan hubungan kekeluargaan", "membeli-belah"]
-            },
-            {
-                id: 2,
-                malay: "menceriakan kawasan sekolah",
-                chinese: "美化学校环境",
-                emoji: "🎨",
-                sentence: "Gotong-royong itu bertujuan untuk ___________ supaya kelihatan indah dan bersih.",
-                example: "Gotong-royong itu bertujuan untuk menceriakan kawasan sekolah supaya kelihatan indah dan bersih.",
-                distractors: ["menghijaukan kawasan sekolah", "menghirup udara yang segar", "meminta maaf"]
-            },
-            {
-                id: 3,
-                malay: "menghirup udara yang segar",
-                chinese: "呼吸新鲜的空气",
-                emoji: "🍃",
-                sentence: "Kami sekeluarga berjoging di taman rekreasi untuk ___________ pada waktu pagi.",
-                example: "Kami sekeluarga berjoging di taman rekreasi untuk menghirup udara yang segar pada waktu pagi.",
-                distractors: ["meningkatkan kemahiran komunikasi", "minggu depan", "berjanji"]
-            },
-            {
-                id: 4,
-                malay: "meningkatkan keyakinan diri",
-                chinese: "提升自信心",
-                emoji: "💪",
-                sentence: "Menyertai pertandingan syarahan dapat ___________ semasa bercakap di hadapan orang ramai.",
-                example: "Menyertai pertandingan syarahan dapat meningkatkan keyakinan diri semasa bercakap di hadapan orang ramai.",
-                distractors: ["meningkatkan kemahiran komunikasi", "pengalaman", "membeli-belah"]
-            },
-            {
-                id: 5,
-                malay: "meningkatkan kemahiran komunikasi",
-                chinese: "提升表达能力",
-                emoji: "🗣️",
-                sentence: "Aktiviti pembentangan kumpulan membantu murid ___________ dengan rakan-rakan.",
-                example: "Aktiviti pembentangan kumpulan membantu murid meningkatkan kemahiran komunikasi dengan rakan-rakan.",
-                distractors: ["meningkatkan keyakinan diri", "kemahiran", "berjanji"]
-            },
-            {
-                id: 6,
-                malay: "membeli-belah",
-                chinese: "买东西",
-                emoji: "🛍️",
-                sentence: "Ibu dan ayah pergi ke pusat ___________ untuk membeli barangan dapur.",
-                example: "Ibu dan ayah pergi ke pusat membeli-belah untuk membeli barangan dapur.",
-                distractors: ["pengalaman", "kemahiran", "minggu depan"]
-            },
-            {
-                id: 7,
-                malay: "merapatkan hubungan kekeluargaan",
-                chinese: "增进亲情关系",
-                emoji: "👨‍👩‍👧‍👦",
-                sentence: "Aktiviti perkelahan di tepi pantai ini dapat ___________ kami.",
-                example: "Aktiviti perkelahan di tepi pantai ini dapat merapatkan hubungan kekeluargaan kami.",
-                distractors: ["menceriakan kawasan sekolah", "meminta maaf", "menghijaukan kawasan sekolah"]
-            },
-            {
-                id: 8,
-                malay: "pengalaman",
-                chinese: "经验",
-                emoji: "✨",
-                sentence: "Lawatan ke Muzium Negara memberi banyak ___________ berharga kepada kami.",
-                example: "Lawatan ke Muzium Negara memberi banyak pengalaman berharga kepada kami.",
-                distractors: ["kemahiran", "minggu depan", "berjanji"]
-            },
-            {
-                id: 9,
-                malay: "minggu depan",
-                chinese: "下周",
-                emoji: "📅",
-                sentence: "Ujian Bahasa Melayu akan diadakan pada ___________ di bilik darjah.",
-                example: "Ujian Bahasa Melayu akan diadakan pada minggu depan di bilik darjah.",
-                distractors: ["pengalaman", "kemahiran", "membeli-belah"]
-            },
-            {
-                id: 10,
-                malay: "meminta maaf",
-                chinese: "道歉",
-                emoji: "🙏",
-                sentence: "Mei Ling ___________ kepada cikgu kerana terlupa membawa buku latihan.",
-                example: "Mei Ling meminta maaf kepada cikgu kerana terlupa membawa buku latihan.",
-                distractors: ["berjanji", "pengalaman", "kemahiran"]
-            },
-            {
-                id: 11,
-                malay: "berjanji",
-                chinese: "答应 / 许诺",
-                emoji: "🤝",
-                sentence: "Adam ___________ akan belajar dengan bersungguh-sungguh untuk mendapat keputusan cemerlang.",
-                example: "Adam berjanji akan belajar dengan bersungguh-sungguh untuk mendapat keputusan cemerlang.",
-                distractors: ["meminta maaf", "pengalaman", "minggu depan"]
-            },
-            {
-                id: 12,
-                malay: "kemahiran",
-                chinese: "技能",
-                emoji: "🛠️",
-                sentence: "Kelas pertukangan itu dapat mengasah ___________ asas murid-murid.",
-                example: "Kelas pertukangan itu dapat mengasah kemahiran asas murid-murid.",
-                distractors: ["pengalaman", "minggu depan", "berjanji"]
-            }
-        ];
+        const { createApp } = Vue;
 
-        let currentStars = 0;
-        let isMuted = false;
-        let studentName = "";
-
-        // Handle Login Submission
-        function handleLogin(e) {
-            e.preventDefault();
-            const input = document.getElementById('loginNameInput').value.trim();
-            if (input) {
-                studentName = input;
-                document.getElementById('headerStudentName').innerText = studentName;
-                document.getElementById('studentHeaderBadge').classList.remove('hidden');
-                document.getElementById('loginModal').classList.add('hidden');
-                playSound('star');
-            }
-        }
-
-        // Tracking Task Completion & Scores
-        let taskCompletion = {
-            exercise: false,
-            matching: false,
-            quiz: false
-        };
-
-        let taskScores = {
-            exercise: 0,
-            matching: 0,
-            quiz: 0
-        };
-
-        // Check if all 3 tasks are completed
-        function checkAllTasksCompleted() {
-            if (taskCompletion.exercise && taskCompletion.matching && taskCompletion.quiz) {
-                updateReportUI();
-                setTimeout(() => {
-                    openReportModal();
-                }, 500);
-            }
-        }
-
-        function openReportModal() {
-            playSound('star');
-            document.getElementById('completionReportModal').classList.remove('hidden');
-            renderCertificateCanvas();
-        }
-
-        function closeReportModal() {
-            playSound('click');
-            document.getElementById('completionReportModal').classList.add('hidden');
-        }
-
-        // Sound Effects Engine using Web Audio API Synth
-        function playSound(type) {
-            if (isMuted) return;
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                if (type === 'correct') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
-                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.4);
-                } else if (type === 'wrong') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(200, ctx.currentTime);
-                    osc.frequency.setValueAtTime(150, ctx.currentTime + 0.15);
-                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.3);
-                } else if (type === 'click') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(400, ctx.currentTime);
-                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.05);
-                } else if (type === 'star') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-                    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1); // A5
-                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.35);
+        createApp({
+            data() {
+                return {
+                    studentName: '',
+                    isNameEntered: false,
+                    isCompleted: false,
+                    tarikhPenyelesaian: '',
+                    items: [
+                        {
+                            title: 'Pendahuluan',
+                            zh: '开头：开斋节 & 去叔叔家参加开放门户',
+                            target: 'Hari Raya Aidilfitri & ke rumah terbuka di rumah pak cik saya.',
+                            userAnswer: '',
+                            status: null,
+                            showHint: false
+                        },
+                        {
+                            title: 'Isi 1',
+                            zh: '内容 1：穿传统服装（马来服装和 baju kurung）',
+                            target: 'memakai pakaian tradisional, baju Melayu dan baju kurung',
+                            userAnswer: '',
+                            status: null,
+                            showHint: false
+                        },
+                        {
+                            title: 'Isi 2',
+                            zh: '内容 2：享用美味的食物',
+                            target: 'Mengambil makanan yang lazat.',
+                            userAnswer: '',
+                            status: null,
+                            showHint: false
+                        },
+                        {
+                            title: 'Isi 3',
+                            zh: '内容 3：和亲戚聊天 & 玩烟花',
+                            target: 'Berbual-bual dengan saudara saya & bermain bunga api.',
+                            userAnswer: '',
+                            status: null,
+                            showHint: false
+                        },
+                        {
+                            title: 'Isi 4',
+                            zh: '内容 4：拍照',
+                            target: 'Mengambil gambar.',
+                            userAnswer: '',
+                            status: null,
+                            showHint: false
+                        },
+                        {
+                            title: 'Penutup',
+                            zh: '结尾：我感到很高兴',
+                            target: 'Saya berasa gembira.',
+                            userAnswer: '',
+                            status: null,
+                            showHint: false
+                        }
+                    ]
                 }
-            } catch(e) {
-                console.log("Audio not supported or restricted", e);
-            }
-        }
-
-        // Speech Synthesis for Malay Pronunciation
-        function speakText(text) {
-            if (!('speechSynthesis' in window)) {
-                alert("Pengeluaran audio tidak disokong pada pelayar ini.");
-                return;
-            }
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ms-MY'; // Malay accent
-            utterance.rate = 0.9; // Slightly slower for clarity
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function toggleAudioMute() {
-            isMuted = !isMuted;
-            document.getElementById('muteIcon').className = isMuted ? "fa-solid fa-volume-xmark text-rose-500" : "fa-solid fa-volume-high text-slate-600";
-        }
-
-        function addStars(amount) {
-            currentStars += amount;
-            document.getElementById('starScore').innerText = currentStars;
-            playSound('star');
-        }
-
-        function switchTab(tabId) {
-            playSound('click');
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
-            document.getElementById(`view-${tabId}`).classList.remove('hidden');
-
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-white text-slate-700 border-slate-200 hover:bg-slate-50";
-            });
-
-            const activeBtn = document.getElementById(`tab-${tabId}`);
-            if(activeBtn) {
-                activeBtn.className = "tab-btn active font-headline px-5 py-2.5 rounded-2xl border-2 font-bold text-sm md:text-base transition-all flex items-center gap-2 bg-emerald-500 text-white border-emerald-600 shadow-3d-green";
-            }
-
-            if (tabId === 'matching') {
-                initMatchingGame();
-            }
-        }
-
-        function checkExerciseAnswers() {
-            let score = 0;
-            vocabList.forEach(item => {
-                const input = document.getElementById(`input-${item.id}`);
-                const feedback = document.getElementById(`feedback-${item.id}`);
-                const userVal = input.value.trim().toLowerCase();
-                const correctVal = item.malay.toLowerCase();
-
-                feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
-
-                if (userVal === correctVal) {
-                    score++;
-                    input.className = "mx-1 px-3 py-1.5 border-2 border-emerald-500 rounded-xl font-bold text-emerald-700 bg-emerald-50 w-full md:w-72";
-                    feedback.classList.add('bg-emerald-100', 'text-emerald-800');
-                    feedback.innerHTML = `<i class="fa-solid fa-check-circle mr-1"></i> Tahniah! Jawapan anda betul.`;
-                } else {
-                    input.className = "mx-1 px-3 py-1.5 border-2 border-rose-400 rounded-xl font-bold text-rose-700 bg-rose-50 w-full md:w-72";
-                    feedback.classList.add('bg-rose-100', 'text-rose-800');
-                    feedback.innerHTML = `<i class="fa-solid fa-xmark-circle mr-1"></i> Jawapan betul: <strong>${item.malay}</strong>`;
+            },
+            computed: {
+                isAllAnswered() {
+                    return this.items.every(item => item.userAnswer && item.userAnswer.trim().length > 0);
                 }
-            });
-
-            // Update Task 1 Status
-            taskCompletion.exercise = true;
-            taskScores.exercise = score;
-            checkAllTasksCompleted();
-
-            // Show Result Summary
-            const resultBox = document.getElementById('exerciseResultBox');
-            const title = document.getElementById('exerciseResultTitle');
-            const scoreText = document.getElementById('exerciseResultScore');
-            const desc = document.getElementById('exerciseResultDesc');
-
-            resultBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'bg-amber-50', 'border-amber-300');
-
-            if (score === 12) {
-                playSound('correct');
-                addStars(12);
-                resultBox.classList.add('bg-emerald-50', 'border-emerald-300');
-                title.className = "font-headline text-2xl font-bold text-emerald-800";
-                title.innerText = "🎉 Cemerlang! Sepenuhnya Betul!";
-                scoreText.innerText = `Skor Anda: ${score} / 12`;
-                desc.innerText = "Syabas! Anda telah menguasai kesemua 12 kosa kata Bahasa Melayu Tahun 5!";
-            } else {
-                playSound('wrong');
-                addStars(score);
-                resultBox.classList.add('bg-amber-50', 'border-amber-300');
-                title.className = "font-headline text-2xl font-bold text-amber-800";
-                title.innerText = "👍 Boleh Dipertingkatkan Lagi!";
-                scoreText.innerText = `Skor Anda: ${score} / 12`;
-                desc.innerText = "Sila semak semula soalan berkotak merah di atas dan cuba lagi.";
-            }
-
-            resultBox.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function resetExercise() {
-            playSound('click');
-            vocabList.forEach(item => {
-                const input = document.getElementById(`input-${item.id}`);
-                const feedback = document.getElementById(`feedback-${item.id}`);
-                const hintBox = document.getElementById(`hint-${item.id}`);
-                if (input) {
-                    input.value = "";
-                    input.className = "mx-1 px-3 py-1.5 border-2 border-slate-300 rounded-xl font-bold text-emerald-700 focus:border-emerald-500 focus:outline-none w-full md:w-72 bg-slate-50 transition";
-                }
-                if (feedback) feedback.classList.add('hidden');
-                if (hintBox) hintBox.classList.add('hidden');
-            });
-            document.getElementById('exerciseResultBox').classList.add('hidden');
-        }
-
-        let selectedMalay = null;
-        let selectedChinese = null;
-        let correctMatches = 0;
-        let totalMatchingAttempts = 0;
-
-        function initMatchingGame() {
-            selectedMalay = null;
-            selectedChinese = null;
-            correctMatches = 0;
-            totalMatchingAttempts = 0;
-
-            // Pick 6 random vocab items for matching session
-            const sessionList = [...vocabList].sort(() => Math.random() - 0.5).slice(0, 6);
-            const malayShuffled = [...sessionList].sort(() => Math.random() - 0.5);
-            const chineseShuffled = [...sessionList].sort(() => Math.random() - 0.5);
-
-            const malayCol = document.getElementById('matchingMalayCol');
-            const chineseCol = document.getElementById('matchingChineseCol');
-
-            malayCol.innerHTML = malayShuffled.map(item => `
-                <button onclick="selectMatchMalay(${item.id}, this)" id="match-m-${item.id}" class="w-full text-left p-4 bg-white border-2 border-slate-200 rounded-2xl font-headline font-bold text-slate-800 shadow-3d-sm hover:border-purple-400 active-push transition flex items-center justify-between">
-                    <span>${item.malay}</span>
-                    <i class="fa-solid fa-circle text-slate-200 text-xs"></i>
-                </button>
-            `).join('');
-
-            chineseCol.innerHTML = chineseShuffled.map(item => `
-                <button onclick="selectMatchChinese(${item.id}, this)" id="match-c-${item.id}" class="w-full text-left p-4 bg-white border-2 border-slate-200 rounded-2xl font-headline font-bold text-purple-700 shadow-3d-sm hover:border-purple-400 active-push transition flex items-center justify-between">
-                    <span>${item.chinese}</span>
-                    <i class="fa-solid fa-circle text-slate-200 text-xs"></i>
-                </button>
-            `).join('');
-        }
-
-        function selectMatchMalay(id, btn) {
-            playSound('click');
-            if (btn.disabled) return;
-
-            document.querySelectorAll('#matchingMalayCol button').forEach(b => {
-                if (!b.disabled) b.className = "w-full text-left p-4 bg-white border-2 border-slate-200 rounded-2xl font-headline font-bold text-slate-800 shadow-3d-sm hover:border-purple-400 active-push transition flex items-center justify-between";
-            });
-
-            btn.className = "w-full text-left p-4 bg-purple-100 border-2 border-purple-500 rounded-2xl font-headline font-bold text-purple-900 shadow-3d-purple flex items-center justify-between";
-            selectedMalay = { id, btn };
-            checkMatchingPair();
-        }
-
-        function selectMatchChinese(id, btn) {
-            playSound('click');
-            if (btn.disabled) return;
-
-            document.querySelectorAll('#matchingChineseCol button').forEach(b => {
-                if (!b.disabled) b.className = "w-full text-left p-4 bg-white border-2 border-slate-200 rounded-2xl font-headline font-bold text-purple-700 shadow-3d-sm hover:border-purple-400 active-push transition flex items-center justify-between";
-            });
-
-            btn.className = "w-full text-left p-4 bg-purple-100 border-2 border-purple-500 rounded-2xl font-headline font-bold text-purple-900 shadow-3d-purple flex items-center justify-between";
-            selectedChinese = { id, btn };
-            checkMatchingPair();
-        }
-
-        function checkMatchingPair() {
-            if (selectedMalay && selectedChinese) {
-                totalMatchingAttempts++;
-
-                if (selectedMalay.id === selectedChinese.id) {
-                    // Correct Match
-                    playSound('correct');
-                    addStars(2);
-                    correctMatches++;
-
-                    selectedMalay.btn.className = "w-full text-left p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl font-headline font-bold text-emerald-900 opacity-70 flex items-center justify-between";
-                    selectedChinese.btn.className = "w-full text-left p-4 bg-emerald-100 border-2 border-emerald-500 rounded-2xl font-headline font-bold text-emerald-900 opacity-70 flex items-center justify-between";
-
-                    selectedMalay.btn.disabled = true;
-                    selectedChinese.btn.disabled = true;
-                } else {
-                    // Wrong Match - Diteruskan main tanpa bagi peluang cuba semula padanan yang salah
-                    playSound('wrong');
-
-                    selectedMalay.btn.className = "w-full text-left p-4 bg-rose-100 border-2 border-rose-400 rounded-2xl font-headline font-bold text-rose-900 opacity-70 flex items-center justify-between";
-                    selectedChinese.btn.className = "w-full text-left p-4 bg-rose-100 border-2 border-rose-400 rounded-2xl font-headline font-bold text-rose-900 opacity-70 flex items-center justify-between";
-
-                    selectedMalay.btn.disabled = true;
-                    selectedChinese.btn.disabled = true;
-                }
-
-                selectedMalay = null;
-                selectedChinese = null;
-
-                if (totalMatchingAttempts === 6) {
-                    taskCompletion.matching = true;
-                    taskScores.matching = correctMatches;
-                    checkAllTasksCompleted();
-                    setTimeout(() => {
-                        alert(`Permainan Selesai! Anda berjaya padankan ${correctMatches} daripada 6 perkataan dengan betul.`);
-                    }, 300);
-                }
-            }
-        }
-
-        let quizQuestions = [];
-        let currentQuizIndex = 0;
-        let quizScore = 0;
-        let quizStreak = 0;
-        let quizTimer = null;
-        let timeLeft = 30;
-
-        function startFillBlankQuiz() {
-            playSound('click');
-            document.getElementById('quizIntroCard').classList.add('hidden');
-            document.getElementById('quizResultBox').classList.add('hidden');
-            document.getElementById('quizPlayBox').classList.remove('hidden');
-
-            // Load all 12 vocabulary items in random order
-            quizQuestions = [...vocabList].sort(() => Math.random() - 0.5);
-            currentQuizIndex = 0;
-            quizScore = 0;
-            quizStreak = 0;
-
-            loadFillBlankQuestion();
-        }
-
-        function loadFillBlankQuestion() {
-            if (quizTimer) clearInterval(quizTimer);
-
-            const q = quizQuestions[currentQuizIndex];
-            const total = quizQuestions.length;
-
-            // Timer setup
-            timeLeft = 30;
-            document.getElementById('quizTimerText').innerText = `⏱️ ${timeLeft}s`;
-            document.getElementById('quizStreakText').innerText = `🔥 Streak: ${quizStreak}`;
-
-            quizTimer = setInterval(() => {
-                timeLeft--;
-                document.getElementById('quizTimerText').innerText = `⏱️ ${timeLeft}s`;
-                if (timeLeft <= 0) {
-                    clearInterval(quizTimer);
-                    submitQuizAnswer(true); // Timeout auto-submit
-                }
-            }, 1000);
-
-            // Progress bar & text
-            document.getElementById('quizProgressText').innerText = `Soalan ${currentQuizIndex + 1} daripada ${total}`;
-            const progressPercent = ((currentQuizIndex) / total) * 100;
-            document.getElementById('quizProgressBar').style.width = `${progressPercent}%`;
-
-            // Prompt & Hint
-            document.getElementById('quizChineseHint').innerText = `Maksud: ${q.chinese}`;
-            
-            // Format sentence blank
-            const parts = q.sentence.split('___________');
-            document.getElementById('quizQuestionText').innerHTML = `
-                ${parts[0]} <span class="underline decoration-emerald-500 decoration-4 text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl shadow-inner font-extrabold">[ ___________ ]</span> ${parts[1]}
-            `;
-
-            // Reset input field
-            const input = document.getElementById('quizAnswerInput');
-            input.value = "";
-            input.disabled = false;
-            input.className = "flex-1 px-4 py-3 border-2 border-slate-300 rounded-2xl font-bold text-slate-800 text-base md:text-lg focus:border-emerald-500 focus:outline-none bg-white shadow-inner";
-
-            // Hide feedback
-            const feedback = document.getElementById('quizFeedbackBox');
-            feedback.className = "hidden mb-6 p-4 rounded-2xl text-sm font-bold";
-
-            // Enable submit button
-            const submitBtn = document.getElementById('quizSubmitBtn');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1"></i> Semak Jawapan`;
-            submitBtn.onclick = () => submitQuizAnswer(false);
-
-            // Populate clickable word bank chips
-            const wordChipsContainer = document.getElementById('quizWordBankChips');
-            const shuffledChips = [...vocabList].sort(() => Math.random() - 0.5);
-            
-            wordChipsContainer.innerHTML = shuffledChips.map(item => `
-                <button onclick="selectQuizChip('${item.malay.replace(/'/g, "\\'")}')" class="bg-white hover:bg-emerald-50 border-2 border-slate-200 hover:border-emerald-400 text-slate-700 font-bold text-xs md:text-sm px-3.5 py-2 rounded-xl shadow-sm active-push transition">
-                    ${item.malay}
-                </button>
-            `).join('');
-        }
-
-        function selectQuizChip(word) {
-            playSound('click');
-            const input = document.getElementById('quizAnswerInput');
-            input.value = word;
-            input.focus();
-        }
-
-        function clearQuizInput() {
-            playSound('click');
-            document.getElementById('quizAnswerInput').value = "";
-        }
-
-        function speakCurrentQuizSentence() {
-            const q = quizQuestions[currentQuizIndex];
-            speakText(q.example);
-        }
-
-        function submitQuizAnswer(isTimeout = false) {
-            clearInterval(quizTimer);
-            const q = quizQuestions[currentQuizIndex];
-            const input = document.getElementById('quizAnswerInput');
-            const feedback = document.getElementById('quizFeedbackBox');
-            const submitBtn = document.getElementById('quizSubmitBtn');
-
-            const userVal = input.value.trim().toLowerCase();
-            const correctVal = q.malay.toLowerCase();
-
-            input.disabled = true;
-            feedback.classList.remove('hidden');
-
-            if (!isTimeout && userVal === correctVal) {
-                playSound('correct');
-                quizScore++;
-                quizStreak++;
-                addStars(2);
-
-                input.className = "flex-1 px-4 py-3 border-2 border-emerald-500 rounded-2xl font-bold text-emerald-800 text-base md:text-lg bg-emerald-50 shadow-inner";
-                feedback.className = "mb-6 p-4 rounded-2xl text-sm font-bold bg-emerald-100 text-emerald-800 border-2 border-emerald-300";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5 text-base"></i> Syabas! Jawapan tepat: "<strong>${q.malay}</strong>"`;
-            } else {
-                playSound('wrong');
-                quizStreak = 0;
-
-                input.className = "flex-1 px-4 py-3 border-2 border-rose-400 rounded-2xl font-bold text-rose-800 text-base md:text-lg bg-rose-50 shadow-inner";
-                feedback.className = "mb-6 p-4 rounded-2xl text-sm font-bold bg-rose-100 text-rose-800 border-2 border-rose-300";
-                feedback.innerHTML = isTimeout 
-                    ? `<i class="fa-solid fa-clock mr-1.5 text-base"></i> Masa tamat! Jawapan betul: "<strong>${q.malay}</strong>"`
-                    : `<i class="fa-solid fa-circle-xmark mr-1.5 text-base"></i> Kurang tepat. Jawapan betul: "<strong>${q.malay}</strong>"`;
-            }
-
-            document.getElementById('quizStreakText').innerText = `🔥 Streak: ${quizStreak}`;
-
-            // Transform button to Next
-            currentQuizIndex++;
-            if (currentQuizIndex < quizQuestions.length) {
-                submitBtn.innerHTML = `Seterusnya <i class="fa-solid fa-arrow-right ml-1"></i>`;
-                submitBtn.onclick = () => loadFillBlankQuestion();
-            } else {
-                submitBtn.innerHTML = `Lihat Keputusan <i class="fa-solid fa-trophy ml-1"></i>`;
-                submitBtn.onclick = () => showQuizResults();
-            }
-        }
-
-        function showQuizResults() {
-            document.getElementById('quizPlayBox').classList.add('hidden');
-            document.getElementById('quizResultBox').classList.remove('hidden');
-
-            const total = quizQuestions.length;
-            document.getElementById('quizResultScoreText').innerText = `Skor Anda: ${quizScore} / ${total}`;
-            addStars(quizScore * 3);
-
-            // Update Task 3 Status
-            taskCompletion.quiz = true;
-            taskScores.quiz = quizScore;
-            checkAllTasksCompleted();
-
-            if (quizScore === total) {
-                document.getElementById('quizResultEmoji').innerText = "🏆";
-                document.getElementById('quizResultTitle').innerText = "Hebat Sekali!";
-                document.getElementById('quizResultMessage').innerText = "Skor sempurna 100%! Anda telah menguasai kesemua 12 kosa kata Bahasa Melayu Tahun 5!";
-            } else if (quizScore >= 8) {
-                document.getElementById('quizResultEmoji').innerText = "🌟";
-                document.getElementById('quizResultTitle').innerText = "Syabas & Tahniah!";
-                document.getElementById('quizResultMessage').innerText = "Keputusan yang sangat baik! Tingkatkan lagi sedikit usaha untuk capai skor sempurna.";
-            } else {
-                document.getElementById('quizResultEmoji').innerText = "💪";
-                document.getElementById('quizResultTitle').innerText = "Teruskan Usaha!";
-                document.getElementById('quizResultMessage').innerText = "Jangan putus asa. Anda boleh mengulang latihan untuk memperkukuhkan ingatan.";
-            }
-        }
-
-        // Update Total Report UI & Copyable Text
-        function updateReportUI() {
-            const totalScore = taskScores.exercise + taskScores.matching + taskScores.quiz;
-            const maxScore = 30; // 12 + 6 + 12
-            const percentage = Math.round((totalScore / maxScore) * 100);
-
-            let completedCount = 0;
-            if (taskCompletion.exercise) completedCount++;
-            if (taskCompletion.matching) completedCount++;
-            if (taskCompletion.quiz) completedCount++;
-
-            document.querySelectorAll('#totalMarkText').forEach(el => el.innerText = `${totalScore} / ${maxScore} Markah`);
-            document.querySelectorAll('#totalPercentageText').forEach(el => el.innerText = `Peratusan: ${percentage}%`);
-            document.querySelectorAll('#completedTaskCountText').forEach(el => el.innerText = `${completedCount} / 3 Selesai`);
-
-            // Individual Scores
-            document.querySelectorAll('#scoreTask1').forEach(el => el.innerText = `${taskScores.exercise} / 12`);
-            document.querySelectorAll('#scoreTask2').forEach(el => el.innerText = `${taskScores.matching} / 6`);
-            document.querySelectorAll('#scoreTask3').forEach(el => el.innerText = `${taskScores.quiz} / 12`);
-
-            // Formatted Copy/Paste Text
-            const displayName = studentName || "Murid Tahun 5";
-            const dateStr = new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
-
-            const summaryText = 
-`========================================
-LAPORAN PENCAPAIAN BAHASA MELAYU TAHUN 5
-Bijak Bahasa: Kosa Kata & Isi Tempat Kosong
-========================================
-Nama Murid : ${displayName}
-Tarikh     : ${dateStr}
-
-PERINCIAN MARKAH:
-1. Latihan Isi Tempat Kosong : ${taskScores.exercise} / 12
-2. Permainan Padan Kata     : ${taskScores.matching} / 6
-3. Cabaran Kuiz Masa        : ${taskScores.quiz} / 12
-
-JUMLAH MARKAH : ${totalScore} / ${maxScore} (${percentage}%)
-STATUS TUGASAN: ${completedCount} daripada 3 Selesai
-========================================`;
-
-            document.querySelectorAll('.copy-report-textarea').forEach(el => {
-                el.value = summaryText;
-            });
-
-            return summaryText;
-        }
-
-        // Copy Report Text to Clipboard
-        function copyResultsToClipboard() {
-            playSound('click');
-            const summaryText = updateReportUI();
-
-            function showSuccess() {
-                const successMsgs = document.querySelectorAll('.copy-success-msg');
-                successMsgs.forEach(msg => {
-                    msg.classList.remove('hidden');
-                    setTimeout(() => msg.classList.add('hidden'), 2500);
-                });
-            }
-
-            const textAreas = document.querySelectorAll('.copy-report-textarea');
-            let success = false;
-
-            textAreas.forEach(textArea => {
-                if (textArea) {
-                    textArea.value = summaryText;
-                    textArea.focus();
-                    textArea.select();
-                    textArea.setSelectionRange(0, 99999);
-                    try {
-                        success = document.execCommand('copy');
-                    } catch (err) {
-                        success = false;
+            },
+            methods: {
+                masukAplikasi() {
+                    if (this.studentName.trim()) {
+                        this.isNameEntered = true;
                     }
-                }
-            });
+                },
+                normalizeText(str) {
+                    if (!str) return '';
+                    return str
+                        .toLowerCase()
+                        .replace(/\bdan\b/g, '') // Mengabaikan perkataan 'dan' / '&' supaya lebih fleksibel
+                        .replace(/&/g, '')
+                        .replace(/[^a-z0-9]/g, '') // Membuang semua simbol, tanda baca dan ruang kosong
+                        .trim();
+                },
+                semakJawapan() {
+                    let allCorrect = true;
+                    this.items.forEach(item => {
+                        const userNorm = this.normalizeText(item.userAnswer);
+                        const targetNorm = this.normalizeText(item.target);
 
-            if (success) {
-                showSuccess();
-            } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(summaryText).then(() => {
-                    showSuccess();
-                }).catch(err => {
-                    console.error('Gagal menyalin:', err);
-                });
-            }
-        }
+                        if (!userNorm) {
+                            item.status = 'wrong';
+                            allCorrect = false;
+                        } else if (userNorm === targetNorm) {
+                            item.status = 'correct';
+                        } else if (userNorm.length > 5 && (targetNorm.includes(userNorm) || userNorm.includes(targetNorm))) {
+                            item.status = 'partial';
+                            allCorrect = false;
+                        } else {
+                            item.status = 'wrong';
+                            allCorrect = false;
+                        }
+                    });
+                    
+                    const today = new Date();
+                    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    this.tarikhPenyelesaian = today.toLocaleDateString('ms-MY', options);
+                    
+                    this.isCompleted = true;
+                },
+                muatTurunSijil() {
+                    const element = document.getElementById('sijil-container');
+                    if (!element) return;
+                    
+                    const opt = {
+                        margin:       0.2,
+                        filename:     `Sijil_Penyertaan_${this.studentName.replace(/\s+/g, '_')}.pdf`,
+                        image:        { type: 'jpeg', quality: 0.98 },
+                        html2canvas:  { 
+                            scale: 2, 
+                            useCORS: true,
+                            scrollY: 0,
+                            scrollX: 0,
+                            windowWidth: document.documentElement.offsetWidth
+                        },
+                        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    };
 
-        // Render Certificate on Canvas
-        function renderCertificateCanvas() {
-            const canvas = document.getElementById('certCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-
-            const displayName = (studentName || "MURID TAHUN 5").toUpperCase();
-            const totalScore = taskScores.exercise + taskScores.matching + taskScores.quiz;
-            const maxScore = 30;
-            const percentage = Math.round((totalScore / maxScore) * 100);
-            const dateStr = new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
-
-            // Background Fill
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Outer Fancy Border
-            ctx.strokeStyle = "#15803d"; // Emerald green
-            ctx.lineWidth = 12;
-            ctx.strokeRect(15, 15, canvas.width - 30, canvas.height - 30);
-
-            ctx.strokeStyle = "#f59e0b"; // Gold border
-            ctx.lineWidth = 4;
-            ctx.strokeRect(26, 26, canvas.width - 52, canvas.height - 52);
-
-            // Corner Accents
-            ctx.fillStyle = "#15803d";
-            ctx.fillRect(15, 15, 35, 35);
-            ctx.fillRect(canvas.width - 50, 15, 35, 35);
-            ctx.fillRect(15, canvas.height - 50, 35, 35);
-            ctx.fillRect(canvas.width - 50, canvas.height - 50, 35, 35);
-
-            // Certificate Header
-            ctx.fillStyle = "#1e293b";
-            ctx.font = "bold 32px Fredoka, sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("SIJIL PENCAPAAN", canvas.width / 2, 95);
-
-            ctx.fillStyle = "#16a34a";
-            ctx.font = "bold 16px Plus Jakarta Sans, sans-serif";
-            ctx.fillText("BAHASA MELAYU TAHUN 5 - KOSA KATA & ISI TEMPAT KOSONG", canvas.width / 2, 125);
-
-            // Divider Line
-            ctx.beginPath();
-            ctx.moveTo(180, 140);
-            ctx.lineTo(canvas.width - 180, 140);
-            ctx.strokeStyle = "#e2e8f0";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Subtitle Text
-            ctx.fillStyle = "#64748b";
-            ctx.font = "15px Plus Jakarta Sans, sans-serif";
-            ctx.fillText("Dengan ini diperakui bahawa", canvas.width / 2, 180);
-
-            // Student Name
-            ctx.fillStyle = "#0f172a";
-            ctx.font = "extrabold 32px Plus Jakarta Sans, sans-serif";
-            ctx.fillText(displayName, canvas.width / 2, 230);
-
-            // Name Underline
-            const nameWidth = ctx.measureText(displayName).width;
-            ctx.beginPath();
-            ctx.moveTo((canvas.width / 2) - (nameWidth / 2) - 10, 242);
-            ctx.lineTo((canvas.width / 2) + (nameWidth / 2) + 10, 242);
-            ctx.strokeStyle = "#f59e0b";
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            // Achievement Body
-            ctx.fillStyle = "#334155";
-            ctx.font = "16px Plus Jakarta Sans, sans-serif";
-            ctx.fillText("telah berjaya menyempurnakan Modul Latihan & Kuiz Kosa Kata", canvas.width / 2, 285);
-            ctx.fillText("Bahasa Melayu dengan pencapaian berikut:", canvas.width / 2, 310);
-
-            // Score Badge Box
-            ctx.fillStyle = "#f0fdf4";
-            ctx.strokeStyle = "#bbf7d0";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect((canvas.width / 2) - 160, 335, 320, 65, 12);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.fillStyle = "#15803d";
-            ctx.font = "bold 24px Fredoka, sans-serif";
-            ctx.fillText(`Jumlah Markah: ${totalScore} / ${maxScore} (${percentage}%)`, canvas.width / 2, 375);
-
-            // Gold Ribbon Badge on Bottom Left
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(120, 460, 38, 0, Math.PI * 2);
-            ctx.fillStyle = "#f59e0b";
-            ctx.fill();
-            ctx.strokeStyle = "#b45309";
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 20px sans-serif";
-            ctx.fillText("★ 🏆 ★", 120, 467);
-            ctx.restore();
-
-            // Footer Details (Date & Signature)
-            ctx.fillStyle = "#64748b";
-            ctx.font = "13px Plus Jakarta Sans, sans-serif";
-            ctx.textAlign = "left";
-            ctx.fillText(`Tarikh: ${dateStr}`, 200, 470);
-
-            ctx.textAlign = "right";
-            ctx.fillText("Aplikasi Bijak Bahasa BM", canvas.width - 100, 470);
-            ctx.font = "bold 13px Plus Jakarta Sans, sans-serif";
-            ctx.fillStyle = "#16a34a";
-            ctx.fillText("Anugerah Kecemerlangan", canvas.width - 100, 490);
-        }
-
-        // Download Canvas as PNG Image
-        function downloadCertificate() {
-            playSound('click');
-            renderCertificateCanvas();
-            const canvas = document.getElementById('certCanvas');
-            const image = canvas.toDataURL("image/png");
-            
-            const nameFile = (studentName || "Murid").replace(/\s+/g, '_');
-            const link = document.createElement('a');
-            link.download = `Sijil_Bahasa_Melayu_${nameFile}.png`;
-            link.href = image;
-            link.click();
-        }
-
-        // Render 12 Exercise Questions Dynamically
-        function renderExerciseQuestions() {
-            const container = document.getElementById('questionsContainer');
-            if (!container) return;
-
-            container.innerHTML = vocabList.map((item, index) => {
-                const parts = item.sentence.split('___________');
-                return `
-                    <div class="bg-white rounded-3xl p-5 md:p-6 border-4 border-slate-200 shadow-sm hover:border-emerald-300 transition">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="w-8 h-8 rounded-xl bg-emerald-500 text-white font-headline font-bold text-sm flex items-center justify-center">${index + 1}</span>
-                                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-200">
-                                    <i class="fa-solid fa-language mr-1"></i>${item.chinese}
-                                </span>
-                            </div>
-                            <button onclick="speakText('${item.example.replace(/'/g, "\\'")}')" class="w-8 h-8 bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 rounded-xl flex items-center justify-center text-xs transition border border-slate-200" title="Dengar sebutan">
-                                <i class="fa-solid fa-volume-high"></i>
-                            </button>
-                        </div>
-                        <div class="font-headline text-base md:text-lg text-slate-800 leading-relaxed">
-                            ${parts[0]}
-                            <input type="text" id="input-${item.id}" placeholder="taip / klik kata" 
-                                class="mx-1 px-3 py-1.5 border-2 border-slate-300 rounded-xl font-bold text-emerald-700 focus:border-emerald-500 focus:outline-none w-full md:w-72 bg-slate-50 transition"
-                                autocomplete="off"
-                            >
-                            ${parts[1] || ''}
-                        </div>
-                        <div id="feedback-${item.id}" class="hidden mt-3 p-3 rounded-xl text-xs font-bold"></div>
-                    </div>
-                `;
-            }).join('');
-
-            renderWordBankChips();
-        }
-
-        // Render Word Bank Chips for View 1
-        function renderWordBankChips() {
-            const chipContainer = document.getElementById('wordBankChips');
-            if (!chipContainer) return;
-
-            const sorted = [...vocabList].sort((a, b) => a.malay.localeCompare(b.malay));
-            chipContainer.innerHTML = sorted.map(item => `
-                <button onclick="fillExerciseInput('${item.malay.replace(/'/g, "\\'")}')" class="bg-white hover:bg-blue-100 border border-blue-200 text-blue-800 font-bold text-xs px-3 py-1.5 rounded-xl transition shadow-sm active-push">
-                    ${item.malay}
-                </button>
-            `).join('');
-        }
-
-        // Toggle Word Bank Drawer
-        function toggleWordBank() {
-            playSound('click');
-            const container = document.getElementById('wordBankContainer');
-            const btn = document.getElementById('wordBankToggleBtn');
-            if (container.classList.contains('hidden')) {
-                container.classList.remove('hidden');
-                btn.innerHTML = `<i class="fa-solid fa-eye-slash mr-1"></i> Sembunyi Bank Perkataan`;
-            } else {
-                container.classList.add('hidden');
-                btn.innerHTML = `<i class="fa-solid fa-eye mr-1"></i> Papar Bank Perkataan`;
-            }
-        }
-
-        // Fill First Empty Input or Currently Focused Input
-        function fillExerciseInput(text) {
-            playSound('click');
-            let targetInput = document.activeElement;
-            if (!targetInput || targetInput.tagName !== 'INPUT' || !targetInput.id.startsWith('input-')) {
-                for (let item of vocabList) {
-                    const input = document.getElementById(`input-${item.id}`);
-                    if (input && !input.value.trim()) {
-                        targetInput = input;
-                        break;
-                    }
+                    html2pdf().set(opt).from(element).save();
+                },
+                resetForm() {
+                    this.items.forEach(item => {
+                        item.userAnswer = '';
+                        item.status = null;
+                        item.showHint = false;
+                    });
+                    this.isCompleted = false;
                 }
             }
-            if (targetInput && targetInput.id && targetInput.id.startsWith('input-')) {
-                targetInput.value = text;
-                targetInput.focus();
-            }
-        }
-
-        window.onload = function() {
-            renderExerciseQuestions();
-        };
+        }).mount('#app');
     </script>
 </body>
 </html>
