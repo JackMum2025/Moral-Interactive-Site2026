@@ -1,806 +1,957 @@
 <!DOCTYPE html>
-<html lang="zh-MY">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Kosa Kata Bahasa Melayu Tahun 6</title>
+    <title>Aplikasi Kosa Kata BM Tahun 5 - Padanan & Taip Kosa Kata</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-    
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        
         body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-            min-height: 100vh;
-        }
-        .font-heading {
-            font-family: 'Fredoka', cursive;
-        }
-        .card-bounce {
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-        .correct-anim {
-            animation: popSuccess 0.4s ease-out;
-        }
-        .wrong-anim {
-            animation: shakeError 0.4s ease-in-out;
-        }
-        @keyframes popSuccess {
-            0% { transform: scale(0.9); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        @keyframes shakeError {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
         }
 
-        /* Certificate Print & View Styling */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #certificate-modal, #certificate-modal * {
-                visibility: visible;
-            }
-            #certificate-modal {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: white !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-            }
-            .no-print {
-                display: none !important;
-            }
+        .font-heading {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .shake-animation {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen text-slate-800 antialiased p-4 sm:p-6">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col relative">
 
-    <div class="max-w-3xl w-full mx-auto my-auto flex-grow flex flex-col justify-center">
-        <!-- Main Application Card -->
-        <div class="bg-white rounded-3xl shadow-xl border-4 border-indigo-100 overflow-hidden flex flex-col relative">
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl border border-slate-100 text-center space-y-6">
+            <div class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-teal-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl shadow-lg">
+                <i class="fa-solid fa-user-graduate"></i>
+            </div>
             
-            <!-- Header Bar -->
-            <header class="bg-indigo-600 text-white p-5 text-center relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-indigo-500 rounded-full opacity-50"></div>
-                <div class="absolute -left-6 -top-6 w-20 h-20 bg-indigo-400 rounded-full opacity-40"></div>
-                <div class="text-left relative z-10 w-full sm:w-auto text-center sm:text-left">
-                    <h1 class="font-heading text-xl sm:text-2xl font-bold tracking-wide">
-                        <i class="fa-solid fa-graduation-cap mr-2"></i>Kosa Kata Bahasa Melayu (Tahun 6)
-                    </h1>
-                    <p class="text-indigo-100 text-xs mt-0.5 font-semibold">
-                        Mari Belajar & Menguji Pemahaman Kosa Kata!
-                    </p>
-                </div>
-                
-                <!-- Student Info Badge in Header (Visible when logged in) -->
-                <div id="student-badge-container" class="relative z-10 hidden">
-                    <div class="bg-indigo-700/80 backdrop-blur border border-indigo-400/50 px-3.5 py-1.5 rounded-xl flex items-center gap-2 text-xs font-bold text-white shadow-sm">
-                        <i class="fa-solid fa-user-graduate text-yellow-300"></i>
-                        <span id="header-student-name">Nama Murid</span>
-                        <button onclick="changeStudentName()" title="Tukar Nama / Log Keluar" class="ml-1 text-indigo-200 hover:text-white transition-colors">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <div>
+                <h2 class="text-2xl font-extrabold font-heading text-slate-800">Selamat Datang!</h2>
+                <p class="text-xs text-slate-500 mt-1">Sila masukkan maklumat murid sebelum memulakan permainan.</p>
+            </div>
 
-            <!-- Main Dynamic Content Container -->
-            <main id="app-container" class="p-6 sm:p-8 flex-grow flex flex-col justify-center min-h-[420px]">
-                <!-- Dynamic views will render here via JS -->
-            </main>
+            <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+                <div>
+                    <label for="student-name-input" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                        Nama Murid:
+                    </label>
+                    <input type="text" id="student-name-input" required placeholder="Contoh: Muhammad Ali" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none text-slate-800 font-bold transition">
+                </div>
 
-            <!-- Footer -->
-            <footer class="bg-slate-50 border-t border-slate-100 px-6 py-3 text-center text-slate-400 text-xs font-semibold">
-                Sesuai untuk Murid Tahun 6 • Pembelajaran Interaktif
-            </footer>
+                <div>
+                    <label for="student-class-input" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                        Kelas:
+                    </label>
+                    <input type="text" id="student-class-input" required placeholder="Contoh: 5 Cemerlang" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 outline-none text-slate-800 font-bold transition">
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-base rounded-xl shadow-lg hover:shadow-emerald-200 transition flex items-center justify-center gap-2">
+                    <span>Mula Belajar & Bermain</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Modal for Sijil Pencapaian -->
-    <div id="certificate-modal-wrapper" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-        <!-- Content inserted dynamically -->
+    <header class="bg-gradient-to-r from-teal-600 via-emerald-600 to-indigo-600 text-white shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/30 text-yellow-300 text-2xl">
+                    <i class="fa-solid fa-gamepad"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold font-heading tracking-wide">Kosa Kata BM Tahun 5</h1>
+                    <p class="text-xs md:text-sm text-emerald-100 font-medium">Permainan Padanan Makna & Cabaran Taip Kosa Kata (20 Kata)</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2 bg-black/20 p-1.5 rounded-xl border border-white/10">
+                <!-- Student Info Badge -->
+                <div id="student-badge" class="hidden px-3 py-1.5 rounded-lg bg-white/20 text-xs font-bold text-yellow-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-user"></i>
+                    <span id="display-student-name">--</span>
+                </div>
+
+                <!-- Certificate Button -->
+                <button id="certBtn" onclick="openCertificateModal()" disabled class="px-3 py-1.5 rounded-lg bg-slate-500/50 text-slate-300 transition text-xs font-semibold flex items-center gap-1.5 cursor-not-allowed">
+                    <i class="fa-solid fa-award" id="certIcon"></i> <span id="certText">Sijil (Terkunci)</span>
+                </button>
+
+                <button onclick="toggleAudio()" id="audioBtn" class="px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition text-xs font-semibold flex items-center gap-1.5">
+                    <i class="fa-solid fa-volume-high" id="audioIcon"></i> <span id="audioText">Bunyi: ON</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto w-full px-4 py-6 flex-grow flex flex-col gap-6">
+        
+        <!-- Navigation Tabs -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+            <button onclick="switchTab('stesen1')" id="tab-stesen1" class="tab-btn flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-sm transition-all duration-200 bg-emerald-600 text-white shadow-md">
+                <i class="fa-solid fa-puzzle-piece text-lg"></i>
+                <span>Padanan: Stesen 1 (1 - 10)</span>
+            </button>
+            <button onclick="switchTab('stesen2')" id="tab-stesen2" class="tab-btn flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-puzzle-piece text-lg"></i>
+                <span>Padanan: Stesen 2 (11 - 20)</span>
+            </button>
+            <button onclick="switchTab('typing')" id="tab-typing" class="tab-btn flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-keyboard text-lg"></i>
+                <span>Taip Kosa Kata (Cina ➔ BM)</span>
+            </button>
+        </div>
+
+        <!-- STESEN 1: PADANAN MAKNA (1-10) -->
+        <section id="section-stesen1" class="tab-content block space-y-6">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Stesen 1</span>
+                        <h2 class="text-xl font-bold font-heading text-slate-800">Padanan Makna (Kosa Kata 1 - 10)</h2>
+                    </div>
+                    <p class="text-slate-500 text-sm mt-1">Pilih perkataan di sebelah kiri, kemudian pilih maksud yang betul di sebelah kanan.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-500">Padanan Selesai: <span id="s1-progress" class="text-emerald-600 font-extrabold text-base">0/10</span></span>
+                    <button onclick="initMatchingStation(1)" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrows-rotate"></i> Susun Semula
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Left Column: Words -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 flex justify-between">
+                        <span>Perkataan (BM)</span>
+                        <span class="text-emerald-600">Klik Perkataan</span>
+                    </h3>
+                    <div id="s1-words" class="space-y-2">
+                        <!-- Populated dynamically JS -->
+                    </div>
+                </div>
+
+                <!-- Right Column: Meanings -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 flex justify-between">
+                        <span>Maksud (BM & 华文)</span>
+                        <span class="text-emerald-600">Klik Maksud</span>
+                    </h3>
+                    <div id="s1-meanings" class="space-y-2">
+                        <!-- Populated dynamically JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STESEN 2: PADANAN MAKNA (11-20) -->
+        <section id="section-stesen2" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Stesen 2</span>
+                        <h2 class="text-xl font-bold font-heading text-slate-800">Padanan Makna (Kosa Kata 11 - 20)</h2>
+                    </div>
+                    <p class="text-slate-500 text-sm mt-1">Pilih perkataan di sebelah kiri, kemudian pilih maksud yang betul di sebelah kanan.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-500">Padanan Selesai: <span id="s2-progress" class="text-indigo-600 font-extrabold text-base">0/10</span></span>
+                    <button onclick="initMatchingStation(2)" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrows-rotate"></i> Susun Semula
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Left Column: Words -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 flex justify-between">
+                        <span>Perkataan (BM)</span>
+                        <span class="text-indigo-600">Klik Perkataan</span>
+                    </h3>
+                    <div id="s2-words" class="space-y-2">
+                        <!-- Populated dynamically JS -->
+                    </div>
+                </div>
+
+                <!-- Right Column: Meanings -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2 flex justify-between">
+                        <span>Maksud (BM & 华文)</span>
+                        <span class="text-indigo-600">Klik Maksud</span>
+                    </h3>
+                    <div id="s2-meanings" class="space-y-2">
+                        <!-- Populated dynamically JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TYPING GAME: TAIP KOSA KATA (Cina ➔ BM) -->
+        <section id="section-typing" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 p-6 md:p-8 rounded-3xl text-white shadow-xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <span class="bg-yellow-400 text-slate-900 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Permainan MenTaip</span>
+                        <h2 class="text-2xl font-extrabold font-heading mt-1">Cabaran Taip Kosa Kata Bahasa Melayu</h2>
+                        <p class="text-indigo-100 text-sm mt-1">Lihat Maksud Bahasa Cina (华文意思), kemudian taip perkataan Bahasa Melayu yang betul!</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 text-center">
+                            <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Markah</p>
+                            <p id="typing-score" class="text-2xl font-black text-yellow-300">0 / 20</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-black/30 h-2.5 rounded-full mt-6 overflow-hidden">
+                    <div id="typing-progress-bar" class="bg-yellow-400 h-full w-0 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Typing Card Box -->
+            <div id="typing-card" class="bg-white p-6 md:p-8 rounded-3xl shadow-md border border-slate-200 space-y-6 max-w-2xl mx-auto">
+                <div class="flex justify-between items-center text-xs font-bold text-slate-400 border-b border-slate-100 pb-3">
+                    <span id="typing-question-num" class="text-indigo-600 font-bold">Soalan 1 daripada 20</span>
+                    <span id="typing-hint-badge" class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full"></span>
+                </div>
+
+                <!-- Chinese Meaning Display -->
+                <div class="text-center py-4 space-y-2 bg-indigo-50/50 rounded-2xl border border-indigo-100 p-4">
+                    <p class="text-xs uppercase tracking-wider font-bold text-indigo-500">Maksud Dalam Bahasa Cina (华文意思):</p>
+                    <h3 id="typing-cn-display" class="text-4xl md:text-5xl font-black text-indigo-900 tracking-wide font-heading">
+                        参加 / 参与
+                    </h3>
+                </div>
+
+                <!-- Input Box Form -->
+                <form onsubmit="handleTypingSubmit(event)" class="space-y-4">
+                    <div>
+                        <label for="typing-input" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                            Taip Perkataan Bahasa Melayu:
+                        </label>
+                        <div class="relative">
+                            <input type="text" 
+                                   id="typing-input" 
+                                   autocomplete="off" 
+                                   autocorrect="off" 
+                                   autocapitalize="off" 
+                                   spellcheck="false"
+                                   placeholder="Taip jawapan di sini..." 
+                                   class="w-full text-center text-xl md:text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-slate-300 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition outline-none text-slate-800">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="typing-submit-btn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base rounded-2xl shadow-lg hover:shadow-indigo-200 transition flex items-center justify-center gap-2">
+                        <span>Hantar Jawapan</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+
+                <!-- Feedback Area -->
+                <div id="typing-feedback" class="hidden p-4 rounded-2xl border text-sm font-medium transition-all text-center">
+                    <!-- Dynamic Feedback -->
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button id="typing-next-btn" onclick="nextTypingQuestion()" class="hidden w-full md:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+                        <span>Soalan Seterusnya</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CERTIFICATE MODAL -->
+    <div id="cert-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 max-w-3xl w-full shadow-2xl border border-slate-200 text-center space-y-4 my-8">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-xl font-bold font-heading text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-trophy text-yellow-500"></i> Sijil Pencapaian Murid
+                </h3>
+                <button onclick="closeCertificateModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Hidden/Visible Canvas for Certificate -->
+            <div class="overflow-x-auto p-2 bg-slate-50 rounded-2xl border border-slate-200 flex justify-center">
+                <canvas id="certCanvas" width="1000" height="700" class="max-w-full h-auto rounded-xl shadow-md border"></canvas>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+                <button onclick="closeCertificateModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-sm transition">
+                    Tutup
+                </button>
+                <button onclick="downloadCertificate()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-sm shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Muat Turun Sijil (PNG)</span>
+                </button>
+            </div>
+        </div>
     </div>
 
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400 font-medium">
+        <p>Aplikasi Kosa Kata Bahasa Melayu Tahun 5 • 20 Perkataan Lengkap (Padanan & Taip Kosa Kata)</p>
+    </footer>
+
     <script>
-        // Vocabulary Dataset according to specifications
-        const VOCAB_DATA = [
-            { id: 1, word: 'cerah', meaning: '晴朗/亮', sentence: 'Cuaca pada hari ini sangat ________, jadi kami bercadang untuk pergi berkelah di pantai.' },
-            { id: 2, word: 'menekan', meaning: '踩/按', sentence: 'Pemandu bas itu ________ pedal brek secara tiba-tiba apabila seekor kucing melintas.' },
-            { id: 3, word: 'tergesa-gesa', meaning: '匆匆忙忙', sentence: 'Ali berjalan dengan ________ ke sekolah kerana dia sudah terlewat bangun pagi.' },
-            { id: 4, word: 'teruja', meaning: '兴奋', sentence: 'Murid-murid berasa amat ________ apabila mendengar berita tentang lawatan ke Zoo Negara.' },
-            { id: 5, word: 'mencuba', meaning: '尝试', sentence: 'Siti mahu ________ resipi kek yang baharu itu berpandukan buku masakan ibunya.' },
-            { id: 6, word: 'tertib', meaning: '有秩序', sentence: 'Semua murid beratur dengan ________ semasa membeli makanan di kantin sekolah.' },
-            { id: 7, word: 'berebut-rebut', meaning: '争先恐后', sentence: 'Kita tidak boleh ________ semasa menaiki bas demi keselamatan bersama.' },
-            { id: 8, word: 'panik', meaning: '慌张', sentence: 'Orang ramai berasa ________ apabila mendengar siren kecemasan berbunyi di dalam pasar raya.' },
-            { id: 9, word: 'menegur', meaning: '指责', sentence: 'Cikgu Lee ________ murid yang sengaja membuang sampah di luar tong sampah.' },
-            { id: 10, word: 'menyedari', meaning: '意识', sentence: 'Aiman tidak ________ bahawa dompetnya telah terjatuh semasa berjalan di pasar malam.' }
-        ];
-
-        // Global State Variable
-        const state = {
-            studentName: '', // Holds logged in student name
-            currentLevel: 0, // 0: Menu, 1: Level 1, 2: Level 2, 3: Level 3
-            questionIndex: 0,
-            questions: [],
-            score: 0,
-            levelScores: { 1: null, 2: null, 3: null },
-            isAnswered: false
-        };
-
-        // DOM Element Reference
-        const container = document.getElementById('app-container');
-
-        // Utility to shuffle an array
-        function shuffleArray(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        // Student Name Entry Screen
-        function renderLoginScreen() {
-            document.getElementById('student-badge-container').classList.add('hidden');
-            container.innerHTML = `
-                <div class="text-center py-6 max-w-md mx-auto my-auto">
-                    <div class="inline-block p-4 bg-indigo-50 text-indigo-600 rounded-full mb-4 card-bounce">
-                        <i class="fa-solid fa-user-astronaut text-4xl sm:text-5xl"></i>
-                    </div>
-                    <h2 class="font-heading text-2xl sm:text-3xl font-bold text-slate-800 mb-2">Selamat Datang!</h2>
-                    <p class="text-slate-600 text-sm mb-6 font-semibold">
-                        Sila masukkan nama anda sebelum memulakan aktiviti pembelajaran kosa kata.
-                    </p>
-
-                    <form onsubmit="handleLogin(event)" class="flex flex-col gap-4">
-                        <div>
-                            <label for="student-name-input" class="block text-left text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                                Nama Murid / 姓名
-                            </label>
-                            <input type="text" id="student-name-input" required autocomplete="off" placeholder="Contoh: Tan Ming Wei" 
-                                value="${state.studentName}"
-                                class="w-full text-center text-lg font-bold p-3.5 border-2 border-indigo-200 rounded-2xl focus:border-indigo-600 focus:outline-none transition-all shadow-sm"
-                                autofocus />
-                        </div>
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-2xl text-base shadow-md transition-all flex items-center justify-center gap-2">
-                            <span>Mula Belajar</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </form>
-                </div>
-            `;
-        }
+        // Global Student & Completion State
+        let studentInfo = { name: '', class: '' };
+        let stationCompletion = { 1: false, 2: false, 3: false };
 
         function handleLogin(e) {
             e.preventDefault();
-            const input = document.getElementById('student-name-input');
-            const name = input.value.trim();
-            if (!name) return;
+            const nameInput = document.getElementById('student-name-input').value.trim();
+            const classInput = document.getElementById('student-class-input').value.trim();
 
-            state.studentName = name;
-            document.getElementById('header-student-name').innerText = name;
-            document.getElementById('student-badge-container').classList.remove('hidden');
-            renderMainMenu();
+            if (!nameInput || !classInput) return;
+
+            studentInfo.name = nameInput;
+            studentInfo.class = classInput;
+
+            document.getElementById('display-student-name').innerText = `${studentInfo.name} (${studentInfo.class})`;
+            document.getElementById('student-badge').classList.remove('hidden');
+            document.getElementById('login-overlay').classList.add('hidden');
         }
 
-        function changeStudentName() {
-            state.studentName = '';
-            renderLoginScreen();
-        }
+        // Complete Dataset: 20 Vocabulary items from the image (Q1 - Q5)
+        const vocabularyList = [
+            // Question 1 Options
+            { id: 1, word: "menyertai", root: "serta", bm: "Ikut serta dalam sesuatu kegiatan atau pertandingan", cn: "参加 / 参与", station: 1 },
+            { id: 2, word: "menuju", root: "tuju", bm: "Bergerak ke arah sesuatu tempat", cn: "前往 / 朝向", station: 1 },
+            { id: 3, word: "membawa", root: "bawa", bm: "Memegang sesuatu sambil bergerak ke mana-mana", cn: "携带 / 拿", station: 1 },
+            { id: 4, word: "menghalau", root: "halau", bm: "Menyuruh pergi atau mengusir haiwan / orang", cn: "驱赶 / 赶走", station: 1 },
 
-        // Render standard navigation header for levels
-        function renderProgressHeader(title, subtitle) {
-            return `
-                <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-                    <div>
-                        <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full mb-1">
-                            ${title}
-                        </span>
-                        <p class="text-slate-500 text-xs sm:text-sm font-semibold">${subtitle}</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="renderMainMenu()" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors mr-2">
-                            <i class="fa-solid fa-house mr-1"></i> Menu
-                        </button>
-                        <div class="text-xs font-bold text-slate-500">Soalan ${state.questionIndex + 1}/${state.questions.length}</div>
-                        <div class="w-24 bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                            <div class="bg-indigo-600 h-full transition-all duration-300" style="width: ${((state.questionIndex + 1) / state.questions.length) * 100}%"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+            // Question 2 Options
+            { id: 5, word: "menyusun", root: "susun", bm: "Mengatur sesuatu barang supaya kemas dan rapi", cn: "排列 / 整理", station: 1 },
+            { id: 6, word: "berbaring", root: "baring", bm: "Meletakkan badan secara melintang di katil atau lantai", cn: "躺着", station: 1 },
+            { id: 7, word: "menunjukkan", root: "tunjuk", bm: "Memperlihatkan atau memberitahu sesuatu", cn: "展示 / 指出", station: 1 },
+            { id: 8, word: "memelihara", root: "pelihara", bm: "Menjaga, merawat dan membela haiwan atau alam", cn: "饲养 / 保护", station: 1 },
 
-        // Main Menu Screen
-        function renderMainMenu() {
-            const isAllCompleted = state.levelScores[1] !== null && state.levelScores[2] !== null && state.levelScores[3] !== null;
+            // Question 3 Options (First two in Station 1)
+            { id: 9, word: "menunggu", root: "tunggu", bm: "Menanti kedatangan seseorang atau sesuatu dengan sabar", cn: "等待", station: 1 },
+            { id: 10, word: "menanti-nantikan", root: "nanti", bm: "Menunggu sesuatu dengan penuh harapan dan gembira", cn: "殷切期待", station: 1 },
 
-            container.innerHTML = `
-                <div class="text-center py-2">
-                    <div class="inline-block p-4 bg-indigo-50 text-indigo-600 rounded-full mb-3 card-bounce">
-                        <i class="fa-solid fa-book-open text-4xl sm:text-5xl"></i>
-                    </div>
-                    <h2 class="font-heading text-2xl sm:text-3xl font-bold text-slate-800 mb-1">Pilih Cabaran Anda!</h2>
-                    <p class="text-slate-600 text-xs sm:text-sm max-w-md mx-auto mb-6 font-semibold">
-                        Hai <span class="text-indigo-600 font-bold">${state.studentName}</span>, sila pilih关卡 (Level) di bawah untuk memulakan latihan.
-                    </p>
+            // Question 3 Options (Remaining two in Station 2)
+            { id: 11, word: "mendudukkan", root: "duduk", bm: "Meletakkan atau menyuruh seseorang duduk", cn: "让...坐下", station: 2 },
+            { id: 12, word: "mengatur", root: "atur", bm: "Menyusun atau menguruskan acara / langkah dengan rapi", cn: "安排 / 策划", station: 2 },
 
-                    <div class="grid grid-cols-1 gap-3.5 max-w-lg mx-auto">
-                        <!-- Level 1 Button -->
-                        <button onclick="startLevel(1)" class="group flex items-center justify-between p-4 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white rounded-2xl shadow-md transition-all transform hover:-translate-y-0.5">
-                            <div class="flex items-center gap-4 text-left">
-                                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-lg font-bold font-heading">1</div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="font-bold text-base">第一关：选择题 (Pilihan Jawapan)</h3>
-                                        ${state.levelScores[1] !== null ? `<span class="bg-white/20 text-xs px-2 py-0.5 rounded-full font-extrabold"><i class="fa-solid fa-check text-yellow-300 mr-1"></i>${state.levelScores[1]}/10</span>` : ''}
-                                    </div>
-                                    <p class="text-xs text-sky-100">看华文意思，选择正确的 Kosa Kata</p>
-                                </div>
-                            </div>
-                            <i class="fa-solid fa-chevron-right text-lg transition-transform group-hover:translate-x-1"></i>
-                        </button>
+            // Question 4 Options
+            { id: 13, word: "melarang", root: "larang", bm: "Tidak membenarkan atau menegah sesuatu tindakan", cn: "禁止 / 阻止", station: 2 },
+            { id: 14, word: "menasihati", root: "nasihat", bm: "Memberi nasihat atau ajaran baik kepada seseorang", cn: "劝告", station: 2 },
+            { id: 15, word: "berbincang", root: "bincang", bm: "Bercakap-cakap untuk mendapatkan keputusan bersama", cn: "讨论", station: 2 },
+            { id: 16, word: "menjauhkan", root: "jauh", bm: "Mengelakkan diri atau menjauhi seseorang / sesuatu", cn: "远离 / 疏远", station: 2 },
 
-                        <!-- Level 2 Button -->
-                        <button onclick="startLevel(2)" class="group flex items-center justify-between p-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-2xl shadow-md transition-all transform hover:-translate-y-0.5">
-                            <div class="flex items-center gap-4 text-left">
-                                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-lg font-bold font-heading">2</div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="font-bold text-base">第二关：拼写测试 (Ejaan Kosa Kata)</h3>
-                                        ${state.levelScores[2] !== null ? `<span class="bg-white/20 text-xs px-2 py-0.5 rounded-full font-extrabold"><i class="fa-solid fa-check text-yellow-300 mr-1"></i>${state.levelScores[2]}/10</span>` : ''}
-                                    </div>
-                                    <p class="text-xs text-emerald-100">看华文意思，亲自打出正确的 Kosa Kata</p>
-                                </div>
-                            </div>
-                            <i class="fa-solid fa-chevron-right text-lg transition-transform group-hover:translate-x-1"></i>
-                        </button>
+            // Question 5 Options
+            { id: 17, word: "mengiklan", root: "iklan", bm: "Memberitahu orang ramai tentang barang / perkhidmatan", cn: "打广告 / 宣传", station: 2 },
+            { id: 18, word: "mengumumkan", root: "umum", bm: "Memberitahu sesuatu berita rasmi kepada ramai orang", cn: "宣布", station: 2 },
+            { id: 19, word: "menampal", root: "tampal", bm: "Melekatkan kertas atau kenyataan pada dinding / papan", cn: "张贴 / 粘贴", station: 2 },
+            { id: 20, word: "menyebar", root: "sebar", bm: "Meluaskan atau membahagikan sesuatu berita / maklumat", cn: "传播 / 散播", station: 2 }
+        ];
 
-                        <!-- Level 3 Button -->
-                        <button onclick="startLevel(3)" class="group flex items-center justify-between p-4 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-2xl shadow-md transition-all transform hover:-translate-y-0.5">
-                            <div class="flex items-center gap-4 text-left">
-                                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-lg font-bold font-heading">3</div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h3 class="font-bold text-base">第三关：句子填空 (Lengkapkan Ayat)</h3>
-                                        ${state.levelScores[3] !== null ? `<span class="bg-white/20 text-xs px-2 py-0.5 rounded-full font-extrabold"><i class="fa-solid fa-check text-yellow-300 mr-1"></i>${state.levelScores[3]}/10</span>` : ''}
-                                    </div>
-                                    <p class="text-xs text-purple-100">根据国文句子 context 选出正确的 Kosa Kata</p>
-                                </div>
-                            </div>
-                            <i class="fa-solid fa-chevron-right text-lg transition-transform group-hover:translate-x-1"></i>
-                        </button>
-                    </div>
+        // State variables
+        let audioEnabled = true;
 
-                    <!-- Certificate Banner Button -->
-                    <div class="mt-6 max-w-lg mx-auto">
-                        ${isAllCompleted ? `
-                            <button onclick="openCertificateModal()" class="w-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-3 border-2 border-yellow-200 animate-pulse">
-                                <i class="fa-solid fa-award text-2xl text-yellow-100"></i>
-                                <span class="text-base">Muat Turun Sijil Pencapaian (Selesai 3 Level)</span>
-                            </button>
-                        ` : `
-                            <div class="p-3 bg-slate-100 rounded-2xl text-slate-400 text-xs font-semibold flex items-center justify-center gap-2 border border-slate-200">
-                                <i class="fa-solid fa-lock"></i>
-                                <span>Lengkapkan semua 3 Level untuk membuka <b>Sijil Pencapaian</b></span>
-                            </div>
-                        `}
-                    </div>
-                </div>
-            `;
-        }
+        // Matching State Station 1 & 2
+        let stationState = {
+            1: { selectedWord: null, selectedMeaning: null, pairs: [], items: [] },
+            2: { selectedWord: null, selectedMeaning: null, pairs: [], items: [] }
+        };
 
-        // Start a Level
-        function startLevel(levelNum) {
-            state.currentLevel = levelNum;
-            state.questionIndex = 0;
-            state.questions = shuffleArray(VOCAB_DATA);
-            state.score = 0;
-            state.isAnswered = false;
+        // Typing Game State
+        let typingQueue = [];
+        let typingCurrentIdx = 0;
+        let typingScore = 0;
+        let typingAnswered = false;
 
-            if (levelNum === 1) renderLevel1();
-            else if (levelNum === 2) renderLevel2();
-            else if (levelNum === 3) renderLevel3();
-        }
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
 
-        // LEVEL 1: Chinese Meaning Prompt -> Choose Malay Word
-        function renderLevel1() {
-            const currentItem = state.questions[state.questionIndex];
-            
-            // Generate 4 distractor choices (1 correct + 3 random incorrect)
-            const otherWords = VOCAB_DATA.filter(item => item.id !== currentItem.id);
-            const shuffledOthers = shuffleArray(otherWords).slice(0, 3);
-            const options = shuffleArray([currentItem, ...shuffledOthers]);
-
-            container.innerHTML = `
-                <div class="flex flex-col h-full">
-                    ${renderProgressHeader('第一关：选择题', '根据华文意思，选择正确的国文词汇')}
-
-                    <div class="text-center my-auto py-2">
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Maksud / 华文意思</p>
-                        <div class="bg-indigo-50 text-indigo-900 border-2 border-indigo-200 rounded-2xl p-6 mb-8 inline-block w-full max-w-md shadow-sm">
-                            <h3 class="text-3xl font-bold font-heading">${currentItem.meaning}</h3>
-                        </div>
-
-                        <!-- Options Grid -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto" id="options-grid">
-                            ${options.map(opt => `
-                                <button onclick="checkLevel1('${opt.word}', '${currentItem.word}')" 
-                                    class="option-btn border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 font-bold py-4 px-6 rounded-2xl text-lg text-slate-700 transition-all shadow-sm focus:outline-none flex items-center justify-between">
-                                    <span>${opt.word}</span>
-                                    <i class="fa-regular fa-circle text-slate-300"></i>
-                                </button>
-                            `).join('')}
-                        </div>
-
-                        <!-- Feedback Banner -->
-                        <div id="feedback-banner" class="mt-6 h-12 flex items-center justify-center font-bold text-lg rounded-xl opacity-0 transition-all"></div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function checkLevel1(selectedWord, correctWord) {
-            if (state.isAnswered) return;
-            state.isAnswered = true;
-
-            const grid = document.getElementById('options-grid');
-            const buttons = grid.querySelectorAll('button');
-            const feedback = document.getElementById('feedback-banner');
-
-            buttons.forEach(btn => {
-                btn.disabled = true;
-                const wordText = btn.querySelector('span').innerText;
-                const icon = btn.querySelector('i');
-
-                if (wordText === correctWord) {
-                    btn.classList.remove('border-slate-200', 'hover:border-indigo-500', 'hover:bg-indigo-50');
-                    btn.classList.add('border-emerald-500', 'bg-emerald-500', 'text-white', 'correct-anim');
-                    icon.className = 'fa-solid fa-circle-check text-white';
-                } else if (wordText === selectedWord && selectedWord !== correctWord) {
-                    btn.classList.remove('border-slate-200', 'hover:border-indigo-500', 'hover:bg-indigo-50');
-                    btn.classList.add('border-rose-500', 'bg-rose-500', 'text-white', 'wrong-anim');
-                    icon.className = 'fa-solid fa-circle-xmark text-white';
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.12); // E5
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+                    osc.frequency.exponentialRampToValueAtTime(130.81, ctx.currentTime + 0.2); // C3
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.08);
                 }
+            } catch (e) {
+                console.log("Audio not supported");
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('audioIcon');
+            const text = document.getElementById('audioText');
+            if (audioEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                text.innerText = 'Bunyi: ON';
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark';
+                text.innerText = 'Bunyi: OFF';
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'bg-indigo-600', 'bg-purple-600', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-100');
             });
 
-            if (selectedWord === correctWord) {
-                state.score++;
-                feedback.className = "mt-6 py-2 px-4 flex items-center justify-center font-bold text-base rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300 opacity-100";
-                feedback.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i> Betul! Jawapan yang tepat.';
-            } else {
-                feedback.className = "mt-6 py-2 px-4 flex items-center justify-center font-bold text-base rounded-xl bg-rose-100 text-rose-800 border border-rose-300 opacity-100";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i> Salah! Jawapan sebenar: <span class="underline ml-1">${correctWord}</span>`;
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+
+            if (tabId === 'stesen1') {
+                activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-md');
+            } else if (tabId === 'stesen2') {
+                activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+            } else if (tabId === 'typing') {
+                activeBtn.classList.add('bg-purple-600', 'text-white', 'shadow-md');
+                document.getElementById('typing-input').focus();
             }
-
-            // Directly transition to next question after delay
-            setTimeout(() => {
-                state.questionIndex++;
-                state.isAnswered = false;
-                if (state.questionIndex < state.questions.length) {
-                    renderLevel1();
-                } else {
-                    finishLevel();
-                }
-            }, 1200);
+            activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
         }
 
-        // LEVEL 2: Chinese Meaning -> Type Malay Word (No Hints)
-        function renderLevel2() {
-            const currentItem = state.questions[state.questionIndex];
-
-            container.innerHTML = `
-                <div class="flex flex-col h-full">
-                    ${renderProgressHeader('第二关：拼写测试', '根据华文意思，亲自打出正确的 Kosa Kata（不可看提示）')}
-
-                    <div class="text-center my-auto py-2">
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Maksud / 华文意思</p>
-                        <div class="bg-teal-50 text-teal-900 border-2 border-teal-200 rounded-2xl p-6 mb-6 inline-block w-full max-w-md shadow-sm">
-                            <h3 class="text-3xl font-bold font-heading">${currentItem.meaning}</h3>
-                        </div>
-
-                        <!-- Typing Form -->
-                        <form onsubmit="event.preventDefault(); checkLevel2('${currentItem.word}');" class="max-w-md mx-auto">
-                            <div class="mb-4">
-                                <input type="text" id="type-input" autocomplete="off" placeholder="Taip kosa kata di sini..." 
-                                    class="w-full text-center text-xl font-bold p-4 border-2 border-slate-300 rounded-2xl focus:border-teal-500 focus:outline-none transition-all shadow-inner"
-                                    autofocus />
-                            </div>
-                            <button type="submit" id="submit-btn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-md transition-all">
-                                Hantar Jawapan <i class="fa-solid fa-paper-plane ml-2"></i>
-                            </button>
-                        </form>
-
-                        <!-- Feedback Banner -->
-                        <div id="feedback-banner" class="mt-6 min-h-[48px] flex items-center justify-center font-bold text-lg rounded-xl opacity-0 transition-all"></div>
-                    </div>
-                </div>
-            `;
-
-            // Auto-focus input
-            setTimeout(() => {
-                const input = document.getElementById('type-input');
-                if (input) input.focus();
-            }, 100);
-        }
-
-        function checkLevel2(correctWord) {
-            if (state.isAnswered) return;
-
-            const input = document.getElementById('type-input');
-            const submitBtn = document.getElementById('submit-btn');
-            const feedback = document.getElementById('feedback-banner');
-            const userVal = input.value.trim().toLowerCase();
-
-            if (!userVal) return;
-
-            state.isAnswered = true;
-            input.disabled = true;
-            submitBtn.disabled = true;
-
-            const isCorrect = (userVal === correctWord.toLowerCase());
-
-            if (isCorrect) {
-                state.score++;
-                input.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
-                feedback.className = "mt-6 py-2 px-4 flex items-center justify-center font-bold text-base rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300 opacity-100";
-                feedback.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i> Tepat sekali! Ejaan anda betul.';
-            } else {
-                input.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-800', 'wrong-anim');
-                feedback.className = "mt-6 py-2 px-4 flex items-center justify-center font-bold text-base rounded-xl bg-rose-100 text-rose-800 border border-rose-300 opacity-100";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i> Salah! Jawapan betul ialah: <span class="underline ml-1">${correctWord}</span>`;
-            }
-
-            // Directly transition to next question after delay
-            setTimeout(() => {
-                state.questionIndex++;
-                state.isAnswered = false;
-                if (state.questionIndex < state.questions.length) {
-                    renderLevel2();
-                } else {
-                    finishLevel();
-                }
-            }, 1400);
-        }
-
-        // LEVEL 3: Malay Sentence Completion -> Choose from 10 Vocab options (No Chinese meanings)
-        function renderLevel3() {
-            const currentItem = state.questions[state.questionIndex];
+        function initMatchingStation(stesenNum) {
+            const items = vocabularyList.filter(v => v.station === stesenNum);
             
-            // Generate all 10 vocabulary options in alphabetical order for neat display
-            const options = [...VOCAB_DATA].sort((a, b) => a.word.localeCompare(b.word));
-
-            // Format sentence replacing "________" with stylized blank
-            const formattedSentence = currentItem.sentence.replace('________', `<span class="inline-block px-3 border-b-4 border-indigo-500 text-indigo-600 font-bold">________</span>`);
-
-            container.innerHTML = `
-                <div class="flex flex-col h-full">
-                    ${renderProgressHeader('第三关：句子填空', 'Isi tempat kosong dengan kosa kata yang paling sesuai')}
-
-                    <div class="my-auto py-2">
-                        <!-- Sentence Display Card -->
-                        <div class="bg-purple-50 border-2 border-purple-200 rounded-2xl p-6 mb-6 text-center shadow-sm">
-                            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Soalan Ayat</p>
-                            <p class="text-xl sm:text-2xl font-semibold text-slate-800 leading-relaxed">
-                                "${formattedSentence}"
-                            </p>
-                        </div>
-
-                        <p class="text-xs font-bold text-slate-400 text-center uppercase tracking-wider mb-3">Pilih Kosa Kata Yang Betul:</p>
-
-                        <!-- All 10 Choices Grid -->
-                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 max-w-2xl mx-auto" id="vocab-bank">
-                            ${options.map(opt => `
-                                <button onclick="checkLevel3('${opt.word}', '${currentItem.word}')" 
-                                    class="vocab-btn border-2 border-slate-200 hover:border-purple-500 hover:bg-purple-50 font-bold py-3 px-2 rounded-xl text-sm sm:text-base text-slate-700 transition-all shadow-sm focus:outline-none text-center">
-                                    ${opt.word}
-                                </button>
-                            `).join('')}
-                        </div>
-
-                        <!-- Feedback Banner -->
-                        <div id="feedback-banner" class="mt-6 min-h-[48px] flex items-center justify-center font-bold text-lg rounded-xl opacity-0 transition-all"></div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function checkLevel3(selectedWord, correctWord) {
-            if (state.isAnswered) return;
-            state.isAnswered = true;
-
-            const bank = document.getElementById('vocab-bank');
-            const buttons = bank.querySelectorAll('button');
-            const feedback = document.getElementById('feedback-banner');
-
-            buttons.forEach(btn => {
-                btn.disabled = true;
-                const wordText = btn.innerText.trim();
-
-                if (wordText === correctWord) {
-                    btn.className = 'border-2 border-emerald-500 bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl text-sm sm:text-base text-center correct-anim';
-                } else if (wordText === selectedWord && selectedWord !== correctWord) {
-                    btn.className = 'border-2 border-rose-500 bg-rose-500 text-white font-bold py-3 px-2 rounded-xl text-sm sm:text-base text-center wrong-anim';
-                } else {
-                    btn.classList.add('opacity-40');
-                }
-            });
-
-            if (selectedWord === correctWord) {
-                state.score++;
-                feedback.className = "mt-6 py-2 px-4 flex items-center justify-center font-bold text-base rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300 opacity-100";
-                feedback.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i> Syabas! Penggunaan kosa kata yang tepat.';
-            } else {
-                feedback.className = "mt-6 py-2 px-4 flex items-center justify-center font-bold text-base rounded-xl bg-rose-100 text-rose-800 border border-rose-300 opacity-100";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i> Salah! Jawapan sebenar: <span class="underline ml-1">${correctWord}</span>`;
-            }
-
-            // Directly transition to next question after delay
-            setTimeout(() => {
-                state.questionIndex++;
-                state.isAnswered = false;
-                if (state.questionIndex < state.questions.length) {
-                    renderLevel3();
-                } else {
-                    finishLevel();
-                }
-            }, 1400);
-        }
-
-        // Finish Level & Display Score Summary Screen
-        function finishLevel() {
-            state.levelScores[state.currentLevel] = state.score;
-            const total = state.questions.length;
-            const percentage = Math.round((state.score / total) * 100);
-
-            let trophyColor = "text-yellow-400";
-            let badgeText = "Cemerlang!";
-            if (percentage < 50) {
-                trophyColor = "text-slate-400";
-                badgeText = "Boleh Cuba Lagi!";
-            } else if (percentage < 80) {
-                trophyColor = "text-amber-500";
-                badgeText = "Syabas & Baik!";
-            }
-
-            const isAllCompleted = state.levelScores[1] !== null && state.levelScores[2] !== null && state.levelScores[3] !== null;
-
-            container.innerHTML = `
-                <div class="text-center py-4">
-                    <div class="inline-block p-4 bg-amber-50 rounded-full mb-3 card-bounce">
-                        <i class="fa-solid fa-trophy text-5xl sm:text-6xl ${trophyColor}"></i>
-                    </div>
-                    
-                    <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-extrabold rounded-full mb-2">
-                        ${badgeText}
-                    </span>
-
-                    <h2 class="font-heading text-3xl font-bold text-slate-800 mb-1">Tahniah, ${state.studentName}!</h2>
-                    <p class="text-slate-500 text-sm font-semibold mb-6">Anda telah menyelesaikan Level ${state.currentLevel}</p>
-
-                    <!-- Score Card -->
-                    <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-6 max-w-sm mx-auto mb-6 shadow-inner">
-                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Skor Anda</div>
-                        <div class="text-4xl font-extrabold text-indigo-600 mb-1">${state.score} / ${total}</div>
-                        <div class="text-slate-500 text-xs font-bold">Ketepatan: ${percentage}%</div>
-                    </div>
-
-                    <!-- Certificate Button (if all completed) -->
-                    ${isAllCompleted ? `
-                        <div class="mb-6 max-w-md mx-auto">
-                            <button onclick="openCertificateModal()" class="w-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-white font-bold py-3.5 px-5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 border-2 border-yellow-200">
-                                <i class="fa-solid fa-award text-2xl"></i>
-                                <span>Muat Turun Sijil Pencapaian (Selesai Semua Level)</span>
-                            </button>
-                        </div>
-                    ` : ''}
-
-                    <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row justify-center gap-3 max-w-md mx-auto">
-                        <button onclick="startLevel(${state.currentLevel})" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3.5 px-5 rounded-2xl transition-all text-sm">
-                            <i class="fa-solid fa-rotate-right mr-2"></i> Cuba Lagi
-                        </button>
-
-                        ${state.currentLevel < 3 ? `
-                            <button onclick="startLevel(${state.currentLevel + 1})" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-5 rounded-2xl transition-all shadow-md text-sm">
-                                Terus ke Level ${state.currentLevel + 1} <i class="fa-solid fa-arrow-right ml-2"></i>
-                            </button>
-                        ` : `
-                            <button onclick="renderMainMenu()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-5 rounded-2xl transition-all shadow-md text-sm">
-                                Kembali ke Menu <i class="fa-solid fa-house ml-2"></i>
-                            </button>
-                        `}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Sijil Pencapaian Modal Functions
-        function openCertificateModal() {
-            const modal = document.getElementById('certificate-modal-wrapper');
-            const totalScore = (state.levelScores[1] || 0) + (state.levelScores[2] || 0) + (state.levelScores[3] || 0);
-            const totalPct = Math.round((totalScore / 30) * 100);
-            
-            const today = new Date();
-            const dateStr = today.toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
-
-            modal.innerHTML = `
-                <div id="certificate-modal" class="bg-white rounded-3xl shadow-2xl border-8 border-amber-400 max-w-2xl w-full p-6 sm:p-10 text-center relative overflow-hidden my-auto">
-                    <!-- Ornamental Corner Decorations -->
-                    <div class="absolute -top-12 -left-12 w-28 h-28 bg-amber-400 rounded-full opacity-20"></div>
-                    <div class="absolute -bottom-12 -right-12 w-28 h-28 bg-amber-400 rounded-full opacity-20"></div>
-
-                    <!-- Close & Action Bar -->
-                    <div class="no-print flex flex-wrap justify-between items-center gap-2 mb-6 border-b pb-4">
-                        <button onclick="closeCertificateModal()" class="text-slate-400 hover:text-slate-600 font-bold text-sm flex items-center gap-1">
-                            <i class="fa-solid fa-arrow-left"></i> Kembali
-                        </button>
-                        <div class="flex items-center gap-2">
-                            <button id="btn-download-png" onclick="downloadCertificatePNG()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2 shadow-md transition-all">
-                                <i class="fa-solid fa-file-image text-base"></i> Muat Turun PNG
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Certificate Content Frame -->
-                    <div id="certificate-print-area" class="border-4 border-amber-400 p-6 sm:p-8 rounded-2xl bg-amber-50/40 text-center relative" style="background-color: #fffdf5; border-style: double; border-width: 6px;">
-                        <div class="flex justify-center mb-2">
-                            <i class="fa-solid fa-award text-5xl sm:text-6xl text-amber-500"></i>
-                        </div>
-                        
-                        <h2 class="font-heading text-xl sm:text-2xl font-bold tracking-widest text-amber-800 uppercase">SIJIL PENCAPAIAN</h2>
-                        <p class="text-xs text-amber-600 font-semibold uppercase tracking-wider mb-4">Kosa Kata Bahasa Melayu (Tahun 6)</p>
-
-                        <p class="text-xs text-slate-500 font-semibold">Dengan ini disahkan bahawa</p>
-                        
-                        <!-- Student Name -->
-                        <h3 class="text-2xl sm:text-3xl font-extrabold text-indigo-900 my-2 font-heading border-b-2 border-indigo-200 inline-block px-8 py-1">
-                            ${state.studentName}
-                        </h3>
-
-                        <p class="text-xs text-slate-600 max-w-md mx-auto mt-3 font-semibold leading-relaxed">
-                            Telah berjaya menyelesaikan kesemua 3 Level Cabaran Kosa Kata Bahasa Melayu Tahun 6 dengan pencapaian cemerlang seperti berikut:
-                        </p>
-
-                        <!-- Score Breakdown Table -->
-                        <div class="grid grid-cols-3 gap-2 max-w-md mx-auto my-5">
-                            <div class="bg-sky-50 border border-sky-200 p-2.5 rounded-xl text-center">
-                                <div class="text-[10px] font-bold text-sky-700 uppercase">Level 1</div>
-                                <div class="text-lg font-extrabold text-sky-900">${state.levelScores[1]} / 10</div>
-                                <div class="text-[10px] text-sky-600 font-semibold">Pilihan Jawapan</div>
-                            </div>
-                            <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl text-center">
-                                <div class="text-[10px] font-bold text-emerald-700 uppercase">Level 2</div>
-                                <div class="text-lg font-extrabold text-emerald-900">${state.levelScores[2]} / 10</div>
-                                <div class="text-[10px] text-emerald-600 font-semibold">Ejaan Kosa Kata</div>
-                            </div>
-                            <div class="bg-purple-50 border border-purple-200 p-2.5 rounded-xl text-center">
-                                <div class="text-[10px] font-bold text-purple-700 uppercase">Level 3</div>
-                                <div class="text-lg font-extrabold text-purple-900">${state.levelScores[3]} / 10</div>
-                                <div class="text-[10px] text-purple-600 font-semibold">Lengkapkan Ayat</div>
-                            </div>
-                        </div>
-
-                        <!-- Overall Summary Badge -->
-                        <div class="bg-amber-100 border border-amber-300 rounded-xl p-3 inline-block max-w-xs mx-auto mb-4">
-                            <span class="text-xs font-bold text-amber-900">Jumlah Skor Keseluruhan: </span>
-                            <span class="text-lg font-extrabold text-indigo-800 ml-1">${totalScore} / 30 (${totalPct}%)</span>
-                        </div>
-
-                        <!-- Date & Signature Footer -->
-                        <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-end text-left">
-                            <div>
-                                <p class="text-[10px] text-slate-400 font-semibold">Tarikh Dikeluarkan:</p>
-                                <p class="text-xs font-bold text-slate-700">${dateStr}</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="inline-block border-b-2 border-slate-400 px-6 py-1 text-xs font-bold text-indigo-900">
-                                    Modul Kosa Kata Tahun 6
-                                </div>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Pengesahan Aplikasi</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            modal.classList.remove('hidden');
-        }
-
-        function downloadCertificatePNG() {
-            const printArea = document.getElementById('certificate-print-area');
-            const btn = document.getElementById('btn-download-png');
-            if (!printArea) return;
-            
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menjana PNG...';
-            }
-
-            const cleanName = (state.studentName || 'Murid').replace(/[^a-zA-Z0-9]/g, '_');
-
-            // Save original inline style values
-            const originalWidth = printArea.style.width;
-            const originalMaxWidth = printArea.style.maxWidth;
-            
-            // Temporarily lock element width to optimal certificate dimensions during rendering
-            // This guarantees 100% identical typography, grid alignment, and spacing regardless of screen width
-            printArea.style.width = "700px";
-            printArea.style.maxWidth = "700px";
-
-            const generate = () => {
-                if (typeof html2canvas !== 'undefined') {
-                    html2canvas(printArea, {
-                        scale: 3, // High resolution capture
-                        useCORS: true,
-                        logging: false,
-                        backgroundColor: '#ffffff'
-                    }).then(canvas => {
-                        const image = canvas.toDataURL('image/png');
-                        const link = document.createElement('a');
-                        link.download = `Sijil_Pencapaian_${cleanName}.png`;
-                        link.href = image;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-
-                        printArea.style.width = originalWidth;
-                        printArea.style.maxWidth = originalMaxWidth;
-                        if (btn) {
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fa-solid fa-file-image"></i> Muat Turun PNG';
-                        }
-                    }).catch(err => {
-                        console.error('Pengeluaran PNG gagal:', err);
-                        printArea.style.width = originalWidth;
-                        printArea.style.maxWidth = originalMaxWidth;
-                        if (btn) {
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fa-solid fa-file-image"></i> Muat Turun PNG';
-                        }
-                    });
-                } else {
-                    printArea.style.width = originalWidth;
-                    printArea.style.maxWidth = originalMaxWidth;
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fa-solid fa-file-image"></i> Muat Turun PNG';
-                    }
-                }
+            stationState[stesenNum] = {
+                selectedWord: null,
+                selectedMeaning: null,
+                items: items,
+                pairs: items.map(item => ({ id: item.id, matched: false }))
             };
 
-            // Ensure Google Fonts are fully rendered before snapshotting
-            if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(generate);
-            } else {
-                setTimeout(generate, 300);
+            const words = items.map(item => ({ id: item.id, word: item.word })).sort(() => 0.5 - Math.random());
+            const meanings = items.map(item => ({ id: item.id, bm: item.bm, cn: item.cn })).sort(() => 0.5 - Math.random());
+
+            renderMatchingStationUI(stesenNum, words, meanings);
+            updateStationProgress(stesenNum);
+        }
+
+        function renderMatchingStationUI(stesenNum, words, meanings) {
+            const wordsContainer = document.getElementById(`s${stesenNum}-words`);
+            const meaningsContainer = document.getElementById(`s${stesenNum}-meanings`);
+
+            wordsContainer.innerHTML = '';
+            meaningsContainer.innerHTML = '';
+
+            const themeColor = stesenNum === 1 ? 'emerald' : 'indigo';
+
+            words.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = `s${stesenNum}-word-${item.id}`;
+                btn.className = `w-full p-3.5 rounded-2xl border border-slate-200 bg-white font-bold text-slate-800 text-left hover:border-${themeColor}-500 transition shadow-sm flex justify-between items-center text-sm md:text-base`;
+                btn.onclick = () => selectStationWord(stesenNum, item.id, words, meanings);
+                btn.innerHTML = `<span>${item.word}</span> <i class="fa-solid fa-circle-dot text-slate-300 text-xs"></i>`;
+                wordsContainer.appendChild(btn);
+            });
+
+            meanings.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = `s${stesenNum}-meaning-${item.id}`;
+                btn.className = `w-full p-3.5 rounded-2xl border border-slate-200 bg-white text-xs md:text-sm font-medium text-slate-700 text-left hover:border-${themeColor}-500 transition shadow-sm space-y-1`;
+                btn.onclick = () => selectStationMeaning(stesenNum, item.id, words, meanings);
+                btn.innerHTML = `
+                    <div class="text-slate-800 font-semibold leading-snug">${item.bm}</div>
+                    <div class="text-${themeColor}-600 font-bold text-xs">${item.cn}</div>
+                `;
+                meaningsContainer.appendChild(btn);
+            });
+        }
+
+        function selectStationWord(stesenNum, id, words, meanings) {
+            const st = stationState[stesenNum];
+            if (st.pairs.find(p => p.id === id)?.matched) return;
+
+            st.selectedWord = id;
+            playSound('click');
+
+            const themeColor = stesenNum === 1 ? 'emerald' : 'indigo';
+
+            words.forEach(w => {
+                if (st.pairs.find(p => p.id === w.id)?.matched) return;
+                const btn = document.getElementById(`s${stesenNum}-word-${w.id}`);
+                if (w.id === id) {
+                    btn.className = `w-full p-3.5 rounded-2xl border-2 border-${themeColor}-500 bg-${themeColor}-50 font-extrabold text-${themeColor}-900 text-left shadow-sm flex justify-between items-center text-sm md:text-base`;
+                } else {
+                    btn.className = `w-full p-3.5 rounded-2xl border border-slate-200 bg-white font-bold text-slate-800 text-left hover:border-${themeColor}-500 transition shadow-sm flex justify-between items-center text-sm md:text-base`;
+                }
+            });
+
+            checkStationMatch(stesenNum, words, meanings);
+        }
+
+        function selectStationMeaning(stesenNum, id, words, meanings) {
+            const st = stationState[stesenNum];
+            if (st.pairs.find(p => p.id === id)?.matched) return;
+
+            st.selectedMeaning = id;
+            playSound('click');
+
+            const themeColor = stesenNum === 1 ? 'emerald' : 'indigo';
+
+            meanings.forEach(m => {
+                if (st.pairs.find(p => p.id === m.id)?.matched) return;
+                const btn = document.getElementById(`s${stesenNum}-meaning-${m.id}`);
+                if (m.id === id) {
+                    btn.className = `w-full p-3.5 rounded-2xl border-2 border-${themeColor}-500 bg-${themeColor}-50 text-xs md:text-sm font-semibold text-${themeColor}-950 text-left shadow-sm space-y-1`;
+                } else {
+                    btn.className = `w-full p-3.5 rounded-2xl border border-slate-200 bg-white text-xs md:text-sm font-medium text-slate-700 text-left hover:border-${themeColor}-500 transition shadow-sm space-y-1`;
+                }
+            });
+
+            checkStationMatch(stesenNum, words, meanings);
+        }
+
+        function checkStationMatch(stesenNum, words, meanings) {
+            const st = stationState[stesenNum];
+            if (st.selectedWord !== null && st.selectedMeaning !== null) {
+                const wId = st.selectedWord;
+                const mId = st.selectedMeaning;
+                const themeColor = stesenNum === 1 ? 'emerald' : 'indigo';
+
+                if (wId === mId) {
+                    // Correct Match
+                    playSound('correct');
+                    const pair = st.pairs.find(p => p.id === wId);
+                    pair.matched = true;
+
+                    const wordBtn = document.getElementById(`s${stesenNum}-word-${wId}`);
+                    const meaningBtn = document.getElementById(`s${stesenNum}-meaning-${mId}`);
+
+                    wordBtn.className = `w-full p-3.5 rounded-2xl border-2 border-${themeColor}-500 bg-${themeColor}-100 font-bold text-${themeColor}-900 text-left shadow-sm flex justify-between items-center opacity-70 pointer-events-none text-sm md:text-base`;
+                    wordBtn.innerHTML += ` <i class="fa-solid fa-circle-check text-${themeColor}-600 text-lg"></i>`;
+
+                    meaningBtn.className = `w-full p-3.5 rounded-2xl border-2 border-${themeColor}-500 bg-${themeColor}-100 text-xs md:text-sm font-semibold text-${themeColor}-950 text-left shadow-sm opacity-70 pointer-events-none space-y-1`;
+
+                    st.selectedWord = null;
+                    st.selectedMeaning = null;
+
+                    updateStationProgress(stesenNum);
+
+                    // Check if all pairs in station are matched
+                    if (st.pairs.every(p => p.matched)) {
+                        stationCompletion[stesenNum] = true;
+                        confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+                        checkOverallCompletion();
+                    }
+                } else {
+                    // Wrong match
+                    playSound('wrong');
+                    const wordBtn = document.getElementById(`s${stesenNum}-word-${wId}`);
+                    const meaningBtn = document.getElementById(`s${stesenNum}-meaning-${mId}`);
+
+                    wordBtn.classList.add('shake-animation');
+                    meaningBtn.classList.add('shake-animation');
+
+                    wordBtn.className = "w-full p-3.5 rounded-2xl border-2 border-rose-500 bg-rose-50 font-bold text-rose-900 text-left shadow-sm flex justify-between items-center text-sm md:text-base shake-animation";
+                    meaningBtn.className = "w-full p-3.5 rounded-2xl border-2 border-rose-500 bg-rose-50 text-xs md:text-sm font-medium text-rose-900 text-left shadow-sm space-y-1 shake-animation";
+
+                    setTimeout(() => {
+                        if (!st.pairs.find(p => p.id === wId)?.matched) {
+                            wordBtn.className = `w-full p-3.5 rounded-2xl border border-slate-200 bg-white font-bold text-slate-800 text-left hover:border-${themeColor}-500 transition shadow-sm flex justify-between items-center text-sm md:text-base`;
+                        }
+                        if (!st.pairs.find(p => p.id === mId)?.matched) {
+                            meaningBtn.className = `w-full p-3.5 rounded-2xl border border-slate-200 bg-white text-xs md:text-sm font-medium text-slate-700 text-left hover:border-${themeColor}-500 transition shadow-sm space-y-1`;
+                        }
+                    }, 800);
+
+                    st.selectedWord = null;
+                    st.selectedMeaning = null;
+                }
             }
+        }
+
+        function updateStationProgress(stesenNum) {
+            const st = stationState[stesenNum];
+            const matchedCount = st.pairs.filter(p => p.matched).length;
+            document.getElementById(`s${stesenNum}-progress`).innerText = `${matchedCount} / 10`;
+        }
+
+        function initTypingGame() {
+            // Shuffle all 20 vocabulary items
+            typingQueue = [...vocabularyList].sort(() => 0.5 - Math.random());
+            typingCurrentIdx = 0;
+            typingScore = 0;
+            typingAnswered = false;
+
+            document.getElementById('typing-score').innerText = `0 / ${typingQueue.length}`;
+            loadTypingQuestion();
+        }
+
+        function loadTypingQuestion() {
+            if (typingCurrentIdx >= typingQueue.length) {
+                // Completed typing game
+                showTypingCompletion();
+                return;
+            }
+
+            const item = typingQueue[typingCurrentIdx];
+            typingAnswered = false;
+
+            // UI Updates
+            document.getElementById('typing-question-num').innerText = `Soalan ${typingCurrentIdx + 1} daripada ${typingQueue.length}`;
+            document.getElementById('typing-cn-display').innerText = item.cn;
+            document.getElementById('typing-hint-badge').innerText = `${item.word.length} Huruf`;
+
+            // Reset Input and Buttons
+            const input = document.getElementById('typing-input');
+            input.value = '';
+            input.disabled = false;
+            input.className = "w-full text-center text-xl md:text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-slate-300 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition outline-none text-slate-800";
+            input.focus();
+
+            document.getElementById('typing-submit-btn').classList.remove('hidden');
+            document.getElementById('typing-next-btn').classList.add('hidden');
+            
+            const feedbackDiv = document.getElementById('typing-feedback');
+            feedbackDiv.classList.add('hidden');
+
+            // Progress bar
+            const progress = (typingCurrentIdx / typingQueue.length) * 100;
+            document.getElementById('typing-progress-bar').style.width = `${progress}%`;
+        }
+
+        function handleTypingSubmit(e) {
+            e.preventDefault();
+            if (typingAnswered) return;
+
+            const input = document.getElementById('typing-input');
+            const userAns = input.value.trim().toLowerCase();
+            const item = typingQueue[typingCurrentIdx];
+            const correctAns = item.word.toLowerCase();
+
+            if (!userAns) {
+                input.focus();
+                return;
+            }
+
+            typingAnswered = true;
+            input.disabled = true;
+
+            const feedbackDiv = document.getElementById('typing-feedback');
+            feedbackDiv.classList.remove('hidden');
+
+            if (userAns === correctAns) {
+                // Correct
+                playSound('correct');
+                typingScore++;
+                input.className = "w-full text-center text-xl md:text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 outline-none";
+                
+                feedbackDiv.className = "p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold text-center";
+                feedbackDiv.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-lg mr-1.5"></i> Tahniah! Jawapan tepat: <span class="text-base font-extrabold text-emerald-950 underline">${item.word}</span><br><span class="text-xs text-slate-600 font-normal">Maksud (BM): ${item.bm}</span>`;
+            } else {
+                // Wrong
+                playSound('wrong');
+                input.className = "w-full text-center text-xl md:text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-rose-900 outline-none shake-animation";
+                
+                feedbackDiv.className = "p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 text-sm font-semibold text-center";
+                feedbackDiv.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 text-lg mr-1.5"></i> Kurang Tepat. Jawapan sebenar ialah: <span class="text-base font-extrabold text-indigo-900 underline">${item.word}</span><br><span class="text-xs text-slate-600 font-normal">Maksud (BM): ${item.bm}</span>`;
+            }
+
+            document.getElementById('typing-score').innerText = `${typingScore} / ${typingQueue.length}`;
+            document.getElementById('typing-submit-btn').classList.add('hidden');
+            document.getElementById('typing-next-btn').classList.remove('hidden');
+            document.getElementById('typing-next-btn').focus();
+        }
+
+        function nextTypingQuestion() {
+            typingCurrentIdx++;
+            loadTypingQuestion();
+        }
+
+        function showTypingCompletion() {
+            stationCompletion[3] = true;
+            document.getElementById('typing-progress-bar').style.width = '100%';
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+            checkOverallCompletion();
+
+            const card = document.getElementById('typing-card');
+            card.innerHTML = `
+                <div class="text-center py-8 space-y-4">
+                    <div class="w-20 h-20 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold font-heading text-slate-800">Syabas! Cabaran MenTaip Selesai!</h3>
+                    <p class="text-slate-600">Markah Ejaan Anda: <span class="font-extrabold text-purple-700 text-2xl">${typingScore} / ${typingQueue.length}</span></p>
+                    <button onclick="resetTypingGame()" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl shadow transition inline-flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Main Sekali Lagi</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        function checkOverallCompletion() {
+            if (stationCompletion[1] && stationCompletion[2] && stationCompletion[3]) {
+                const certBtn = document.getElementById('certBtn');
+                certBtn.disabled = false;
+                certBtn.className = "px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-900 transition text-xs font-bold flex items-center gap-1.5 shadow-md animate-bounce cursor-pointer";
+                document.getElementById('certIcon').className = "fa-solid fa-award text-amber-900";
+                document.getElementById('certText').innerText = "Ambil Sijil!";
+
+                setTimeout(() => {
+                    openCertificateModal();
+                }, 1200);
+            }
+        }
+
+        function openCertificateModal() {
+            if (!stationCompletion[1] || !stationCompletion[2] || !stationCompletion[3]) return;
+            drawCertificate();
+            document.getElementById('cert-modal').classList.remove('hidden');
         }
 
         function closeCertificateModal() {
-            document.getElementById('certificate-modal-wrapper').classList.add('hidden');
+            document.getElementById('cert-modal').classList.add('hidden');
         }
 
-        // Initial setup on window load
+        function drawCertificate() {
+            const canvas = document.getElementById('certCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Clear
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Background Cream Gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            bgGrad.addColorStop(0, '#fdfbf7');
+            bgGrad.addColorStop(1, '#f4efe3');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Outer Border
+            ctx.strokeStyle = '#047857';
+            ctx.lineWidth = 12;
+            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+            // Inner Gold Border
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(32, 32, canvas.width - 64, canvas.height - 64);
+
+            // Header Title
+            ctx.fillStyle = '#047857';
+            ctx.font = 'bold 36px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('SIJIL PENGHARGAAN & PENCAPAIAN', canvas.width / 2, 110);
+
+            ctx.fillStyle = '#d97706';
+            ctx.font = 'bold 18px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('KOSA KATA BAHASA MELAYU TAHUN 5', canvas.width / 2, 145);
+
+            // Decorative Divider Line
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2 - 200, 165);
+            ctx.lineTo(canvas.width / 2 + 200, 165);
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Cert Body Text
+            ctx.fillStyle = '#334155';
+            ctx.font = '20px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('Dengan ini diperakui bahawa', canvas.width / 2, 220);
+
+            // Student Name
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 42px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(studentInfo.name.toUpperCase(), canvas.width / 2, 280);
+
+            // Student Class
+            ctx.fillStyle = '#047857';
+            ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(`KELAS: ${studentInfo.class.toUpperCase()}`, canvas.width / 2, 320);
+
+            // Achievement Text
+            ctx.fillStyle = '#334155';
+            ctx.font = '18px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('Telah berjaya menyempurnakan kesemua 3 Stesen Permainan Kosa Kata Bahasa Melayu', canvas.width / 2, 375);
+            ctx.fillText('termasuk Padanan Makna dan Cabaran Ejaan MenTaip dengan Cemerlang.', canvas.width / 2, 405);
+
+            // Scores Box
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(canvas.width / 2 - 280, 440, 560, 90, 16);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(`Stesen 1: 10/10  |  Stesen 2: 10/10  |  Taip Kosa Kata: ${typingScore}/20`, canvas.width / 2, 490);
+
+            // Seal Ribbon (Bottom Left)
+            ctx.beginPath();
+            ctx.arc(180, 570, 50, 0, Math.PI * 2);
+            ctx.fillStyle = '#d97706';
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('LULUS', 180, 565);
+            ctx.fillText('CEMERLANG', 180, 582);
+
+            // Date & Signature Area
+            const today = new Date().toLocaleDateString('ms-MY', { year: 'numeric', month: 'long', day: 'numeric' });
+            ctx.fillStyle = '#475569';
+            ctx.font = '16px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText(`Tarikh: ${today}`, canvas.width - 120, 580);
+            ctx.fillText('Aplikasi Kosa Kata BM Tahun 5', canvas.width - 120, 605);
+        }
+
+        function downloadCertificate() {
+            const canvas = document.getElementById('certCanvas');
+            const link = document.createElement('a');
+            const fileName = `Sijil_BM_Tahun5_${studentInfo.name.replace(/\s+/g, '_')}.png`;
+            link.download = fileName;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function resetTypingGame() {
+            const section = document.getElementById('section-typing');
+            section.innerHTML = `
+                <div class="bg-gradient-to-r from-purple-700 via-indigo-700 to-blue-700 p-6 md:p-8 rounded-3xl text-white shadow-xl">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <span class="bg-yellow-400 text-slate-900 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Permainan MenTaip</span>
+                            <h2 class="text-2xl font-extrabold font-heading mt-1">Cabaran Taip Kosa Kata Bahasa Melayu</h2>
+                            <p class="text-indigo-100 text-sm mt-1">Lihat Maksud Bahasa Cina (华文意思), kemudian taip perkataan Bahasa Melayu yang betul!</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 text-center">
+                                <p class="text-[10px] text-indigo-200 uppercase font-bold tracking-wider">Markah</p>
+                                <p id="typing-score" class="text-2xl font-black text-yellow-300">0 / 20</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full bg-black/30 h-2.5 rounded-full mt-6 overflow-hidden">
+                        <div id="typing-progress-bar" class="bg-yellow-400 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <div id="typing-card" class="bg-white p-6 md:p-8 rounded-3xl shadow-md border border-slate-200 space-y-6 max-w-2xl mx-auto">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-400 border-b border-slate-100 pb-3">
+                        <span id="typing-question-num" class="text-indigo-600 font-bold">Soalan 1 daripada 20</span>
+                        <span id="typing-hint-badge" class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full">--</span>
+                    </div>
+
+                    <div class="text-center py-4 space-y-2 bg-indigo-50/50 rounded-2xl border border-indigo-100 p-4">
+                        <p class="text-xs uppercase tracking-wider font-bold text-indigo-500">Maksud Dalam Bahasa Cina (华文意思):</p>
+                        <h3 id="typing-cn-display" class="text-4xl md:text-5xl font-black text-indigo-900 tracking-wide font-heading">--</h3>
+                    </div>
+
+                    <form onsubmit="handleTypingSubmit(event)" class="space-y-4">
+                        <div>
+                            <label for="typing-input" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                                Taip Perkataan Bahasa Melayu:
+                            </label>
+                            <div class="relative">
+                                <input type="text" 
+                                       id="typing-input" 
+                                       autocomplete="off" 
+                                       autocorrect="off" 
+                                       autocapitalize="off" 
+                                       spellcheck="false"
+                                       placeholder="Taip jawapan di sini..." 
+                                       class="w-full text-center text-xl md:text-2xl font-bold py-3.5 px-4 rounded-2xl border-2 border-slate-300 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition outline-none text-slate-800">
+                            </div>
+                        </div>
+
+                        <button type="submit" id="typing-submit-btn" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base rounded-2xl shadow-lg hover:shadow-indigo-200 transition flex items-center justify-center gap-2">
+                            <span>Hantar Jawapan</span>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+
+                    <div id="typing-feedback" class="hidden p-4 rounded-2xl border text-sm font-medium transition-all text-center"></div>
+
+                    <div class="flex justify-end pt-2">
+                        <button id="typing-next-btn" onclick="nextTypingQuestion()" class="hidden w-full md:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+                            <span>Soalan Seterusnya</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            initTypingGame();
+        }
+
         window.onload = function() {
-            if (!state.studentName) {
-                renderLoginScreen();
-            } else {
-                renderMainMenu();
-            }
+            initMatchingStation(1);
+            initMatchingStation(2);
+            initTypingGame();
         };
     </script>
 </body>
