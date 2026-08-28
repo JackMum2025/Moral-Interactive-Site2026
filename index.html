@@ -1,163 +1,1119 @@
-作为AI助理，我已为您完成排版和计算，您可以参考生成一个符合您要求的 A4 打印版 PDF 文件（含 5.5cm 裁剪辅助线和精准边距）：
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Karangan Hari Raya Tahun 5</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%);
+        }
+        .title-font {
+            font-family: 'Fredoka', cursive;
+        }
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+        .ketupat-bg {
+            background-color: #047857;
+            background-image: radial-gradient(#10b981 1.5px, transparent 1.5px), radial-gradient(#10b981 1.5px, #047857 1.5px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #certificate-modal, #certificate-modal * {
+                visibility: visible;
+            }
+            #certificate-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
 
-[file-tag: code-generated-file-a4-nezha-stickers-layout]
+    <script>
+        // Web Audio API Sound Synthesizer
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+            }
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+            playSuccess() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                osc.frequency.setValueAtTime(1046.50, now + 0.3);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.55);
+            }
+            playPop() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 0.08);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            }
+            playError() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(280, now);
+                osc.frequency.linearRampToValueAtTime(150, now + 0.25);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        }
+        const sfx = new SoundEngine();
 
-您直接可以使用生成的代码作为您的 PDF。
+        // Speech synthesis helper
+        function speakMalay(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID'; // Bahasa Melayu/Indonesia voice
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
 
-### 📄 文件配置说明
+    <!-- Top Navigation / Banner -->
+    <header class="bg-emerald-800 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-400 text-emerald-950 w-11 h-11 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-md">
+                    🌙
+                </div>
+                <div>
+                    <h1 class="title-font text-xl md:text-2xl font-bold tracking-wide">Bijak Karangan Hari Raya</h1>
+                    <p class="text-xs text-emerald-200 font-semibold">Bahasa Melayu Tahun 5 • 华小五年级甲组/乙组书写复习</p>
+                </div>
+            </div>
 
-* **标准页面尺寸**：A4（210 mm x 297 mm）
-* **单个贴纸规格**：**5.5 cm** (55 mm) 圆形
-* **排版布局**：3 列 x 5 行（共 **15** 个贴纸）
-* **裁剪辅助线**：每个贴纸外沿都有 5.5 cm 的浅灰色虚线圆形作为裁剪参考。
-* **边距设计**：
-* 上下边距：~1.1 cm
-* 左右边距：~2.25 cm
+            <!-- Student Name Profile & Score Counter -->
+            <div class="flex items-center gap-3">
+                <button onclick="promptStudentLogin()" class="bg-emerald-700 hover:bg-emerald-600 border border-emerald-500 px-3 py-1.5 rounded-2xl flex items-center gap-2 shadow-inner transition text-xs">
+                    <span class="text-base">👤</span>
+                    <span id="student-display-name" class="font-bold text-amber-200 truncate max-w-[120px]">Murid: Sila Log Masuk</span>
+                    <i class="fa-solid fa-pen text-[10px] text-emerald-300"></i>
+                </button>
+                <div class="bg-emerald-900 border border-emerald-600 px-4 py-1.5 rounded-2xl flex items-center gap-2 shadow-inner">
+                    <span class="text-xl">🧧</span>
+                    <span class="text-xs text-emerald-200 font-bold uppercase">Sampul Raya:</span>
+                    <span id="sampul-count" class="font-extrabold text-xl text-amber-300">0</span>
+                </div>
+            </div>
+        </div>
 
+        <!-- Tab Navigation Bar -->
+        <div class="bg-emerald-900 border-t border-emerald-700/60">
+            <div class="max-w-5xl mx-auto flex overflow-x-auto text-sm font-semibold text-emerald-100">
+                <button onclick="switchTab('tab-vocab')" id="btn-tab-vocab" class="tab-btn px-5 py-3 border-b-4 border-amber-400 text-amber-300 flex items-center gap-2 shrink-0 transition">
+                    <i class="fa-solid fa-book-open"></i> 1. Kad Frasa (核心词汇)
+                </button>
+                <button onclick="switchTab('tab-match')" id="btn-tab-match" class="tab-btn px-5 py-3 border-b-4 border-transparent hover:text-white flex items-center gap-2 shrink-0 transition">
+                    <i class="fa-solid fa-gamepad"></i> 2. Permainan Padan (词汇连线)
+                </button>
+                <button onclick="switchTab('tab-builder')" id="btn-tab-builder" class="tab-btn px-5 py-3 border-b-4 border-transparent hover:text-white flex items-center gap-2 shrink-0 transition">
+                    <i class="fa-solid fa-pen-ruler"></i> 3. Bina Ayat (句型填空)
+                </button>
+                <button onclick="switchTab('tab-typing')" id="btn-tab-typing" class="tab-btn px-5 py-3 border-b-4 border-transparent hover:text-white flex items-center gap-2 shrink-0 transition">
+                    <i class="fa-solid fa-keyboard"></i> 4. Taip Ayat (看华文写国语)
+                </button>
+            </div>
+        </div>
+    </header>
 
+    <!-- Main Content Workspace -->
+    <main class="max-w-5xl mx-auto w-full p-4 md:p-6 flex-grow">
 
-### 🖨️ 打印建议
+        <!-- TAB 1: Kad Frasa & Maksud (10 Target Phrases from JPEG) -->
+        <section id="tab-vocab" class="tab-content block">
+            <div class="bg-white rounded-3xl shadow-xl p-6 mb-6 border border-emerald-100">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Langkah 1</span>
+                        <h2 class="text-2xl font-bold text-slate-800 title-font mt-1">10 Frasa Kunci Karangan Hari Raya</h2>
+                        <p class="text-slate-500 text-sm">点击卡片发音并理解 10 个核心关键短语与华文翻译 (Bahasa Melayu & 华文对照)。</p>
+                    </div>
+                    <button onclick="readAllVocab()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl shadow transition text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-volume-high text-sm"></i> 朗读全部短语 (Sebut Semua)
+                    </button>
+                </div>
 
-1. **设置 100% 比例**：打印时请在打印设置中选择 **“实际大小”**（或 100% 缩放），**切勿**勾选“适合页面大小”，否则尺寸会缩小。
-2. **纸张选择**：建议使用 A4 尺寸的不干胶打印纸、照片纸或艺术纸。
+                <!-- Grid of 10 Phrases -->
+                <div id="vocab-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+                    <!-- Cards will be populated dynamically -->
+                </div>
+            </div>
+        </section>
 
-您现在可以直接预览或下载该 PDF 文件，使用 A4 纸进行打印，然后沿着辅助线进行裁剪。
+        <!-- TAB 2: Permainan Padan Frasa (Matching Game) -->
+        <section id="tab-match" class="tab-content hidden">
+            <div class="bg-white rounded-3xl shadow-xl p-6 mb-6 border border-emerald-100">
+                <div class="text-center max-w-xl mx-auto mb-6">
+                    <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Langkah 2</span>
+                    <h2 class="text-2xl font-bold text-slate-800 title-font mt-1">Permainan Padan Maksud (词汇连线配对)</h2>
+                    <p class="text-slate-500 text-sm mt-1">请点击左边的【国语词组】，再点击右边对应的【华文意思】。每对对一组可获得 🧧 10 封 Duit Raya！</p>
+                </div>
 
-/* 页面容器：精准 A4 尺寸 */
-.page {
-width: 210mm;
-height: 297mm;
-position: relative;
-background-color: #fff;
-overflow: hidden;
-}
+                <!-- Matching Interface -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    <!-- Left Column: Malay Phrases -->
+                    <div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-200">
+                        <h3 class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-3 text-center">🇲🇾 Frasa Bahasa Melayu</h3>
+                        <div id="match-malay-list" class="space-y-2.5">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
 
-/* 网格容器：放置 3x5 的贴纸网格 */
-/*
-计算：
-3 列 x 55mm = 165mm (宽) -> 剩余 45mm (左/右边距: 22.5mm)
-5 行 x 55mm = 275mm (高) -> 剩余 22mm (上/下边距: 11mm)
-*/
-.grid-container {
-position: absolute;
-top: 11mm; /* 设定上边距 */
-left: 22.5mm; /* 设定左边距 */
-width: 165mm;
-height: 275mm;
-display: flex;
-flex-wrap: wrap;
-align-content: flex-start;
-}
+                    <!-- Right Column: Chinese Translations -->
+                    <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200">
+                        <h3 class="text-xs font-extrabold text-amber-800 uppercase tracking-wider mb-3 text-center">🇨🇳 Maksud Bahasa Cina (华文意思)</h3>
+                        <div id="match-chinese-list" class="space-y-2.5">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
 
-/* 单元格：存放单个贴纸 (55mm x 55mm) */
-.sticker-cell {
-width: 55mm;
-height: 55mm;
-box-sizing: border-box;
-display: flex;
-justify-content: center;
-align-items: center;
-position: relative;
-}
+                <!-- Matching Result Feedback -->
+                <div id="match-feedback" class="mt-6 hidden text-center p-4 rounded-2xl bg-emerald-100 text-emerald-800 font-bold">
+                </div>
+            </div>
+        </section>
 
-/* 裁剪辅助线：浅灰色虚线圆 (5.5cm 直径) */
-.cut-line {
-position: absolute;
-top: 0;
-left: 0;
-width: 55mm;
-height: 55mm;
-border: 0.5pt dashed #ccc; /* 裁剪参考线 */
-border-radius: 50%;
-box-sizing: border-box;
-z-index: 10;
-}
+        <!-- TAB 3: Bina Ayat & Karangan (Sentence Builder) -->
+        <section id="tab-builder" class="tab-content hidden">
+            <div class="bg-white rounded-3xl shadow-xl p-6 mb-6 border border-emerald-100">
+                <div class="mb-6 border-b border-slate-100 pb-4">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Langkah 3</span>
+                    <h2 class="text-2xl font-bold text-slate-800 title-font mt-1">Latihan Mengisi Tempat Kosong & Bina Ayat</h2>
+                    <p class="text-slate-500 text-sm">根据开斋节的过程，选择最适合的词组重组五年级高分短文！</p>
+                </div>
 
-/* 贴纸图片：保持在裁剪辅助线内 (略小以防溢出) */
-.sticker-image {
-max-width: 53mm;
-max-height: 53mm;
-width: auto;
-height: auto;
-border-radius: 50%;
-z-index: 5;
-}
+                <!-- Guided Interactive Questions -->
+                <div class="space-y-6" id="questions-container">
+                    
+                    <!-- Question 1 -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-emerald-600 text-white text-xs font-extrabold px-2.5 py-1 rounded-md">Perenggan 1 (Pendahuluan)</span>
+                            <span class="text-xs text-slate-400 font-semibold">节日主题与准备</span>
+                        </div>
+                        <p class="text-base text-slate-700 leading-relaxed font-medium mb-3">
+                            Pada minggu lepas, keluarga saya <span class="bg-white border-2 border-emerald-400 px-3 py-1 rounded-lg text-emerald-700 font-bold shadow-sm inline-block">① menyambut Hari Raya Puasa</span> dengan penuh gembira. Sebelum hari perayaan, kami bersama-sama 
+                            <select id="q1-select" onchange="checkSentence(1)" class="bg-amber-50 border-2 border-amber-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500">
+                                <option value="">-- Sila Pilih Frasa (选择词组) --</option>
+                                <option value="memasang pelita">memasang pelita (点燃煤油灯)</option>
+                                <option value="makan besar">makan besar (吃团圆饭)</option>
+                                <option value="memohon maaf">memohon maaf (寻求原谅)</option>
+                            </select> di sekeliling rumah untuk memeriahkan suasana.
+                        </p>
+                        <div id="q1-feedback" class="text-xs font-bold hidden mt-1"></div>
+                    </div>
 
-/* 可选：页面标题，方便识别 */
-.page-header {
-position: absolute;
-top: 5mm;
-left: 22.5mm;
-width: 165mm;
-text-align: center;
-font-size: 8pt;
-color: #999;
-}
+                    <!-- Question 2 -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-emerald-600 text-white text-xs font-extrabold px-2.5 py-1 rounded-md">Perenggan 2 (Pagi Hari Raya)</span>
+                            <span class="text-xs text-slate-400 font-semibold">早晨服装与寻求原谅</span>
+                        </div>
+                        <p class="text-base text-slate-700 leading-relaxed font-medium mb-3">
+                            Pada pagi Hari Raya, kami 
+                            <select id="q2-select" onchange="checkSentence(2)" class="bg-amber-50 border-2 border-amber-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500">
+                                <option value="">-- Sila Pilih Frasa (选择词组) --</option>
+                                <option value="memakai pakaian baru">memakai pakaian baru (穿新衣服)</option>
+                                <option value="bermain bunga api">bermain bunga api (放烟花)</option>
+                                <option value="melawat">melawat (拜访)</option>
+                            </select> yang berwarna-warni. Selepas menunaikan solat, kami bersalaman dan 
+                            <select id="q3-select" onchange="checkSentence(3)" class="bg-amber-50 border-2 border-amber-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500">
+                                <option value="">-- Sila Pilih Frasa (选择词组) --</option>
+                                <option value="memohon maaf">memohon maaf (寻求原谅)</option>
+                                <option value="makan kuih raya">makan kuih raya (吃年饼)</option>
+                                <option value="menyambut tetamu">menyambut tetamu (迎接客人)</option>
+                            </select> daripada ibu bapa atas kesalahan lalu.
+                        </p>
+                        <div id="q23-feedback" class="text-xs font-bold hidden mt-1"></div>
+                    </div>
 
+                    <!-- Question 3 -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-emerald-600 text-white text-xs font-extrabold px-2.5 py-1 rounded-md">Perenggan 3 (Jamuan & Tetamu)</span>
+                            <span class="text-xs text-slate-400 font-semibold">迎接客人与吃年饼</span>
+                        </div>
+                        <p class="text-base text-slate-700 leading-relaxed font-medium mb-3">
+                            Seterusnya, ibu menghidangkan pelbagai makanan tradisional. Kami mesra 
+                            <select id="q4-select" onchange="checkSentence(4)" class="bg-amber-50 border-2 border-amber-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500">
+                                <option value="">-- Sila Pilih Frasa (选择词组) --</option>
+                                <option value="menyambut tetamu">menyambut tetamu (迎接客人)</option>
+                                <option value="makan besar">makan besar (吃团圆饭)</option>
+                                <option value="memasang pelita">memasang pelita (点灯)</option>
+                            </select> yang datang ke rumah. Semua tetamu menikmati rendang dan 
+                            <select id="q5-select" onchange="checkSentence(5)" class="bg-amber-50 border-2 border-amber-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500">
+                                <option value="">-- Sila Pilih Frasa (选择词组) --</option>
+                                <option value="makan kuih raya">makan kuih raya (吃糕点年饼)</option>
+                                <option value="mendapat duit raya">mendapat duit raya (拿压岁钱)</option>
+                                <option value="memakai pakaian baru">memakai pakaian baru (穿新衣)</option>
+                            </select> yang enak.
+                        </p>
+                        <div id="q45-feedback" class="text-xs font-bold hidden mt-1"></div>
+                    </div>
 
-```
-<div class="grid-container">
-    <!-- 重复 15 次，放置同一张贴纸（方便裁剪） -->
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
+                    <!-- Question 4 -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-emerald-600 text-white text-xs font-extrabold px-2.5 py-1 rounded-md">Perenggan 4 (Melawat & Duit Raya)</span>
+                            <span class="text-xs text-slate-400 font-semibold">拜访亲友与拿红包/压岁钱</span>
+                        </div>
+                        <p class="text-base text-slate-700 leading-relaxed font-medium mb-3">
+                            Pada sebelah petang, kami pergi 
+                            <select id="q6-select" onchange="checkSentence(6)" class="bg-amber-50 border-2 border-amber-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500">
+                                <option value="">-- Sila Pilih Frasa (选择词组) --</option>
+                                <option value="melawat">melawat (拜访/串门)</option>
+                                <option value="memasang pelita">memasang pelita (点灯)</option>
+                                <option value="memohon maaf">memohon maaf (请求原谅)</option>
+                            </select> sanak saudara dan jiran-jiran. Kanak-kanak gembira kerana 
+                            <select id="q7-select" onchange="checkSentence(7)" class="bg-amber-50 border-2 border-amber-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500">
+                                <option value="">-- Sila Pilih Frasa (选择词组) --</option>
+                                <option value="mendapat duit raya">mendapat duit raya (拿到青包/压岁钱)</option>
+                                <option value="makan besar">makan besar (吃团圆饭)</option>
+                                <option value="memakai pakaian baru">memakai pakaian baru (穿新衣)</option>
+                            </select> daripada orang dewasa.
+                        </p>
+                        <div id="q67-feedback" class="text-xs font-bold hidden mt-1"></div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-emerald-600 text-white text-xs font-extrabold px-2.5 py-1 rounded-md">Perenggan 5 (Penutup)</span>
+                            <span class="text-xs text-slate-400 font-semibold">夜间活动与总结</span>
+                        </div>
+                        <p class="text-base text-slate-700 leading-relaxed font-medium mb-3">
+                            Pada sebelah malam pula, saya dan sepupu gembira 
+                            <select id="q8-select" onchange="checkSentence(8)" class="bg-amber-50 border-2 border-amber-300 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 focus:outline-none focus:border-emerald-500">
+                                <option value="">-- Sila Pilih Frasa (选择词组) --</option>
+                                <option value="bermain bunga api">bermain bunga api (放烟花)</option>
+                                <option value="makan kuih raya">makan kuih raya (吃年饼)</option>
+                                <option value="menyambut tetamu">menyambut tetamu (迎接客人)</option>
+                            </select> di halaman rumah. Suasana Hari Raya amat meriah dan kami berharap dapat merayakannya lagi pada tahun hadapan.
+                        </p>
+                        <div id="q8-feedback" class="text-xs font-bold hidden mt-1"></div>
+                    </div>
+
+                </div>
+
+                <!-- Check Builder Submit Button -->
+                <div class="mt-8 flex justify-end">
+                    <button onclick="finishBuilderSection()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-base py-3.5 px-8 rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-right"></i> Teruskan ke Bahagian 4 (进入第 4 部分：看华造句)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: Interactive Typing Practice (看华文写国语句子) -->
+        <section id="tab-typing" class="tab-content hidden">
+            <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-emerald-100 mb-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4 mb-6">
+                    <div>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Langkah 4</span>
+                        <h2 class="text-2xl font-bold text-slate-800 title-font mt-1">Latihan Menaip Frasa (看华文写国语)</h2>
+                        <p class="text-slate-500 text-sm mt-1">请阅读图片中的华文词组，输入对应的国语词组。每答对一题可获得 🧧 15 封 Duit Raya！</p>
+                    </div>
+                    <button onclick="checkAllTypedSentences()" class="bg-purple-600 hover:bg-purple-700 text-white font-extrabold px-5 py-3 rounded-xl shadow transition text-xs flex items-center gap-2 shrink-0">
+                        <i class="fa-solid fa-check-double"></i> Semak Semua Jawapan (检查所有输入)
+                    </button>
+                </div>
+
+                <!-- List of 10 Typing Questions in Chinese -->
+                <div id="typing-questions-container" class="space-y-6">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+                <!-- Certificate Button Section -->
+                <div class="mt-10 p-6 bg-gradient-to-r from-amber-500 to-emerald-600 rounded-3xl text-white text-center shadow-xl flex flex-col items-center gap-3">
+                    <span class="text-4xl">🏆</span>
+                    <h3 class="title-font text-2xl font-bold">Sudah Menyelesaikan Semua Bahagian?</h3>
+                    <p class="text-xs md:text-sm text-amber-100 max-w-lg">输入并完成所有练习后，点击下方按钮即可生成属于你的【五年级国语写作优秀成就证书】！</p>
+                    <button onclick="generateCertificate()" class="mt-2 bg-amber-300 hover:bg-amber-200 text-emerald-950 font-black text-base py-3.5 px-8 rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center gap-2">
+                        <i class="fa-solid fa-certificate text-xl"></i> Jana Sijil Pencapaian (自动生成证书)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Student Name Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-emerald-100">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-sm">
+                    🎓
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 title-font">Selamat Datang! (欢迎登录)</h3>
+                <p class="text-xs text-slate-500 mt-1">Sila masukkan nama dan kelas anda untuk memulakan latihan dan menjana sijil pencapaian.</p>
+            </div>
+            
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">Nama Murid (学生姓名):</label>
+                    <input type="text" id="input-student-name" required placeholder="Contoh: Tan Ming Wei / 陈明伟" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl px-4 py-3 text-sm font-semibold outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">Nama Kelas (班级):</label>
+                    <input type="text" id="input-student-class" placeholder="Contoh: 5 Mawar / 5A" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl px-4 py-3 text-sm font-semibold outline-none transition">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-xl transition shadow-lg text-base mt-2 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> Mula Belajar & Buat Latihan (开始学习)
+                </button>
+            </form>
+        </div>
     </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-    <div class="sticker-cell">
-        <div class="cut-line"></div>
-        <img src="input_file_0.png" class="sticker-image">
-    </div>
-</div>
 
-```
+    <!-- Custom Modal Replacement for alert() -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4 no-print">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center border border-emerald-100">
+            <span id="modal-icon" class="text-5xl block mb-3">🎉</span>
+            <h3 id="modal-title" class="text-xl font-bold text-slate-800 mb-2">Notice</h3>
+            <p id="modal-message" class="text-sm text-slate-600 mb-6 leading-relaxed">Message content goes here.</p>
+            <button onclick="closeModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl transition shadow">
+                Faham (明白)
+            </button>
+        </div>
+    </div>
+
+    <!-- Printable Certificate Modal (Sijil Pencapaian Automatik) -->
+    <div id="certificate-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-8 md:p-12 shadow-2xl relative border-8 border-amber-400 m-auto text-center font-sans">
+            <!-- Decorative Border Corner Accents -->
+            <div class="absolute top-3 left-3 text-amber-500 text-2xl">✨</div>
+            <div class="absolute top-3 right-3 text-amber-500 text-2xl">✨</div>
+            <div class="absolute bottom-3 left-3 text-amber-500 text-2xl">✨</div>
+            <div class="absolute bottom-3 right-3 text-amber-500 text-2xl">✨</div>
+
+            <div class="no-print absolute top-4 right-4 flex gap-2">
+                <button onclick="copyAchievementText()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-copy"></i> Salin Teks (复制)
+                </button>
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-print"></i> Cetak (打印)
+                </button>
+                <button onclick="closeCertificate()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Header Header Badge -->
+            <div class="inline-block bg-emerald-800 text-amber-300 px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4 shadow">
+                Sijil Pencapaian Bahasa Melayu Tahun 5
+            </div>
+
+            <h2 class="title-font text-3xl md:text-4xl font-extrabold text-slate-800 mb-1 tracking-tight">SIJIL ANUGERAH CEMERLANG</h2>
+            <p class="text-slate-500 text-xs uppercase tracking-widest font-bold border-b border-amber-200 pb-4 mb-6">
+                Aplikasi Pembelajaran Karangan Hari Raya • 华小五年级国语写作
+            </p>
+
+            <p class="text-slate-600 text-sm italic">Dengan ini diperakui bahawa (兹证明):</p>
+            
+            <h3 id="cert-student-name" class="text-2xl md:text-3xl font-extrabold text-emerald-800 my-2 underline decoration-amber-400 decoration-4 underline-offset-4">
+                [ Nama Murid ]
+            </h3>
+            
+            <p id="cert-student-class" class="text-xs font-bold text-slate-500 mb-6">Kelas: 5 Mawar</p>
+
+            <p class="text-slate-700 text-sm max-w-lg mx-auto leading-relaxed">
+                Telah berjaya menyempurnakan kesemua modul penguasaan <strong>10 Frasa Kunci Karangan Hari Raya</strong>, permainan padan kata, latihan bina ayat, serta soalan menaip karangan bahasa Melayu.
+            </p>
+
+            <!-- Score & Badge Box -->
+            <div class="my-6 bg-amber-50 border-2 border-dashed border-amber-300 rounded-2xl p-4 flex justify-around items-center max-w-md mx-auto">
+                <div class="text-center">
+                    <span class="text-xs font-bold text-amber-800 uppercase block">Jumlah Duit Raya</span>
+                    <span id="cert-score" class="text-2xl font-black text-amber-600">🧧 0</span>
+                </div>
+                <div class="h-10 border-r border-amber-200"></div>
+                <div class="text-center">
+                    <span class="text-xs font-bold text-emerald-800 uppercase block">Tahap Pencapaian</span>
+                    <span id="cert-grade" class="text-lg font-black text-emerald-700">⭐ Cemerlang</span>
+                </div>
+            </div>
+
+            <!-- Bahagian Salin Teks Pencapaian Murid -->
+            <div class="no-print mt-4 bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                <p class="text-xs text-slate-600 font-semibold mb-2.5">📋 Salin ringkasan pencapaian untuk dihantar kepada guru atau ibu bapa (复制成绩总结以发给老师/家长):</p>
+                <button onclick="copyAchievementText()" class="bg-amber-400 hover:bg-amber-500 text-emerald-950 font-extrabold text-xs py-2.5 px-6 rounded-xl shadow transition inline-flex items-center gap-2 transform hover:scale-105">
+                    <i class="fa-solid fa-paste text-sm"></i> Salin Ringkasan Pencapaian (复制成绩文本)
+                </button>
+            </div>
+
+            <!-- Date & Signatures -->
+            <div class="mt-6 pt-4 border-t border-slate-200 flex justify-between items-end text-xs text-slate-500 font-semibold px-4">
+                <div class="text-left">
+                    <span>Tarikh: <strong id="cert-date" class="text-slate-800">28/08/2026</strong></span><br>
+                    <span>Status: Disahkan Ditamatkan</span>
+                </div>
+                <div class="text-center">
+                    <div class="w-24 border-b border-slate-400 mb-1 mx-auto"></div>
+                    <span class="font-bold text-slate-700">Guru Bahasa Melayu</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 10 Core Target Phrases Extracted directly from JPEG image
+        const targetPhrases = [
+            {
+                id: 1,
+                bm: "menyambut Tahun Baru Cina / Hari Raya Puasa / Deepavali",
+                cn: "迎接 新年 / 开斋节 / 屠妖节",
+                icon: "🎉",
+                example: "Kami menyambut Hari Raya Puasa dengan gembira.",
+                festivals: ["Tahun Baru Cina", "Hari Raya Puasa", "Deepavali"]
+            },
+            {
+                id: 2,
+                bm: "memakai pakaian baru",
+                cn: "穿新衣",
+                icon: "👔",
+                example: "Kami memakai pakaian baru pada pagi hari perayaan."
+            },
+            {
+                id: 3,
+                bm: "menyambut tetamu",
+                cn: "迎接客人 / 接待来宾",
+                icon: "🤝",
+                example: "Ibu bapa mesra menyambut tetamu yang datang."
+            },
+            {
+                id: 4,
+                bm: "melawat",
+                cn: "拜访 / 串门",
+                icon: "🏡",
+                example: "Kami melawat sanak saudara di kampung."
+            },
+            {
+                id: 5,
+                bm: "mendapat angpau / duit raya",
+                cn: "拿红包 / 开斋节压岁钱",
+                icon: "🧧",
+                example: "Kanak-kanak gembira kerana mendapat duit raya."
+            },
+            {
+                id: 6,
+                bm: "makan besar",
+                cn: "团圆饭",
+                icon: "🍲",
+                example: "Keluarga berkumpul untuk makan besar bersama-sama."
+            },
+            {
+                id: 7,
+                bm: "makan kuih raya",
+                cn: "吃年饼 / 开斋节糕点",
+                icon: "🍪",
+                example: "Tetamu menikmati dan makan kuih raya yang enak."
+            },
+            {
+                id: 8,
+                bm: "memasang pelita",
+                cn: "点灯 / 点燃煤油灯",
+                icon: "🪔",
+                example: "Abang memasang pelita di sekeliling halaman rumah."
+            },
+            {
+                id: 9,
+                bm: "bermain bunga api",
+                cn: "放烟花",
+                icon: "🎆",
+                example: "Kanak-kanak gembira bermain bunga api pada sebelah malam."
+            },
+            {
+                id: 10,
+                bm: "memohon maaf",
+                cn: "请求原谅 / 寻求原谅",
+                icon: "🙏",
+                example: "Kami bersalaman dan memohon maaf daripada ibu bapa."
+            }
+        ];
+
+        // 10 Chinese-to-Malay Typing Exercise Questions (Tab 4) updated based on JPEG
+        const typingQuestions = [
+            {
+                id: 1,
+                zh: "1. 迎接 新年 / 开斋节 / 屠妖节",
+                bmKey: "menyambut Tahun Baru Cina / Hari Raya Puasa / Deepavali",
+                suggestedBM: "menyambut Tahun Baru Cina / Hari Raya Puasa / Deepavali",
+                checkFn: (val) => val.includes("menyambut")
+            },
+            {
+                id: 2,
+                zh: "2. 穿新衣",
+                bmKey: "memakai pakaian baru",
+                suggestedBM: "memakai pakaian baru",
+                checkFn: (val) => val.includes("memakai") && val.includes("pakaian")
+            },
+            {
+                id: 3,
+                zh: "3. 迎接客人",
+                bmKey: "menyambut tetamu",
+                suggestedBM: "menyambut tetamu",
+                checkFn: (val) => val.includes("menyambut") && val.includes("tetamu")
+            },
+            {
+                id: 4,
+                zh: "4. 拜访",
+                bmKey: "melawat",
+                suggestedBM: "melawat",
+                checkFn: (val) => val.includes("melawat")
+            },
+            {
+                id: 5,
+                zh: "5. 拿红包",
+                bmKey: "mendapat angpau / duit raya",
+                suggestedBM: "mendapat angpau / duit raya",
+                checkFn: (val) => val.includes("mendapat") && (val.includes("angpau") || val.includes("duit") || val.includes("raya"))
+            },
+            {
+                id: 6,
+                zh: "6. 团圆饭",
+                bmKey: "makan besar",
+                suggestedBM: "makan besar",
+                checkFn: (val) => val.includes("makan") && val.includes("besar")
+            },
+            {
+                id: 7,
+                zh: "7. 吃年饼",
+                bmKey: "makan kuih raya",
+                suggestedBM: "makan kuih raya",
+                checkFn: (val) => val.includes("makan") && val.includes("kuih")
+            },
+            {
+                id: 8,
+                zh: "8. 点灯",
+                bmKey: "memasang pelita",
+                suggestedBM: "memasang pelita",
+                checkFn: (val) => val.includes("memasang") && val.includes("pelita")
+            },
+            {
+                id: 9,
+                zh: "9. 放烟花",
+                bmKey: "bermain bunga api",
+                suggestedBM: "bermain bunga api",
+                checkFn: (val) => val.includes("bermain") && val.includes("bunga")
+            },
+            {
+                id: 10,
+                zh: "10. 请求原谅",
+                bmKey: "memohon maaf",
+                suggestedBM: "memohon maaf",
+                checkFn: (val) => val.includes("memohon") && val.includes("maaf")
+            }
+        ];
+
+        // Global State Management
+        let sampulCount = 0;
+        let selectedMalayMatch = null;
+        let selectedChineseMatch = null;
+        let matchedPairs = 0;
+        let studentName = "";
+        let studentClass = "";
+        let typedScores = {};
+
+        function promptStudentLogin() {
+            document.getElementById('login-modal').classList.remove('hidden');
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('input-student-name').value.trim();
+            const classInput = document.getElementById('input-student-class').value.trim();
+
+            if (nameInput) {
+                studentName = nameInput;
+                studentClass = classInput || "Tahun 5";
+                document.getElementById('student-display-name').innerText = `Murid: ${studentName}`;
+                document.getElementById('login-modal').classList.add('hidden');
+                sfx.playSuccess();
+            }
+        }
+
+        // Render Vocab Cards (Tab 1)
+        function renderVocabCards() {
+            const container = document.getElementById('vocab-grid');
+            container.innerHTML = '';
+
+            targetPhrases.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border-2 border-slate-200 hover:border-emerald-500 rounded-2xl p-4 transition shadow-sm hover:shadow-md flex flex-col justify-between group";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-black bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">
+                                No. ${index + 1}
+                            </span>
+                            <span class="text-2xl">${item.icon}</span>
+                        </div>
+                        <h4 class="text-base font-extrabold text-slate-800 group-hover:text-emerald-700 transition">
+                            ${item.bm}
+                        </h4>
+                        <p class="text-sm font-bold text-amber-700 mt-1">
+                            ${item.cn}
+                        </p>
+                        <p class="text-xs text-slate-500 italic mt-2 bg-white p-2 rounded-lg border border-slate-100">
+                            💬 "${item.example}"
+                        </p>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-slate-200/60 flex justify-end">
+                        <button onclick="speakMalay('${item.bm.replace(/'/g, "\\'")}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition flex items-center gap-1 shadow-xs">
+                            <i class="fa-solid fa-volume-high"></i> Sebut
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Read all vocab cards
+        function readAllVocab() {
+            const allBM = targetPhrases.map(p => p.bm).join('. ');
+            speakMalay(allBM);
+        }
+
+        // Render Matching Game (Tab 2)
+        function setupMatchingGame() {
+            const malayContainer = document.getElementById('match-malay-list');
+            const chineseContainer = document.getElementById('match-chinese-list');
+            
+            malayContainer.innerHTML = '';
+            chineseContainer.innerHTML = '';
+            matchedPairs = 0;
+            selectedMalayMatch = null;
+            selectedChineseMatch = null;
+
+            // Shuffle target phrases
+            const malayItems = [...targetPhrases].sort(() => Math.random() - 0.5);
+            const chineseItems = [...targetPhrases].sort(() => Math.random() - 0.5);
+
+            malayItems.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = `match-m-${item.id}`;
+                btn.className = "w-full text-left bg-white hover:bg-emerald-100 border-2 border-slate-200 rounded-xl p-3 text-sm font-bold text-slate-700 transition flex items-center justify-between";
+                btn.onclick = () => selectMalayMatch(item.id);
+                btn.innerHTML = `<span>${item.icon} ${item.bm}</span> <i class="fa-regular fa-circle text-slate-300"></i>`;
+                malayContainer.appendChild(btn);
+            });
+
+            chineseItems.forEach(item => {
+                const btn = document.createElement('button');
+                btn.id = `match-c-${item.id}`;
+                btn.className = "w-full text-left bg-white hover:bg-amber-100 border-2 border-slate-200 rounded-xl p-3 text-sm font-bold text-slate-700 transition flex items-center justify-between";
+                btn.onclick = () => selectChineseMatch(item.id);
+                btn.innerHTML = `<span>${item.cn}</span> <i class="fa-regular fa-circle text-slate-300"></i>`;
+                chineseContainer.appendChild(btn);
+            });
+
+            document.getElementById('match-feedback').classList.add('hidden');
+        }
+
+        function selectMalayMatch(id) {
+            sfx.playPop();
+            if (selectedMalayMatch) {
+                const prevBtn = document.getElementById(`match-m-${selectedMalayMatch}`);
+                if (prevBtn) prevBtn.classList.remove('border-emerald-500', 'bg-emerald-100');
+            }
+            selectedMalayMatch = id;
+            const currentBtn = document.getElementById(`match-m-${id}`);
+            currentBtn.classList.add('border-emerald-500', 'bg-emerald-100');
+
+            checkMatchPair();
+        }
+
+        function selectChineseMatch(id) {
+            sfx.playPop();
+            if (selectedChineseMatch) {
+                const prevBtn = document.getElementById(`match-c-${selectedChineseMatch}`);
+                if (prevBtn) prevBtn.classList.remove('border-amber-500', 'bg-amber-100');
+            }
+            selectedChineseMatch = id;
+            const currentBtn = document.getElementById(`match-c-${id}`);
+            currentBtn.classList.add('border-amber-500', 'bg-amber-100');
+
+            checkMatchPair();
+        }
+
+        function checkMatchPair() {
+            if (selectedMalayMatch && selectedChineseMatch) {
+                if (selectedMalayMatch === selectedChineseMatch) {
+                    // Correct Match
+                    sfx.playSuccess();
+                    addSampul(10);
+                    
+                    const mBtn = document.getElementById(`match-m-${selectedMalayMatch}`);
+                    const cBtn = document.getElementById(`match-c-${selectedChineseMatch}`);
+
+                    mBtn.className = "w-full text-left bg-emerald-200 border-2 border-emerald-500 text-emerald-900 rounded-xl p-3 text-sm font-extrabold cursor-default flex items-center justify-between";
+                    cBtn.className = "w-full text-left bg-emerald-200 border-2 border-emerald-500 text-emerald-900 rounded-xl p-3 text-sm font-extrabold cursor-default flex items-center justify-between";
+
+                    mBtn.innerHTML += ` <i class="fa-solid fa-circle-check text-emerald-600"></i>`;
+                    cBtn.innerHTML += ` <i class="fa-solid fa-circle-check text-emerald-600"></i>`;
+
+                    mBtn.onclick = null;
+                    cBtn.onclick = null;
+
+                    selectedMalayMatch = null;
+                    selectedChineseMatch = null;
+
+                    matchedPairs++;
+
+                    if (matchedPairs === targetPhrases.length) {
+                        const fb = document.getElementById('match-feedback');
+                        fb.classList.remove('hidden');
+                        fb.innerHTML = `🎉 Tahniah! Anda telah memadankan semua ${targetPhrases.length} frasa dengan betul! (恭喜！你成功配对了所有词组！获得 🧧 50 Duit Raya!)`;
+                        addSampul(50);
+                    }
+                } else {
+                    // Wrong Match
+                    sfx.playError();
+                    setTimeout(() => {
+                        if (selectedMalayMatch) {
+                            const mBtn = document.getElementById(`match-m-${selectedMalayMatch}`);
+                            if (mBtn) mBtn.classList.remove('border-emerald-500', 'bg-emerald-100');
+                        }
+                        if (selectedChineseMatch) {
+                            const cBtn = document.getElementById(`match-c-${selectedChineseMatch}`);
+                            if (cBtn) cBtn.classList.remove('border-amber-500', 'bg-amber-100');
+                        }
+                        selectedMalayMatch = null;
+                        selectedChineseMatch = null;
+                    }, 500);
+                }
+            }
+        }
+
+        function checkSentence(qIndex) {
+            sfx.playPop();
+            let correct = false;
+
+            if (qIndex === 1) {
+                const val = document.getElementById('q1-select').value;
+                correct = (val === 'memasang pelita');
+                showInlineFeedback('q1-feedback', correct, 'memasang pelita (点灯)');
+            } else if (qIndex === 2 || qIndex === 3) {
+                const val2 = document.getElementById('q2-select').value;
+                const val3 = document.getElementById('q3-select').value;
+                correct = (val2 === 'memakai pakaian baru' && val3 === 'memohon maaf');
+                showInlineFeedback('q23-feedback', correct, 'memakai pakaian baru & memohon maaf');
+            } else if (qIndex === 4 || qIndex === 5) {
+                const val4 = document.getElementById('q4-select').value;
+                const val5 = document.getElementById('q5-select').value;
+                correct = (val4 === 'menyambut tetamu' && val5 === 'makan kuih raya');
+                showInlineFeedback('q45-feedback', correct, 'menyambut tetamu & makan kuih raya');
+            } else if (qIndex === 6 || qIndex === 7) {
+                const val6 = document.getElementById('q6-select').value;
+                const val7 = document.getElementById('q7-select').value;
+                correct = (val6 === 'melawat' && val7 === 'mendapat duit raya');
+                showInlineFeedback('q67-feedback', correct, 'melawat & mendapat duit raya');
+            } else if (qIndex === 8) {
+                const val = document.getElementById('q8-select').value;
+                correct = (val === 'bermain bunga api');
+                showInlineFeedback('q8-feedback', correct, 'bermain bunga api (放烟花)');
+            }
+
+            if (correct) {
+                sfx.playSuccess();
+                addSampul(15);
+            }
+        }
+
+        function showInlineFeedback(elId, isCorrect, correctText) {
+            const el = document.getElementById(elId);
+            el.classList.remove('hidden');
+            if (isCorrect) {
+                el.className = "text-xs font-bold text-emerald-600 mt-2 flex items-center gap-1";
+                el.innerHTML = `<i class="fa-solid fa-circle-check"></i> Syabas! Jawapan tepat. (+15 🧧)`;
+            } else {
+                el.className = "text-xs font-bold text-rose-600 mt-2 flex items-center gap-1";
+                el.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Jawapan belum tepat, jawapan yang betul: ${correctText}`;
+            }
+        }
+
+        function finishBuilderSection() {
+            sfx.playSuccess();
+            switchTab('tab-typing');
+        }
+
+        function renderTypingQuestions() {
+            const container = document.getElementById('typing-questions-container');
+            container.innerHTML = '';
+
+            typingQuestions.forEach(q => {
+                const box = document.createElement('div');
+                box.className = "bg-slate-50 rounded-2xl p-5 border-2 border-slate-200 transition hover:border-purple-300";
+                box.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
+                        <span class="text-base font-extrabold text-slate-800">${q.zh}</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="speakMalay('${q.suggestedBM.replace(/'/g, "\\'")}')" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-2.5 py-1 rounded-lg font-bold">
+                                🔊 示范发音
+                            </button>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <input type="text" id="typing-input-${q.id}" placeholder="Taip frasa Bahasa Melayu di sini... (在此输入对应的国语词组)" class="w-full bg-white border-2 border-slate-200 focus:border-purple-500 rounded-xl p-3 text-sm font-semibold text-slate-800 outline-none transition">
+                        
+                        <div class="flex flex-wrap justify-between items-center gap-2">
+                            <button onclick="toggleHint(${q.id})" class="text-xs font-bold text-amber-700 hover:underline">
+                                💡 Jawapan Referensi (查看参考答案)
+                            </button>
+                            <button onclick="checkSingleTypedSentence(${q.id})" class="bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition shadow flex items-center gap-1">
+                                <i class="fa-solid fa-check"></i> Semak Jawapan (检查此题)
+                            </button>
+                        </div>
+
+                        <div id="typing-hint-${q.id}" class="hidden text-xs bg-amber-50 text-amber-900 border border-amber-200 p-2.5 rounded-xl mt-1">
+                            <strong>Jawapan Betul:</strong> ${q.suggestedBM}
+                        </div>
+
+                        <div id="typing-fb-${q.id}" class="hidden text-xs font-bold mt-2 p-3 rounded-xl"></div>
+                    </div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        function checkSingleTypedSentence(id) {
+            const q = typingQuestions.find(item => item.id === id);
+            const inputVal = document.getElementById(`typing-input-${id}`).value.trim().toLowerCase();
+            const fbBox = document.getElementById(`typing-fb-${id}`);
+            fbBox.classList.remove('hidden');
+
+            if (!inputVal) {
+                fbBox.className = "text-xs font-bold mt-2 p-3 rounded-xl bg-rose-100 text-rose-800";
+                fbBox.innerHTML = `⚠️ Sila taip jawapan sebelum menyemak! (请先输入答案！)`;
+                sfx.playError();
+                return;
+            }
+
+            const isCorrect = q.checkFn(inputVal);
+
+            if (isCorrect) {
+                fbBox.className = "text-xs font-bold mt-2 p-3 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-between";
+                fbBox.innerHTML = `
+                    <span>🎉 Syabas! Jawapan anda tepat: "${q.bmKey}"! (+15 🧧)</span>
+                    <button onclick="speakMalay('${q.suggestedBM.replace(/'/g, "\\'")}')" class="text-emerald-900 underline ml-2">🔊 Sebut Frasa</button>
+                `;
+                if (!typedScores[id]) {
+                    typedScores[id] = true;
+                    addSampul(15);
+                }
+                sfx.playSuccess();
+            } else {
+                fbBox.className = "text-xs font-bold mt-2 p-3 rounded-xl bg-amber-100 text-amber-900";
+                fbBox.innerHTML = `
+                    ⚠️ Jawapan belum tepat.<br>
+                    <span class="text-slate-600 font-normal">Jawapan Betul: <strong>${q.suggestedBM}</strong></span>
+                `;
+                sfx.playError();
+            }
+        }
+
+        function checkAllTypedSentences() {
+            let totalCorrect = 0;
+            typingQuestions.forEach(q => {
+                const inputVal = document.getElementById(`typing-input-${q.id}`).value.trim().toLowerCase();
+                if (q.checkFn(inputVal)) {
+                    totalCorrect++;
+                    checkSingleTypedSentence(q.id);
+                }
+            });
+
+            if (totalCorrect === typingQuestions.length) {
+                showCustomModal('Hebat! (太棒了)', `Tahniah ${studentName || 'Murid'}! Anda telah menaip kesemua ${typingQuestions.length} frasa dengan betul!`, '🏆');
+            } else {
+                showCustomModal('Semakan Selesai (检查完成)', `Anda telah melengkapkan ${totalCorrect}/${typingQuestions.length} frasa dengan betul. Teruskan usaha!`, '📝');
+            }
+        }
+
+        function checkAllTypedSentences() {
+            let totalCorrect = 0;
+            typingQuestions.forEach(q => {
+                const inputVal = document.getElementById(`typing-input-${q.id}`).value.trim().toLowerCase();
+                const hasKeywords = q.keywords.every(kw => inputVal.includes(kw.toLowerCase()));
+                if (hasKeywords) {
+                    totalCorrect++;
+                    checkSingleTypedSentence(q.id);
+                }
+            });
+
+            if (totalCorrect === typingQuestions.length) {
+                showCustomModal('Hebat! (太棒了)', `Tahniah ${studentName || 'Murid'}! Anda telah menaip kesemua ${typingQuestions.length} ayat dengan betul! (你成功输出了所有正确句子！)`, '🏆');
+            } else {
+                showCustomModal('Semakan Selesai (检查完成)', `Anda telah melengkapkan ${totalCorrect}/${typingQuestions.length} ayat dengan betul. Teruskan usaha! (你答对了 ${totalCorrect}/${typingQuestions.length} 题。)`, '📝');
+            }
+        }
+
+        function generateCertificate() {
+            if (!studentName) {
+                promptStudentLogin();
+                return;
+            }
+
+            // Populate Certificate details
+            document.getElementById('cert-student-name').innerText = studentName;
+            document.getElementById('cert-student-class').innerText = `Kelas: ${studentClass || 'Tahun 5'}`;
+            document.getElementById('cert-score').innerText = `🧧 ${sampulCount}`;
+            
+            // Set grade based on score
+            let grade = "⭐ Cemerlang (优秀)";
+            if (sampulCount > 150) grade = "🏆 Sangat Cemerlang (特优)";
+            else if (sampulCount < 50) grade = "👍 Baik (良好)";
+            document.getElementById('cert-grade').innerText = grade;
+
+            // Set current date
+            const today = new Date();
+            const dateStr = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+            document.getElementById('cert-date').innerText = dateStr;
+
+            sfx.playSuccess();
+            document.getElementById('certificate-modal').classList.remove('hidden');
+        }
+
+        function closeCertificate() {
+            document.getElementById('certificate-modal').classList.add('hidden');
+        }
+
+        // Fungsi untuk Salin Ringkasan Pencapaian Murid
+        function copyAchievementText() {
+            const name = studentName || 'Murid';
+            const kls = studentClass || 'Tahun 5';
+            const score = sampulCount;
+            const grade = document.getElementById('cert-grade').innerText || '⭐ Cemerlang';
+            const date = document.getElementById('cert-date').innerText || '';
+
+            const summaryText = `🏆 PENCAPAIAN KARANGAN HARI RAYA TAHUN 5\n` +
+                `----------------------------------------\n` +
+                `👤 Nama Murid: ${name}\n` +
+                `🏫 Kelas: ${kls}\n` +
+                `🧧 Jumlah Duit Raya: ${score}\n` +
+                `⭐ Tahap Pencapaian: ${grade}\n` +
+                `📅 Tarikh: ${date}\n` +
+                `----------------------------------------\n` +
+                `Telah berjaya menyempurnakan kesemua latihan frasa & karangan Hari Raya Bahasa Melayu! 🎉`;
+
+            const tempInput = document.createElement('textarea');
+            tempInput.value = summaryText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999);
+
+            try {
+                document.execCommand('copy');
+                sfx.playSuccess();
+                showCustomModal('Berjaya Disalin! (已成功复制)', 'Ringkasan pencapaian murid telah disalin ke papan klip. Anda boleh menampal (paste) teks ini di WhatsApp atau aplikasi lain. (已复制成绩文本，可随时粘贴发送)', '📋');
+            } catch (err) {
+                sfx.playError();
+                showCustomModal('Ralat (错误)', 'Gagal menyalin teks secara automatik.', '❌');
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // Score system
+        function addSampul(amount) {
+            sampulCount += amount;
+            document.getElementById('sampul-count').innerText = sampulCount;
+        }
+
+        // Custom Modal UI
+        function showCustomModal(title, msg, icon = '🌙') {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = msg;
+            document.getElementById('modal-icon').innerText = icon;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            sfx.playPop();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Button highlights
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-amber-400', 'text-amber-300');
+                btn.classList.add('border-transparent');
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-transparent');
+                activeBtn.classList.add('border-amber-400', 'text-amber-300');
+            }
+        }
+
+        // Init page on load
+        window.onload = function() {
+            renderVocabCards();
+            setupMatchingGame();
+            renderTypingQuestions();
+            
+            // Prompt student login on initial open
+            setTimeout(() => {
+                if (!studentName) promptStudentLogin();
+            }, 600);
+        };
+    </script>
+</body>
+</html>
