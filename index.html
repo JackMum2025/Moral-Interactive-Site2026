@@ -1,823 +1,990 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>五年级道德教育 单元十四：礼让之城</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Aplikasi Kosa Kata Bahasa Melayu Tahun 6</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti CDN -->
+    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background-color: #f4f7fe;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 100%);
+            min-height: 100vh;
         }
-        .bounce-gentle {
-            animation: bounce 2s infinite;
+        .pop-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        .pop-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+        .pulse-btn:active {
+            transform: scale(0.96);
         }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="flex flex-col min-h-screen text-slate-800 antialiased selection:bg-sky-200">
 
-    <!-- 顶部导航栏 Navigation Bar -->
-    <header class="sticky top-0 z-50 bg-gradient-to-r from-teal-600 via-emerald-600 to-indigo-600 text-white shadow-lg">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-xl backdrop-blur-md">
-                    <i class="fa-solid fa-hand-holding-heart text-2xl text-yellow-300"></i>
+    <!-- Navigation Bar -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-sky-100 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="showScreen('home')">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center text-white text-xl shadow-md shadow-sky-200">
+                    <i class="fa-solid fa-graduation-cap"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-black tracking-wide">道德教育五年级</h1>
-                    <p class="text-xs text-teal-100">单元十四：礼让之城 (学习标准 14.3 & 14.4)</p>
+                    <h1 class="font-black text-lg sm:text-xl text-slate-800 leading-tight">Kosa Kata BM</h1>
+                    <p class="text-xs font-semibold text-sky-600">Tahun 6 • Tahun Enam</p>
                 </div>
             </div>
-            <!-- 导航菜单按钮 -->
-            <nav class="hidden md:flex space-x-2 text-sm font-bold">
-                <button onclick="switchTab('overview')" class="nav-btn px-4 py-2 rounded-lg transition bg-white/20 hover:bg-white/30" id="btn-overview">
-                    <i class="fa-solid fa-book-open mr-1"></i> 知识学堂
+            
+            <div class="flex items-center gap-2">
+                <div id="user-profile-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs sm:text-sm font-bold">
+                    <i class="fa-solid fa-user-circle text-sky-500 text-base"></i>
+                    <span id="display-student-name">Murid</span>
+                </div>
+                <button onclick="toggleGlosariModal()" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs sm:text-sm font-bold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Glosari</span>
                 </button>
-                <button onclick="switchTab('scenario')" class="nav-btn px-4 py-2 rounded-lg transition hover:bg-white/20" id="btn-scenario">
-                    <i class="fa-solid fa-gamepad mr-1"></i> 情境大冒险 (14.3/14.4)
-                </button>
-                <button onclick="switchTab('feelings')" class="nav-btn px-4 py-2 rounded-lg transition hover:bg-white/20" id="btn-feelings">
-                    <i class="fa-solid fa-heart mr-1"></i> 感受收集瓶
-                </button>
-                <button onclick="switchTab('quiz')" class="nav-btn px-4 py-2 rounded-lg transition hover:bg-white/20" id="btn-quiz">
-                    <i class="fa-solid fa-circle-question mr-1"></i> 闯关小测验
-                </button>
-            </nav>
-        </div>
-        <!-- 移动端导航 -->
-        <div class="md:hidden flex justify-around bg-teal-800 text-xs font-medium py-2 border-t border-teal-700">
-            <button onclick="switchTab('overview')" class="flex flex-col items-center py-1">
-                <i class="fa-solid fa-book-open text-base mb-1"></i>知识学堂
-            </button>
-            <button onclick="switchTab('scenario')" class="flex flex-col items-center py-1">
-                <i class="fa-solid fa-gamepad text-base mb-1"></i>情境冒险
-            </button>
-            <button onclick="switchTab('feelings')" class="flex flex-col items-center py-1">
-                <i class="fa-solid fa-heart text-base mb-1"></i>感受收集
-            </button>
-            <button onclick="switchTab('quiz')" class="flex flex-col items-center py-1">
-                <i class="fa-solid fa-circle-question text-base mb-1"></i>小测验
-            </button>
+                <div id="star-count-badge" class="px-3 py-1.5 rounded-xl bg-sky-100 text-sky-800 text-xs sm:text-sm font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-star text-amber-500"></i>
+                    <span id="global-stars">0 / 30</span>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- 主体内容区域 Content Area -->
-    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
 
-        <!-- Banner 标语 -->
-        <div class="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 text-white rounded-2xl p-6 shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">
-            <div class="space-y-2 text-center md:text-left mb-4 md:mb-0">
-                <span class="bg-white/30 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">KSSR Semakan 课程</span>
-                <h2 class="text-2xl md:text-3xl font-extrabold">学会社区礼让，共享和谐生活！</h2>
-                <p class="text-amber-100 text-sm max-w-xl">
-                    在社区生活里，懂得礼让能化解冲突；忽视礼让则会引发争执。快来一起学习并感受礼让带来的温暖吧！
+        <!-- ================= HOME SCREEN ================= -->
+        <section id="screen-home" class="space-y-6">
+            <div class="text-center space-y-2 py-4">
+                <span class="inline-block px-3 py-1 bg-sky-100 text-sky-700 font-bold text-xs rounded-full uppercase tracking-wider">
+                    Mod Pembelajaran Interaktif
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-black text-slate-800">
+                    Mari Belajar Kosa Kata Baru!
+                </h2>
+                <p class="text-sm sm:text-base text-slate-600 max-w-md mx-auto font-medium">
+                    Kuasai 10 kosa kata penting Bahasa Melayu Tahun 6 melalui 3 cabaran menarik.
                 </p>
             </div>
-            <div class="bg-white text-amber-600 rounded-full p-4 shadow-lg bounce-gentle text-center min-w-[90px]">
-                <i class="fa-solid fa-smile-beam text-4xl"></i>
-                <p class="text-xs font-bold mt-1">礼让之星</p>
+
+            <!-- Level Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                
+                <!-- Tahap 1 Card -->
+                <div class="pop-card bg-white rounded-3xl p-6 border-2 border-sky-100 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full -z-0 transition-transform group-hover:scale-110"></div>
+                    <div class="relative z-10 space-y-4">
+                        <div class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl font-bold shadow-md shadow-sky-200">
+                            1
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-sky-600 uppercase tracking-wide">Tahap 1</div>
+                            <h3 class="text-xl font-black text-slate-800">Pilihan Berganda</h3>
+                            <p class="text-xs text-slate-500 mt-1">Pilih kosa kata BM yang betul berdasarkan maksud Mandarin.</p>
+                        </div>
+                    </div>
+                    <div class="relative z-10 pt-6 mt-auto">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-slate-400">Bintang</span>
+                            <div id="stars-level-1" class="text-amber-400 text-sm">
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </div>
+                        </div>
+                        <button onclick="startLevel(1)" class="w-full py-3 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-sm shadow-md shadow-sky-200 pulse-btn transition">
+                            Mula Tahap 1 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tahap 2 Card -->
+                <div class="pop-card bg-white rounded-3xl p-6 border-2 border-indigo-100 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -z-0 transition-transform group-hover:scale-110"></div>
+                    <div class="relative z-10 space-y-4">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center text-xl font-bold shadow-md shadow-indigo-200">
+                            2
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-indigo-600 uppercase tracking-wide">Tahap 2</div>
+                            <h3 class="text-xl font-black text-slate-800">Menaip Ejaan</h3>
+                            <p class="text-xs text-slate-500 mt-1">Taip kosa kata BM yang tepat tanpa sebarang petunjuk.</p>
+                        </div>
+                    </div>
+                    <div class="relative z-10 pt-6 mt-auto">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-slate-400">Bintang</span>
+                            <div id="stars-level-2" class="text-amber-400 text-sm">
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </div>
+                        </div>
+                        <button onclick="startLevel(2)" class="w-full py-3 rounded-2xl bg-indigo-500 hover:bg-indigo-600 text-white font-extrabold text-sm shadow-md shadow-indigo-200 pulse-btn transition">
+                            Mula Tahap 2 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tahap 3 Card -->
+                <div class="pop-card bg-white rounded-3xl p-6 border-2 border-emerald-100 flex flex-col justify-between shadow-lg relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -z-0 transition-transform group-hover:scale-110"></div>
+                    <div class="relative z-10 space-y-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-xl font-bold shadow-md shadow-emerald-200">
+                            3
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wide">Tahap 3</div>
+                            <h3 class="text-xl font-black text-slate-800">Lengkapkan Ayat</h3>
+                            <p class="text-xs text-slate-500 mt-1">Isi kosa kata yang paling sesuai ke dalam konteks ayat BM.</p>
+                        </div>
+                    </div>
+                    <div class="relative z-10 pt-6 mt-auto">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-slate-400">Bintang</span>
+                            <div id="stars-level-3" class="text-amber-400 text-sm">
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </div>
+                        </div>
+                        <button onclick="startLevel(3)" class="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-sm shadow-md shadow-emerald-200 pulse-btn transition">
+                            Mula Tahap 3 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Quick Glosari Button Banner -->
+            <div class="bg-gradient-to-r from-amber-400 to-orange-400 rounded-3xl p-6 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0">
+                        💡
+                    </div>
+                    <div>
+                        <h4 class="font-black text-lg">Belum bersedia?</h4>
+                        <p class="text-xs sm:text-sm text-amber-100">Ulang kaji 10 kosa kata ini terlebih dahulu sebelum memulakan kuiz!</p>
+                    </div>
+                </div>
+                <button onclick="toggleGlosariModal()" class="px-5 py-2.5 rounded-xl bg-white text-amber-900 font-extrabold text-xs sm:text-sm hover:bg-amber-50 shadow-md transition whitespace-nowrap">
+                    Lihat Senarai Kosa Kata
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= GAMEPLAY SCREEN ================= -->
+        <section id="screen-game" class="hidden space-y-6 max-w-2xl mx-auto w-full">
+            
+            <!-- Game Top Header Bar -->
+            <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex items-center justify-between">
+                <button onclick="showScreen('home')" class="text-slate-400 hover:text-slate-600 text-sm font-bold flex items-center gap-1 transition">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>Keluar</span>
+                </button>
+
+                <div class="flex items-center gap-2">
+                    <span id="game-level-tag" class="px-3 py-1 rounded-full text-xs font-black bg-sky-100 text-sky-700">
+                        Tahap 1
+                    </span>
+                </div>
+
+                <div class="text-sm font-black text-slate-700 flex items-center gap-1.5">
+                    <i class="fa-solid fa-trophy text-amber-500"></i>
+                    <span id="game-score">0 / 10</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-200/70 h-3 rounded-full overflow-hidden p-0.5">
+                <div id="game-progress-bar" class="h-full bg-gradient-to-r from-sky-400 to-indigo-500 rounded-full transition-all duration-300 w-0"></div>
+            </div>
+
+            <!-- Question Card Container -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-sky-100 shadow-xl relative min-h-[320px] flex flex-col justify-between">
+                
+                <div class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2" id="question-number-text">
+                    Soalan 1 daripada 10
+                </div>
+
+                <!-- LEVEL 1: Multiple Choice View -->
+                <div id="view-level-1" class="space-y-6 flex-1 flex flex-col justify-center">
+                    <div class="text-center py-4">
+                        <p class="text-xs font-bold text-sky-600 uppercase mb-1">Pilih Kosa Kata Bahasa Melayu Bagi:</p>
+                        <h3 id="l1-prompt" class="text-3xl sm:text-5xl font-black text-slate-800 tracking-tight">
+                            焦虑
+                        </h3>
+                    </div>
+
+                    <!-- L1 Options Grid -->
+                    <div id="l1-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <!-- Options injected by JS -->
+                    </div>
+                </div>
+
+                <!-- LEVEL 2: Typing View -->
+                <div id="view-level-2" class="space-y-6 flex-1 flex flex-col justify-center hidden">
+                    <div class="text-center py-2">
+                        <p class="text-xs font-bold text-indigo-600 uppercase mb-1">Taip Kosa Kata Bahasa Melayu Bagi:</p>
+                        <h3 id="l2-prompt" class="text-3xl sm:text-5xl font-black text-slate-800 tracking-tight">
+                            焦虑
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-2"><i class="fa-solid fa-lightbulb text-amber-400"></i> Pastikan ejaan tepat & tiada petunjuk diberikan.</p>
+                    </div>
+
+                    <form onsubmit="submitL2Answer(event)" class="space-y-4 max-w-md mx-auto w-full">
+                        <div class="relative">
+                            <input type="text" id="l2-input" placeholder="Taip di sini..." autocomplete="off" spellcheck="false"
+                                class="w-full px-5 py-4 rounded-2xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none text-center font-bold text-lg sm:text-xl text-slate-800 placeholder-slate-300 transition shadow-inner">
+                        </div>
+                        <button type="submit" id="l2-submit-btn" class="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base shadow-md shadow-indigo-200 pulse-btn transition">
+                            Hantar Jawapan <i class="fa-solid fa-paper-plane ml-1"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- LEVEL 3: Sentence Completion View -->
+                <div id="view-level-3" class="space-y-6 flex-1 flex flex-col justify-center hidden">
+                    <div class="text-center space-y-3 py-2">
+                        <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
+                            Lengkapkan Ayat
+                        </span>
+                        <div id="l3-sentence-box" class="text-lg sm:text-2xl font-bold text-slate-800 leading-relaxed px-2 py-4 bg-slate-50 rounded-2xl border border-slate-200">
+                            <!-- Sentence with blank -->
+                        </div>
+                    </div>
+
+                    <div id="l3-options-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2">
+                        <!-- Options injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Direct Feedback Toast/Message -->
+                <div id="feedback-banner" class="hidden mt-4 p-3 rounded-2xl text-center text-sm font-black flex items-center justify-center gap-2">
+                    <span id="feedback-icon"></span>
+                    <span id="feedback-text"></span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= RESULT MODAL ================= -->
+        <div id="modal-result" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-6 border-2 border-sky-100 shadow-2xl relative animate-bounce-in">
+                
+                <div class="w-20 h-20 mx-auto rounded-3xl bg-amber-100 text-amber-500 flex items-center justify-center text-4xl shadow-inner">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+
+                <div class="space-y-1">
+                    <h3 class="text-2xl font-black text-slate-800">Tahniah! Syabas!</h3>
+                    <p id="result-level-name" class="text-xs font-bold text-sky-600 uppercase">Tahap 1 Selesai</p>
+                </div>
+
+                <!-- Stars Awarded -->
+                <div id="result-stars" class="flex justify-center gap-2 text-3xl text-amber-400">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+
+                <!-- Score Pill -->
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex justify-around items-center">
+                    <div>
+                        <div class="text-xs text-slate-400 font-bold">Markah</div>
+                        <div id="result-score-text" class="text-2xl font-black text-slate-800">10 / 10</div>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div>
+                        <div class="text-xs text-slate-400 font-bold">Ketepatan</div>
+                        <div id="result-accuracy-text" class="text-2xl font-black text-emerald-600">100%</div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="space-y-2 pt-2">
+                    <button onclick="retryCurrentLevel()" class="w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-sm transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Cuba Lagi
+                    </button>
+                    <button id="download-sijil-btn" onclick="openSijilModal()" class="hidden w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-sm shadow-md shadow-amber-200 pulse-btn transition">
+                        <i class="fa-solid fa-file-invoice text-lg mr-1"></i> Lihat & Muat Turun Sijil (PNG)
+                    </button>
+                    <button id="next-level-btn" onclick="goToNextLevel()" class="w-full py-3.5 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-sm shadow-md shadow-sky-200 pulse-btn transition">
+                        Ke Tahap Seterusnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                    <button onclick="showScreen('home'); hideResultModal();" class="w-full py-2 text-xs font-bold text-slate-400 hover:text-slate-600">
+                        Kembali ke Halaman Utama
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- 1. 知识学堂模块 OVERVIEW -->
-        <section id="tab-overview" class="tab-content space-y-6">
-            <div class="text-center max-w-2xl mx-auto mb-6">
-                <h3 class="text-2xl font-bold text-slate-800">学习标准要点解析</h3>
-                <p class="text-slate-500 text-sm">深入理解忽视礼让的后果，以及表现礼让时的内心感受</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- 14.3 忽视礼让的影响 -->
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition border-2 border-rose-100 p-6 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center space-x-3 mb-4">
-                            <span class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-black text-lg">
-                                14.3
-                            </span>
-                            <div>
-                                <h4 class="font-bold text-lg text-rose-900">推断忽视礼让行为的影响</h4>
-                                <p class="text-xs text-rose-500">如果社区成员都不互相礼让，会怎样？</p>
-                            </div>
-                        </div>
-
-                        <ul class="space-y-3 text-sm text-slate-700">
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>发生误会与争执：</strong>争抢设施或占位容易引发口角与摩擦。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-users-slash text-rose-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>破坏社区和谐：</strong>邻里关系变得紧张，缺乏包容与互信。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-face-frown-open text-rose-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>引发负面情绪：</strong>让人感到愤怒、不公、被忽视和沮丧。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-handcuffs text-rose-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>损坏公共设施：</strong>蜂拥争抢容易导致公共器具损坏或发生意外。</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="mt-6 bg-rose-50 rounded-xl p-3 text-xs text-rose-700 font-medium text-center">
-                        💡 记住：自私与互不相让，只会让大家两败俱伤！
-                    </div>
+        <!-- ================= LOG IN MODAL ================= -->
+        <div id="modal-login" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-6 border-2 border-sky-200 shadow-2xl relative animate-bounce-in">
+                
+                <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-sky-500 to-indigo-500 text-white flex items-center justify-center text-4xl shadow-lg shadow-sky-200">
+                    <i class="fa-solid fa-graduation-cap"></i>
                 </div>
 
-                <!-- 14.4 表现礼让的感受 -->
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition border-2 border-emerald-100 p-6 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center space-x-3 mb-4">
-                            <span class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-lg">
-                                14.4
-                            </span>
-                            <div>
-                                <h4 class="font-bold text-lg text-emerald-900">表达表现礼让行为的感受</h4>
-                                <p class="text-xs text-emerald-500">当我们在社区里做出礼让时，心情如何？</p>
-                            </div>
-                        </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-800">Selamat Datang!</h2>
+                    <p class="text-xs sm:text-sm text-slate-500 font-medium">Sila masukkan nama anda untuk memulakan cabaran Kosa Kata Bahasa Melayu Tahun 6.</p>
+                </div>
 
-                        <ul class="space-y-3 text-sm text-slate-700">
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-heart text-emerald-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>感到无比开心与愉快：</strong>看到别人得到帮助，内心满载快乐。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-award text-emerald-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>感到自豪与踏实：</strong>为自己能成为一个文明有礼的社区成员而自豪。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-sun text-emerald-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>感到温暖与欣慰：</strong>传递正能量，促进社区里的友爱与融洽。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-thumbs-up text-emerald-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>获得尊重与友谊：</strong>礼让能换来邻里的微笑、感谢与敬重。</span>
-                            </li>
-                        </ul>
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div class="text-left">
+                        <label class="block text-xs font-extrabold text-slate-600 uppercase mb-1.5 ml-1">Nama Murid</label>
+                        <input type="text" id="login-name-input" placeholder="Cth: Ali bin Ahmad" required autocomplete="off"
+                            class="w-full px-4 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-sky-500 focus:outline-none font-bold text-slate-800 transition text-base">
                     </div>
+                    <button type="submit" class="w-full py-4 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-base shadow-lg shadow-sky-200 pulse-btn transition">
+                        Mula Belajar <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
 
-                    <div class="mt-6 bg-emerald-50 rounded-xl p-3 text-xs text-emerald-700 font-medium text-center">
-                        🌟 总结：礼让别人，快乐自己！让爱在社区流动。
+        <!-- ================= SIJIL MODAL ================= -->
+        <div id="modal-sijil" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl max-w-2xl w-full p-6 space-y-4 border-2 border-amber-200 shadow-2xl relative max-h-[90vh] flex flex-col items-center">
+                
+                <div class="flex justify-between items-center w-full border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-award text-amber-500 text-xl"></i>
+                        <h3 class="text-lg font-black text-slate-800">Sijil Pencapaian Anda</h3>
                     </div>
+                    <button onclick="closeSijilModal()" class="text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Canvas Preview Container -->
+                <div class="w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-center p-2">
+                    <canvas id="certificate-canvas" width="1000" height="700" class="w-full h-auto rounded-lg shadow-md max-h-[50vh] object-contain"></canvas>
+                </div>
+
+                <div class="flex gap-3 w-full">
+                    <button onclick="downloadCertificatePNG()" class="flex-1 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-sm shadow-md shadow-emerald-200 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Muat Turun Sijil (PNG)</span>
+                    </button>
+                    <button onclick="closeSijilModal()" class="px-5 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-sm transition">
+                        Tutup
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- 图解快速导读 -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
-                <h4 class="font-bold text-slate-800 mb-4 text-center">社区常见礼让场景一览</h4>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div class="p-3 bg-amber-50 rounded-xl">
-                        <i class="fa-solid fa-bus text-2xl text-amber-600 mb-2"></i>
-                        <p class="font-bold text-xs text-slate-700">公共交通让座</p>
-                        <p class="text-[11px] text-slate-500 mt-1">让给老人/孕妇/幼童</p>
+        <!-- ================= GLOSARI MODAL ================= -->
+        <div id="modal-glosari" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border-2 border-amber-100 shadow-2xl relative max-h-[85vh] flex flex-col">
+                
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-sm">
+                            📖
+                        </div>
+                        <h3 class="text-lg font-black text-slate-800">Senarai Kosa Kata (Glosari)</h3>
                     </div>
-                    <div class="p-3 bg-blue-50 rounded-xl">
-                        <i class="fa-solid fa-table-tennis-paddle-ball text-2xl text-blue-600 mb-2"></i>
-                        <p class="font-bold text-xs text-slate-700">轮流使用球场</p>
-                        <p class="text-[11px] text-slate-500 mt-1">不独占游乐场设施</p>
-                    </div>
-                    <div class="p-3 bg-indigo-50 rounded-xl">
-                        <i class="fa-solid fa-elevator text-2xl text-indigo-600 mb-2"></i>
-                        <p class="font-bold text-xs text-slate-700">礼让电梯进出</p>
-                        <p class="text-[11px] text-slate-500 mt-1">先让电梯里的人出来</p>
-                    </div>
-                    <div class="p-3 bg-teal-50 rounded-xl">
-                        <i class="fa-solid fa-people-group text-2xl text-teal-600 mb-2"></i>
-                        <p class="font-bold text-xs text-slate-700">文娱晚会排队</p>
-                        <p class="text-[11px] text-slate-500 mt-1">有秩序不插队占位</p>
-                    </div>
+                    <button onclick="toggleGlosariModal()" class="text-slate-400 hover:text-slate-600 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
+
+                <div class="flex-1 overflow-y-auto pr-1 space-y-2" id="glosari-list-container">
+                    <!-- Injected by JS -->
+                </div>
+
+                <button onclick="toggleGlosariModal()" class="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-sm shadow-md transition">
+                    Tutup Glosari
+                </button>
             </div>
-        </section>
-
-        <!-- 2. 社区互动情境大冒险 SCENARIO GAME -->
-        <section id="tab-scenario" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-md p-6 border border-indigo-100">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">
-                        <i class="fa-solid fa-gamepad mr-1"></i> 互动探索体验
-                    </span>
-                    <span class="text-xs font-bold text-slate-400" id="scenario-progress-text">情境 1 / 4</span>
-                </div>
-
-                <!-- 情境卡片 -->
-                <div id="scenario-card" class="space-y-4">
-                    <!-- JS 动态注入情境内容 -->
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. 感受收集瓶 FEELINGS JAR (双选择组合优化版) -->
-        <section id="tab-feelings" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-md p-6 border border-pink-100">
-                <div class="text-center max-w-2xl mx-auto mb-6">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-1">我的社区“礼让心声”组合瓶 🍯</h3>
-                    <p class="text-slate-500 text-sm">先选择你在社区做出的<b>礼让行为</b>，再选择你的<b>内心感受</b>，组合成能量胶囊装入瓶中！</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    
-                    <!-- 左侧：行为与感受两步选择区 -->
-                    <div class="lg:col-span-7 space-y-5 bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80">
-                        
-                        <!-- 步骤 1：选择礼让行为 -->
-                        <div>
-                            <label class="flex items-center text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
-                                <span class="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center mr-2 text-[10px]">1</span>
-                                选择你在社区做出的礼让行为：
-                            </label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2" id="behavior-pool">
-                                <button onclick="selectBehavior(this, '🚌 巴士让座', '在公共交通上主动让座给老弱妇孺')" class="behavior-btn text-left p-2.5 rounded-xl border bg-white hover:border-amber-400 transition font-medium text-xs text-slate-700 flex items-center space-x-2">
-                                    <span class="text-lg">🚌</span>
-                                    <span>公共交通上主动让座</span>
-                                </button>
-
-                                <button onclick="selectBehavior(this, '🛗 电梯礼让', '在电梯口按住开门键让邻居先进出')" class="behavior-btn text-left p-2.5 rounded-xl border bg-white hover:border-amber-400 transition font-medium text-xs text-slate-700 flex items-center space-x-2">
-                                    <span class="text-lg">🛗</span>
-                                    <span>电梯口礼让邻居先进出</span>
-                                </button>
-
-                                <button onclick="selectBehavior(this, '🏸 轮流球场', '与社区小伙伴协议轮流使用羽毛球场')" class="behavior-btn text-left p-2.5 rounded-xl border bg-white hover:border-amber-400 transition font-medium text-xs text-slate-700 flex items-center space-x-2">
-                                    <span class="text-lg">🏸</span>
-                                    <span>轮流使用社区球场与设施</span>
-                                </button>
-
-                                <button onclick="selectBehavior(this, '🛝 让出秋千', '在公园把秋千让给等待的小弟弟')" class="behavior-btn text-left p-2.5 rounded-xl border bg-white hover:border-amber-400 transition font-medium text-xs text-slate-700 flex items-center space-x-2">
-                                    <span class="text-lg">🛝</span>
-                                    <span>游乐场主动把秋千让给幼儿</span>
-                                </button>
-
-                                <button onclick="selectBehavior(this, '🚶 靠边让行', '在社区窄巷靠边停下礼让行人先行')" class="behavior-btn text-left p-2.5 rounded-xl border bg-white hover:border-amber-400 transition font-medium text-xs text-slate-700 flex items-center space-x-2">
-                                    <span class="text-lg">🚶</span>
-                                    <span>社区通道靠边礼让行人</span>
-                                </button>
-
-                                <button onclick="selectBehavior(this, '🧘 轻声静音', '深夜不在社区公共区域喧哗打扰邻居')" class="behavior-btn text-left p-2.5 rounded-xl border bg-white hover:border-amber-400 transition font-medium text-xs text-slate-700 flex items-center space-x-2">
-                                    <span class="text-lg">🧘</span>
-                                    <span>注意音量不打扰邻居休息</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 步骤 2：选择内心感受 -->
-                        <div>
-                            <label class="flex items-center text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
-                                <span class="w-5 h-5 rounded-full bg-pink-500 text-white flex items-center justify-center mr-2 text-[10px]">2</span>
-                                选择你当时的内心感受：
-                            </label>
-                            <div class="flex flex-wrap gap-2" id="feeling-pool">
-                                <button onclick="selectFeeling(this, '开心 😃', 'bg-yellow-100 text-yellow-800 border-yellow-300')" class="feeling-btn px-3 py-1.5 rounded-xl border bg-white transition font-bold text-xs">😃 开心</button>
-                                <button onclick="selectFeeling(this, '自豪 🏆', 'bg-amber-100 text-amber-800 border-amber-300')" class="feeling-btn px-3 py-1.5 rounded-xl border bg-white transition font-bold text-xs">🏆 自豪</button>
-                                <button onclick="selectFeeling(this, '欣慰 🌸', 'bg-pink-100 text-pink-800 border-pink-300')" class="feeling-btn px-3 py-1.5 rounded-xl border bg-white transition font-bold text-xs">🌸 欣慰</button>
-                                <button onclick="selectFeeling(this, '温馨 💕', 'bg-rose-100 text-rose-800 border-rose-300')" class="feeling-btn px-3 py-1.5 rounded-xl border bg-white transition font-bold text-xs">💕 温馨</button>
-                                <button onclick="selectFeeling(this, '受人尊重 🤝', 'bg-blue-100 text-blue-800 border-blue-300')" class="feeling-btn px-3 py-1.5 rounded-xl border bg-white transition font-bold text-xs">🤝 受人尊重</button>
-                                <button onclick="selectFeeling(this, '踏实 😌', 'bg-teal-100 text-teal-800 border-teal-300')" class="feeling-btn px-3 py-1.5 rounded-xl border bg-white transition font-bold text-xs">😌 踏实</button>
-                                <button onclick="selectFeeling(this, '充满爱心 ❤️', 'bg-red-100 text-red-800 border-red-300')" class="feeling-btn px-3 py-1.5 rounded-xl border bg-white transition font-bold text-xs">❤️ 充满爱心</button>
-                            </div>
-                        </div>
-
-                        <!-- 组合装入按钮 -->
-                        <div class="pt-2 border-t border-slate-200 flex items-center justify-between">
-                            <div class="text-xs text-slate-500 font-medium truncate max-w-[240px]" id="selected-preview-text">
-                                请先完成两步选择...
-                            </div>
-                            <button onclick="addCombinationToJar()" id="btn-add-jar" disabled class="px-5 py-2.5 bg-slate-300 text-slate-500 font-extrabold text-xs rounded-xl transition cursor-not-allowed shadow-sm flex items-center space-x-1">
-                                <i class="fa-solid fa-jar mr-1"></i>
-                                <span>装入礼让能量瓶</span>
-                            </button>
-                        </div>
-
-                    </div>
-
-                    <!-- 右侧：礼让瓶展示与感悟日志 -->
-                    <div class="lg:col-span-5 flex flex-col items-center space-y-4">
-                        <!-- 瓶子容器 -->
-                        <div class="w-full max-w-[220px] h-72 border-4 border-amber-400 rounded-b-3xl rounded-t-2xl bg-gradient-to-b from-amber-50/20 to-amber-100/40 p-3 relative flex flex-col-reverse items-center overflow-y-auto shadow-inner" id="jar-container">
-                            <div class="text-xs text-amber-500 font-bold mb-auto mt-auto text-center pointer-events-none" id="jar-placeholder">
-                                <i class="fa-solid fa-hand-holding-heart text-2xl text-amber-300 mb-1"></i><br>
-                                瓶子空空的...<br>快组合你的礼让心得吧！
-                            </div>
-                        </div>
-
-                        <div class="flex items-center space-x-4 text-xs">
-                            <span class="font-bold text-slate-600">已收集: <span id="jar-count" class="text-amber-600 font-extrabold text-sm">0</span>/5 颗胶囊</span>
-                            <button onclick="clearJar()" class="text-rose-500 hover:underline font-bold">
-                                <i class="fa-solid fa-rotate-left mr-1"></i>清空瓶子
-                            </button>
-                        </div>
-
-                        <!-- 动态生成反思记录 -->
-                        <div class="w-full bg-gradient-to-br from-amber-50 to-orange-50 p-4 rounded-2xl border border-amber-200 text-left space-y-2 text-xs">
-                            <h4 class="font-bold text-amber-900 flex items-center">
-                                <i class="fa-solid fa-heart-pulse mr-2 text-rose-500"></i>我的社区礼让日志
-                            </h4>
-                            <div id="jar-logs" class="space-y-1.5 max-h-36 overflow-y-auto text-slate-600 text-[11px] leading-relaxed">
-                                <p class="italic text-slate-400">当你向礼让瓶放入胶囊时，这里会记录你的道德践行感受...</p>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. 闯关小测验 QUIZ MODULE -->
-        <section id="tab-quiz" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-md p-6 border border-emerald-100">
-                <div class="flex justify-between items-center mb-6 border-b pb-4">
-                    <div>
-                        <h3 class="text-xl font-extrabold text-slate-800">单元十四：礼让闯关大挑战</h3>
-                        <p class="text-xs text-slate-500">考验你对 14.3 与 14.4 学习标准的理解</p>
-                    </div>
-                    <div class="bg-emerald-100 text-emerald-800 font-black px-4 py-2 rounded-xl text-lg" id="quiz-score">
-                        得分: 0
-                    </div>
-                </div>
-
-                <!-- 测验内容容器 -->
-                <div id="quiz-container">
-                    <!-- JS 动态注入题目 -->
-                </div>
-            </div>
-        </section>
+        </div>
 
     </main>
 
-    <!-- 页脚 Footer -->
-    <footer class="bg-slate-800 text-slate-400 text-xs py-6 mt-12 border-t border-slate-700">
-        <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
-            <p class="font-medium text-slate-300">五年级道德教育《单元十四：礼让之城》辅助学习平台</p>
-            <p>符合马来西亚 KSSR Semakan 道德教育五年级课程标准 (标准 14.3 & 14.4)</p>
-            <p class="text-slate-500">© 道德教育教学资源库 · 乐学成长</p>
-        </div>
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs font-semibold text-slate-400 border-t border-slate-200/50 bg-white/40 backdrop-blur-sm">
+        Sistem Pembelajaran Kosa Kata BM Tahun 6 • Rekabentuk Mudah & Interaktif
     </footer>
 
-    <!-- 逻辑脚本 JavaScript -->
     <script>
-        // 1. 标签页切换 Switch Tabs
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-white/30');
-            });
-            const activeBtn = document.getElementById('btn-' + tabId);
-            if (activeBtn) activeBtn.classList.add('bg-white/30');
-        }
-
-        // 2. 情境大冒险数据与逻辑 (14.3 & 14.4)
-        const scenarios = [
-            {
-                id: 1,
-                title: "社区羽毛球场的争执",
-                location: "社区活动中心羽毛球场",
-                icon: "fa-table-tennis-paddle-ball",
-                desc: "傍晚时分，你和朋友已经在羽毛球场打了1个小时球。此时，邻居明辉和同伴也想打球，并在场边等候。你应该怎么做？",
-                optionA: {
-                    text: "继续霸占球场，理直气壮地说：“是我们先来的，你们明天再来！”",
-                    type: "ignore",
-                    effect: "忽视礼让的影响 (14.3)：明辉非常愤怒，双方爆发了激烈口角，邻里关系恶化，大家都没心思打球了。",
-                    feeling: "受影响者的感受：愤怒、沮丧、觉得被排挤与不被尊重。"
-                },
-                optionB: {
-                    text: "主动打招呼，并协议再打10分钟后让出球场，或邀请他们一起双打轮流玩。",
-                    type: "yield",
-                    effect: "表现礼让的结果：大家开心地一起打球，还结识了新朋友，社区气氛非常融洽。",
-                    feelingChoice: ["欣慰 🌸", "开心 😃", "自豪 🏆", "充满友爱 🤝"]
-                }
-            },
-            {
-                id: 2,
-                title: "社区居民电梯口",
-                location: "社区公寓电梯",
-                icon: "fa-elevator",
-                desc: "电梯门打开了，里面有拎着重物的张奶奶准备出来，而电梯外排队的人急着想挤进去。你会怎么做？",
-                optionA: {
-                    text: "不管三二十一，急忙冲进电梯抢位置，差点撞倒张奶奶。",
-                    type: "ignore",
-                    effect: "忽视礼让的影响 (14.3)：险些导致张奶奶摔倒受伤，张奶奶感到心惊胆战，旁观邻居也指责你不文明。",
-                    feeling: "后果：造成意外隐患、被人批评、心中感到惭愧与不安。"
-                },
-                optionB: {
-                    text: "退后一步，按住电梯开门键，温和地说：“张奶奶，您先请出！”",
-                    type: "yield",
-                    effect: "表现礼让的结果：张奶奶安全走出电梯，微笑着夸奖你是个懂事的好孩子。",
-                    feelingChoice: ["踏实 😌", "温馨 💕", "自豪 🏆", "愉快 😃"]
-                }
-            },
-            {
-                id: 3,
-                title: "社区文娱晚会的座位",
-                location: "社区礼堂晚会现场",
-                icon: "fa-couch",
-                desc: "文娱晚会即将开始，礼堂座位紧张。你一个人用多本书包占了四个前排空位留给还没到的朋友。这时，一位抱着婴儿的妈妈没地方坐。",
-                optionA: {
-                    text: "假装没看到，继续用书包占着座位不肯移开。",
-                    type: "ignore",
-                    effect: "忽视礼让的影响 (14.3)：抱婴儿的妈妈十分疲惫与无助，周围的居民对你的自私行为感到不满，引发口角。",
-                    feeling: "后果：破坏晚会和谐氛围，让人觉得社区缺乏爱心与温情。"
-                },
-                optionB: {
-                    text: "主动拿开书包，微笑着招呼抱婴儿的妈妈坐下。",
-                    type: "yield",
-                    effect: "表现礼让的结果：宝妈感激不尽，朋友来到后也称赞你的热心与礼让举动。",
-                    feelingChoice: ["温馨 💕", "无比开心 😃", "受人尊敬 🤝", "自我肯定 🌟"]
-                }
-            },
-            {
-                id: 4,
-                title: "社区游乐场的秋千",
-                location: "社区公园游乐场",
-                icon: "fa-child-reaching",
-                desc: "你玩荡秋千已经很久了，旁边的小弟弟一直在期待地看着你，希望能轮到他玩。",
-                optionA: {
-                    text: "当作没看见，继续旁若无人地荡高高，不肯下来。",
-                    type: "ignore",
-                    effect: "忽视礼让的影响 (14.3)：小弟弟委屈地哭了，他的家长过来理论，游乐场原本开心的气氛变成了不愉快。",
-                    feeling: "后果：让幼小的社区成员感到委屈，自己也玩得不安心。"
-                },
-                optionB: {
-                    text: "荡多几下后停下来，微笑着对小弟弟说：“来，换你玩吧！”",
-                    type: "yield",
-                    effect: "表现礼让的结果：小弟弟破涕为笑，开心地玩秋千，你也感受到了分享与礼让的快乐。",
-                    feelingChoice: ["欣慰 🌸", "快乐 😃", "像大哥哥/大姐姐般自豪 🏆", "心暖暖的 💕"]
-                }
-            }
+        const vocabList = [
+            { id: 1, malay: "sukarela", chinese: "义工/自愿", sentence: "Beberapa orang pemuda bekerja secara ______ untuk membantu mangsa banjir di kampung itu." },
+            { id: 2, malay: "olahraga", chinese: "运动员", sentence: "Acara ______ tahunan sekolah kami akan diadakan di stadium daerah pada minggu depan." },
+            { id: 3, malay: "kerjasama", chinese: "合作", sentence: "Amalan ______ antara penduduk kampung telah memudahkan kerja membersihkan balai raya." },
+            { id: 4, malay: "tengah hari", chinese: "中午", sentence: "Matahari terik memancar pada waktu ______ ketika kami sedang pulang dari sekolah." },
+            { id: 5, malay: "sukaneka", chinese: "运动会", sentence: "Kanak-kanak berasa gembira semasa menyertai pelbagai acara ______ pada Hari Keluarga." },
+            { id: 6, malay: "menyalakan", chinese: "生火", sentence: "Abang membantu ayah ______ api untuk membakar ayam semasa aktiviti perkhemahan." },
+            { id: 7, malay: "mencari harta karun", chinese: "寻宝", sentence: "Murid-murid Tahun 6 berasa teruja semasa menyertai aktiviti ______ di kawasan sekolah." },
+            { id: 8, malay: "kenangan", chinese: "回忆", sentence: "Foto percutian bersama keluarga di Pulau Langkawi menjadi ______ manis bagi Amira." },
+            { id: 9, malay: "meruntuhkan", chinese: "拆毁/倒塌", sentence: "Pihak berkuasa terpaksa ______ bangunan lama yang tidak selamat itu." },
+            { id: 10, malay: "membalingkan", chinese: "丢/抛", sentence: "Pemain itu ______ bola dengan kuat ke arah sasaran untuk mengumpul mata." }
         ];
 
-        let currentScenarioIndex = 0;
+        // State variables
+        let studentName = "";
+        let currentLevel = 1;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let questions = [];
+        let levelStars = { 1: 0, 2: 0, 3: 0 };
+        let canAnswer = true;
 
-        function renderScenario() {
-            const sc = scenarios[currentScenarioIndex];
-            const container = document.getElementById('scenario-card');
-            document.getElementById('scenario-progress-text').innerText = `情境 ${currentScenarioIndex + 1} / ${scenarios.length}`;
+        // Web Audio API for crisp sound effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-            container.innerHTML = `
-                <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-4 rounded-xl border border-indigo-100 flex items-center space-x-3">
-                    <div class="p-3 bg-indigo-600 text-white rounded-xl">
-                        <i class="fa-solid ${sc.icon} text-xl"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-extrabold text-indigo-900 text-lg">${sc.title}</h4>
-                        <p class="text-xs text-indigo-600"><i class="fa-solid fa-location-dot mr-1"></i>地点：${sc.location}</p>
-                    </div>
-                </div>
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
 
-                <p class="text-sm text-slate-700 bg-white p-4 rounded-xl border border-slate-200 leading-relaxed font-medium">
-                    ${sc.desc}
-                </p>
+            const now = audioCtx.currentTime;
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <!-- 选择 A: 忽视礼让 -->
-                    <button onclick="handleChoice('ignore')" class="p-4 rounded-xl border-2 border-rose-200 bg-rose-50/50 hover:bg-rose-100/80 transition text-left space-y-2 group">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold bg-rose-200 text-rose-800 px-2 py-0.5 rounded">选择 A (忽视礼让)</span>
-                            <i class="fa-solid fa-xmark text-rose-500 group-hover:scale-125 transition"></i>
-                        </div>
-                        <p class="text-xs font-bold text-slate-800">${sc.optionA.text}</p>
-                    </button>
-
-                    <!-- 选择 B: 表现礼让 -->
-                    <button onclick="handleChoice('yield')" class="p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/80 transition text-left space-y-2 group">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded">选择 B (表现礼让)</span>
-                            <i class="fa-solid fa-check text-emerald-500 group-hover:scale-125 transition"></i>
-                        </div>
-                        <p class="text-xs font-bold text-slate-800">${sc.optionB.text}</p>
-                    </button>
-                </div>
-
-                <div id="choice-result" class="hidden mt-4 p-4 rounded-2xl"></div>
-            `;
-        }
-
-        function handleChoice(type) {
-            const sc = scenarios[currentScenarioIndex];
-            const resultBox = document.getElementById('choice-result');
-            resultBox.classList.remove('hidden');
-
-            if (type === 'ignore') {
-                resultBox.className = "mt-4 p-4 rounded-2xl bg-rose-100 border border-rose-300 text-rose-900 space-y-2";
-                resultBox.innerHTML = `
-                    <div class="flex items-center space-x-2 font-bold text-sm text-rose-800">
-                        <i class="fa-solid fa-circle-exclamation text-lg"></i>
-                        <span>学习标准 14.3 - 忽视礼让的影响：</span>
-                    </div>
-                    <p class="text-xs font-medium leading-relaxed">${sc.optionA.effect}</p>
-                    <p class="text-xs text-rose-700 italic border-t border-rose-200 pt-2">${sc.optionA.feeling}</p>
-                    <button onclick="nextScenario()" class="mt-2 px-4 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-bold hover:bg-rose-700">下一个情境 →</button>
-                `;
-            } else {
-                confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
-                resultBox.className = "mt-4 p-4 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-900 space-y-3";
-
-                let chipsHtml = sc.optionB.feelingChoice.map(f =>
-                    `<span class="inline-block bg-white text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-300 shadow-sm mr-1 mb-1">${f}</span>`
-                ).join('');
-
-                resultBox.innerHTML = `
-                    <div class="flex items-center space-x-2 font-bold text-sm text-emerald-800">
-                        <i class="fa-solid fa-circle-check text-lg"></i>
-                        <span>学习标准 14.4 - 表现礼让的成果与感受：</span>
-                    </div>
-                    <p class="text-xs font-medium leading-relaxed">${sc.optionB.effect}</p>
-                    <div class="border-t border-emerald-200 pt-2">
-                        <p class="text-xs font-bold text-emerald-800 mb-1">此时此刻，你的内心感受是：</p>
-                        <div>${chipsHtml}</div>
-                    </div>
-                    <button onclick="nextScenario()" class="mt-2 px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700">下一个情境 →</button>
-                `;
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2); // G5
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now); // A3
+                osc.frequency.exponentialRampToValueAtTime(130.81, now + 0.2); // C3
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'fanfare') {
+                // Celebration tone
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, index) => {
+                    const oscTone = audioCtx.createOscillator();
+                    const gainTone = audioCtx.createGain();
+                    oscTone.connect(gainTone);
+                    gainTone.connect(audioCtx.destination);
+                    oscTone.type = 'triangle';
+                    oscTone.frequency.setValueAtTime(freq, now + index * 0.1);
+                    gainTone.gain.setValueAtTime(0.25, now + index * 0.1);
+                    gainTone.gain.exponentialRampToValueAtTime(0.01, now + index * 0.1 + 0.3);
+                    oscTone.start(now + index * 0.1);
+                    oscTone.stop(now + index * 0.1 + 0.3);
+                });
             }
         }
 
-        function nextScenario() {
-            currentScenarioIndex = (currentScenarioIndex + 1) % scenarios.length;
-            renderScenario();
-        }
-
-        // 3. 感受瓶收集双重逻辑 (行为 + 感受)
-        let selectedBehavior = null;
-        let selectedBehaviorDesc = '';
-        let selectedFeeling = null;
-        let selectedFeelingClass = '';
-        let jarItems = [];
-
-        function selectBehavior(btn, name, desc) {
-            document.querySelectorAll('.behavior-btn').forEach(b => {
-                b.classList.remove('border-amber-500', 'bg-amber-50', 'ring-2', 'ring-amber-300');
-            });
-            btn.classList.add('border-amber-500', 'bg-amber-50', 'ring-2', 'ring-amber-300');
-            
-            selectedBehavior = name;
-            selectedBehaviorDesc = desc;
-            updatePreviewAndButton();
-        }
-
-        function selectFeeling(btn, text, bgClass) {
-            document.querySelectorAll('.feeling-btn').forEach(b => {
-                b.classList.remove('ring-2', 'ring-pink-400', 'scale-105');
-            });
-            btn.classList.add('ring-2', 'ring-pink-400', 'scale-105');
-
-            selectedFeeling = text;
-            selectedFeelingClass = bgClass;
-            updatePreviewAndButton();
-        }
-
-        function updatePreviewAndButton() {
-            const preview = document.getElementById('selected-preview-text');
-            const btn = document.getElementById('btn-add-jar');
-
-            if (selectedBehavior && selectedFeeling) {
-                preview.innerHTML = `<span class="text-emerald-600 font-bold">已选:</span> ${selectedBehavior} ➔ ${selectedFeeling}`;
-                btn.disabled = false;
-                btn.className = "px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-extrabold text-xs rounded-xl transition cursor-pointer shadow-md flex items-center space-x-1 animate-pulse";
-            } else if (selectedBehavior) {
-                preview.innerHTML = `<span class="text-amber-600 font-bold">已选行为:</span> ${selectedBehavior} (还需选择感受)`;
-                btn.disabled = true;
-                btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-extrabold text-xs rounded-xl transition cursor-not-allowed shadow-sm flex items-center space-x-1";
-            } else if (selectedFeeling) {
-                preview.innerHTML = `<span class="text-pink-600 font-bold">已选感受:</span> ${selectedFeeling} (还需选择行为)`;
-                btn.disabled = true;
-                btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-extrabold text-xs rounded-xl transition cursor-not-allowed shadow-sm flex items-center space-x-1";
-            } else {
-                preview.innerText = "请先完成两步选择...";
-                btn.disabled = true;
-                btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-extrabold text-xs rounded-xl transition cursor-not-allowed shadow-sm flex items-center space-x-1";
-            }
-        }
-
-        function addCombinationToJar() {
-            if (!selectedBehavior || !selectedFeeling) return;
-
-            if (jarItems.length >= 5) {
-                alert('礼让能量瓶已经装满 5 颗能量胶囊啦！可以点击“清空瓶子”重新收集。');
-                return;
-            }
-
-            const jar = document.getElementById('jar-container');
-            const placeholder = document.getElementById('jar-placeholder');
-            if (placeholder) placeholder.style.display = 'none';
-
-            // 创建瓶中的组合胶囊
-            const capsule = document.createElement('div');
-            capsule.className = `w-full px-3 py-1.5 rounded-xl border text-[11px] font-bold shadow-sm my-1 flex justify-between items-center animate-bounce ${selectedFeelingClass}`;
-            capsule.innerHTML = `
-                <span class="truncate max-w-[110px]">${selectedBehavior}</span>
-                <span class="bg-white/80 px-1.5 py-0.5 rounded-md text-[10px]">${selectedFeeling}</span>
-            `;
-
-            jar.appendChild(capsule);
-
-            // 记录到日志中
-            jarItems.push({ behavior: selectedBehavior, desc: selectedBehaviorDesc, feeling: selectedFeeling });
-            renderJarLogs();
-
-            // 更新计数与UI
-            document.getElementById('jar-count').innerText = jarItems.length;
-
-            if (jarItems.length === 5) {
-                confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
-            } else {
-                confetti({ particleCount: 35, spread: 50, origin: { y: 0.7 } });
-            }
-
-            // 重置选择
-            selectedBehavior = null;
-            selectedFeeling = null;
-            document.querySelectorAll('.behavior-btn').forEach(b => b.classList.remove('border-amber-500', 'bg-amber-50', 'ring-2', 'ring-amber-300'));
-            document.querySelectorAll('.feeling-btn').forEach(b => b.classList.remove('ring-2', 'ring-pink-400', 'scale-105'));
-            updatePreviewAndButton();
-        }
-
-        function renderJarLogs() {
-            const logsContainer = document.getElementById('jar-logs');
-            if (jarItems.length === 0) {
-                logsContainer.innerHTML = `<p class="italic text-slate-400">当你向礼让瓶放入胶囊时，这里会记录你的道德践行感受...</p>`;
-                return;
-            }
-
-            logsContainer.innerHTML = jarItems.map((item, index) => `
-                <div class="bg-white/80 p-2 rounded-lg border border-amber-100 flex items-start space-x-1.5">
-                    <span class="text-amber-600 font-bold">#${index + 1}</span>
-                    <div>
-                        <span class="font-bold text-slate-800">当我在社区【${item.behavior}】时，</span>
-                        <span class="text-slate-600">我感到非常 <b class="text-amber-700">${item.feeling}</b>！</span>
+        // Initialize Glosari Modal Content
+        function renderGlosari() {
+            const container = document.getElementById('glosari-list-container');
+            container.innerHTML = vocabList.map((item, index) => `
+                <div class="p-3 bg-slate-50 hover:bg-sky-50/50 rounded-2xl border border-slate-200/80 flex justify-between items-center transition">
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-lg bg-sky-100 text-sky-700 font-extrabold text-xs flex items-center justify-center">
+                            ${index + 1}
+                        </span>
+                        <span class="font-black text-slate-800 text-base sm:text-lg">${item.malay}</span>
                     </div>
+                    <span class="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 font-extrabold text-sm">
+                        ${item.chinese}
+                    </span>
                 </div>
             `).join('');
         }
 
-        function clearJar() {
-            const jar = document.getElementById('jar-container');
-            jar.innerHTML = `
-                <div class="text-xs text-amber-500 font-bold mb-auto mt-auto text-center pointer-events-none" id="jar-placeholder">
-                    <i class="fa-solid fa-hand-holding-heart text-2xl text-amber-300 mb-1"></i><br>
-                    瓶子空空的...<br>快组合你的礼让心得吧！
-                </div>
-            `;
-            jarItems = [];
-            document.getElementById('jar-count').innerText = 0;
-            renderJarLogs();
+        function toggleGlosariModal() {
+            const modal = document.getElementById('modal-glosari');
+            modal.classList.toggle('hidden');
         }
 
-        // 4. 闯关测验数据与逻辑 QUIZ DATA
-        const quizQuestions = [
-            {
-                question: "【学习标准 14.3】在社区公园里，如果大家都争抢秋千且互不相让，最可能导致什么后果？",
-                options: [
-                    "A. 社区大家庭更加团结",
-                    "B. 发生口角争执，甚至导致设施损坏与伤亡意外",
-                    "C. 大家都能玩得更开心",
-                    "D. 得到居民的赞赏"
-                ],
-                answer: 1,
-                explanation: "忽视礼让会引发冲突争执，破坏邻里和谐与公共设施安全。"
-            },
-            {
-                question: "【学习标准 14.4】小强在乘坐社区公共巴士时，主动将座位让给抱着婴儿的妇女。此时小强的内心感受应该是怎样的？",
-                options: [
-                    "A. 感到委屈与吃亏",
-                    "B. 感到愤怒与不公平",
-                    "C. 感到开心、欣慰与自豪",
-                    "D. 感到非常倒霉"
-                ],
-                answer: 2,
-                explanation: "表现礼让不仅能帮助他人，还能让自己内心感到充实、欣慰与开心。"
-            },
-            {
-                question: "【学习标准 14.3】社区举行文娱晚会，有些居民用物件霸占空位且不肯让给有需要的老人。这种忽视礼让的行为会产生什么影响？",
-                options: [
-                    "A. 让人感到社区冷漠、缺乏关爱与和谐",
-                    "B. 能让晚会更快结束",
-                    "C. 增进居民之间的感情",
-                    "D. 显得很有秩序"
-                ],
-                answer: 0,
-                explanation: "霸占公共资源而不礼让他人，会让人觉得社区冷漠，引发居民不满。"
-            },
-            {
-                question: "【学习标准 14.4】以下哪项是表现礼让行为后所获得的正面感受与收获？",
-                options: [
-                    "A. 受到别人的埋怨",
-                    "B. 获得邻里的尊重与友谊，内心感到温馨",
-                    "C. 觉得失去了自己的权利",
-                    "D. 感到疲惫不堪"
-                ],
-                answer: 1,
-                explanation: "礼让能换来邻里的尊重与微笑，促进和谐关系。"
+        function showScreen(screen) {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+
+            if (screen === 'home') {
+                document.getElementById('screen-home').classList.remove('hidden');
+                updateStarDisplay();
+            } else if (screen === 'game') {
+                document.getElementById('screen-game').classList.remove('hidden');
             }
-        ];
-
-        let currentQuizIndex = 0;
-        let quizScore = 0;
-
-        function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            if (currentQuizIndex >= quizQuestions.length) {
-                // 测验完成，展示证书
-                container.innerHTML = `
-                    <div class="text-center py-8 space-y-4">
-                        <div class="inline-block p-4 bg-yellow-100 rounded-full text-yellow-600 mb-2">
-                            <i class="fa-solid fa-award text-5xl"></i>
-                        </div>
-                        <h4 class="text-2xl font-black text-slate-800">恭喜你完成礼让大挑战！</h4>
-                        <p class="text-slate-600 text-sm">你的最终得分：<span class="font-extrabold text-emerald-600 text-xl">${quizScore} / ${quizQuestions.length * 25}</span></p>
-
-                        <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-4 border-amber-300 p-6 rounded-2xl max-w-md mx-auto shadow-md space-y-3">
-                            <div class="text-amber-800 font-bold text-xs uppercase tracking-widest">五年级道德教育荣誉证书</div>
-                            <h5 class="text-xl font-extrabold text-amber-900">“社区礼让小达人” Medal</h5>
-                            <p class="text-xs text-slate-600">特此表彰你在道德教育单元十四中，深入掌握礼让美德，懂得推断忽视礼让的影响，并能真切感受礼让带来的美好！</p>
-                            <div class="text-amber-600 text-xs font-bold pt-2">⭐ 礼让社区 · 从我做起 ⭐</div>
-                        </div>
-
-                        <button onclick="restartQuiz()" class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-emerald-700 transition">
-                            <i class="fa-solid fa-rotate-right mr-1"></i> 重新挑战
-                        </button>
-                    </div>
-                `;
-                confetti({ particleCount: 100, spread: 80 });
-                return;
-            }
-
-            const q = quizQuestions[currentQuizIndex];
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between text-xs font-bold text-slate-400">
-                        <span>题目 ${currentQuizIndex + 1} / ${quizQuestions.length}</span>
-                        <span>每题 25 分</span>
-                    </div>
-
-                    <h4 class="font-extrabold text-slate-800 text-base leading-snug">${q.question}</h4>
-
-                    <div class="space-y-2 pt-2">
-                        ${q.options.map((opt, idx) => `
-                            <button onclick="checkAnswer(${idx})" class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition font-medium text-xs text-slate-700 flex justify-between items-center group">
-                                <span>${opt}</span>
-                                <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-emerald-500"></i>
-                            </button>
-                        `).join('')}
-                    </div>
-
-                    <div id="quiz-feedback" class="hidden p-3 rounded-xl text-xs font-bold"></div>
-                </div>
-            `;
         }
 
-        function checkAnswer(selectedIndex) {
-            const q = quizQuestions[currentQuizIndex];
-            const feedback = document.getElementById('quiz-feedback');
-            feedback.classList.remove('hidden');
+        function updateStarDisplay() {
+            let totalStars = 0;
+            for (let lvl = 1; lvl <= 3; lvl++) {
+                const stars = levelStars[lvl];
+                totalStars += stars;
+                const starElem = document.getElementById(`stars-level-${lvl}`);
+                if (starElem) {
+                    starElem.innerHTML = Array.from({ length: 3 }, (_, i) => 
+                        `<i class="fa-${i < stars ? 'solid text-amber-400' : 'regular text-slate-300'} fa-star"></i>`
+                    ).join('');
+                }
+            }
+            document.getElementById('global-stars').innerText = `${totalStars} / 9`;
+        }
 
-            if (selectedIndex === q.answer) {
-                quizScore += 25;
-                document.getElementById('quiz-score').innerText = `得分: ${quizScore}`;
-                feedback.className = "p-3 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> 回答正确！${q.explanation}`;
+        function startLevel(lvl) {
+            currentLevel = lvl;
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            // Shuffle questions
+            questions = [...vocabList].sort(() => Math.random() - 0.5);
+
+            // Set tag label
+            const tag = document.getElementById('game-level-tag');
+            if (lvl === 1) {
+                tag.className = "px-3 py-1 rounded-full text-xs font-black bg-sky-100 text-sky-700";
+                tag.innerText = "Tahap 1: Pilihan Berganda";
+            } else if (lvl === 2) {
+                tag.className = "px-3 py-1 rounded-full text-xs font-black bg-indigo-100 text-indigo-700";
+                tag.innerText = "Tahap 2: Menaip Ejaan";
             } else {
-                feedback.className = "p-3 rounded-xl text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> 回答错误。解析：${q.explanation}`;
+                tag.className = "px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-700";
+                tag.innerText = "Tahap 3: Lengkapkan Ayat";
             }
 
-            setTimeout(() => {
-                currentQuizIndex++;
-                renderQuiz();
-            }, 2000);
+            showScreen('game');
+            loadQuestion();
         }
 
-        function restartQuiz() {
-            currentQuizIndex = 0;
-            quizScore = 0;
-            document.getElementById('quiz-score').innerText = `得分: 0`;
-            renderQuiz();
+        function loadQuestion() {
+            canAnswer = true;
+            hideFeedback();
+            
+            const total = questions.length;
+            const q = questions[currentQuestionIndex];
+
+            // Update header info
+            document.getElementById('game-score').innerText = `${score} / ${total}`;
+            document.getElementById('question-number-text').innerText = `Soalan ${currentQuestionIndex + 1} daripada ${total}`;
+            
+            // Progress Bar Width
+            const progress = ((currentQuestionIndex) / total) * 100;
+            document.getElementById('game-progress-bar').style.width = `${progress}%`;
+
+            // Hide all sub views
+            document.getElementById('view-level-1').classList.add('hidden');
+            document.getElementById('view-level-2').classList.add('hidden');
+            document.getElementById('view-level-3').classList.add('hidden');
+
+            if (currentLevel === 1) {
+                document.getElementById('view-level-1').classList.remove('hidden');
+                document.getElementById('l1-prompt').innerText = q.chinese;
+
+                // Prepare 4 choices (1 correct + 3 wrong)
+                const distractors = vocabList.filter(item => item.id !== q.id).sort(() => Math.random() - 0.5).slice(0, 3);
+                const options = [q, ...distractors].sort(() => Math.random() - 0.5);
+
+                const grid = document.getElementById('l1-options-grid');
+                grid.innerHTML = options.map(opt => `
+                    <button onclick="checkL1Answer('${opt.malay}', '${q.malay}', this)" 
+                        class="l1-opt-btn w-full py-4 px-5 rounded-2xl bg-slate-50 hover:bg-sky-50 border-2 border-slate-200 hover:border-sky-300 font-extrabold text-slate-700 text-base sm:text-lg transition text-center shadow-sm">
+                        ${opt.malay}
+                    </button>
+                `).join('');
+
+            } else if (currentLevel === 2) {
+                document.getElementById('view-level-2').classList.remove('hidden');
+                document.getElementById('l2-prompt').innerText = q.chinese;
+                const input = document.getElementById('l2-input');
+                input.value = '';
+                input.disabled = false;
+                input.className = "w-full px-5 py-4 rounded-2xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none text-center font-bold text-lg sm:text-xl text-slate-800 placeholder-slate-300 transition shadow-inner";
+                document.getElementById('l2-submit-btn').disabled = false;
+                setTimeout(() => input.focus(), 100);
+
+            } else if (currentLevel === 3) {
+                document.getElementById('view-level-3').classList.remove('hidden');
+                
+                // Format sentence with blank highlight
+                const sentenceHTML = q.sentence.replace('______', `<span id="blank-target" class="inline-block px-3 py-1 mx-1 border-b-4 border-emerald-500 text-emerald-700 font-black min-w-[100px] text-center">______</span>`);
+                document.getElementById('l3-sentence-box').innerHTML = sentenceHTML;
+
+                // Options: All 10 Malay words
+                const allWords = [...vocabList].sort(() => Math.random() - 0.5);
+                const grid = document.getElementById('l3-options-grid');
+                grid.innerHTML = allWords.map(opt => `
+                    <button onclick="checkL3Answer('${opt.malay}', '${q.malay}', this)" 
+                        class="l3-opt-btn w-full py-3 px-2 rounded-xl bg-slate-50 hover:bg-emerald-50 border-2 border-slate-200 hover:border-emerald-300 font-extrabold text-slate-700 text-xs sm:text-sm transition text-center shadow-sm">
+                        ${opt.malay}
+                    </button>
+                `).join('');
+            }
         }
 
-        // 初始化加载
-        window.onload = function() {
-            renderScenario();
-            renderQuiz();
-        };
+        /* --- Level 1 Answer Check --- */
+        function checkL1Answer(selected, correct, btnElem) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const allBtns = document.querySelectorAll('.l1-opt-btn');
+            allBtns.forEach(btn => btn.disabled = true);
+
+            if (selected === correct) {
+                score++;
+                playSound('correct');
+                btnElem.className = "l1-opt-btn w-full py-4 px-5 rounded-2xl bg-emerald-500 text-white border-2 border-emerald-600 font-extrabold text-base sm:text-lg transition text-center shadow-md animate-pulse";
+                showFeedback(true, "Syabas! Jawapan anda betul.");
+            } else {
+                playSound('wrong');
+                btnElem.className = "l1-opt-btn w-full py-4 px-5 rounded-2xl bg-rose-500 text-white border-2 border-rose-600 font-extrabold text-base sm:text-lg transition text-center shadow-md";
+                
+                // Highlight correct answer
+                allBtns.forEach(btn => {
+                    if (btn.innerText.trim() === correct) {
+                        btn.className = "l1-opt-btn w-full py-4 px-5 rounded-2xl bg-emerald-100 text-emerald-800 border-2 border-emerald-400 font-extrabold text-base sm:text-lg transition text-center";
+                    }
+                });
+                showFeedback(false, `Kurang tepat. Jawapan betul: "${correct}"`);
+            }
+
+            setTimeout(nextQuestion, 1300);
+        }
+
+        /* --- Level 2 Answer Check --- */
+        function submitL2Answer(e) {
+            e.preventDefault();
+            if (!canAnswer) return;
+
+            const input = document.getElementById('l2-input');
+            const userInput = input.value.trim().toLowerCase();
+            const correct = questions[currentQuestionIndex].malay.toLowerCase();
+
+            if (!userInput) return;
+
+            canAnswer = false;
+            input.disabled = true;
+            document.getElementById('l2-submit-btn').disabled = true;
+
+            if (userInput === correct) {
+                score++;
+                playSound('correct');
+                input.className = "w-full px-5 py-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 font-bold text-lg sm:text-xl text-emerald-800 text-center shadow-inner";
+                showFeedback(true, "Syabas! Ejaan betul.");
+            } else {
+                playSound('wrong');
+                input.className = "w-full px-5 py-4 rounded-2xl border-2 border-rose-500 bg-rose-50 font-bold text-lg sm:text-xl text-rose-800 text-center shadow-inner";
+                showFeedback(false, `Ejaan kurang tepat. Jawapan betul: "${correct}"`);
+            }
+
+            setTimeout(nextQuestion, 1500);
+        }
+
+        /* --- Level 3 Answer Check --- */
+        function checkL3Answer(selected, correct, btnElem) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const target = document.getElementById('blank-target');
+            target.innerText = selected;
+
+            const allBtns = document.querySelectorAll('.l3-opt-btn');
+            allBtns.forEach(btn => btn.disabled = true);
+
+            if (selected === correct) {
+                score++;
+                playSound('correct');
+                target.className = "inline-block px-3 py-1 mx-1 border-b-4 border-emerald-500 text-emerald-600 bg-emerald-100 rounded-lg font-black min-w-[100px] text-center";
+                btnElem.className = "l3-opt-btn w-full py-3 px-2 rounded-xl bg-emerald-500 text-white border-2 border-emerald-600 font-extrabold text-xs sm:text-sm text-center shadow-md";
+                showFeedback(true, "Tepat sekali! Ayat kini lengkap.");
+            } else {
+                playSound('wrong');
+                target.className = "inline-block px-3 py-1 mx-1 border-b-4 border-rose-500 text-rose-600 bg-rose-100 rounded-lg font-black min-w-[100px] text-center";
+                btnElem.className = "l3-opt-btn w-full py-3 px-2 rounded-xl bg-rose-500 text-white border-2 border-rose-600 font-extrabold text-xs sm:text-sm text-center shadow-md";
+                showFeedback(false, `Kurang sesuai. Jawapan betul: "${correct}"`);
+            }
+
+            setTimeout(nextQuestion, 1500);
+        }
+
+        function showFeedback(isCorrect, message) {
+            const banner = document.getElementById('feedback-banner');
+            const icon = document.getElementById('feedback-icon');
+            const text = document.getElementById('feedback-text');
+
+            banner.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+
+            if (isCorrect) {
+                banner.classList.add('bg-emerald-100', 'text-emerald-800');
+                icon.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>`;
+            } else {
+                banner.classList.add('bg-rose-100', 'text-rose-800');
+                icon.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 text-lg"></i>`;
+            }
+
+            text.innerText = message;
+        }
+
+        function hideFeedback() {
+            document.getElementById('feedback-banner').classList.add('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                finishLevel();
+            }
+        }
+
+        function finishLevel() {
+            // Update full progress bar
+            document.getElementById('game-progress-bar').style.width = '100%';
+
+            // Calculate stars
+            let stars = 0;
+            if (score === 10) stars = 3;
+            else if (score >= 7) stars = 2;
+            else if (score >= 4) stars = 1;
+
+            levelStars[currentLevel] = Math.max(levelStars[currentLevel], stars);
+
+            // Trigger celebration
+            if (stars > 0) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+                playSound('fanfare');
+            }
+
+            // Populate Modal
+            document.getElementById('result-level-name').innerText = `Tahap ${currentLevel} Selesai`;
+            document.getElementById('result-score-text').innerText = `${score} / 10`;
+            document.getElementById('result-accuracy-text').innerText = `${(score / 10) * 100}%`;
+
+            const resultStarsContainer = document.getElementById('result-stars');
+            resultStarsContainer.innerHTML = Array.from({ length: 3 }, (_, i) => 
+                `<i class="fa-${i < stars ? 'solid text-amber-400' : 'regular text-slate-300'} fa-star"></i>`
+            ).join('');
+
+            const nextBtn = document.getElementById('next-level-btn');
+            const sijilBtn = document.getElementById('download-sijil-btn');
+
+            if (currentLevel < 3) {
+                nextBtn.classList.remove('hidden');
+                nextBtn.innerText = `Ke Tahap ${currentLevel + 1} `;
+                sijilBtn.classList.add('hidden');
+            } else {
+                nextBtn.classList.add('hidden');
+                sijilBtn.classList.remove('hidden');
+            }
+
+            document.getElementById('modal-result').classList.remove('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const input = document.getElementById('login-name-input');
+            const name = input.value.trim();
+            if (name) {
+                studentName = name;
+                document.getElementById('display-student-name').innerText = studentName;
+                document.getElementById('modal-login').classList.add('hidden');
+            }
+        }
+
+        function openSijilModal() {
+            renderCertificate();
+            document.getElementById('modal-sijil').classList.remove('hidden');
+        }
+
+        function closeSijilModal() {
+            document.getElementById('modal-sijil').classList.add('hidden');
+        }
+
+        function renderCertificate() {
+            const canvas = document.getElementById('certificate-canvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // Background
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+
+            // Elegant Border
+            ctx.strokeStyle = "#0284c7"; // sky-600
+            ctx.lineWidth = 14;
+            ctx.strokeRect(20, 20, w - 40, h - 40);
+
+            ctx.strokeStyle = "#f59e0b"; // amber-500
+            ctx.lineWidth = 4;
+            ctx.strokeRect(34, 34, w - 68, h - 68);
+
+            // Corner Decorations
+            const cornerSize = 40;
+            ctx.fillStyle = "#0284c7";
+            ctx.fillRect(34, 34, cornerSize, cornerSize);
+            ctx.fillRect(w - 34 - cornerSize, 34, cornerSize, cornerSize);
+            ctx.fillRect(34, h - 34 - cornerSize, cornerSize, cornerSize);
+            ctx.fillRect(w - 34 - cornerSize, h - 34 - cornerSize, cornerSize, cornerSize);
+
+            // Certificate Header
+            ctx.textAlign = "center";
+            
+            ctx.fillStyle = "#0284c7";
+            ctx.font = "900 24px 'Nunito', sans-serif";
+            ctx.fillText("APLIKASI PEMBELAJARAN KOSA KATA BM TAHUN 6", w / 2, 100);
+
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "900 48px 'Nunito', sans-serif";
+            ctx.fillText("SIJIL PENCAPAIAN", w / 2, 160);
+
+            ctx.strokeStyle = "#f59e0b";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(w / 2 - 150, 180);
+            ctx.lineTo(w / 2 + 150, 180);
+            ctx.stroke();
+
+            // Subtitle
+            ctx.fillStyle = "#64748b";
+            ctx.font = "600 20px 'Nunito', sans-serif";
+            ctx.fillText("Dengan ini disahkan bahawa", w / 2, 240);
+
+            // Student Name
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "900 42px 'Nunito', sans-serif";
+            ctx.fillText(studentName || "Murid", w / 2, 310);
+
+            // Line under name
+            ctx.strokeStyle = "#94a3b8";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(w / 2 - 250, 330);
+            ctx.lineTo(w / 2 + 250, 330);
+            ctx.stroke();
+
+            // Achievement Description
+            ctx.fillStyle = "#334155";
+            ctx.font = "600 22px 'Nunito', sans-serif";
+            ctx.fillText("Telah berjaya menyempurnakan Kesemua 3 Tahap Cabaran", w / 2, 385);
+            ctx.fillText("Kosa Kata Bahasa Melayu (Tahun 6) dengan cemerlang.", w / 2, 420);
+
+            // Stars summary
+            let totalStars = levelStars[1] + levelStars[2] + levelStars[3];
+            ctx.fillStyle = "#d97706";
+            ctx.font = "800 26px 'Nunito', sans-serif";
+            ctx.fillText(`★ Jumlah Bintang Dikumpul: ${totalStars} / 9 ★`, w / 2, 485);
+
+            // Footer / Date & Signature
+            const today = new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            // Date
+            ctx.textAlign = "left";
+            ctx.fillStyle = "#64748b";
+            ctx.font = "600 18px 'Nunito', sans-serif";
+            ctx.fillText(`Tarikh: ${today}`, 90, 590);
+
+            // Stamp/Badge Graphic
+            ctx.fillStyle = "#0284c7";
+            ctx.beginPath();
+            ctx.arc(w / 2, 580, 45, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#ffffff";
+            ctx.textAlign = "center";
+            ctx.font = "bold 16px 'Nunito', sans-serif";
+            ctx.fillText("LULUS", w / 2, 575);
+            ctx.fillText("TAHAP 1-3", w / 2, 595);
+
+            // Signature
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#0284c7";
+            ctx.font = "italic bold 22px 'Nunito', sans-serif";
+            ctx.fillText("Kosa Kata BM Tahun 6", w - 90, 580);
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(w - 260, 590);
+            ctx.lineTo(w - 90, 590);
+            ctx.stroke();
+            ctx.fillStyle = "#64748b";
+            ctx.font = "600 16px 'Nunito', sans-serif";
+            ctx.fillText("Modul Pembelajaran Interaktif", w - 90, 615);
+        }
+
+        function downloadCertificatePNG() {
+            const canvas = document.getElementById('certificate-canvas');
+            const link = document.createElement('a');
+            const sanitizedName = (studentName || "Murid").replace(/[^a-zA-Z0-9]/g, "_");
+            link.download = `Sijil_Pencapaian_Kosa_Kata_BM_${sanitizedName}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function hideResultModal() {
+            document.getElementById('modal-result').classList.add('hidden');
+        }
+
+        function retryCurrentLevel() {
+            hideResultModal();
+            startLevel(currentLevel);
+        }
+
+        function goToNextLevel() {
+            hideResultModal();
+            if (currentLevel < 3) {
+                startLevel(currentLevel + 1);
+            } else {
+                showScreen('home');
+            }
+        }
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            renderGlosari();
+            updateStarDisplay();
+            
+            // Show Login modal if student name is not set
+            if (!studentName) {
+                document.getElementById('modal-login').classList.remove('hidden');
+            }
+        });
     </script>
 </body>
 </html>
