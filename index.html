@@ -1,934 +1,1011 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latihan Menaip Kosa Kata & Karangan Majlis Hari Jadi Tahun 5</title>
+    <title>五年级道德教育 - 单元十四：礼让之城</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#fff1f2',
-                            100: '#ffe4e6',
-                            500: '#f43f5e',
-                            600: '#e11d48',
-                            700: '#be123c',
-                            800: '#9f1239',
-                            gold: '#f59e0b'
-                        }
-                    },
-                    fontFamily: {
-                        fredoka: ['Fredoka', 'sans-serif'],
-                        body: ['Plus Jakarta Sans', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #fff8f9;
-            background-image: radial-gradient(#ffe4e6 1.5px, transparent 1.5px);
-            background-size: 24px 24px;
+            font-family: 'Noto Sans SC', 'Plus Jakarta Sans', sans-serif;
+            background-color: #f0fdf4;
+            color: #164e63;
         }
-        .heading-font {
-            font-family: 'Fredoka', cursive;
+        .tab-btn.active {
+            background-color: #0d9488;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+        .scenario-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .scenario-card:hover {
+            transform: translateY(-4px);
+        }
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* Interactive Clothes Rack Styles */
+        .clothes-item {
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .clothes-item:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+        .clothes-item.selected {
+            ring: 4px;
+            ring-color: #f59e0b;
+            transform: scale(1.03);
+        }
+        .drop-zone-active {
+            border-style: solid !important;
+            background-color: rgba(204, 251, 241, 0.6) !important;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e6f4f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0d9488;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-slate-800">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <div id="app" class="flex-grow flex flex-col max-w-4xl mx-auto w-full p-4 md:p-6">
-
-        <!-- Name Input Screen Modal -->
-        <div v-if="!isNameEntered" class="my-auto py-12 flex items-center justify-center">
-            <div class="bg-white p-8 md:p-10 rounded-3xl border border-rose-100 shadow-2xl max-w-md w-full text-center space-y-6">
-                <div class="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
-                    <i class="fa-solid fa-cake-candles"></i>
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-teal-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-shirt"></i>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-800 heading-font">Selamat Datang!</h2>
-                    <p class="text-sm text-slate-500 mt-1">Sila masukkan nama anda sebelum memulakan Latihan Menaip Kosa Kata & Karangan Majlis Hari Jadi.</p>
+                    <h1 class="text-lg md:text-xl font-bold text-teal-900 leading-tight">
+                        五年级道德教育 <span class="text-teal-600">| 单元十四《礼让之城》</span>
+                    </h1>
+                    <p class="text-xs text-teal-600 font-medium">核心价值：礼让（Toleransi dalam Komuniti）</p>
                 </div>
-                <form @submit.prevent="masukAplikasi" class="space-y-4">
-                    <div>
-                        <input type="text" 
-                               v-model="studentName" 
-                               placeholder="Taip nama anda di sini..." 
-                               class="w-full p-4 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500 text-center font-semibold text-lg"
-                               required />
+            </div>
+            
+            <!-- Navigation Pills -->
+            <nav class="flex items-center gap-1.5 overflow-x-auto py-1 max-w-full">
+                <button onclick="switchTab('tab-intro')" id="btn-tab-intro" class="tab-btn active text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-paw"></i> <span>情境导入</span>
+                </button>
+                <button onclick="switchTab('tab-scenarios')" id="btn-tab-scenarios" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-city"></i> <span>4大社区例子</span>
+                </button>
+                <button onclick="switchTab('tab-clothes')" id="btn-tab-clothes" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-amber-900 bg-amber-100 border border-amber-300 hover:bg-amber-200 transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-shirt text-amber-600"></i> <span>👕 挂衣服互动游戏</span>
+                </button>
+                <button onclick="switchTab('tab-importance')" id="btn-tab-importance" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-lightbulb"></i> <span>礼让的重要性</span>
+                </button>
+                <button onclick="switchTab('tab-quiz')" id="btn-tab-quiz" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-gamepad"></i> <span>礼让大侦探</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- TAB 1: 导入与情境迁移 -->
+        <section id="tab-intro" class="space-y-6">
+            <div class="bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="bg-teal-900/50 text-teal-100 border border-teal-300/30 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
+                        第一步：导入与情境迁移
+                    </span>
+                    <h2 class="text-2xl md:text-4xl font-extrabold mt-3 leading-tight">
+                        从森林小动物到我们的社区生活
+                    </h2>
+                    <p class="text-sm md:text-base text-teal-50 mt-2 leading-relaxed">
+                        先前我们看到了黑熊、小猫和大象在森林里互相礼让的故事。现在，让我们一起来看看，如何在现实的<strong class="underline decoration-amber-300">社区生活 (Komuniti)</strong> 中实践<strong class="text-amber-300">“礼让” (Toleransi)</strong>的美德！
+                    </p>
+                    <div class="mt-5 flex flex-wrap gap-3">
+                        <button onclick="switchTab('tab-scenarios')" class="bg-amber-400 hover:bg-amber-300 text-teal-950 px-5 py-2.5 rounded-xl font-bold shadow-lg transition flex items-center gap-2 text-sm">
+                            探索社区 4 大礼让场景 <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button onclick="switchTab('tab-clothes')" class="bg-teal-900/80 hover:bg-teal-950 text-amber-300 border border-amber-400/40 px-5 py-2.5 rounded-xl font-bold shadow-lg transition flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-shirt"></i> 体验社区挂衣服游戏
+                        </button>
                     </div>
-                    <button type="submit" 
-                            :disabled="!studentName.trim()"
-                            :class="[
-                                'w-full py-4 rounded-2xl font-bold text-white shadow-lg transition flex items-center justify-center gap-2 text-base',
-                                studentName.trim() ? 'bg-rose-600 hover:bg-rose-700 cursor-pointer' : 'bg-slate-300 cursor-not-allowed opacity-60'
-                            ]">
-                        <span>Mula Latihan</span>
-                        <i class="fa-solid fa-arrow-right"></i>
+                </div>
+                <div class="absolute -right-8 -bottom-12 opacity-20 pointer-events-none">
+                    <i class="fa-solid fa-tree-city text-9xl text-white"></i>
+                </div>
+            </div>
+
+            <!-- Transition Comparison Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                                <i class="fa-solid fa-paw"></i> 森林小动物（复习）
+                            </span>
+                            <span class="text-xs text-slate-400">热身思考</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-teal-950 mb-2">森林里的礼让好榜样</h3>
+                        <p class="text-sm text-slate-600 mb-4">
+                            小猫主动让出秋千、黑熊与伙伴分享坚果蛋糕、大象被踩到脚时依然微笑包容。
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 text-right">
+                        <span class="text-xs text-teal-600 font-semibold">良好品德 <i class="fa-solid fa-heart text-red-500"></i></span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                                <i class="fa-solid fa-building-user"></i> 现实社区生活
+                            </span>
+                            <span class="text-xs text-teal-600 font-bold">学习标准 14.1 & 14.2</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-teal-950 mb-2">人类社区里的礼让美德</h3>
+                        <p class="text-sm text-slate-600 mb-4">
+                            在我们的住宅区、道路上、巴士站以及居民大会中，我们该如何展示礼让行为？
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 text-right">
+                        <button onclick="switchTab('tab-scenarios')" class="text-xs text-teal-700 font-bold hover:underline">
+                            前往社区情境例子 &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: 4个社区礼让例子 (可爱卡通矢量图版) -->
+        <section id="tab-scenarios" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-teal-200 pb-4">
+                <div>
+                    <span class="text-xs font-bold text-teal-600 uppercase tracking-wide">学习标准 14.1</span>
+                    <h2 class="text-2xl font-extrabold text-teal-950">社区生活 4 大礼让例子 (Contoh Toleransi)</h2>
+                    <p class="text-sm text-slate-600">点击下方场景标签，查看高清晰度可爱卡通插图与礼让讲解：</p>
+                </div>
+                <!-- Scenario Selector Pills -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="showScenario('A')" id="scen-btn-A" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-teal-600 text-white shadow">
+                        场景 A（公共交通）
                     </button>
-                </form>
+                    <button onclick="showScenario('B')" id="scen-btn-B" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
+                        场景 B（窄路/公园）
+                    </button>
+                    <button onclick="showScenario('C')" id="scen-btn-C" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
+                        场景 C（邻里/环境）
+                    </button>
+                    <button onclick="showScenario('D')" id="scen-btn-D" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
+                        场景 D（社区会议）
+                    </button>
+                </div>
+            </div>
+
+            <!-- SCENARIO DISPLAY BOX -->
+            <div id="scenario-content-area" class="bg-white rounded-3xl p-6 md:p-8 border border-teal-100 shadow-lg">
+                <!-- Dynamically populated via JavaScript -->
+            </div>
+        </section>
+
+        <!-- TAB 3: HANGING CLOTHES GAME -->
+        <section id="tab-clothes" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 shadow-md">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-amber-200 pb-4 mb-4">
+                    <div>
+                        <span class="bg-amber-500 text-white text-xs font-extrabold px-3 py-1 rounded-full inline-block mb-1 shadow-sm">
+                            <i class="fa-solid fa-gamepad"></i> 社区互动学习环节
+                        </span>
+                        <h2 class="text-2xl font-extrabold text-amber-950">👕 社区好邻居“晒衣服/挂衣服”挑战赛</h2>
+                        <p class="text-xs md:text-sm text-amber-800">
+                            请将写着社区情境的<strong class="text-amber-900 font-bold">T-恤卡片</strong><strong class="text-emerald-700">拖拽</strong>或<strong class="text-emerald-700">点击选中后挂到</strong>正确的衣架上！
+                        </p>
+                    </div>
+                    <button onclick="resetClothesGame()" class="text-xs bg-white text-amber-900 px-4 py-2 rounded-xl border border-amber-300 hover:bg-amber-100 font-bold shadow-sm transition flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-right"></i> 重置所有衣服
+                    </button>
+                </div>
+
+                <!-- Game Racks Container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
+                    
+                    <!-- Tolerant Rack (Green) -->
+                    <div id="rack-tolerant" class="bg-emerald-50/80 border-4 border-dashed border-emerald-400 rounded-3xl p-5 min-h-[280px] flex flex-col justify-start items-center transition relative" ondragover="allowDrop(event)" ondrop="handleDrop(event, true)" onclick="tapTargetRack(true)">
+                        <div class="w-full flex items-center justify-between border-b border-emerald-200 pb-2 mb-3">
+                            <span class="bg-emerald-600 text-white font-bold text-sm px-3 py-1 rounded-xl shadow flex items-center gap-1.5">
+                                <i class="fa-solid fa-square-check"></i> 🟢 礼让大衣架 (Toleransi)
+                            </span>
+                            <span id="count-tolerant" class="text-xs font-extrabold bg-emerald-200 text-emerald-900 px-2.5 py-0.5 rounded-full">已挂: 0 件</span>
+                        </div>
+                        <p class="text-[11px] text-emerald-700 font-medium mb-3">（拖拽或点击衣服后点此挂上）</p>
+                        
+                        <!-- Wooden Bar Visual -->
+                        <div class="w-full h-3 bg-amber-700 rounded-full shadow-inner mb-4 relative">
+                            <div class="absolute left-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
+                            <div class="absolute right-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
+                        </div>
+
+                        <!-- Dropped Items list -->
+                        <div id="tolerant-clothes-container" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <!-- Hung clothes appear here -->
+                        </div>
+                    </div>
+
+                    <!-- Intolerant Rack (Red) -->
+                    <div id="rack-intolerant" class="bg-rose-50/80 border-4 border-dashed border-rose-400 rounded-3xl p-5 min-h-[280px] flex flex-col justify-start items-center transition relative" ondragover="allowDrop(event)" ondrop="handleDrop(event, false)" onclick="tapTargetRack(false)">
+                        <div class="w-full flex items-center justify-between border-b border-rose-200 pb-2 mb-3">
+                            <span class="bg-rose-600 text-white font-bold text-sm px-3 py-1 rounded-xl shadow flex items-center gap-1.5">
+                                <i class="fa-solid fa-rectangle-xmark"></i> 🔴 不礼让大衣架 (Bukan Toleransi)
+                            </span>
+                            <span id="count-intolerant" class="text-xs font-extrabold bg-rose-200 text-rose-900 px-2.5 py-0.5 rounded-full">已挂: 0 件</span>
+                        </div>
+                        <p class="text-[11px] text-rose-700 font-medium mb-3">（拖拽或点击衣服后点此挂上）</p>
+
+                        <!-- Wooden Bar Visual -->
+                        <div class="w-full h-3 bg-amber-700 rounded-full shadow-inner mb-4 relative">
+                            <div class="absolute left-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
+                            <div class="absolute right-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
+                        </div>
+
+                        <!-- Dropped Items list -->
+                        <div id="intolerant-clothes-container" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <!-- Hung clothes appear here -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Unassigned Laundry Basket / Rack Pool -->
+                <div class="bg-white rounded-2xl p-5 border border-amber-200 shadow-sm mt-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-extrabold text-amber-950 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-basket-shopping text-amber-600"></i> 待抽取的社区行为 T-恤篮子 (Laundry Basket)
+                        </h3>
+                        <span id="selected-hint" class="text-xs text-amber-700 font-bold bg-amber-100 px-3 py-1 rounded-lg">
+                            💡 提示：按衣服可直接选中，然后按上方衣架！
+                        </span>
+                    </div>
+
+                    <div id="unassigned-clothes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <!-- Dynamic Clothes Items -->
+                    </div>
+                </div>
+
+                <!-- Victory Banner -->
+                <div id="clothes-game-victory" class="hidden mt-6 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 text-white text-center shadow-xl space-y-2">
+                    <div class="text-4xl text-amber-300"><i class="fa-solid fa-trophy"></i></div>
+                    <h3 class="text-2xl font-black">全班太棒了！所有衣服成功分类完毕！</h3>
+                    <p class="text-xs md:text-sm text-teal-100">大家已经能够准确分辨社区里的礼让与不礼让行为。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: 礼让的重要性 (学习标准 14.2) -->
+        <section id="tab-importance" class="hidden space-y-6">
+            <div class="border-b border-teal-200 pb-4">
+                <span class="text-xs font-bold text-teal-600 uppercase tracking-wide">学习标准 14.2</span>
+                <h2 class="text-2xl font-extrabold text-teal-950">社区生活里礼让行为的重要性 (Kepentingan Toleransi)</h2>
+                <p class="text-sm text-slate-600">如果每个人在社区里都懂得礼让，会带来什么好处？请将鼠标悬停或触碰下方卡片翻看详解：</p>
+            </div>
+
+            <!-- Importance Flip Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="flip-card h-72">
+                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
+                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-3xl mb-1">
+                                <i class="fa-solid fa-handshake-angle"></i>
+                            </div>
+                            <span class="text-xs font-bold text-teal-600">重要性 1</span>
+                            <h3 class="font-bold text-lg text-teal-950">增进邻里感情与和谐</h3>
+                            <p class="text-xs text-slate-500">Memupuk Keharmonian Jiran</p>
+                            <span class="text-[10px] text-teal-500 font-semibold bg-teal-50 px-2.5 py-1 rounded-md border border-teal-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-teal-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
+                            <h4 class="font-bold text-amber-300 text-sm">详细说明：</h4>
+                            <p class="text-xs leading-relaxed">
+                                互相体谅与退让能减少邻里之间的误会与争吵，拉近邻居之间的关系，让住宅区充满欢声笑语。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="flip-card h-72">
+                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
+                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-3xl mb-1">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <span class="text-xs font-bold text-amber-600">重要性 2</span>
+                            <h3 class="font-bold text-lg text-teal-950">建立秩序与保障安全</h3>
+                            <p class="text-xs text-slate-500">Ketenteraman & Ketertiban</p>
+                            <span class="text-[10px] text-amber-600 font-semibold bg-amber-50 px-2.5 py-1 rounded-md border border-amber-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-amber-600 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
+                            <h4 class="font-bold text-amber-200 text-sm">详细说明：</h4>
+                            <p class="text-xs leading-relaxed">
+                                大家遵守秩序排队、在窄路减速让行，能确保公共设施顺畅运行，并大幅减少道路意外的发生。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="flip-card h-72">
+                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
+                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mb-1">
+                                <i class="fa-solid fa-house-chimney-window"></i>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-600">重要性 3</span>
+                            <h3 class="font-bold text-lg text-teal-950">打造充满关怀的温馨社区</h3>
+                            <p class="text-xs text-slate-500">Persekitaran Mesra & Penyayang</p>
+                            <span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-emerald-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
+                            <h4 class="font-bold text-emerald-200 text-sm">详细说明：</h4>
+                            <p class="text-xs leading-relaxed">
+                                礼让精神能传递温暖与人文关怀，让居民不分种族与背景，都能在这个社区里安心且舒适地生活。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="flip-card h-72">
+                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
+                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-3xl mb-1">
+                                <i class="fa-solid fa-user-graduate"></i>
+                            </div>
+                            <span class="text-xs font-bold text-indigo-600">重要性 4</span>
+                            <h3 class="font-bold text-lg text-teal-950">提升个人良好的道德修养</h3>
+                            <p class="text-xs text-slate-500">Meningkatkan Keperibadian Diri</p>
+                            <span class="text-[10px] text-indigo-600 font-semibold bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-indigo-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
+                            <h4 class="font-bold text-indigo-200 text-sm">详细说明：</h4>
+                            <p class="text-xs leading-relaxed">
+                                懂得礼让展现高尚的涵养与谦逊的品质，不仅能赢得邻里尊重，也能成为大家心中的道德楷模。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: 互动测试 - 社区礼让大侦探 -->
+        <section id="tab-quiz" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-teal-100 shadow-md">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-teal-100 pb-4 mb-6">
+                    <div>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full inline-block mb-1">
+                            巩固活动
+                        </span>
+                        <h2 class="text-2xl font-extrabold text-teal-950">测试：社区礼让大侦探 (Kuiz Detektif Toleransi)</h2>
+                        <p class="text-xs md:text-sm text-slate-600">评判以下场景：哪一个是<strong class="text-emerald-600">礼让行为（绿灯）</strong>？哪一个是<strong class="text-rose-600">缺乏礼让（红灯）</strong>？</p>
+                    </div>
+                    <div class="bg-teal-50 border border-teal-200 px-4 py-2 rounded-2xl flex items-center gap-3">
+                        <div class="text-center">
+                            <span class="text-[10px] text-teal-600 block uppercase font-bold">目前得分</span>
+                            <span id="quiz-score" class="text-2xl font-extrabold text-teal-900">0 / 6</span>
+                        </div>
+                        <button onclick="resetQuiz()" class="text-xs bg-white text-teal-700 px-3 py-1.5 rounded-lg border border-teal-200 hover:bg-teal-100 transition font-bold">
+                            <i class="fa-solid fa-rotate-right"></i> 重新测试
+                        </button>
+                    </div>
+                </div>
+
+                <div id="quiz-questions-container" class="space-y-4"></div>
+
+                <div id="quiz-completion-banner" class="hidden mt-6 p-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white text-center shadow-lg space-y-3">
+                    <div class="text-4xl"><i class="fa-solid fa-award"></i></div>
+                    <h3 class="text-2xl font-bold">太棒了！你是出色的“社区礼让大侦探”！</h3>
+                    <button onclick="resetQuiz()" class="mt-2 bg-amber-400 hover:bg-amber-300 text-teal-950 font-bold px-5 py-2 rounded-xl text-sm transition shadow">
+                        <i class="fa-solid fa-rotate-right"></i> 再玩一次
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="bg-teal-950 text-teal-200 text-xs py-4 mt-8 border-t border-teal-800">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <p class="font-bold">五年级道德教育互动学习应用 (Moral Education Year 5)</p>
+                <p class="text-[11px] text-teal-400">单元十四：《礼让之城》(辨识社区生活中的礼让行为与重要性)</p>
+            </div>
+            <div class="text-teal-400 text-[11px]">
+                适用于华小 (SJKC) • KSSR Semakan 课程
             </div>
         </div>
-
-        <template v-else>
-            <header class="bg-gradient-to-r from-rose-600 via-pink-600 to-amber-500 text-white rounded-3xl p-6 mb-6 shadow-xl relative overflow-hidden">
-                <div class="absolute -right-6 -bottom-6 opacity-15 text-9xl">
-                    <i class="fa-solid fa-gifts"></i>
-                </div>
-                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 bg-amber-300 text-rose-900 rounded-2xl flex items-center justify-center text-3xl shadow-lg font-bold border-2 border-amber-100 shrink-0">
-                            <i class="fa-solid fa-cake-candles"></i>
-                        </div>
-                        <div>
-                            <span class="bg-amber-300/30 text-amber-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">BM Tahun 5 • Penulisan Karangan</span>
-                            <h1 class="text-2xl md:text-3xl font-bold heading-font text-white mt-1">Latihan Kosa Kata & Karangan Majlis Hari Jadi</h1>
-                            <p class="text-rose-100 text-sm mt-0.5">Menaip kosa kata, ayat, dan melengkapkan perenggan karangan Bahasa Melayu</p>
-                        </div>
-                    </div>
-                    <!-- Student Info Badge -->
-                    <div class="bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/20 flex items-center gap-3 shrink-0">
-                        <i class="fa-solid fa-id-card text-amber-300 text-xl"></i>
-                        <div class="text-left">
-                            <p class="text-xs text-rose-100 uppercase tracking-wider font-semibold">Nama Murid</p>
-                            <p class="font-bold text-white text-sm md:text-base heading-font">{{ studentName }}</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <main class="space-y-6">
-                <div class="bg-white p-6 md:p-8 rounded-3xl border border-rose-100 shadow-md">
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-                        <!-- Tab Bahagian 1 -->
-                        <button @click="activeTab = 1" 
-                                :class="[
-                                    'p-3.5 rounded-2xl font-bold flex items-center justify-between transition border-2 text-left cursor-pointer',
-                                    activeTab === 1 
-                                        ? 'bg-rose-600 text-white border-rose-600 shadow-md' 
-                                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                                ]">
-                            <div class="flex items-center gap-2.5">
-                                <div :class="['w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs', activeTab === 1 ? 'bg-white/20 text-white' : 'bg-rose-100 text-rose-700']">
-                                    1
-                                </div>
-                                <div>
-                                    <p class="text-[10px] uppercase tracking-wider opacity-80">Bahagian 1</p>
-                                    <p class="text-xs md:text-sm heading-font">Kosa Kata</p>
-                                </div>
-                            </div>
-                            <span :class="['text-[11px] font-semibold px-2 py-0.5 rounded-full', activeTab === 1 ? 'bg-white/20 text-white' : 'bg-rose-100 text-rose-700']">
-                                {{ b1AnsweredCount }}/{{ items.length }}
-                            </span>
-                        </button>
-
-                        <!-- Tab Bahagian 2 -->
-                        <button @click="isB1Checked ? activeTab = 2 : null" 
-                                :disabled="!isB1Checked"
-                                :class="[
-                                    'p-3.5 rounded-2xl font-bold flex items-center justify-between transition border-2 text-left',
-                                    !isB1Checked ? 'opacity-50 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400' : 
-                                    activeTab === 2 
-                                        ? 'bg-amber-500 text-white border-amber-500 shadow-md cursor-pointer' 
-                                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 cursor-pointer'
-                                ]">
-                            <div class="flex items-center gap-2.5">
-                                <div :class="['w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs', activeTab === 2 && isB1Checked ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-800']">
-                                    <i v-if="!isB1Checked" class="fa-solid fa-lock text-slate-400"></i>
-                                    <span v-else>2</span>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] uppercase tracking-wider opacity-80">Bahagian 2</p>
-                                    <p class="text-xs md:text-sm heading-font">Soalan Ayat</p>
-                                </div>
-                            </div>
-                            <span :class="['text-[11px] font-semibold px-2 py-0.5 rounded-full', activeTab === 2 && isB1Checked ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-800']">
-                                {{ b2AnsweredCount }}/{{ sentenceItems.length }}
-                            </span>
-                        </button>
-
-                        <!-- Tab Bahagian 3 (Karangan) -->
-                        <button @click="isB2Checked ? activeTab = 3 : null" 
-                                :disabled="!isB2Checked"
-                                :class="[
-                                    'p-3.5 rounded-2xl font-bold flex items-center justify-between transition border-2 text-left',
-                                    !isB2Checked ? 'opacity-50 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400' : 
-                                    activeTab === 3 
-                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-md cursor-pointer' 
-                                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 cursor-pointer'
-                                ]">
-                            <div class="flex items-center gap-2.5">
-                                <div :class="['w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs', activeTab === 3 && isB2Checked ? 'bg-white/20 text-white' : 'bg-indigo-100 text-indigo-800']">
-                                    <i v-if="!isB2Checked" class="fa-solid fa-lock text-slate-400"></i>
-                                    <span v-else>3</span>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] uppercase tracking-wider opacity-80">Bahagian 3</p>
-                                    <p class="text-xs md:text-sm heading-font">Perenggan Karangan</p>
-                                </div>
-                            </div>
-                            <span :class="['text-[11px] font-semibold px-2 py-0.5 rounded-full', activeTab === 3 && isB2Checked ? 'bg-white/20 text-white' : 'bg-indigo-100 text-indigo-800']">
-                                {{ b3AnsweredCount }}/{{ paragraphItems.length }}
-                            </span>
-                        </button>
-
-                        <!-- Tab Keputusan & Sijil -->
-                        <button v-if="isCompleted" 
-                                @click="activeTab = 4" 
-                                :class="[
-                                    'p-3.5 rounded-2xl font-bold flex items-center justify-between transition border-2 text-left cursor-pointer',
-                                    activeTab === 4 
-                                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-md' 
-                                        : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
-                                ]">
-                            <div class="flex items-center gap-2.5">
-                                <div :class="['w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs', activeTab === 4 ? 'bg-white/20 text-white' : 'bg-emerald-200 text-emerald-900']">
-                                    <i class="fa-solid fa-award"></i>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] uppercase tracking-wider opacity-80">Keputusan</p>
-                                    <p class="text-xs md:text-sm heading-font">Sijil Penyertaan</p>
-                                </div>
-                            </div>
-                            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900">
-                                Selesai
-                            </span>
-                        </button>
-                    </div>
-
-                    <!-- Bahagian 1: Latihan Kosa Kata -->
-                    <div v-show="activeTab === 1" class="space-y-6">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-6 gap-2">
-                            <div>
-                                <h2 class="text-xl font-bold text-slate-800 heading-font flex items-center gap-2">
-                                    <i class="fa-solid fa-pen-nib text-rose-600"></i>
-                                    Bahagian 1: Latihan Kosa Kata (Maksud Bahasa Cina)
-                                </h2>
-                                <p class="text-xs text-slate-500">Sila taipkan jawapan Bahasa Melayu berdasarkan maksud Bahasa Cina.</p>
-                            </div>
-                            <span class="text-xs font-semibold px-3 py-1 bg-rose-50 text-rose-700 rounded-full border border-rose-200 self-start sm:self-center">
-                                10 Soalan Kosa Kata
-                            </span>
-                        </div>
-
-                        <div class="space-y-5">
-                            <div v-for="(item, index) in items" :key="index" class="p-4 rounded-2xl border transition"
-                                 :class="{
-                                     'bg-slate-50 border-slate-200': item.status === null,
-                                     'bg-emerald-50 border-emerald-300': item.status === 'correct',
-                                     'bg-amber-50 border-amber-300': item.status === 'partial',
-                                     'bg-rose-50 border-rose-300': item.status === 'wrong'
-                                 }">
-                                
-                                <!-- Question Header -->
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="w-7 h-7 bg-rose-100 text-rose-700 text-xs rounded-full flex items-center justify-center font-bold shrink-0">
-                                        {{ index + 1 }}
-                                    </span>
-                                    <span class="font-bold text-rose-900 text-base md:text-lg heading-font">
-                                        {{ item.zh }}
-                                    </span>
-                                </div>
-
-                                <!-- Typing Input Area -->
-                                <div class="mt-3">
-                                    <input type="text" 
-                                           v-model="item.userAnswer" 
-                                           placeholder="Taip jawapan Bahasa Melayu di sini..."
-                                           class="w-full p-3 md:p-3.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm md:text-base font-medium transition bg-white" />
-                                </div>
-
-                                <!-- Feedback Indicator -->
-                                <div class="mt-2 flex flex-wrap items-center justify-end gap-2 text-xs">
-                                    <span v-if="item.status === 'correct'" class="text-emerald-700 font-bold flex items-center gap-1">
-                                        <i class="fa-solid fa-circle-check text-emerald-600"></i> Tepat sekali!
-                                    </span>
-                                    <span v-else-if="item.status === 'partial'" class="text-amber-700 font-bold flex flex-wrap items-center gap-1">
-                                        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Hampir tepat (Semak ejaan) — <span class="text-slate-700 font-bold">Jawapan betul: <span class="text-rose-700 underline">{{ item.targetAlt ? item.target + ' / ' + item.targetAlt : item.target }}</span></span>
-                                    </span>
-                                    <span v-else-if="item.status === 'wrong'" class="text-rose-700 font-bold flex flex-wrap items-center gap-1">
-                                        <i class="fa-solid fa-circle-xmark text-rose-600"></i> Salah — <span class="text-slate-700 font-bold">Jawapan betul: <span class="text-rose-700 underline">{{ item.targetAlt ? item.target + ' / ' + item.targetAlt : item.target }}</span></span>
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- Butang Berasingan: Semak Bahagian 1 & Teruskan ke Bahagian 2 -->
-                        <div class="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3">
-                            <button @click="semakBahagian1" 
-                                    :disabled="!isB1AllAnswered"
-                                    :class="[
-                                        'w-full sm:w-auto font-bold px-6 py-3.5 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-md',
-                                        isB1AllAnswered ? 'bg-rose-600 hover:bg-rose-700 text-white cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                                    ]">
-                                <i class="fa-solid fa-circle-check"></i>
-                                <span>Semak Bahagian 1</span>
-                            </button>
-
-                            <button @click="activeTab = 2" 
-                                    :disabled="!isB1Checked"
-                                    :class="[
-                                        'w-full sm:w-auto font-bold px-6 py-3.5 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-md',
-                                        isB1Checked ? 'bg-amber-500 hover:bg-amber-600 text-white cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                                    ]">
-                                <span>Teruskan ke Bahagian 2</span>
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Bahagian 2: Latihan Mengisi Tempat Kosong Dalam Ayat -->
-                    <div v-show="activeTab === 2" class="space-y-6">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-6 gap-2">
-                            <div>
-                                <h2 class="text-xl font-bold text-slate-800 heading-font flex items-center gap-2">
-                                    <i class="fa-solid fa-file-lines text-rose-600"></i>
-                                    Bahagian 2: Latihan Mengisi Tempat Kosong Dalam Ayat
-                                </h2>
-                                <p class="text-xs text-slate-500">Isi tempat kosong dalam ayat berikut dengan kosa kata yang betul.</p>
-                            </div>
-                            <span class="text-xs font-semibold px-3 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-200 self-start sm:self-center">
-                                10 Soalan Ayat
-                            </span>
-                        </div>
-
-                        <div class="space-y-5">
-                            <div v-for="(sItem, index) in sentenceItems" :key="'s-'+index" class="p-4 rounded-2xl border transition"
-                                 :class="{
-                                     'bg-slate-50 border-slate-200': sItem.status === null,
-                                     'bg-emerald-50 border-emerald-300': sItem.status === 'correct',
-                                     'bg-amber-50 border-amber-300': sItem.status === 'partial',
-                                     'bg-rose-50 border-rose-300': sItem.status === 'wrong'
-                                 }">
-                                
-                                <!-- Question Header -->
-                                <div class="flex items-start gap-2 mb-3">
-                                    <span class="w-7 h-7 bg-amber-100 text-amber-800 text-xs rounded-full flex items-center justify-center font-bold shrink-0 mt-0.5">
-                                        {{ index + 1 }}
-                                    </span>
-                                    <div class="text-slate-800 text-base md:text-lg leading-relaxed font-medium">
-                                        <span>{{ sItem.sentenceBefore }}</span>
-                                        <span class="inline-block px-2 py-0.5 mx-1 font-bold text-rose-700 bg-rose-100/60 rounded border border-rose-200 text-sm">
-                                            _____ {{ sItem.zh }} _____
-                                        </span>
-                                        <span>{{ sItem.sentenceAfter }}</span>
-                                    </div>
-                                </div>
-
-                                <!-- Typing Input Area -->
-                                <div class="mt-2">
-                                    <input type="text" 
-                                           v-model="sItem.userAnswer" 
-                                           placeholder="Taip jawapan untuk mengisi tempat kosong..."
-                                           class="w-full p-3 md:p-3.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm md:text-base font-medium transition bg-white" />
-                                </div>
-
-                                <!-- Feedback Indicator -->
-                                <div class="mt-2 flex flex-wrap items-center justify-end gap-2 text-xs">
-                                    <span v-if="sItem.status === 'correct'" class="text-emerald-700 font-bold flex items-center gap-1">
-                                        <i class="fa-solid fa-circle-check text-emerald-600"></i> Tepat sekali!
-                                    </span>
-                                    <span v-else-if="sItem.status === 'partial'" class="text-amber-700 font-bold flex flex-wrap items-center gap-1">
-                                        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Hampir tepat (Semak ejaan) — <span class="text-slate-700 font-bold">Jawapan betul: <span class="text-rose-700 underline">{{ sItem.targetAlt ? sItem.target + ' / ' + sItem.targetAlt : sItem.target }}</span></span>
-                                    </span>
-                                    <span v-else-if="sItem.status === 'wrong'" class="text-rose-700 font-bold flex flex-wrap items-center gap-1">
-                                        <i class="fa-solid fa-circle-xmark text-rose-600"></i> Salah — <span class="text-slate-700 font-bold">Jawapan betul: <span class="text-rose-700 underline">{{ sItem.targetAlt ? sItem.target + ' / ' + sItem.targetAlt : sItem.target }}</span></span>
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- Button Controls for Bahagian 2 -->
-                        <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-                            <button @click="activeTab = 1" class="w-full sm:w-auto bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-6 py-3.5 rounded-2xl transition text-sm flex items-center justify-center gap-2 cursor-pointer">
-                                <i class="fa-solid fa-arrow-left"></i>
-                                <span>Kembali ke Bahagian 1</span>
-                            </button>
-
-                            <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                                <button @click="semakBahagian2" 
-                                        :disabled="!isB2AllAnswered"
-                                        :class="[
-                                            'w-full sm:w-auto font-bold px-6 py-3.5 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-md',
-                                            isB2AllAnswered ? 'bg-amber-600 hover:bg-amber-700 text-white cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                                        ]">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span>Semak Bahagian 2</span>
-                                </button>
-
-                                <button @click="activeTab = 3" 
-                                        :disabled="!isB2Checked"
-                                        :class="[
-                                            'w-full sm:w-auto font-bold px-6 py-3.5 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-md',
-                                            isB2Checked ? 'bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                                        ]">
-                                    <span>Teruskan ke Bahagian 3</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- BAHAGIAN 3: MELENGKAPKAN PERENGGAN KARANGAN MAJLIS HARI JADI -->
-                    <div v-show="activeTab === 3" class="space-y-6">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-6 gap-2">
-                            <div>
-                                <h2 class="text-xl font-bold text-slate-800 heading-font flex items-center gap-2">
-                                    <i class="fa-solid fa-book-open text-indigo-600"></i>
-                                    Bahagian 3: Melengkapkan Perenggan Karangan Majlis Hari Jadi
-                                </h2>
-                                <p class="text-xs text-slate-500">Baca perenggan karangan di bawah. Taip frasa / ayat yang betul ke dalam petak jawapan berpandukan Bank Pilihan Jawapan.</p>
-                            </div>
-                            <span class="text-xs font-semibold px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200 self-start sm:self-center">
-                                Perenggan Karangan (10 Tempat Kosong)
-                            </span>
-                        </div>
-
-                        <!-- ESSAY PARAGRAPH CARD -->
-                        <div class="p-6 md:p-8 bg-indigo-50/50 rounded-3xl border-2 border-indigo-100 shadow-sm leading-loose text-slate-800 space-y-6">
-                            
-                            <div class="text-center pb-3 border-b border-indigo-100">
-                                <h3 class="text-lg md:text-xl font-bold heading-font text-indigo-900 uppercase tracking-wide">
-                                    <i class="fa-solid fa-cake-candles text-amber-500 mr-2"></i>
-                                    Karangan: Sambutan Majlis Hari Jadi Ali
-                                </h3>
-                            </div>
-
-                            <div class="space-y-5 text-sm md:text-base">
-                                <p class="indent-8 leading-relaxed">
-                                    Pada hari Ahad yang lalu, Ali mengadakan majlis hari jadi untuk 
-                                    
-                                    <!-- Blank 1 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(1)</span>
-                                        <input type="text" v-model="paragraphItems[0].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-                                    
-                                    hari lahirnya yang ke-11. Dia 
-
-                                    <!-- Blank 2 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(2)</span>
-                                        <input type="text" v-model="paragraphItems[1].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    rapat ke rumahnya. Ali berasa amat gembira apabila 
-
-                                    <!-- Blank 3 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(3)</span>
-                                        <input type="text" v-model="paragraphItems[2].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    daripada kawan-kawannya.
-                                </p>
-
-                                <p class="indent-8 leading-relaxed">
-                                    Sebelum acara memotong kek, semua tetamu berdiri mengelilingi meja sambil 
-
-                                    <!-- Blank 4 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(4)</span>
-                                        <input type="text" v-model="paragraphItems[3].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    dengan gembira. Selepas itu, Ali 
-
-                                    <!-- Blank 5 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(5)</span>
-                                        <input type="text" v-model="paragraphItems[4].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    di atas keknya. Ibu membantu Ali 
-
-                                    <!-- Blank 6 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(6)</span>
-                                        <input type="text" v-model="paragraphItems[5].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    untuk diagihkan kepada tetamu. Semua orang 
-
-                                    <!-- Blank 7 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(7)</span>
-                                        <input type="text" v-model="paragraphItems[6].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    dengan meriah sekali.
-                                </p>
-
-                                <p class="indent-8 leading-relaxed">
-                                    Seterusnya, para jemputan dipelawa untuk 
-
-                                    <!-- Blank 8 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(8)</span>
-                                        <input type="text" v-model="paragraphItems[7].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    yang lazat di atas meja. Sebelum bersurai, mereka sempat 
-
-                                    <!-- Blank 9 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(9)</span>
-                                        <input type="text" v-model="paragraphItems[8].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    bersama-sama. Suasana sepanjang majlis hari jadi Ali sungguh 
-
-                                    <!-- Blank 10 -->
-                                    <span class="inline-block my-1 mx-1">
-                                        <span class="text-xs font-bold bg-indigo-200 text-indigo-900 px-2 py-0.5 rounded-full mr-1">(10)</span>
-                                        <input type="text" v-model="paragraphItems[9].userAnswer" placeholder="Taip jawapan..." 
-                                               class="px-3 py-1.5 border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-semibold text-rose-700 bg-white shadow-sm text-sm" />
-                                    </span>
-
-                                    dan menggembirakan.
-                                </p>
-                            </div>
-
-                            <!-- Feedback Indicators for Paragraph Blanks -->
-                            <div v-if="isB3Checked" class="pt-4 border-t border-indigo-100 space-y-2 text-xs">
-                                <h4 class="font-bold text-indigo-900 text-sm mb-2">Maklum Balas Semakan Bahagian 3:</h4>
-                                <div v-for="(pItem, idx) in paragraphItems" :key="'p-feed-'+idx" class="flex flex-wrap items-center justify-between p-2 rounded-lg"
-                                     :class="pItem.status === 'correct' ? 'bg-emerald-100/60 text-emerald-900' : (pItem.status === 'partial' ? 'bg-amber-100/60 text-amber-900' : 'bg-rose-100/60 text-rose-900')">
-                                    <span><strong>Ruang {{ idx + 1 }}:</strong> {{ pItem.userAnswer || '(Tiada Jawapan)' }}</span>
-                                    <span v-if="pItem.status === 'correct'" class="font-bold text-emerald-700"><i class="fa-solid fa-circle-check"></i> Tepat!</span>
-                                    <span v-else class="font-bold text-rose-700"><i class="fa-solid fa-circle-xmark"></i> Jawapan betul: {{ pItem.targetAlt ? pItem.target + ' / ' + pItem.targetAlt : pItem.target }}</span>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- OPTIONS BANK / BANK PILIHAN JAWAPAN -->
-                        <div class="p-6 bg-amber-50 rounded-3xl border-2 border-amber-200 shadow-sm space-y-3">
-                            <div class="flex items-center gap-2 text-amber-900 font-bold heading-font text-base">
-                                <i class="fa-solid fa-list-check text-amber-600 text-lg"></i>
-                                <span>Bank Pilihan Jawapan / Frasa (Rujukan Karangan)</span>
-                            </div>
-                            <p class="text-xs text-amber-800">Pilih dan taipkan kosa kata / frasa yang betul mengikut nombor soalan di dalam perenggan karangan di atas:</p>
-                            
-                            <div class="flex flex-wrap gap-2 pt-2">
-                                <div v-for="(opt, idx) in optionBank" :key="'opt-'+idx" 
-                                     class="px-3.5 py-2 bg-white text-slate-800 font-semibold text-xs md:text-sm rounded-xl border border-amber-300 shadow-sm flex items-center gap-2 hover:border-amber-500 transition">
-                                    <span class="w-5 h-5 bg-amber-200 text-amber-900 text-[10px] font-bold rounded-full flex items-center justify-center">{{ idx + 1 }}</span>
-                                    <span>{{ opt }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Button Controls for Bahagian 3 -->
-                        <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-                            <button @click="activeTab = 2" class="w-full sm:w-auto bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-6 py-3.5 rounded-2xl transition text-sm flex items-center justify-center gap-2 cursor-pointer">
-                                <i class="fa-solid fa-arrow-left"></i>
-                                <span>Kembali ke Bahagian 2</span>
-                            </button>
-
-                            <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                                <button @click="semakBahagian3" 
-                                        :disabled="!isB3AllAnswered"
-                                        :class="[
-                                            'w-full sm:w-auto font-bold px-6 py-3.5 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-md',
-                                            isB3AllAnswered ? 'bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                                        ]">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span>Semak Bahagian 3</span>
-                                </button>
-
-                                <button @click="janaSijil" 
-                                        :disabled="!isB3Checked"
-                                        :class="[
-                                            'w-full sm:w-auto font-bold px-6 py-3.5 rounded-2xl transition text-sm flex items-center justify-center gap-2 shadow-md',
-                                            isB3Checked ? 'bg-rose-600 hover:bg-rose-700 text-white cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                                        ]">
-                                    <span>Hasilkan Sijil & Lihat Keputusan</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- BAHAGIAN 4: PAPARAN KHAS SIJIL & KEPUTUSAN (Hanya muncul selepas Semua Bahagian selesai) -->
-                    <div v-show="activeTab === 4 && isCompleted" class="space-y-6">
-                        
-                        <!-- Header Tahniah -->
-                        <div class="bg-emerald-50 border border-emerald-200 p-6 rounded-3xl text-center space-y-2">
-                            <span class="inline-block p-3 bg-emerald-100 text-emerald-700 rounded-full text-2xl mb-1">
-                                <i class="fa-solid fa-circle-check"></i>
-                            </span>
-                            <h2 class="text-2xl font-bold text-emerald-900 heading-font">Tahniah, {{ studentName }}!</h2>
-                            <p class="text-sm text-emerald-700">Anda telah berjaya menyelesaikan Bahagian 1 (Kosa Kata), Bahagian 2 (Ayat), dan Bahagian 3 (Perenggan Karangan)!</p>
-                        </div>
-
-                        <!-- Sijil Penyertaan Section -->
-                        <div id="sijil-container" class="p-6 md:p-8 bg-amber-50 rounded-3xl border-4 border-double border-amber-400 text-center relative overflow-hidden shadow-xl">
-                            <div class="relative z-10 space-y-4">
-                                <div class="inline-block p-3 bg-amber-400 text-rose-950 rounded-full shadow-lg">
-                                    <i class="fa-solid fa-award text-4xl md:text-5xl"></i>
-                                </div>
-
-                                <p class="text-xs uppercase tracking-widest font-bold text-amber-800">Modul Pembelajaran Bahasa Melayu Tahun 5</p>
-                                
-                                <h3 class="text-2xl md:text-4xl font-extrabold heading-font text-rose-900 uppercase tracking-wide">
-                                    Sijil Penyertaan
-                                </h3>
-
-                                <p class="text-slate-600 text-sm md:text-base italic">Dengan ini disahkan bahawa</p>
-
-                                <div class="py-2">
-                                    <span class="text-2xl md:text-3xl font-bold text-rose-700 heading-font border-b-2 border-amber-400 pb-1 px-6 inline-block">
-                                        {{ studentName }}
-                                    </span>
-                                </div>
-
-                                <p class="text-slate-700 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-                                    telah berjaya menyelesaikan **Latihan Menaip Kosa Kata & Karangan Majlis Hari Jadi** dengan cemerlang dan tekun.
-                                </p>
-
-                                <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 text-xs text-slate-500 border-t border-amber-200 max-w-md mx-auto">
-                                    <div>
-                                        <span class="font-semibold block text-slate-700">Tarikh Penyelesaian:</span>
-                                        <span>{{ tarikhPenyelesaian }}</span>
-                                    </div>
-                                    <div class="hidden sm:block text-amber-400">•</div>
-                                    <div>
-                                        <span class="font-semibold block text-slate-700">Status:</span>
-                                        <span class="text-emerald-600 font-bold">Lulus & Tamat</span>
-                                    </div>
-                                </div>
-
-                                <div class="pt-2" data-html2canvas-ignore="true">
-                                    <button @click="muatTurunSijil" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-xl shadow transition text-xs md:text-sm inline-flex items-center gap-2 cursor-pointer">
-                                        <i class="fa-solid fa-download"></i>
-                                        <span>Muat Turun Sijil (PDF)</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bahagian Salin Keputusan untuk Guru -->
-                        <div class="p-6 bg-slate-900 text-white rounded-3xl shadow-xl space-y-4">
-                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
-                                <div>
-                                    <h3 class="text-lg font-bold heading-font flex items-center gap-2 text-amber-400">
-                                        <i class="fa-solid fa-clipboard-check"></i>
-                                        Salin Keputusan untuk Hantar Kepada Guru
-                                    </h3>
-                                    <p class="text-xs text-slate-400 mt-0.5">Tekan butang di bawah untuk menyalin ringkasan jawapan Bahagian 1, 2, & 3.</p>
-                                </div>
-                                <button @click="salinKeputusan" 
-                                        class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow cursor-pointer shrink-0">
-                                    <i :class="isCopied ? 'fa-solid fa-check text-emerald-950' : 'fa-solid fa-copy'"></i>
-                                    <span>{{ isCopied ? 'Keputusan Berjaya Disalin!' : 'Salin Keputusan' }}</span>
-                                </button>
-                            </div>
-
-                            <!-- Text Area Preview Keputusan -->
-                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs md:text-sm font-mono text-slate-300 max-h-56 overflow-y-auto leading-relaxed">
-                                <p class="font-bold text-amber-400">=== KEPUTUSAN LATIHAN HARI JADI (BM TAHUN 5) ===</p>
-                                <p>Nama Murid: <span class="text-white font-bold">{{ studentName }}</span></p>
-                                <p>Tarikh: {{ tarikhPenyelesaian }}</p>
-                                <p class="mt-2 font-bold text-rose-400">[ Bahagian 1: Latihan Kosa Kata ]</p>
-                                <p v-for="(item, idx) in items" :key="'copy-b1-'+idx">
-                                    {{ idx + 1 }}. [{{ item.zh }}] : {{ item.userAnswer || '-' }} ({{ item.status === 'correct' ? '✓ BETUL' : (item.status === 'partial' ? '⚠ HAMPIR TEPAT' : '✗ SALAH') }})
-                                </p>
-                                <p class="mt-2 font-bold text-amber-400">[ Bahagian 2: Mengisi Tempat Kosong Dalam Ayat ]</p>
-                                <p v-for="(sItem, idx) in sentenceItems" :key="'copy-b2-'+idx">
-                                    {{ idx + 1 }}. [{{ sItem.zh }}] : {{ sItem.userAnswer || '-' }} ({{ sItem.status === 'correct' ? '✓ BETUL' : (sItem.status === 'partial' ? '⚠ HAMPIR TEPAT' : '✗ SALAH') }})
-                                </p>
-                                <p class="mt-2 font-bold text-indigo-400">[ Bahagian 3: Perenggan Karangan ]</p>
-                                <p v-for="(pItem, idx) in paragraphItems" :key="'copy-b3-'+idx">
-                                    {{ idx + 1 }}. [Ruang {{ idx + 1 }}] : {{ pItem.userAnswer || '-' }} ({{ pItem.status === 'correct' ? '✓ BETUL' : (pItem.status === 'partial' ? '⚠ HAMPIR TEPAT' : '✗ SALAH') }})
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Himpunan Kosa Kata -->
-                        <div class="p-6 bg-gradient-to-br from-rose-50 to-pink-50 rounded-3xl border border-rose-200 shadow-inner">
-                            <h3 class="text-lg font-bold text-rose-900 heading-font mb-3 flex items-center gap-2">
-                                <i class="fa-solid fa-list-check text-amber-500"></i>
-                                Himpunan Kosa Kata Majlis Hari Jadi
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-white p-4 rounded-2xl border border-rose-100 shadow-sm text-sm md:text-base font-medium">
-                                <div v-for="(i, idx) in items" :key="idx" class="p-2 border-b border-slate-100 flex items-center gap-2">
-                                    <span class="w-6 h-6 rounded-full bg-rose-100 text-rose-700 text-xs font-bold flex items-center justify-center shrink-0">{{ idx + 1 }}</span>
-                                    <span class="text-slate-800 font-semibold">{{ i.target }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Butang Semula -->
-                        <div class="pt-4 flex justify-center">
-                            <button @click="resetForm" class="bg-slate-200 text-slate-700 font-bold px-8 py-3.5 rounded-2xl hover:bg-slate-300 transition flex items-center justify-center gap-2 cursor-pointer">
-                                <i class="fa-solid fa-rotate-right"></i>
-                                <span>Padam & Mulakan Semula</span>
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
-            </main>
-        </template>
-
-        <footer class="mt-auto pt-6 text-center text-xs text-slate-400">
-            <p>© Modul Pembelajaran Bahasa Melayu Tahun 5 • Majlis Hari Jadi (生日会)</p>
-        </footer>
-
-    </div>
+    </footer>
 
     <script>
-        const { createApp } = Vue;
-
-        createApp({
-            data() {
-                return {
-                    activeTab: 1,
-                    studentName: '',
-                    isNameEntered: false,
-                    isB1Checked: false,
-                    isB2Checked: false,
-                    isB3Checked: false,
-                    isCompleted: false,
-                    isCopied: false,
-                    tarikhPenyelesaian: '',
-                    
-                    // Bank Jawapan untuk Karangan (Bahagian 3)
-                    optionBank: [
-                        'meraikan',
-                        'mengajak kawan',
-                        'menerima hadiah / membawa hadiah',
-                        'menyanyikan lagu hari jadi',
-                        'meniup lilin',
-                        'memotong kek',
-                        'bertepuk tangan',
-                        'menikmati makanan',
-                        'mengambil gambar sebagai kenangan',
-                        'meriah'
-                    ],
-
-                    // 10 items directly based on provided vocabulary image
-                    items: [
-                        { title: 'meraikan', zh: '庆祝', target: 'meraikan', userAnswer: '', status: null },
-                        { title: 'mengajak kawan', zh: '邀请朋友', target: 'mengajak kawan', userAnswer: '', status: null },
-                        { title: 'menerima hadiah / membawa hadiah', zh: '接受礼物 // 带礼物', target: 'menerima hadiah', targetAlt: 'membawa hadiah', userAnswer: '', status: null },
-                        { title: 'menyanyikan lagu hari jadi', zh: '唱生日歌', target: 'menyanyikan lagu hari jadi', userAnswer: '', status: null },
-                        { title: 'meniup lilin', zh: '吹蜡烛', target: 'meniup lilin', userAnswer: '', status: null },
-                        { title: 'memotong kek', zh: '切蛋糕', target: 'memotong kek', userAnswer: '', status: null },
-                        { title: 'bertepuk tangan', zh: '拍手', target: 'bertepuk tangan', userAnswer: '', status: null },
-                        { title: 'menikmati makanan', zh: '享用食物', target: 'menikmati makanan', userAnswer: '', status: null },
-                        { title: 'mengambil gambar sebagai kenangan', zh: '拍照为了作纪念 / 回忆', target: 'mengambil gambar sebagai kenangan', userAnswer: '', status: null },
-                        { title: 'meriah', zh: '热闹，愉快的', target: 'meriah', userAnswer: '', status: null }
-                    ],
-
-                    // Bahagian 2: Soalan Ayat
-                    sentenceItems: [
-                        { sentenceBefore: 'Ali mengadakan majlis hari jadi untuk ', sentenceAfter: ' hari lahirnya yang ke-11.', zh: '庆祝', target: 'meraikan', userAnswer: '', status: null },
-                        { sentenceBefore: 'Mei Ling ', sentenceAfter: ' ke rumahnya untuk meraikan majlis tersebut.', zh: '邀请朋友', target: 'mengajak kawan', userAnswer: '', status: null },
-                        { sentenceBefore: 'Siti amat gembira kerana dapat ', sentenceAfter: ' daripada rakan-rakannya.', zh: '接受礼物 // 带礼物', target: 'menerima hadiah', targetAlt: 'membawa hadiah', userAnswer: '', status: null },
-                        { sentenceBefore: 'Para tetamu berdiri mengelilingi meja sambil ', sentenceAfter: '.', zh: '唱生日歌', target: 'menyanyikan lagu hari jadi', userAnswer: '', status: null },
-                        { sentenceBefore: 'Gabriel ', sentenceAfter: ' yang dinyalakan di atas kek dengan perlahan-lahan.', zh: '吹蜡烛', target: 'meniup lilin', userAnswer: '', status: null },
-                        { sentenceBefore: 'Ibu membantu Gabriel ', sentenceAfter: ' untuk diagihkan kepada para tetamu.', zh: '切蛋糕', target: 'memotong kek', userAnswer: '', status: null },
-                        { sentenceBefore: 'Semua kawan ', sentenceAfter: ' dengan gembira selepas lagu hari jadi dinyanyikan.', zh: '拍手', target: 'bertepuk tangan', userAnswer: '', status: null },
-                        { sentenceBefore: 'Para jemputan ', sentenceAfter: ' yang lazat di atas meja.', zh: '享用食物', target: 'menikmati makanan', userAnswer: '', status: null },
-                        { sentenceBefore: 'Kami ', sentenceAfter: ' bersama-sama sebelum pulang ke rumah.', zh: '拍照为了作纪念 / 回忆', target: 'mengambil gambar sebagai kenangan', userAnswer: '', status: null },
-                        { sentenceBefore: 'Suasana majlis hari jadi itu sungguh ', sentenceAfter: ' dan menyeronokkan.', zh: '热闹，愉快的', target: 'meriah', userAnswer: '', status: null }
-                    ],
-
-                    // Bahagian 3: Items in Essay Paragraph
-                    paragraphItems: [
-                        { zh: '庆祝', target: 'meraikan', userAnswer: '', status: null },
-                        { zh: '邀请朋友', target: 'mengajak kawan', userAnswer: '', status: null },
-                        { zh: '接受礼物 // 带礼物', target: 'menerima hadiah', targetAlt: 'membawa hadiah', userAnswer: '', status: null },
-                        { zh: '唱生日歌', target: 'menyanyikan lagu hari jadi', userAnswer: '', status: null },
-                        { zh: '吹蜡烛', target: 'meniup lilin', userAnswer: '', status: null },
-                        { zh: '切蛋糕', target: 'memotong kek', userAnswer: '', status: null },
-                        { zh: '拍手', target: 'bertepuk tangan', userAnswer: '', status: null },
-                        { zh: '享用食物', target: 'menikmati makanan', userAnswer: '', status: null },
-                        { zh: '拍照为了作纪念 / 回忆', target: 'mengambil gambar sebagai kenangan', userAnswer: '', status: null },
-                        { zh: '热闹，愉快的', target: 'meriah', userAnswer: '', status: null }
-                    ]
-                }
+        /* SCENARIO DATA DEFINITIONS WITH CUTE SVG VECTOR GRAPHICS */
+        const scenariosData = {
+            'A': {
+                code: '场景 A',
+                title: '公共交通与设施 (Pengangkutan Awam)',
+                icon: 'fa-bus',
+                color: 'teal',
+                bgGradient: 'from-teal-600 to-cyan-700',
+                situation: '社区巴士站 (Stesen Bas Komuniti)',
+                // Cute primary-school vector SVG illustration
+                svgGraphic: `
+                    <svg viewBox="0 0 400 250" class="w-full h-full bg-sky-100 rounded-xl">
+                        <!-- Sky Background & Clouds -->
+                        <rect width="400" height="250" fill="#e0f2fe"/>
+                        <circle cx="80" cy="50" r="25" fill="#ffffff" opacity="0.9"/>
+                        <circle cx="105" cy="50" r="18" fill="#ffffff" opacity="0.9"/>
+                        <circle cx="300" cy="40" r="22" fill="#ffffff" opacity="0.8"/>
+                        <!-- Cute Yellow Bus -->
+                        <rect x="180" y="80" width="180" height="110" rx="20" fill="#f59e0b"/>
+                        <rect x="195" y="95" width="45" height="35" rx="5" fill="#38bdf8"/>
+                        <rect x="250" y="95" width="45" height="35" rx="5" fill="#38bdf8"/>
+                        <rect x="305" y="95" width="40" height="35" rx="5" fill="#38bdf8"/>
+                        <circle cx="220" cy="190" r="16" fill="#334155"/>
+                        <circle cx="220" cy="190" r="6" fill="#94a3b8"/>
+                        <circle cx="320" cy="190" r="16" fill="#334155"/>
+                        <circle cx="320" cy="190" r="6" fill="#94a3b8"/>
+                        <!-- Bus Stop Sign -->
+                        <rect x="130" y="110" width="8" height="90" fill="#64748b"/>
+                        <circle cx="134" cy="100" r="22" fill="#0284c7"/>
+                        <text x="134" y="105" font-size="12" fill="white" font-weight="bold" text-anchor="middle">BUS</text>
+                        <!-- Cute Queuing Students & Elderly Person -->
+                        <!-- Elderly -->
+                        <circle cx="45" cy="140" r="12" fill="#fde047"/>
+                        <circle cx="45" cy="135" r="11" fill="#cbd5e1"/> <!-- Grey Hair -->
+                        <rect x="38" y="152" width="14" height="35" rx="5" fill="#0284c7"/>
+                        <!-- Student 1 -->
+                        <circle cx="75" cy="150" r="10" fill="#fca5a5"/>
+                        <rect x="70" y="160" width="10" height="28" rx="4" fill="#16a34a"/>
+                        <!-- Student 2 -->
+                        <circle cx="100" cy="152" r="10" fill="#fed7aa"/>
+                        <rect x="95" y="162" width="10" height="26" rx="4" fill="#9333ea"/>
+                        <!-- Ground -->
+                        <rect x="0" y="195" width="400" height="55" fill="#475569"/>
+                        <rect x="0" y="200" width="400" height="6" fill="#e2e8f0"/>
+                    </svg>
+                `,
+                imageCaption: '可爱卡通：排队上车与礼让长者',
+                description: '在社区巴士站等候拥挤的巴士时，大家都在排队。此时有一位行动不便的老爷爷缓慢地走向巴士门。',
+                action: '遵守秩序按顺序排队上车，并主动礼让老爷爷优先上车，上车后主动让座。',
+                whyImportant: '确保上车秩序与安全，避免拥挤跌倒，展现对邻里长者的关心与尊重。',
+                badgeText: '排队上车 & 主动让座'
             },
-            computed: {
-                b1AnsweredCount() {
-                    return this.items.filter(item => item.userAnswer && item.userAnswer.trim().length > 0).length;
-                },
-                b2AnsweredCount() {
-                    return this.sentenceItems.filter(item => item.userAnswer && item.userAnswer.trim().length > 0).length;
-                },
-                b3AnsweredCount() {
-                    return this.paragraphItems.filter(item => item.userAnswer && item.userAnswer.trim().length > 0).length;
-                },
-                isB1AllAnswered() {
-                    return this.items.every(item => item.userAnswer && item.userAnswer.trim().length > 0);
-                },
-                isB2AllAnswered() {
-                    return this.sentenceItems.every(item => item.userAnswer && item.userAnswer.trim().length > 0);
-                },
-                isB3AllAnswered() {
-                    return this.paragraphItems.every(item => item.userAnswer && item.userAnswer.trim().length > 0);
-                },
-                isAllAnswered() {
-                    return this.isB1AllAnswered && this.isB2AllAnswered && this.isB3AllAnswered;
-                }
+            'B': {
+                code: '场景 B',
+                title: '社区道路与游乐场 (Jalan Raya & Taman)',
+                icon: 'fa-car-side',
+                color: 'amber',
+                bgGradient: 'from-amber-600 to-orange-700',
+                situation: '住宅区狭窄道路与公园乒乓球台',
+                svgGraphic: `
+                    <svg viewBox="0 0 400 250" class="w-full h-full bg-emerald-100 rounded-xl">
+                        <rect width="400" height="250" fill="#dcfce7"/>
+                        <!-- Trees & Park Background -->
+                        <circle cx="60" cy="90" r="40" fill="#22c55e"/>
+                        <rect x="52" y="130" width="16" height="50" fill="#78350f"/>
+                        <circle cx="340" cy="80" r="45" fill="#16a34a"/>
+                        <rect x="332" y="125" width="16" height="55" fill="#78350f"/>
+                        <!-- Narrow Lane / Road -->
+                        <path d="M 0 190 Q 200 170 400 190 L 400 250 L 0 250 Z" fill="#64748b"/>
+                        <!-- Blue Car Waiting Kindly -->
+                        <rect x="50" y="180" width="90" height="45" rx="12" fill="#3b82f6"/>
+                        <circle cx="70" cy="225" r="10" fill="#1e293b"/>
+                        <circle cx="120" cy="225" r="10" fill="#1e293b"/>
+                        <text x="95" y="200" font-size="10" fill="white" font-weight="bold" text-anchor="middle">礼让中</text>
+                        <!-- Red Car Passing Safely -->
+                        <rect x="250" y="180" width="90" height="45" rx="12" fill="#ef4444"/>
+                        <circle cx="270" cy="225" r="10" fill="#1e293b"/>
+                        <circle cx="320" cy="225" r="10" fill="#1e293b"/>
+                        <!-- Park Pingpong Table -->
+                        <rect x="150" y="100" width="100" height="50" fill="#0284c7" rx="4"/>
+                        <rect x="198" y="90" width="4" height="20" fill="#ffffff"/> <!-- Net -->
+                        <rect x="160" y="150" width="6" height="30" fill="#334155"/>
+                        <rect x="234" y="150" width="6" height="30" fill="#334155"/>
+                        <!-- Kids playing happily -->
+                        <circle cx="130" cy="115" r="10" fill="#fca5a5"/>
+                        <circle cx="270" cy="115" r="10" fill="#fed7aa"/>
+                    </svg>
+                `,
+                imageCaption: '可爱卡通：窄路减速让行 & 游乐设施共享',
+                description: '在狭窄的住宅区巷子里，两辆汽车迎面相驶；而在公园里，有许多小朋友排队等着玩乒乓球。',
+                action: '驾驶者减速并将车停在较宽处礼让对面车辆先行；玩乒乓球时限定时间，主动让其他人轮流玩。',
+                whyImportant: '避免交通堵塞与碰撞事故，确保所有居民都能公平享受社区公共设施。',
+                badgeText: '窄路让行 & 轮流共享'
             },
-            methods: {
-                masukAplikasi() {
-                    if (this.studentName.trim()) {
-                        this.isNameEntered = true;
-                    }
-                },
-                normalizeText(str) {
-                    if (!str) return '';
-                    return str
-                        .toLowerCase()
-                        .replace(/[^a-z0-9]/g, '') // Membuang simbol & ruang
-                        .trim();
-                },
-                checkList(list) {
-                    list.forEach(item => {
-                        const userNorm = this.normalizeText(item.userAnswer);
-                        const targetNorm = this.normalizeText(item.target);
-                        const targetAltNorm = item.targetAlt ? this.normalizeText(item.targetAlt) : '';
-
-                        if (!userNorm) {
-                            item.status = 'wrong';
-                        } else if (userNorm === targetNorm || (targetAltNorm && userNorm === targetAltNorm)) {
-                            item.status = 'correct';
-                        } else if (userNorm.length > 3 && (targetNorm.includes(userNorm) || userNorm.includes(targetNorm) || (targetAltNorm && targetAltNorm.includes(userNorm)))) {
-                            item.status = 'partial';
-                        } else {
-                            item.status = 'wrong';
-                        }
-                    });
-                },
-                semakBahagian1() {
-                    if (!this.isB1AllAnswered) return;
-                    this.checkList(this.items);
-                    this.isB1Checked = true;
-                },
-                semakBahagian2() {
-                    if (!this.isB2AllAnswered) return;
-                    this.checkList(this.sentenceItems);
-                    this.isB2Checked = true;
-                },
-                semakBahagian3() {
-                    if (!this.isB3AllAnswered) return;
-                    this.checkList(this.paragraphItems);
-                    this.isB3Checked = true;
-                },
-                janaSijil() {
-                    if (!this.isB3Checked) return;
-                    
-                    const today = new Date();
-                    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                    this.tarikhPenyelesaian = today.toLocaleDateString('ms-MY', options);
-                    
-                    this.isCompleted = true;
-                    this.activeTab = 4; // Alih ke Tab Sijil & Keputusan secara automatik
-
-                    // Muat turun sijil secara automatik selepas DOM selesai dirender
-                    this.$nextTick(() => {
-                        setTimeout(() => {
-                            this.muatTurunSijil();
-                        }, 600);
-                    });
-                },
-                salinKeputusan() {
-                    let resultText = `=== KEPUTUSAN LATIHAN HARI JADI (BM TAHUN 5) ===\n`;
-                    resultText += `Nama Murid: ${this.studentName}\n`;
-                    resultText += `Tarikh: ${this.tarikhPenyelesaian}\n\n`;
-
-                    resultText += `[ Bahagian 1: Latihan Kosa Kata ]\n`;
-                    this.items.forEach((item, idx) => {
-                        const statusText = item.status === 'correct' ? '✓ BETUL' : (item.status === 'partial' ? '⚠ HAMPIR TEPAT' : '✗ SALAH');
-                        resultText += `${idx + 1}. [${item.zh}] : ${item.userAnswer || '-'} (${statusText})\n`;
-                    });
-
-                    resultText += `\n[ Bahagian 2: Mengisi Tempat Kosong Dalam Ayat ]\n`;
-                    this.sentenceItems.forEach((item, idx) => {
-                        const statusText = item.status === 'correct' ? '✓ BETUL' : (item.status === 'partial' ? '⚠ HAMPIR TEPAT' : '✗ SALAH');
-                        resultText += `${idx + 1}. [${item.zh}] : ${item.userAnswer || '-'} (${statusText})\n`;
-                    });
-
-                    resultText += `\n[ Bahagian 3: Perenggan Karangan ]\n`;
-                    this.paragraphItems.forEach((item, idx) => {
-                        const statusText = item.status === 'correct' ? '✓ BETUL' : (item.status === 'partial' ? '⚠ HAMPIR TEPAT' : '✗ SALAH');
-                        resultText += `${idx + 1}. [Ruang ${idx + 1}] : ${item.userAnswer || '-'} (${statusText})\n`;
-                    });
-
-                    // Panggilan salin teks selamat menggunakan execCommand
-                    const el = document.createElement('textarea');
-                    el.value = resultText;
-                    el.setAttribute('readonly', '');
-                    el.style.position = 'absolute';
-                    el.style.left = '-9999px';
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(el);
-
-                    this.isCopied = true;
-                    setTimeout(() => {
-                        this.isCopied = false;
-                    }, 3000);
-                },
-                muatTurunSijil() {
-                    const element = document.getElementById('sijil-container');
-                    if (!element) return;
-                    
-                    const opt = {
-                        margin:       0.2,
-                        filename:     `Sijil_Majlis_Hari_Jadi_${this.studentName.replace(/\s+/g, '_')}.pdf`,
-                        image:        { type: 'jpeg', quality: 0.98 },
-                        html2canvas:  { 
-                            scale: 2, 
-                            useCORS: true,
-                            scrollY: 0,
-                            scrollX: 0,
-                            windowWidth: document.documentElement.offsetWidth
-                        },
-                        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-                    };
-
-                    html2pdf().set(opt).from(element).save();
-                },
-                resetForm() {
-                    this.items.forEach(item => { item.userAnswer = ''; item.status = null; });
-                    this.sentenceItems.forEach(item => { item.userAnswer = ''; item.status = null; });
-                    this.paragraphItems.forEach(item => { item.userAnswer = ''; item.status = null; });
-                    this.activeTab = 1;
-                    this.isB1Checked = false;
-                    this.isB2Checked = false;
-                    this.isB3Checked = false;
-                    this.isCompleted = false;
-                }
+            'C': {
+                code: '场景 C',
+                title: '邻里相处与公共环境 (Jiran & Persekitaran)',
+                icon: 'fa-house-chimney-window',
+                color: 'emerald',
+                bgGradient: 'from-emerald-600 to-teal-700',
+                situation: '邻居房屋修缮与社区公共晾衣架',
+                svgGraphic: `
+                    <svg viewBox="0 0 400 250" class="w-full h-full bg-amber-50 rounded-xl">
+                        <rect width="400" height="250" fill="#fef3c7"/>
+                        <!-- Cute Houses -->
+                        <polygon points="50,90 110,40 170,90" fill="#f97316"/>
+                        <rect x="60" y="90" width="100" height="90" fill="#fde047"/>
+                        <rect x="90" y="125" width="25" height="55" fill="#78350f"/>
+                        
+                        <polygon points="230,90 290,40 350,90" fill="#0284c7"/>
+                        <rect x="240" y="90" width="100" height="90" fill="#7dd3fc"/>
+                        <rect x="270" y="125" width="25" height="55" fill="#0369a1"/>
+                        
+                        <!-- Clothesline in between -->
+                        <line x1="160" y1="110" x2="240" y2="110" stroke="#78350f" stroke-width="3"/>
+                        <!-- Shirt 1 -->
+                        <path d="M 170 110 L 180 120 L 190 110 L 195 135 L 165 135 Z" fill="#ec4899"/>
+                        <!-- Shirt 2 -->
+                        <path d="M 210 110 L 220 120 L 230 110 L 235 135 L 205 135 Z" fill="#10b981"/>
+                        
+                        <!-- Smiling Neighbours waving -->
+                        <circle cx="130" cy="150" r="11" fill="#fed7aa"/>
+                        <path d="M 120 165 Q 130 180 140 165" stroke="#2563eb" stroke-width="8"/>
+                        <circle cx="250" cy="150" r="11" fill="#fca5a5"/>
+                        <path d="M 240 165 Q 250 180 260 165" stroke="#059669" stroke-width="8"/>
+                    </svg>
+                `,
+                imageCaption: '可爱卡通：体谅邻居修缮 & 留出公共晾衣空间',
+                description: '邻居在白天进行轻微的房屋修缮或举办小聚会，产生了一点声音；另外在社区公共晾衣架处，空间有限。',
+                action: '体谅邻居暂时的修缮噪音；在公共晾衣架晾衣服时只占用所需空间，留出一半给邻居使用。',
+                whyImportant: '换位思考、体谅邻居需求，避免无谓的纠纷，维持长久和谐的邻里关系。',
+                badgeText: '体谅噪音 & 共享晾衣架'
+            },
+            'D': {
+                code: '场景 D',
+                title: '社区会议与交流 (Mesyuarat Komuniti)',
+                icon: 'fa-users-rectangle',
+                color: 'indigo',
+                bgGradient: 'from-indigo-600 to-blue-700',
+                situation: '居民大会 (Mesyuarat Agung Penduduk)',
+                svgGraphic: `
+                    <svg viewBox="0 0 400 250" class="w-full h-full bg-indigo-50 rounded-xl">
+                        <rect width="400" height="250" fill="#e0e7ff"/>
+                        <!-- Meeting Table -->
+                        <ellipse cx="200" cy="160" rx="140" ry="50" fill="#c7d2fe"/>
+                        <ellipse cx="200" cy="155" rx="135" ry="45" fill="#818cf8"/>
+                        <!-- Cute Resident Figures Around Table -->
+                        <circle cx="100" cy="120" r="14" fill="#fca5a5"/>
+                        <circle cx="160" cy="105" r="14" fill="#fed7aa"/>
+                        <circle cx="240" cy="105" r="14" fill="#fef08a"/>
+                        <circle cx="300" cy="120" r="14" fill="#bbf7d0"/>
+                        <!-- Speech Bubble -->
+                        <rect x="175" y="45" width="80" height="40" rx="10" fill="#ffffff" stroke="#4f46e5" stroke-width="2"/>
+                        <text x="215" y="68" font-size="11" fill="#4f46e5" font-weight="bold" text-anchor="middle">轮流发言</text>
+                        <polygon points="210,85 220,85 215,95" fill="#ffffff"/>
+                    </svg>
+                `,
+                imageCaption: '可爱卡通：居民大会有序发言 & 虚心倾听',
+                description: '在住宅区居民大会上讨论环境卫生与安全课题时，许多居民纷纷举手想表达看法。',
+                action: '发言时简明扼要，不霸占发言时间，简述观点后礼让并虚心倾听其他居民的意见。',
+                whyImportant: '保障每位居民表达意见的权力，促进民主包容的沟通，集思广益建设更好的社区。',
+                badgeText: '尊重发言 & 虚心倾听'
             }
-        }).mount('#app');
+        };
+
+        /* SMARTBOARD HANGING CLOTHES GAME DATA */
+        const clothesGameItems = [
+            { id: 'c1', text: '在社区巴士站排队，并主动给长者让座', isTolerant: true, color: 'bg-teal-500' },
+            { id: 'c2', text: '在公园独占乒乓球台 2 小时，不给别人玩', isTolerant: false, color: 'bg-rose-500' },
+            { id: 'c3', text: '住宅区窄路慢驶，靠边让对面车辆先过', isTolerant: true, color: 'bg-emerald-500' },
+            { id: 'c4', text: '因邻居白天装修声音大，冲上门辱骂邻居', isTolerant: false, color: 'bg-red-500' },
+            { id: 'c5', text: '公共晾衣架只用一半，留一半给其他邻居', isTolerant: true, color: 'bg-cyan-600' },
+            { id: 'c6', text: '居民大会上抢话筒强行霸占发言时间', isTolerant: false, color: 'bg-orange-500' },
+            { id: 'c7', text: '认真虚心倾听其他邻居在会议上的建议', isTolerant: true, color: 'bg-indigo-500' },
+            { id: 'c8', text: '把自家垃圾与杂物堆在社区走廊通道', isTolerant: false, color: 'bg-amber-600' }
+        ];
+
+        let selectedClothesId = null;
+        let hungItemsState = {}; // id -> 'tolerant' | 'intolerant'
+
+        /* QUIZ DATA DEFINITIONS */
+        const quizQuestions = [
+            { id: 1, situation: '明辉在住宅区狭窄路段开慢车，并主动靠边停车，让路给对面的邻居车辆通过。', isTolerance: true, explanation: '回答正确！这是社区道路上良好的礼让与安全驾驶行为。' },
+            { id: 2, situation: '小明和朋友在社区公园的乒乓球台连续霸占玩了 2 个小时，理都不理后面排队的小朋友。', isTolerance: false, explanation: '回答正确！霸占公共设施是不体谅他人且缺乏礼让的行为。' },
+            { id: 3, situation: '秀兰在社区公共晾衣架晾衣服时只用了一半的空间，特地留出另一半给邻居美玲太太。', isTolerance: true, explanation: '回答正确！懂得共享公共空间，是体谅邻居的好行为。' },
+            { id: 4, situation: '木都先生因为邻居在白天维修损坏的大门产生声音，冲出门去对邻居大声喝骂。', isTolerance: false, explanation: '回答正确！对于邻居正常的日常常规修缮，我们应当给予体谅与包容。' },
+            { id: 5, situation: '在居民大会上，阿成发言 2 分钟后主动停止，礼让新搬来的邻居发表他们的建议。', isTolerance: true, explanation: '回答正确！尊重他人表达意见的权力，是文明礼让的交流态度。' },
+            { id: 6, situation: '丽拉在社区巴士站推开前面的小朋友，抢先推挤上车占座位。', isTolerance: false, explanation: '回答正确！插队抢先不仅危险，也是极不讲道德与礼让的行为。' }
+        ];
+
+        let quizUserAnswers = {};
+
+        function switchTab(tabId) {
+            const tabs = ['tab-intro', 'tab-scenarios', 'tab-clothes', 'tab-importance', 'tab-quiz'];
+            tabs.forEach(t => {
+                const el = document.getElementById(t);
+                const btn = document.getElementById('btn-' + t);
+                if (t === tabId) {
+                    el.classList.remove('hidden');
+                    btn.classList.add('active');
+                } else {
+                    el.classList.add('hidden');
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (tabId === 'tab-scenarios') showScenario('A');
+            if (tabId === 'tab-clothes') renderClothesGame();
+        }
+
+        function showScenario(key) {
+            const data = scenariosData[key];
+            if (!data) return;
+
+            ['A', 'B', 'C', 'D'].forEach(k => {
+                const btn = document.getElementById(`scen-btn-${k}`);
+                if (btn) {
+                    btn.className = (k === key) 
+                        ? 'scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-teal-600 text-white shadow'
+                        : 'scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50';
+                }
+            });
+
+            const area = document.getElementById('scenario-content-area');
+            area.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                    <!-- Left Column: Illustration & Header -->
+                    <div class="lg:col-span-1 flex flex-col rounded-2xl overflow-hidden border border-teal-100 shadow-sm bg-white">
+                        <div class="relative h-56 w-full p-2 bg-slate-50 flex items-center justify-center">
+                            ${data.svgGraphic}
+                        </div>
+                        <div class="p-4 bg-gradient-to-r ${data.bgGradient} text-white flex-grow flex flex-col justify-between">
+                            <div>
+                                <span class="bg-white/30 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${data.code}</span>
+                                <h3 class="text-lg font-extrabold mt-1 leading-snug">${data.title}</h3>
+                                <p class="text-xs text-teal-100 mt-1"><i class="fa-solid fa-location-dot"></i> ${data.situation}</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs">
+                                <span class="font-bold bg-white/20 px-2.5 py-1 rounded-lg">${data.badgeText}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Situation, Action, Importance Breakdown -->
+                    <div class="lg:col-span-2 space-y-4 flex flex-col justify-between">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <h4 class="text-xs font-extrabold text-teal-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-info"></i> 1. 社区真实情境 (Situasi)
+                            </h4>
+                            <p class="text-sm font-medium text-slate-700 leading-relaxed">${data.description}</p>
+                        </div>
+
+                        <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200">
+                            <h4 class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-check"></i> 2. 应实践的礼让行为 (Tindakan Toleransi)
+                            </h4>
+                            <p class="text-sm font-bold text-emerald-900 leading-relaxed">${data.action}</p>
+                        </div>
+
+                        <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-200">
+                            <h4 class="text-xs font-extrabold text-amber-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-lightbulb"></i> 3. 礼让的重要性 (Kepentingan)
+                            </h4>
+                            <p class="text-sm font-medium text-amber-900 leading-relaxed">${data.whyImportant}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* HANGING CLOTHES GAME LOGIC */
+        function renderClothesGame() {
+            const unassignedContainer = document.getElementById('unassigned-clothes-container');
+            const tolerantContainer = document.getElementById('tolerant-clothes-container');
+            const intolerantContainer = document.getElementById('intolerant-clothes-container');
+
+            unassignedContainer.innerHTML = '';
+            tolerantContainer.innerHTML = '';
+            intolerantContainer.innerHTML = '';
+
+            let countTol = 0;
+            let countIntol = 0;
+
+            clothesGameItems.forEach(item => {
+                const status = hungItemsState[item.id];
+                const card = createClothesCardHTML(item);
+
+                if (!status) {
+                    unassignedContainer.appendChild(card);
+                } else if (status === 'tolerant') {
+                    countTol++;
+                    tolerantContainer.appendChild(card);
+                } else if (status === 'intolerant') {
+                    countIntol++;
+                    intolerantContainer.appendChild(card);
+                }
+            });
+
+            document.getElementById('count-tolerant').innerText = `已挂: ${countTol} 件`;
+            document.getElementById('count-intolerant').innerText = `已挂: ${countIntol} 件`;
+
+            if (countTol + countIntol === clothesGameItems.length) {
+                document.getElementById('clothes-game-victory').classList.remove('hidden');
+                playSuccessSound();
+            } else {
+                document.getElementById('clothes-game-victory').classList.add('hidden');
+            }
+        }
+
+        function createClothesCardHTML(item) {
+            const div = document.createElement('div');
+            const isSelected = (selectedClothesId === item.id);
+            
+            div.className = `clothes-item flex flex-col items-center select-none cursor-pointer my-2 transition-all duration-200 transform ${isSelected ? 'scale-105' : 'hover:scale-[1.02]'}`;
+            div.draggable = true;
+            div.id = `clothes-${item.id}`;
+
+            // Drag Events
+            div.ondragstart = (e) => {
+                e.dataTransfer.setData('text/plain', item.id);
+                selectedClothesId = item.id;
+            };
+
+            // Touch / Tap Event for Touchscreens & Mouse
+            div.onclick = (e) => {
+                e.stopPropagation();
+                if (selectedClothesId === item.id) {
+                    selectedClothesId = null;
+                } else {
+                    selectedClothesId = item.id;
+                    playClickSound();
+                }
+                renderClothesGame();
+            };
+
+            div.innerHTML = `
+                <!-- Wooden Hanger Hook Silhouette -->
+                <div class="w-7 h-4 border-t-2 border-r-2 border-amber-800/80 rounded-tr-full -mb-1 z-0"></div>
+                
+                <!-- T-Shirt Silhouette Container -->
+                <div class="relative w-full max-w-[280px]">
+                    <!-- Left Sleeve -->
+                    <div class="absolute -left-2.5 top-3 w-4 h-9 ${item.color} rounded-l-lg border-l-2 border-b-2 border-black/20 shadow-md"></div>
+                    <!-- Right Sleeve -->
+                    <div class="absolute -right-2.5 top-3 w-4 h-9 ${item.color} rounded-r-lg border-r-2 border-b-2 border-black/20 shadow-md"></div>
+                    
+                    <!-- Main Shirt Body -->
+                    <div class="${item.color} text-white rounded-b-2xl rounded-t-xl p-3.5 pt-4 relative border-2 ${isSelected ? 'ring-4 ring-amber-400 border-white shadow-xl' : 'border-white/30 shadow-md'} transition-all flex flex-col justify-between min-h-[110px]">
+                        
+                        <!-- Neck / Collar Cutout -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-3.5 bg-amber-50/90 rounded-b-full border-b-2 border-amber-300/40 shadow-inner flex items-center justify-center">
+                            <div class="w-8 h-1 bg-amber-200/50 rounded-full"></div>
+                        </div>
+
+                        <!-- Tag Header -->
+                        <div class="flex items-center justify-between pt-1 mb-1.5 z-10">
+                            <span class="text-[10px] bg-black/25 px-2 py-0.5 rounded-full font-extrabold tracking-wider text-amber-200 flex items-center gap-1">
+                                <i class="fa-solid fa-shirt"></i> T-Shirt
+                            </span>
+                            <span class="text-[9px] bg-white/20 px-1.5 py-0.5 rounded text-white font-mono">
+                                #${item.id}
+                            </span>
+                        </div>
+
+                        <!-- Sentence Content inside T-shirt -->
+                        <p class="text-xs md:text-sm font-bold leading-snug px-1 text-center text-white drop-shadow z-10">
+                            ${item.text}
+                        </p>
+
+                        <!-- Action Button if hung in a rack -->
+                        ${hungItemsState[item.id] ? `
+                            <div class="mt-2.5 pt-1.5 border-t border-white/20 text-center z-10">
+                                <button onclick="unhangItem('${item.id}', event)" class="text-[10px] bg-white/20 hover:bg-white/40 active:scale-95 px-3 py-1 rounded-lg text-white font-bold transition shadow-sm">
+                                    <i class="fa-solid fa-rotate-left mr-1"></i> 取下衣服
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function handleDrop(e, targetIsTolerant) {
+            e.preventDefault();
+            const itemId = e.dataTransfer.getData('text/plain') || selectedClothesId;
+            if (itemId) {
+                verifyAndHang(itemId, targetIsTolerant);
+            }
+        }
+
+        function tapTargetRack(targetIsTolerant) {
+            if (selectedClothesId) {
+                verifyAndHang(selectedClothesId, targetIsTolerant);
+            }
+        }
+
+        function verifyAndHang(itemId, targetIsTolerant) {
+            const item = clothesGameItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            if (item.isTolerant === targetIsTolerant) {
+                hungItemsState[itemId] = targetIsTolerant ? 'tolerant' : 'intolerant';
+                selectedClothesId = null;
+                playSuccessSound();
+            } else {
+                playClickSound();
+                alert(`⚠️ 仔细想想哦：“${item.text}” 属于${item.isTolerant ? '【礼让行为】' : '【缺乏礼让】'}！请再试一次！`);
+            }
+            renderClothesGame();
+        }
+
+        function unhangItem(itemId, e) {
+            e.stopPropagation();
+            delete hungItemsState[itemId];
+            renderClothesGame();
+        }
+
+        function resetClothesGame() {
+            hungItemsState = {};
+            selectedClothesId = null;
+            renderClothesGame();
+        }
+
+        /* QUIZ FUNCTIONS */
+        function renderQuiz() {
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+
+            quizQuestions.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'p-4 rounded-2xl border border-teal-100 bg-teal-50/30 space-y-3';
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-extrabold text-teal-600 bg-teal-100 px-2.5 py-0.5 rounded-md">题目 ${index + 1}</span>
+                        <p class="text-xs md:text-sm font-semibold text-teal-950 leading-relaxed">${q.situation}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-1" id="quiz-options-${q.id}">
+                        <button onclick="answerQuiz(${q.id}, true)" class="text-xs font-bold px-3 py-2 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i> 绿灯（礼让行为）
+                        </button>
+                        <button onclick="answerQuiz(${q.id}, false)" class="text-xs font-bold px-3 py-2 rounded-xl border border-rose-300 bg-white hover:bg-rose-50 text-rose-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-xmark text-rose-600"></i> 红灯（缺乏礼让）
+                        </button>
+                    </div>
+                    <div id="quiz-feedback-${q.id}" class="hidden p-3 rounded-xl text-xs font-medium space-y-1"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function answerQuiz(id, userVal) {
+            const q = quizQuestions.find(item => item.id === id);
+            if (!q) return;
+
+            quizUserAnswers[id] = userVal;
+            const isCorrect = (userVal === q.isTolerance);
+
+            const optionsBox = document.getElementById(`quiz-options-${id}`);
+            const feedbackBox = document.getElementById(`quiz-feedback-${id}`);
+
+            optionsBox.innerHTML = `
+                <span class="text-xs px-3 py-1.5 rounded-xl font-bold ${userVal ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                    你的选择：${userVal ? '绿灯（礼让行为）' : '红灯（缺乏礼让）'}
+                </span>
+            `;
+
+            feedbackBox.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackBox.className = 'p-3 rounded-xl text-xs font-medium bg-emerald-100 text-emerald-950 border border-emerald-300';
+                feedbackBox.innerHTML = `<i class="fa-solid fa-thumbs-up text-emerald-600 mr-1"></i> <strong>非常准确！</strong> ${q.explanation}`;
+                playSuccessSound();
+            } else {
+                feedbackBox.className = 'p-3 rounded-xl text-xs font-medium bg-rose-100 text-rose-950 border border-rose-300';
+                feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1"></i> <strong>不太准确。</strong> 再仔细想想，这个行为是否符合礼让精神呢？`;
+            }
+
+            updateScore();
+        }
+
+        function updateScore() {
+            let correctCount = 0;
+            const total = quizQuestions.length;
+            quizQuestions.forEach(q => {
+                if (quizUserAnswers[q.id] === q.isTolerance) correctCount++;
+            });
+            document.getElementById('quiz-score').innerText = `${correctCount} / ${total}`;
+            if (Object.keys(quizUserAnswers).length === total) {
+                document.getElementById('quiz-completion-banner').classList.remove('hidden');
+            }
+        }
+
+        function resetQuiz() {
+            quizUserAnswers = {};
+            document.getElementById('quiz-score').innerText = `0 / 6`;
+            document.getElementById('quiz-completion-banner').classList.add('hidden');
+            renderQuiz();
+        }
+
+        function playClickSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, ctx.currentTime);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            } catch (e) {}
+        }
+
+        function playSuccessSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc1.frequency.setValueAtTime(523.25, now);
+                osc2.frequency.setValueAtTime(659.25, now + 0.1);
+
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc1.start(now);
+                osc2.start(now + 0.1);
+                osc1.stop(now + 0.3);
+                osc2.stop(now + 0.3);
+            } catch (e) {}
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderQuiz();
+            showScenario('A');
+            renderClothesGame();
+        });
     </script>
 </body>
 </html>
+
