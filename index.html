@@ -1,1414 +1,812 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modul Kosa Kata Penulisan: Hari Sukan (Tahun 5)</title>
+    <title>五年级道德教育 单元十四：礼让之城 (14.1 & 14.2)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons CDN -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter & Fredoka for playful design -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- React & Babel for Single-File Dynamic UI -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Canvas Confetti for rewards -->
+    <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Tone.js for Web Audio SFX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <style>
         body {
-            font-family: 'Fredoka', 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            min-height: 100vh;
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f3f7fc;
         }
-        .perspective-1000 {
-            perspective: 1000px;
+        .animate-bounce-gentle {
+            animation: bounce 2.5s infinite;
         }
-        .transform-style-3d {
-            transform-style: preserve-3d;
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
-        .card-flip {
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-        @keyframes bounce-subtle {
+        @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+            50% { transform: translateY(-7px); }
         }
-        .animate-bounce-subtle {
-            animation: bounce-subtle 2s infinite ease-in-out;
+        .card-hover-effect {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 9999px;
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased selection:bg-amber-200">
-    <div id="root"></div>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+    <!-- 顶部导航栏 Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-gradient-to-r from-teal-600 via-emerald-600 to-indigo-600 text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('knowledge')">
+                <div class="bg-white/20 p-2.5 rounded-2xl backdrop-blur-md flex items-center justify-center">
+                    <i class="fa-solid fa-hands-holding-child text-2xl text-yellow-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-black tracking-wide leading-tight">道德教育五年级</h1>
+                    <p class="text-xs text-teal-100">单元十四：礼让之城 <span class="bg-amber-400/30 text-amber-200 px-1.5 py-0.5 rounded text-[10px] ml-1">标准 14.1 & 14.2</span></p>
+                </div>
+            </div>
 
-        // Data Kosa Kata Utama (Berdasarkan imej rujukan)
-        const VOCAB_LIST = [
+            <!-- 桌面端导航 -->
+            <nav class="hidden md:flex items-center space-x-1.5 text-xs font-bold">
+                <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn px-3.5 py-2 rounded-xl transition bg-white/20 hover:bg-white/30 flex items-center space-x-1">
+                    <i class="fa-solid fa-book-open text-yellow-300"></i> <span>1. 知识大本营</span>
+                </button>
+                <button onclick="switchTab('identify')" id="nav-identify" class="nav-btn px-3.5 py-2 rounded-xl transition hover:bg-white/20 flex items-center space-x-1">
+                    <i class="fa-solid fa-magnifying-glass text-teal-200"></i> <span>2. 礼让例子 (14.1)</span>
+                </button>
+                <button onclick="switchTab('importance')" id="nav-importance" class="nav-btn px-3.5 py-2 rounded-xl transition hover:bg-white/20 flex items-center space-x-1">
+                    <i class="fa-solid fa-lightbulb text-amber-300"></i> <span>3. 重要性罗盘 (14.2)</span>
+                </button>
+                <button onclick="switchTab('adventure')" id="nav-adventure" class="nav-btn px-3.5 py-2 rounded-xl transition hover:bg-white/20 flex items-center space-x-1">
+                    <i class="fa-solid fa-gamepad text-rose-300"></i> <span>4. 社区闯关</span>
+                </button>
+            </nav>
+
+            <!-- 积分与徽章入口 -->
+            <div class="flex items-center space-x-2">
+                <div class="bg-amber-400 text-slate-900 font-black px-3 py-1.5 rounded-full text-xs shadow flex items-center space-x-1.5">
+                    <i class="fa-solid fa-star text-amber-700"></i>
+                    <span id="global-score">得分: 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 移动端导航 -->
+        <div class="md:hidden flex justify-around bg-teal-800 text-[11px] font-medium py-2 border-t border-teal-700/80">
+            <button onclick="switchTab('knowledge')" class="flex flex-col items-center py-1 text-white/90">
+                <i class="fa-solid fa-book-open text-sm mb-0.5"></i>大本营
+            </button>
+            <button onclick="switchTab('identify')" class="flex flex-col items-center py-1 text-white/90">
+                <i class="fa-solid fa-magnifying-glass text-sm mb-0.5"></i>14.1例子
+            </button>
+            <button onclick="switchTab('importance')" class="flex flex-col items-center py-1 text-white/90">
+                <i class="fa-solid fa-lightbulb text-sm mb-0.5"></i>14.2重要性
+            </button>
+            <button onclick="switchTab('adventure')" class="flex flex-col items-center py-1 text-white/90">
+                <i class="fa-solid fa-gamepad text-sm mb-0.5"></i>闯关冒险
+            </button>
+        </div>
+    </header>
+
+    <!-- 主体区域 -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
+
+        <!-- 顶部宣传/学习目标 Header Banner -->
+        <div class="bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600 text-white rounded-3xl p-6 shadow-md relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
+            <div class="space-y-2 z-10 text-center md:text-left max-w-2xl">
+                <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md text-teal-100 text-xs font-bold px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-graduation-cap text-yellow-300"></i>
+                    <span>KSSR Semakan 道德教育五年级 · 单元十四</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">互相礼让好处多，和谐社区齐建设！</h2>
+                <p class="text-teal-100 text-xs md:text-sm leading-relaxed">
+                    在社区生活里，懂得礼让能化解矛盾、促进友谊。让我们一起学习<b>辨识社区里的礼让行为 (14.1)</b>，并领悟<b>礼让行为带来的深远重要性 (14.2)</b>吧！
+                </p>
+            </div>
+            
+            <div class="mt-4 md:mt-0 z-10 flex flex-col items-center bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/20 text-center min-w-[130px]">
+                <div class="w-12 h-12 rounded-full bg-amber-400 flex items-center justify-center text-slate-900 text-2xl mb-1 shadow-md animate-bounce-gentle">
+                    <i class="fa-solid fa-heart-circle-check"></i>
+                </div>
+                <span class="text-xs font-bold text-yellow-200">礼让美德卡</span>
+                <span class="text-[10px] text-teal-100 mt-0.5">从我做起 谦让相待</span>
+            </div>
+
+            <!-- 背景装饰图案 -->
+            <i class="fa-solid fa-users text-white/5 text-9xl absolute -right-6 -bottom-6 pointer-events-none"></i>
+        </div>
+
+        <!-- 模块 1: 知识大本营 KNOWLEDGE HUB -->
+        <section id="tab-knowledge" class="tab-content space-y-6">
+            <div class="text-center max-w-2xl mx-auto space-y-1">
+                <span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">课本核心知识解读</span>
+                <h3 class="text-2xl font-black text-slate-800">14.1 & 14.2 学习标准全掌握</h3>
+                <p class="text-slate-500 text-xs">通过图文卡片，轻松掌握社区生活里礼让行为的例子及其重要性</p>
+            </div>
+
+            <!-- 14.1 辨识礼让行为的例子 -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+                    <div class="w-10 h-10 rounded-2xl bg-teal-500 text-white font-black text-sm flex items-center justify-center shadow-sm">
+                        14.1
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-slate-800 text-lg">辨识社区生活里礼让行为的例子</h4>
+                        <p class="text-xs text-slate-500">我们在社区里可以怎样展现礼让精神？</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- 例子 1 -->
+                    <div class="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-100 card-hover-effect space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-bus-simple"></i>
+                        </div>
+                        <h5 class="font-bold text-slate-800 text-sm">1. 公共交通与出行</h5>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            乘搭社区巴士时，主动将座位让给老弱妇孺、孕妇或行动不便者；遵守秩序排队上下车。
+                        </p>
+                    </div>
+
+                    <!-- 例子 2 -->
+                    <div class="bg-blue-50/60 p-4 rounded-2xl border border-blue-100 card-hover-effect space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+                        </div>
+                        <h5 class="font-bold text-slate-800 text-sm">2. 轮流使用公共设施</h5>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            在游乐场荡秋千或社区羽毛球场运动时，不长时间独占设施，主动与他人协议轮流玩乐。
+                        </p>
+                    </div>
+
+                    <!-- 例子 3 -->
+                    <div class="bg-indigo-50/60 p-4 rounded-2xl border border-indigo-100 card-hover-effect space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-users-rectangle"></i>
+                        </div>
+                        <h5 class="font-bold text-slate-800 text-sm">3. 社区活动有序入席</h5>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            参加社区讲座、文娱晚会或居民大会时，按顺序入座，不替未到的朋友霸占前排座位。
+                        </p>
+                    </div>
+
+                    <!-- 例子 4 -->
+                    <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-100 card-hover-effect space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h5 class="font-bold text-slate-800 text-sm">4. 意见分歧时尊重大局</h5>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            在讨论社区集体活动或游戏规则时，少数服从多数，不强求己见，包容与退让一步。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 14.2 礼让行为的重要性 -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white font-black text-sm flex items-center justify-center shadow-sm">
+                        14.2
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-slate-800 text-lg">讲述社区生活里礼让行为的重要性</h4>
+                        <p class="text-xs text-slate-500">为什么我们在社区里一定要懂得互相礼让？</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-start space-x-3 bg-gradient-to-r from-amber-50 to-orange-50/50 p-4 rounded-2xl border border-amber-100">
+                        <div class="p-3 bg-amber-500 text-white rounded-xl flex-shrink-0 text-xl shadow-sm">
+                            <i class="fa-solid fa-handshake-angle"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-amber-900 text-sm mb-1">① 促进邻里和谐，避免冲突争执</h5>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                大家各退一步、谦让有礼，能有效化解邻里间的误会与口角，营造团结融洽的社区氛围。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3 bg-gradient-to-r from-teal-50 to-emerald-50/50 p-4 rounded-2xl border border-teal-100">
+                        <div class="p-3 bg-teal-500 text-white rounded-xl flex-shrink-0 text-xl shadow-sm">
+                            <i class="fa-solid fa-shield-heart"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-teal-900 text-sm mb-1">② 保护公共设施，防止意外事故</h5>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                蜂拥争抢容易损坏设施或导致儿童摔伤。有秩序地礼让使用能保障人人安全，延长设施寿命。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3 bg-gradient-to-r from-blue-50 to-cyan-50/50 p-4 rounded-2xl border border-blue-100">
+                        <div class="p-3 bg-blue-500 text-white rounded-xl flex-shrink-0 text-xl shadow-sm">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-blue-900 text-sm mb-1">③ 树立文明风尚，培养优良品德</h5>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                礼让行为展现了社区成员的高尚涵养，能发挥榜样作用，吸引更多人一起共建温暖文明社会。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3 bg-gradient-to-r from-purple-50 to-pink-50/50 p-4 rounded-2xl border border-purple-100">
+                        <div class="p-3 bg-purple-500 text-white rounded-xl flex-shrink-0 text-xl shadow-sm">
+                            <i class="fa-solid fa-face-smile-beam"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-purple-900 text-sm mb-1">④ 提升社区居住满意度与幸福感</h5>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                在一个充满关爱与体谅的社区中生活，每个人都能感到被尊重与被关怀，生活充满阳光。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 2: 学习标准 14.1 礼让行为火眼金睛 IDENTIFY GAME -->
+        <section id="tab-identify" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-teal-100 space-y-6">
+                <div class="text-center max-w-xl mx-auto space-y-1">
+                    <span class="text-xs font-bold text-teal-600 bg-teal-100 px-3 py-1 rounded-full uppercase">学习标准 14.1 专项训练</span>
+                    <h3 class="text-2xl font-black text-slate-800">礼让行为火眼金睛 🔍</h3>
+                    <p class="text-slate-500 text-xs">判断下列社区情境中的行为，哪些是<b>【文明礼让】</b>，哪些是<b>【非礼让/自私】</b>行为？</p>
+                </div>
+
+                <div class="flex justify-between items-center bg-teal-50/80 px-4 py-2.5 rounded-2xl border border-teal-100 text-xs font-bold text-teal-800">
+                    <span id="identify-progress">卡片: 1 / 6</span>
+                    <span id="identify-score-badge" class="bg-teal-200 text-teal-900 px-2.5 py-1 rounded-lg">正确率: 0/0</span>
+                </div>
+
+                <!-- 动态卡片区域 -->
+                <div id="identify-card-container" class="max-w-xl mx-auto bg-gradient-to-b from-slate-50 to-white p-6 rounded-3xl border-2 border-slate-200/80 shadow-sm text-center space-y-4">
+                    <!-- 由 JavaScript 填充卡片内容 -->
+                </div>
+
+                <!-- 交互选择按钮 -->
+                <div class="max-w-md mx-auto grid grid-cols-2 gap-4">
+                    <button onclick="checkIdentifyAnswer(true)" class="py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-sm shadow-md transition transform active:scale-95 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-circle-check text-lg"></i>
+                        <span>是【礼让行为】</span>
+                    </button>
+                    <button onclick="checkIdentifyAnswer(false)" class="py-3.5 px-4 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-sm shadow-md transition transform active:scale-95 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-circle-xmark text-lg"></i>
+                        <span>非【礼让行为】</span>
+                    </button>
+                </div>
+
+                <!-- 反馈提示 -->
+                <div id="identify-feedback" class="hidden max-w-xl mx-auto p-4 rounded-2xl text-xs font-bold text-center"></div>
+            </div>
+        </section>
+
+        <!-- 模块 3: 学习标准 14.2 礼让重要性逻辑罗盘 IMPORTANCE EXPLORER -->
+        <section id="tab-importance" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-amber-100 space-y-6">
+                <div class="text-center max-w-xl mx-auto space-y-1">
+                    <span class="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full uppercase">学习标准 14.2 深度理解</span>
+                    <h3 class="text-2xl font-black text-slate-800">礼让重要性逻辑罗盘 💡</h3>
+                    <p class="text-slate-500 text-xs">点击不同社区情境，对比“互相礼让”与“互不相让”的不同结局，体会礼让的无比重要！</p>
+                </div>
+
+                <!-- 情境切换按钮 -->
+                <div class="flex flex-wrap justify-center gap-2" id="importance-tabs">
+                    <button onclick="switchImportanceScene(0)" class="imp-tab-btn active px-4 py-2 rounded-xl text-xs font-bold border transition bg-amber-500 text-white border-amber-500 shadow-sm">
+                        <i class="fa-solid fa-bus mr-1"></i> 1. 公共交通上
+                    </button>
+                    <button onclick="switchImportanceScene(1)" class="imp-tab-btn px-4 py-2 rounded-xl text-xs font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">
+                        <i class="fa-solid fa-child-swimming mr-1"></i> 2. 游乐场秋千
+                    </button>
+                    <button onclick="switchImportanceScene(2)" class="imp-tab-btn px-4 py-2 rounded-xl text-xs font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">
+                        <i class="fa-solid fa-chair mr-1"></i> 3. 晚会占位置
+                    </button>
+                    <button onclick="switchImportanceScene(3)" class="imp-tab-btn px-4 py-2 rounded-xl text-xs font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">
+                        <i class="fa-solid fa-chess mr-1"></i> 4. 社区讨论会
+                    </button>
+                </div>
+
+                <!-- 对比展示区 -->
+                <div id="importance-display" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <!-- JS 动态注入内容 -->
+                </div>
+
+                <!-- 14.2 总结金句 -->
+                <div class="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 p-4 rounded-2xl text-white text-center font-bold text-xs shadow-sm flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-quote-left text-lg text-amber-200"></i>
+                    <span>礼让并非软弱，而是一种高尚的文明素养；礼让一步，天地宽，社区和谐大家欢！</span>
+                    <i class="fa-solid fa-quote-right text-lg text-amber-200"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块 4: 社区礼让小达人闯关 ADVENTURE & QUIZ -->
+        <section id="tab-adventure" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-indigo-100 space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full uppercase">综合挑战关卡</span>
+                        <h3 class="text-2xl font-black text-slate-800 mt-1">社区礼让小达人大冒险 🎮</h3>
+                        <p class="text-slate-500 text-xs">结合 14.1 & 14.2 知识，完成下列情境选择与小测验！</p>
+                    </div>
+                    <div class="bg-indigo-50 border border-indigo-200 px-4 py-2 rounded-2xl text-right">
+                        <span class="text-[10px] text-indigo-500 font-bold block uppercase">闯关进度</span>
+                        <span id="adventure-progress-text" class="text-base font-black text-indigo-700">1 / 5</span>
+                    </div>
+                </div>
+
+                <!-- 闯关内容容器 -->
+                <div id="adventure-container">
+                    <!-- 由 JavaScript 动态渲染 -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 页脚 Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 mt-12 border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 text-center space-y-3">
+            <div class="flex justify-center space-x-3 text-lg text-teal-400 mb-2">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                <i class="fa-solid fa-city"></i>
+                <i class="fa-solid fa-people-roof"></i>
+            </div>
+            <p class="font-bold text-slate-200">五年级道德教育《单元十四：礼让之城》交互式教学辅助平台</p>
+            <p class="text-slate-500">符合马来西亚 KSSR Semakan 道德教育课程标准 · 学习标准 14.1 (例子) & 14.2 (重要性)</p>
+            <p class="text-[11px] text-slate-600">© 道德教育数字化教学资源库 · 让礼让美德发扬光大</p>
+        </div>
+    </footer>
+
+    <!-- 逻辑脚本 JavaScript -->
+    <script>
+        // 音效播放器 Audio Player using Tone.js
+        function playSfx(type) {
+            try {
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+                const synth = new Tone.Synth().toDestination();
+                if (type === 'correct') {
+                    synth.triggerAttackRelease("C5", "8n");
+                    setTimeout(() => synth.triggerAttackRelease("E5", "8n"), 100);
+                    setTimeout(() => synth.triggerAttackRelease("G5", "8n"), 200);
+                } else if (type === 'wrong') {
+                    synth.triggerAttackRelease("G3", "8n");
+                    setTimeout(() => synth.triggerAttackRelease("Eb3", "8n"), 150);
+                } else if (type === 'click') {
+                    synth.triggerAttackRelease("A4", "16n");
+                }
+            } catch(e) {
+                console.log("Audio not supported or initialized");
+            }
+        }
+
+        // 全局得分机制
+        let globalScore = 0;
+        function addScore(points) {
+            globalScore += points;
+            document.getElementById('global-score').innerText = `得分: ${globalScore}`;
+        }
+
+        // 1. 标签页切换 Switch Tabs
+        function switchTab(tabId) {
+            playSfx('click');
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-white/20');
+            });
+            const activeNav = document.getElementById('nav-' + tabId);
+            if (activeNav) activeNav.classList.add('bg-white/20');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // -------------------------------------------------------------
+        // 2. 学习标准 14.1: 辨识礼让行为 (火眼金睛逻辑)
+        // -------------------------------------------------------------
+        const identifyData = [
             {
-                id: 1,
-                malay: "merasmikan",
-                chinese: "开幕",
-                pinyin: "kāi mù",
-                meaning: "Membuka majlis secara rasmi oleh tetamu kehormat.",
-                sentence: "Guru Besar telah merasmikan Kejohanan Sukan Tahunan Sekolah dengan memukul gong.",
-                icon: "🎉",
-                category: "Awal Majlis",
-                badgeColor: "bg-red-500"
+                title: "公共交通让座",
+                icon: "fa-bus",
+                desc: "在社区巴士上看到怀抱婴儿的妈妈，12岁的明敏主动站起身来说：“阿姨，您坐这里吧！”",
+                isYield: true,
+                explanation: "正确！这是在公共交通上礼让老弱妇孺的典型例子，符合标准 14.1。"
             },
             {
-                id: 2,
-                malay: "mengambil bahagian / menyertai",
-                chinese: "参与",
-                pinyin: "cān yù",
-                meaning: "Turut serta atau melibatkan diri dalam acara sukan.",
-                sentence: "Ramai murid mengambil bahagian dalam pelbagai acara sukan yang dianjurkan.",
-                icon: "🏃‍♂️",
-                category: "Penyertaan",
-                badgeColor: "bg-blue-500"
+                title: "长时间霸占公共秋千",
+                icon: "fa-child-reaching",
+                desc: "在社区公园里，小强独自荡秋千长达半小时，即使身后有其他小伙伴排队等待，他也装作没看见。",
+                isYield: false,
+                explanation: "这是自私霸占公共设施的行为！礼让的做法应该是玩一会儿后主动让给别人轮流玩。"
             },
             {
-                id: 3,
-                malay: "berlumba lari",
-                chinese: "赛跑",
-                pinyin: "sài pǎo",
-                meaning: "Berlari bersungguh-sungguh di balapan untuk mencapai garisan penamat.",
-                sentence: "Para peserta berlumba lari dengan pantas di balapan untuk merebut tempat pertama.",
-                icon: "👟",
-                category: "Acara Padang & Balapan",
-                badgeColor: "bg-amber-500"
+                title: "按住电梯开门键让邻居先进",
+                icon: "fa-elevator",
+                desc: "在公寓电梯口，看到邻居张阿姨提着两大包杂物走来，小伟按住开门键并侧身礼让张阿姨先进去。",
+                isYield: true,
+                explanation: "正确！电梯口侧身礼让邻居先行，是社区生活里非常体贴文明的礼让行为。"
             },
             {
-                id: 4,
-                malay: "melontar peluru",
-                chinese: "抛铅球",
-                pinyin: "pāo qiān qiú",
-                meaning: "Acara sukan padang melontar bola besi seberat yang mungkin.",
-                sentence: "Chong Wei melontar peluru dengan sekuat hatinya untuk mengutip mata rumah sukan.",
-                icon: "☄️",
-                category: "Acara Padang & Balapan",
-                badgeColor: "bg-emerald-500"
+                title: "用书包霸占讲座会前排座位",
+                icon: "fa-chair",
+                desc: "社区举行健康讲座会，小华一个人拿了四个书包放在前排椅子上，不让其他早到的长者坐下。",
+                isYield: false,
+                explanation: "这是不文明的霸座行为！社区活动应当遵守秩序入座，不能强行替未到的朋友霸占座位。"
             },
             {
-                id: 5,
-                malay: "mencatat",
-                chinese: "记录",
-                pinyin: "jì lù",
-                meaning: "Menulis masa, kedudukan, atau markah keputusan acara.",
-                sentence: "Guru bertugas mencatat masa larian dan markah setiap peserta di papan markah.",
-                icon: "📝",
-                category: "Pengurusan Acara",
-                badgeColor: "bg-purple-500"
+                title: "讨论游戏规则时服从多数",
+                icon: "fa-people-group",
+                desc: "社区儿童会讨论假期活动，大多数人选择踢足球，小明虽然想下棋，但他决定少服从多数并快乐参与。",
+                isYield: true,
+                explanation: "正确！在集体决策中不固执己见，包容退让，也是道德教育 14.1 倡导的礼让行为。"
             },
             {
-                id: 6,
-                malay: "menyaksikan",
-                chinese: "观看",
-                pinyin: "guān kàn",
-                meaning: "Melihat atau menonton sesuatu persembahan/pertandingan.",
-                sentence: "Ibu bapa dan murid-murid menyaksikan acara sukan itu dari khemah penonton.",
-                icon: "👀",
-                category: "Suasana Sukan",
-                badgeColor: "bg-indigo-500"
-            },
-            {
-                id: 7,
-                malay: "bersorak-sorai",
-                chinese: "欢呼喝彩",
-                pinyin: "huān hū hè cǎi",
-                meaning: "Melaungkan sorakan gembira untuk menyokong peserta.",
-                sentence: "Penonton bersorak-sorai sambil mengibarkan bendera kecil rumah sukan masing-masing.",
-                icon: "📣",
-                category: "Suasana Sukan",
-                badgeColor: "bg-pink-500"
-            },
-            {
-                id: 8,
-                malay: "mengumumkan keputusan",
-                chinese: "公布成绩",
-                pinyin: "gōng bù chéng jì",
-                meaning: "Memberitahu keputusan rasmi pertandingan secara terbuka.",
-                sentence: "Juruacara mengumumkan keputusan pertandingan dan pemenang johan keseluruhan.",
-                icon: "📢",
-                category: "Akhir Majlis",
-                badgeColor: "bg-orange-500"
-            },
-            {
-                id: 9,
-                malay: "menyampaikan pingat",
-                chinese: "颁发奖牌",
-                pinyin: "bān fā jiǎng pái",
-                meaning: "Pemberian pingat atau trofi penghargaan kepada para pemenang.",
-                sentence: "Tetamu kehormat menyampaikan pingat emas dan trofi kepada para pemenang.",
-                icon: "🥇",
-                category: "Akhir Majlis",
-                badgeColor: "bg-yellow-500"
+                title: "游乐场滑梯反向逆爬",
+                icon: "fa-triangle-exclamation",
+                desc: "在社区公园滑梯上，小军不顾其他小朋友正在顺向下滑，硬是从滑梯底部往上爬，阻止他人滑下。",
+                isYield: false,
+                explanation: "这是缺乏秩序与礼让意识的行为，不仅影响别人玩乐，还极易引发碰撞意外。"
             }
         ];
 
-        const playSoundEffect = (type) => {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
+        let currentIdentifyIndex = 0;
+        let identifyCorrectCount = 0;
 
-                if (type === 'correct') {
-                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
-                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.4);
-                } else if (type === 'wrong') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(300, ctx.currentTime);
-                    osc.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
-                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.3);
-                } else if (type === 'flip') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(400, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.08);
-                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.08);
-                }
-            } catch (e) {
-                // Audio Context fallback silent handle
+        function renderIdentifyCard() {
+            if (currentIdentifyIndex >= identifyData.length) {
+                // 完成辨识训练
+                document.getElementById('identify-card-container').innerHTML = `
+                    <div class="py-6 space-y-3">
+                        <div class="text-4xl">🎉</div>
+                        <h4 class="text-xl font-extrabold text-slate-800">太棒了！您已完成 14.1 辨识训练！</h4>
+                        <p class="text-xs text-slate-600">您准确辨识了社区生活中的礼让行为与非礼让行为！</p>
+                        <button onclick="resetIdentifyGame()" class="mt-2 px-5 py-2 bg-teal-600 text-white rounded-xl font-bold text-xs shadow hover:bg-teal-700">
+                            重新挑战
+                        </button>
+                    </div>
+                `;
+                confetti({ particleCount: 60, spread: 60 });
+                return;
             }
-        };
 
-        const speakText = (text, lang = 'ms-MY') => {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = lang;
-                utterance.rate = 0.85; // slightly slower for young learners
-                window.speechSynthesis.speak(utterance);
+            const item = identifyData[currentIdentifyIndex];
+            document.getElementById('identify-progress').innerText = `卡片: ${currentIdentifyIndex + 1} / ${identifyData.length}`;
+            document.getElementById('identify-card-container').innerHTML = `
+                <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl mx-auto shadow-sm">
+                    <i class="fa-solid ${item.icon}"></i>
+                </div>
+                <h4 class="font-black text-slate-800 text-base">${item.title}</h4>
+                <p class="text-xs text-slate-600 leading-relaxed bg-white p-3.5 rounded-2xl border border-slate-100 shadow-inner">
+                    "${item.desc}"
+                </p>
+            `;
+            document.getElementById('identify-feedback').classList.add('hidden');
+        }
+
+        function checkIdentifyAnswer(userChoice) {
+            const item = identifyData[currentIdentifyIndex];
+            const feedback = document.getElementById('identify-feedback');
+            feedback.classList.remove('hidden');
+
+            if (userChoice === item.isYield) {
+                playSfx('correct');
+                identifyCorrectCount++;
+                addScore(10);
+                feedback.className = "max-w-xl mx-auto p-3.5 rounded-2xl text-xs font-bold text-center bg-emerald-100 border border-emerald-300 text-emerald-900";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check text-base mr-1"></i> 回答正确！${item.explanation}`;
+            } else {
+                playSfx('wrong');
+                feedback.className = "max-w-xl mx-auto p-3.5 rounded-2xl text-xs font-bold text-center bg-rose-100 border border-rose-300 text-rose-900";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-base mr-1"></i> 答错了哦！${item.explanation}`;
             }
+
+            document.getElementById('identify-score-badge').innerText = `正确率: ${identifyCorrectCount}/${currentIdentifyIndex + 1}`;
+
+            setTimeout(() => {
+                currentIdentifyIndex++;
+                renderIdentifyCard();
+            }, 2200);
+        }
+
+        function resetIdentifyGame() {
+            currentIdentifyIndex = 0;
+            identifyCorrectCount = 0;
+            document.getElementById('identify-score-badge').innerText = `正确率: 0/0`;
+            renderIdentifyCard();
+        }
+
+        // -------------------------------------------------------------
+        // 3. 学习标准 14.2: 礼让重要性逻辑罗盘 (切换显示)
+        // -------------------------------------------------------------
+        const importanceScenes = [
+            {
+                title: "公共交通乘搭场景",
+                yieldOutcome: {
+                    title: "✅ 表现礼让的结果 (14.2)",
+                    badge: "促进社区和谐与爱心传递",
+                    text: "主动让座给老人家后，老人家感到十分温暖并道谢；车厢内秩序井然，满满的正能量与人情味！"
+                },
+                noYieldOutcome: {
+                    title: "❌ 互不相让的结果",
+                    badge: "引发不满与摩擦",
+                    text: "大家各不相让抢挤上车，险些撞倒长者；乘客之间爆发生气口角，破坏了社区的和谐风貌。"
+                }
+            },
+            {
+                title: "社区公园游乐设施",
+                yieldOutcome: {
+                    title: "✅ 表现礼让的结果 (14.2)",
+                    badge: "保障设施安全与公平共享",
+                    text: "大家约定每人荡秋千10分钟轮流玩，小伙伴们都玩得非常开心，公共设施得到爱护也不易损坏。"
+                },
+                noYieldOutcome: {
+                    title: "❌ 互不相让的结果",
+                    badge: "导致意外与社交排挤",
+                    text: "两人为了抢秋千拉扯推搡，导致小朋友摔伤流血；原本欢乐的游乐场变成了争执现场。"
+                }
+            },
+            {
+                title: "社区文娱晚会现场",
+                yieldOutcome: {
+                    title: "✅ 表现礼让的结果 (14.2)",
+                    badge: "彰显文明有礼社区风尚",
+                    text: "居民们井然有序地按顺序入座，并将方便的位置礼让给抱着婴儿的妈妈，晚会在温馨气氛中开幕。"
+                },
+                noYieldOutcome: {
+                    title: "❌ 互不相让的结果",
+                    badge: "造成资源浪费与冷漠氛围",
+                    text: "许多空位被书包占着不让人坐，真正有需要的长者只能全程站着，引发邻里之间的强烈指责。"
+                }
+            },
+            {
+                title: "社区活动决策讨论",
+                yieldOutcome: {
+                    title: "✅ 表现礼让的结果 (14.2)",
+                    badge: "增强社区凝聚力与团结",
+                    text: "大家包容不同意见，各让一步达成共识；活动顺利圆满举办，大家的关系更加亲密融洽。"
+                },
+                noYieldOutcome: {
+                    title: "❌ 互不相让的结果",
+                    badge: "导致社区分崩离析",
+                    text: "每个人都坚持己见不肯退让，甚至拍桌子吵架；最终活动被迫取消，邻里之间留下隔阂。"
+                }
+            }
+        ];
+
+        function switchImportanceScene(index) {
+            playSfx('click');
+            const btns = document.querySelectorAll('.imp-tab-btn');
+            btns.forEach((btn, i) => {
+                if (i === index) {
+                    btn.className = "imp-tab-btn active px-4 py-2 rounded-xl text-xs font-bold border transition bg-amber-500 text-white border-amber-500 shadow-sm";
+                } else {
+                    btn.className = "imp-tab-btn px-4 py-2 rounded-xl text-xs font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200";
+                }
+            });
+
+            const sc = importanceScenes[index];
+            const display = document.getElementById('importance-display');
+            display.innerHTML = `
+                <!-- 礼让的积极重要性 -->
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 p-5 rounded-3xl border border-emerald-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-extrabold text-emerald-900 text-sm">${sc.yieldOutcome.title}</h4>
+                        <span class="bg-emerald-200 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${sc.yieldOutcome.badge}</span>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed font-medium bg-white/80 p-3.5 rounded-2xl border border-emerald-100">
+                        ${sc.yieldOutcome.text}
+                    </p>
+                    <div class="text-[11px] font-bold text-emerald-700 flex items-center space-x-1">
+                        <i class="fa-solid fa-seedling"></i>
+                        <span>重要性领悟：礼让能创造双赢，共建关爱社会！</span>
+                    </div>
+                </div>
+
+                <!-- 忽视礼让的消极后果 -->
+                <div class="bg-gradient-to-br from-rose-50 to-orange-50 p-5 rounded-3xl border border-rose-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-extrabold text-rose-900 text-sm">${sc.noYieldOutcome.title}</h4>
+                        <span class="bg-rose-200 text-rose-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${sc.noYieldOutcome.badge}</span>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed font-medium bg-white/80 p-3.5 rounded-2xl border border-rose-100">
+                        ${sc.noYieldOutcome.text}
+                    </p>
+                    <div class="text-[11px] font-bold text-rose-700 flex items-center space-x-1">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>警惕：争强好胜、互不相让只会带来误会与伤害！</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // -------------------------------------------------------------
+        // 4. 综合闯关小测验 ADVENTURE & QUIZ (14.1 & 14.2)
+        // -------------------------------------------------------------
+        const quizQuestions = [
+            {
+                type: "scenario",
+                tag: "14.1 辨识例子",
+                question: "【情境题】在社区多用途球场上，你和朋友已经连续打了2个小时羽毛球。此时，隔壁栋的几位邻居也在场边排队等候。下列哪项属于【礼让行为】？",
+                options: [
+                    "A. 装作没看到，继续打球直到自己尽兴为止",
+                    "B. 理直气壮地说：“是我们先来的，你们明天再来！”",
+                    "C. 主动上前打招呼，协议再打10分钟后把场地让给他们使用",
+                    "D. 把球拍扔在地上离开，并恶言相向"
+                ],
+                answer: 2,
+                explanation: "主动沟通并协议轮流使用社区公共场地，是体现 14.1 礼让精神的标准例子！"
+            },
+            {
+                type: "concept",
+                tag: "14.2 重要性",
+                question: "【讲述重要性】在社区生活中，居民之间保持互相礼让的主要重要性是什么？",
+                options: [
+                    "A. 能够让自己在社区里显得最有威风",
+                    "B. 促进邻里和谐团结，有效化解不必要的误会与冲突",
+                    "C. 可以获得政府颁发的巨额金钱奖赏",
+                    "D. 能让自己永远优先享有所有公共资源"
+                ],
+                answer: 1,
+                explanation: "礼让的核心重要性（14.2）在于营造包容和谐的居住环境，化解矛盾冲突。"
+            },
+            {
+                type: "scenario",
+                tag: "14.1 辨识例子",
+                question: "【情境题】社区举办文娱晚会，座位十分紧张。下列哪位居民的行为体现了“礼让”美德？",
+                options: [
+                    "A. 秀芬用5本字典占了第一排座位留给还没到的朋友",
+                    "B. 伟杰主动把靠近走道的舒适座位让给抱婴儿的妈妈",
+                    "C. 强强一个人躺在三个座位上睡觉",
+                    "D. 莉莉大声斥责想要坐到她旁边的长者"
+                ],
+                answer: 1,
+                explanation: "伟杰主动照顾有需要的社区成员，是体贴礼让的具体展现。"
+            },
+            {
+                type: "concept",
+                tag: "14.2 重要性",
+                question: "【讲述重要性】如果社区里的儿童在游乐场玩耍时都能自觉礼让、轮流使用滑梯与秋千，这能带来什么好处？",
+                options: [
+                    "A. 保障公共设施安全有序地被使用，减少推搡摔伤事故",
+                    "B. 让游乐场设施更快损坏",
+                    "C. 让其他小朋友失去玩乐机会",
+                    "D. 没有任何实质好处"
+                ],
+                answer: 0,
+                explanation: "秩序与礼让能保护儿童玩乐安全，避免争抢造成的摔伤意外（14.2）。"
+            },
+            {
+                type: "scenario",
+                tag: "14.1 & 14.2 综合",
+                question: "【综合思考】社区儿童会讨论聚会地点，小乐的提议没有被大多数人采纳。小乐应该怎样做才能表现出礼让与涵养？",
+                options: [
+                    "A. 发脾气退出儿童会，并吵着不让大家举办聚会",
+                    "B. 少数服从多数，接受大家的决定并积极配合参与",
+                    "C. 在现场大哭大闹，强迫大家听自己的",
+                    "D. 背后说其他小朋友的坏话"
+                ],
+                answer: 1,
+                explanation: "尊重大局、少数服从多数是道德礼让与包容的优良体现。"
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizScoreCount = 0;
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('adventure-container');
+            document.getElementById('adventure-progress-text').innerText = `${currentQuizIndex + 1} / ${quizQuestions.length}`;
+
+            if (currentQuizIndex >= quizQuestions.length) {
+                // 闯关成功，颁发勋章
+                container.innerHTML = `
+                    <div class="text-center py-6 space-y-4">
+                        <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-full flex items-center justify-center text-4xl text-slate-900 mx-auto shadow-lg animate-bounce-gentle">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-black text-slate-800">恭喜通过《礼让之城》大冒险！</h4>
+                            <p class="text-xs text-slate-500 mt-1">您在本次答题中获得了 <span class="text-amber-600 font-extrabold text-sm">${quizScoreCount * 20} 分</span></p>
+                        </div>
+
+                        <!-- 电子勋章 Card -->
+                        <div class="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 border-2 border-teal-300 p-5 rounded-3xl max-w-sm mx-auto shadow-md space-y-2">
+                            <span class="bg-teal-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">五年级道德荣誉认证</span>
+                            <h5 class="text-lg font-black text-teal-900">“社区礼让小达人”</h5>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                表彰你在单元十四中深入掌握 <b>14.1 礼让行为例子</b> 与 <b>14.2 礼让重要性</b>，文明礼让，从我做起！
+                            </p>
+                        </div>
+
+                        <button onclick="restartAdventure()" class="px-6 py-2.5 bg-indigo-600 text-white rounded-2xl font-bold text-xs shadow-md hover:bg-indigo-700 transition">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> 再次挑战闯关
+                        </button>
+                    </div>
+                `;
+                confetti({ particleCount: 100, spread: 80 });
+                return;
+            }
+
+            const q = quizQuestions[currentQuizIndex];
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-lg">${q.tag}</span>
+                    </div>
+
+                    <h4 class="font-bold text-slate-800 text-sm leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        ${q.question}
+                    </h4>
+
+                    <div class="grid grid-cols-1 gap-2.5 pt-1">
+                        ${q.options.map((opt, idx) => `
+                            <button onclick="submitQuizAnswer(${idx})" class="quiz-opt-btn w-full text-left p-3.5 rounded-2xl border border-slate-200/80 hover:border-indigo-400 hover:bg-indigo-50/50 transition font-medium text-xs text-slate-700 flex justify-between items-center group">
+                                <span>${opt}</span>
+                                <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-indigo-500"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div id="quiz-feedback" class="hidden p-3.5 rounded-2xl text-xs font-bold"></div>
+                </div>
+            `;
+        }
+
+        function submitQuizAnswer(selectedIdx) {
+            const q = quizQuestions[currentQuizIndex];
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+
+            if (selectedIdx === q.answer) {
+                playSfx('correct');
+                quizScoreCount++;
+                addScore(20);
+                feedback.className = "p-3.5 rounded-2xl text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check text-base mr-1"></i> 回答正确！${q.explanation}`;
+            } else {
+                playSfx('wrong');
+                feedback.className = "p-3.5 rounded-2xl text-xs font-bold bg-rose-100 text-rose-900 border border-rose-300";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-base mr-1"></i> 回答错误。解析：${q.explanation}`;
+            }
+
+            // 禁用按钮防重复点击
+            document.querySelectorAll('.quiz-opt-btn').forEach(b => b.disabled = true);
+
+            setTimeout(() => {
+                currentQuizIndex++;
+                renderQuizQuestion();
+            }, 2200);
+        }
+
+        function restartAdventure() {
+            currentQuizIndex = 0;
+            quizScoreCount = 0;
+            renderQuizQuestion();
+        }
+
+        // 初始化加载
+        window.onload = function() {
+            renderIdentifyCard();
+            switchImportanceScene(0);
+            renderQuizQuestion();
         };
-
-        function App() {
-            const [activeTab, setActiveTab] = useState('flashcard');
-            const [score, setScore] = useState(0);
-            const [toastMessage, setToastMessage] = useState(null);
-
-            // Tracking completion status for Bahagian 2, 3, and 4
-            const [completedSections, setCompletedSections] = useState({
-                matching: false,
-                fillblank: false,
-                essay: false
-            });
-
-            // Detailed score results for certificate
-            const [sectionScores, setSectionScores] = useState({
-                fillblankCorrect: 0,
-                fillblankTotal: 9,
-                essayCorrect: 0,
-                essayTotal: 9
-            });
-
-            const [showCertificateModal, setShowCertificateModal] = useState(false);
-            const [hasAutoOpenedCert, setHasAutoOpenedCert] = useState(false);
-
-            const showToast = (msg) => {
-                setToastMessage(msg);
-                setTimeout(() => setToastMessage(null), 3000);
-            };
-
-            const triggerConfetti = () => {
-                if (window.confetti) {
-                    window.confetti({
-                        particleCount: 100,
-                        spread: 80,
-                        origin: { y: 0.5 }
-                    });
-                }
-            };
-
-            // Check if all 3 sections (2, 3, 4) are completed
-            const allSectionsCompleted = completedSections.matching && completedSections.fillblank && completedSections.essay;
-
-            useEffect(() => {
-                if (allSectionsCompleted && !hasAutoOpenedCert) {
-                    setHasAutoOpenedCert(true);
-                    setTimeout(() => {
-                        setShowCertificateModal(true);
-                        playSoundEffect('correct');
-                        triggerConfetti();
-                    }, 800);
-                }
-            }, [completedSections, hasAutoOpenedCert]);
-
-            const markSectionCompleted = (sectionKey, details = {}) => {
-                setCompletedSections(prev => ({ ...prev, [sectionKey]: true }));
-                if (details) {
-                    setSectionScores(prev => ({ ...prev, ...details }));
-                }
-            };
-
-            return (
-                <div className="max-w-5xl mx-auto px-4 py-6 md:py-8 flex flex-col min-h-screen">
-                    {/* Header Banner */}
-                    <header className="glass-panel rounded-3xl p-6 mb-6 shadow-lg border border-white/60 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-sky-200/50 rounded-full blur-2xl pointer-events-none"></div>
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
-                            <div className="flex items-center gap-4 text-center md:text-left">
-                                <div className="w-16 h-16 bg-amber-400 text-white rounded-2xl flex items-center justify-center text-3xl shadow-md animate-bounce-subtle shrink-0">
-                                    🏆
-                                </div>
-                                <div>
-                                    <div className="flex items-center gap-2 justify-center md:justify-start">
-                                        <span className="bg-sky-500 text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">BM Tahun 5</span>
-                                        <span className="bg-emerald-500 text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Penulisan</span>
-                                    </div>
-                                    <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 mt-1">
-                                        Kosa Kata Hari Sukan <span className="text-sky-600 font-normal text-xl">(运动会)</span>
-                                    </h1>
-                                    <p className="text-slate-500 text-sm mt-0.5">
-                                        Mari kuasai kata kerja penting untuk menulis karangan Bahasa Melayu!
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Score Display & Sijil Button */}
-                            <div className="flex items-center gap-3">
-                                {allSectionsCompleted && (
-                                    <button
-                                        onClick={() => setShowCertificateModal(true)}
-                                        className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 font-extrabold text-xs px-4 py-3 rounded-2xl shadow-lg border border-amber-300 hover:scale-105 transition-all"
-                                    >
-                                        <span className="text-lg">📜</span> Sijil Pencapaian
-                                    </button>
-                                )}
-                                <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-2xl shadow-sm">
-                                    <span className="text-2xl">⭐</span>
-                                    <div>
-                                        <div className="text-xs font-bold uppercase text-amber-700">Mata Ganjaran</div>
-                                        <div className="text-xl font-black text-amber-600">{score} Bintang</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Navigation Tabs */}
-                        <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-slate-200/80 justify-center md:justify-start">
-                            <button
-                                onClick={() => setActiveTab('flashcard')}
-                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                    activeTab === 'flashcard'
-                                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20 scale-105'
-                                        : 'bg-white text-slate-600 hover:bg-slate-100'
-                                }`}
-                            >
-                                <i className="fa-solid fa-layer-group"></i> 1. Kad Imbasan
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('matching')}
-                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all relative ${
-                                    activeTab === 'matching'
-                                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20 scale-105'
-                                        : 'bg-white text-slate-600 hover:bg-slate-100'
-                                }`}
-                            >
-                                <i className="fa-solid fa-puzzle-piece"></i> 2. Padan Maksud
-                                {completedSections.matching && <i className="fa-solid fa-circle-check text-emerald-400 ml-1"></i>}
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('fillblank')}
-                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all relative ${
-                                    activeTab === 'fillblank'
-                                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20 scale-105'
-                                        : 'bg-white text-slate-600 hover:bg-slate-100'
-                                }`}
-                            >
-                                <i className="fa-solid fa-pen-to-square"></i> 3. Latihan Ayat
-                                {completedSections.fillblank && <i className="fa-solid fa-circle-check text-emerald-400 ml-1"></i>}
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('essay')}
-                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all relative ${
-                                    activeTab === 'essay'
-                                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20 scale-105'
-                                        : 'bg-white text-slate-600 hover:bg-slate-100'
-                                }`}
-                            >
-                                <i className="fa-solid fa-file-pen"></i> 4. Bina Karangan
-                                {completedSections.essay && <i className="fa-solid fa-circle-check text-emerald-400 ml-1"></i>}
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('dictionary')}
-                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                    activeTab === 'dictionary'
-                                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/20 scale-105'
-                                        : 'bg-white text-slate-600 hover:bg-slate-100'
-                                }`}
-                            >
-                                <i className="fa-solid fa-book-open"></i> 5. Senarai Kosa Kata
-                            </button>
-                        </div>
-                    </header>
-
-                    {/* Main Content Body */}
-                    <main className="flex-1">
-                        {activeTab === 'flashcard' && <FlashcardTab setScore={setScore} triggerConfetti={triggerConfetti} showToast={showToast} />}
-                        {activeTab === 'matching' && (
-                            <MatchingTab
-                                setScore={setScore}
-                                triggerConfetti={triggerConfetti}
-                                showToast={showToast}
-                                onComplete={() => markSectionCompleted('matching')}
-                            />
-                        )}
-                        {activeTab === 'fillblank' && (
-                            <FillBlankTab
-                                setScore={setScore}
-                                triggerConfetti={triggerConfetti}
-                                showToast={showToast}
-                                onComplete={(correct, total) => markSectionCompleted('fillblank', { fillblankCorrect: correct, fillblankTotal: total })}
-                            />
-                        )}
-                        {activeTab === 'essay' && (
-                            <EssayBuilderTab
-                                triggerConfetti={triggerConfetti}
-                                showToast={showToast}
-                                onComplete={(correct, total) => markSectionCompleted('essay', { essayCorrect: correct, essayTotal: total })}
-                            />
-                        )}
-                        {activeTab === 'dictionary' && <DictionaryTab showToast={showToast} />}
-                    </main>
-
-                    {/* Certificate Modal */}
-                    {showCertificateModal && (
-                        <CertificateModal
-                            score={score}
-                            completedSections={completedSections}
-                            sectionScores={sectionScores}
-                            onClose={() => setShowCertificateModal(false)}
-                            showToast={showToast}
-                        />
-                    )}
-
-                    {/* Toast Notification */}
-                    {toastMessage && (
-                        <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl border border-slate-700 flex items-center gap-3 z-50 animate-bounce-subtle">
-                            <i className="fa-solid fa-circle-info text-amber-400"></i>
-                            <span className="text-sm font-medium">{toastMessage}</span>
-                        </div>
-                    )}
-
-                    {/* Footer */}
-                    <footer className="mt-12 text-center text-xs text-slate-400 py-4 border-t border-slate-200">
-                        Modul Pembelajaran Penulisan Bahasa Melayu SJKC / SK • Tahun 5
-                    </footer>
-                </div>
-            );
-        }
-
-        function CertificateModal({ score, completedSections, sectionScores, onClose, showToast }) {
-            const [studentName, setStudentName] = useState('');
-            const [studentClass, setStudentClass] = useState('5 Merah');
-
-            const today = new Date().toLocaleDateString('ms-MY', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-
-            const copyToTeacher = () => {
-                const nameText = studentName.trim() || "Nama Murid";
-                const classText = studentClass.trim() || "Tahun 5";
-
-                const formattedText = 
-`📜 *SIJIL PENCAPAIAN PENULISAN BAHASA MELAYU*
-*Tajuk:* Modul Penulisan Hari Sukan (运动会) - Tahun 5
--------------------------------------------
-👤 *Nama Murid:* ${nameText}
-🏫 *Kelas:* ${classText}
-📅 *Tarikh:* ${today}
-
-📊 *KEPUTUSAN LATIHAN:*
-1. 🧩 Padan Maksud (Bahagian 2): Selesai ✅
-2. ✍️ Latihan Ayat (Bahagian 3): ${sectionScores.fillblankCorrect} / ${sectionScores.fillblankTotal} Betul
-3. 📝 Bina Karangan (Bahagian 4): ${sectionScores.essayCorrect} / ${sectionScores.essayTotal} Betul
-
-⭐ *Jumlah Bintang Diperoleh:* ${score} Bintang
-
-Terima kasih Cikgu! 🎉`;
-
-                // Copy using textarea fallback to support iframe restrictions
-                const textArea = document.createElement("textarea");
-                textArea.value = formattedText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast("Keputusan berjaya disalin! Anda boleh tampal (paste) dan hantar kepada cikgu. 📋");
-                } catch (err) {
-                    showToast("Gagal menyalin. Sila salin secara manual.");
-                }
-                document.body.removeChild(textArea);
-            };
-
-            return (
-                <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-                    <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border-4 border-amber-300 relative overflow-hidden my-8 p-6 md:p-8 animate-bounce-subtle">
-                        {/* Close button */}
-                        <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center font-bold text-sm transition-colors z-20"
-                        >
-                            ✕
-                        </button>
-
-                        {/* Certificate Header Banner */}
-                        <div className="text-center relative z-10">
-                            <div className="inline-block p-3 bg-amber-100 text-amber-600 rounded-full text-4xl mb-2 shadow-inner">
-                                🏆
-                            </div>
-                            <h2 className="text-2xl md:text-3xl font-black text-amber-600 uppercase tracking-wide">
-                                SIJIL PENCAPAIAN
-                            </h2>
-                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-0.5">
-                                Modul Penulisan Bahasa Melayu Tahun 5
-                            </p>
-                            <div className="w-24 h-1 bg-amber-400 mx-auto my-3 rounded-full"></div>
-                        </div>
-
-                        {/* Certificate Content */}
-                        <div className="text-center space-y-4 my-6">
-                            <p className="text-xs text-slate-600 font-medium">Dengan ini disahkan bahawa:</p>
-
-                            {/* Inputs for Name & Class */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-lg mx-auto bg-amber-50/80 p-4 rounded-2xl border border-amber-200">
-                                <div className="md:col-span-2 text-left">
-                                    <label className="block text-[11px] font-bold text-amber-800 uppercase mb-1">
-                                        Nama Murid:
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Menaip nama anda di sini..."
-                                        value={studentName}
-                                        onChange={(e) => setStudentName(e.target.value)}
-                                        className="w-full px-3 py-1.5 text-sm font-bold bg-white border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-slate-800"
-                                    />
-                                </div>
-                                <div className="text-left">
-                                    <label className="block text-[11px] font-bold text-amber-800 uppercase mb-1">
-                                        Kelas:
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="cth: 5 Merah"
-                                        value={studentClass}
-                                        onChange={(e) => setStudentClass(e.target.value)}
-                                        className="w-full px-3 py-1.5 text-sm font-bold bg-white border border-amber-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 text-slate-800"
-                                    />
-                                </div>
-                            </div>
-
-                            <p className="text-xs text-slate-600 font-medium leading-relaxed max-w-md mx-auto">
-                                Telah berjaya menyempurnakan kesemua aktiviti modul <strong className="text-sky-700">Hari Sukan (运动会)</strong> dengan cemerlang!
-                            </p>
-
-                            {/* Scores Breakdown Box */}
-                            <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl max-w-lg mx-auto space-y-2 text-left">
-                                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 border-b border-slate-200 pb-1 flex justify-between">
-                                    <span>Keputusan Pembelajaran</span>
-                                    <span className="text-amber-600">Tarikh: {today}</span>
-                                </div>
-                                <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-                                    <span className="flex items-center gap-1.5">
-                                        <span>🧩</span> 2. Padan Maksud
-                                    </span>
-                                    <span className="text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                                        Selesai 100%
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-                                    <span className="flex items-center gap-1.5">
-                                        <span>✍️</span> 3. Latihan Tempat Kosong
-                                    </span>
-                                    <span className="text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200">
-                                        {sectionScores.fillblankCorrect} / {sectionScores.fillblankTotal} Betul
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-                                    <span className="flex items-center gap-1.5">
-                                        <span>📝</span> 4. Bina Karangan Hari Sukan
-                                    </span>
-                                    <span className="text-purple-700 font-bold bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
-                                        {sectionScores.essayCorrect} / {sectionScores.essayTotal} Betul
-                                    </span>
-                                </div>
-                                <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-sm font-black text-amber-600">
-                                    <span>⭐ Jumlah Mata Ganjaran</span>
-                                    <span>{score} Bintang</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Actions Bar */}
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-3 pt-2">
-                            <button
-                                onClick={copyToTeacher}
-                                className="w-full md:w-auto px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2"
-                            >
-                                <i className="fa-regular fa-copy text-base"></i> Salin Keputusan untuk Cikgu
-                            </button>
-                            <button
-                                onClick={onClose}
-                                className="w-full md:w-auto px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-2xl transition-colors"
-                            >
-                                Tutup
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        function FlashcardTab({ setScore, triggerConfetti, showToast }) {
-            const [currentIndex, setCurrentIndex] = useState(0);
-            const [isFlipped, setIsFlipped] = useState(false);
-            const [mastered, setMastered] = useState({});
-
-            const item = VOCAB_LIST[currentIndex];
-
-            const handleNext = () => {
-                setIsFlipped(false);
-                playSoundEffect('flip');
-                setCurrentIndex((prev) => (prev + 1) % VOCAB_LIST.length);
-            };
-
-            const handlePrev = () => {
-                setIsFlipped(false);
-                playSoundEffect('flip');
-                setCurrentIndex((prev) => (prev - 1 + VOCAB_LIST.length) % VOCAB_LIST.length);
-            };
-
-            const toggleFlip = () => {
-                playSoundEffect('flip');
-                setIsFlipped(!isFlipped);
-            };
-
-            const markMastered = (e) => {
-                e.stopPropagation();
-                if (!mastered[item.id]) {
-                    setMastered({ ...mastered, [item.id]: true });
-                    setScore((s) => s + 10);
-                    playSoundEffect('correct');
-                    triggerConfetti();
-                    showToast(`Tahniah! Anda menguasai perkataan: ${item.malay} (+10⭐)`);
-                }
-            };
-
-            return (
-                <div className="flex flex-col items-center justify-center max-w-xl mx-auto">
-                    {/* Progress Indicator */}
-                    <div className="w-full flex items-center justify-between text-xs font-bold text-slate-500 mb-2 px-2">
-                        <span>Perkataan {currentIndex + 1} daripada {VOCAB_LIST.length}</span>
-                        <span>{Object.keys(mastered).length} Dikuasai</span>
-                    </div>
-
-                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-6">
-                        <div
-                            className="bg-sky-500 h-full transition-all duration-300"
-                            style={{ width: `${((currentIndex + 1) / VOCAB_LIST.length) * 100}%` }}
-                        ></div>
-                    </div>
-
-                    {/* 3D Flip Card Container */}
-                    <div
-                        onClick={toggleFlip}
-                        className="w-full h-96 perspective-1000 cursor-pointer group select-none"
-                    >
-                        <div className={`relative w-full h-full duration-500 transform-style-3d card-flip ${isFlipped ? 'rotate-y-180' : ''}`}>
-                            {/* FRONT SIDE */}
-                            <div className="absolute inset-0 w-full h-full bg-white rounded-3xl p-8 shadow-xl border-2 border-sky-100 flex flex-col justify-between items-center text-center backface-hidden">
-                                <div className="flex items-center justify-between w-full">
-                                    <span className={`text-xs font-bold text-white px-3 py-1 rounded-full ${item.badgeColor}`}>
-                                        {item.category}
-                                    </span>
-                                    <button
-                                        onClick={markMastered}
-                                        className={`text-2xl transition-transform hover:scale-125 ${mastered[item.id] ? 'text-amber-400' : 'text-slate-300 hover:text-amber-300'}`}
-                                        title="Tanda telah kuasai"
-                                    >
-                                        <i className="fa-solid fa-star"></i>
-                                    </button>
-                                </div>
-
-                                <div className="my-auto flex flex-col items-center">
-                                    <span className="text-6xl mb-4 animate-bounce-subtle">{item.icon}</span>
-                                    <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-2">
-                                        {item.malay}
-                                    </h2>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); speakText(item.malay, 'ms-MY'); }}
-                                            className="w-10 h-10 bg-sky-100 text-sky-600 hover:bg-sky-500 hover:text-white rounded-full flex items-center justify-center transition-colors"
-                                            title="Sebut Bahasa Melayu"
-                                        >
-                                            <i className="fa-solid fa-volume-high"></i>
-                                        </button>
-                                        <span className="text-xs text-slate-400 font-semibold">Klik untuk sebutan</span>
-                                    </div>
-                                </div>
-
-                                <div className="text-xs font-semibold text-sky-600 bg-sky-50 px-4 py-2 rounded-full border border-sky-100 flex items-center gap-2">
-                                    <i className="fa-solid fa-rotate"></i> Klik kad untuk lihat maksud Chinese & contoh ayat
-                                </div>
-                            </div>
-
-                            {/* BACK SIDE */}
-                            <div className="absolute inset-0 w-full h-full bg-slate-900 text-white rounded-3xl p-8 shadow-xl flex flex-col justify-between items-center text-center rotate-y-180 backface-hidden border-2 border-slate-700">
-                                <div className="flex justify-between w-full items-center">
-                                    <span className="text-xs font-bold bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full border border-amber-500/30">
-                                        Maksud & Contoh Ayat
-                                    </span>
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); speakText(item.chinese, 'zh-CN'); }}
-                                        className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-full flex items-center gap-1 border border-slate-700"
-                                    >
-                                        <i className="fa-solid fa-volume-high text-amber-400"></i> Sebutan CN
-                                    </button>
-                                </div>
-
-                                <div className="my-auto w-full">
-                                    <div className="text-4xl font-extrabold text-amber-400 mb-1">
-                                        {item.chinese} <span className="text-lg font-normal text-slate-300">({item.pinyin})</span>
-                                    </div>
-                                    <p className="text-slate-300 text-sm mb-4 px-4 font-medium">
-                                        {item.meaning}
-                                    </p>
-                                    <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 text-left">
-                                        <div className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                                            <i className="fa-solid fa-quote-left"></i> Contoh Ayat Karangan:
-                                        </div>
-                                        <p className="text-sm font-medium text-slate-200 leading-relaxed">
-                                            "{item.sentence}"
-                                        </p>
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); speakText(item.sentence, 'ms-MY'); }}
-                                            className="mt-2 text-xs text-sky-400 hover:underline flex items-center gap-1"
-                                        >
-                                            <i className="fa-solid fa-play text-xs"></i> Dengar ayat
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div className="text-xs text-slate-400">
-                                    Klik sekali lagi untuk balik ke hadapan
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Navigation Buttons */}
-                    <div className="flex items-center justify-between w-full mt-6 gap-4">
-                        <button
-                            onClick={handlePrev}
-                            className="flex-1 py-3 px-4 bg-white text-slate-700 rounded-2xl font-bold border border-slate-200 shadow-sm hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
-                        >
-                            <i className="fa-solid fa-arrow-left"></i> Sebelumnya
-                        </button>
-                        <button
-                            onClick={handleNext}
-                            className="flex-1 py-3 px-4 bg-sky-500 text-white rounded-2xl font-bold shadow-md shadow-sky-500/20 hover:bg-sky-600 transition-colors flex items-center justify-center gap-2"
-                        >
-                            Seterusnya <i className="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            );
-        }
-
-        function MatchingTab({ setScore, triggerConfetti, showToast, onComplete }) {
-            const [malayItems, setMalayItems] = useState([]);
-            const [chineseItems, setChineseItems] = useState([]);
-            const [selectedMalay, setSelectedMalay] = useState(null);
-            const [selectedChinese, setSelectedChinese] = useState(null);
-            const [matchedIds, setMatchedIds] = useState([]);
-            const [isCompleted, setIsCompleted] = useState(false);
-
-            useEffect(() => {
-                initGame();
-            }, []);
-
-            const initGame = () => {
-                // Shuffle items
-                const shuffledM = [...VOCAB_LIST].sort(() => Math.random() - 0.5);
-                const shuffledC = [...VOCAB_LIST].sort(() => Math.random() - 0.5);
-                setMalayItems(shuffledM);
-                setChineseItems(shuffledC);
-                setSelectedMalay(null);
-                setSelectedChinese(null);
-                setMatchedIds([]);
-                setIsCompleted(false);
-            };
-
-            const handleMalayClick = (item) => {
-                if (matchedIds.includes(item.id)) return;
-                setSelectedMalay(item);
-                checkMatch(item, selectedChinese);
-            };
-
-            const handleChineseClick = (item) => {
-                if (matchedIds.includes(item.id)) return;
-                setSelectedChinese(item);
-                checkMatch(selectedMalay, item);
-            };
-
-            const checkMatch = (mItem, cItem) => {
-                if (mItem && cItem) {
-                    if (mItem.id === cItem.id) {
-                        // Correct match
-                        playSoundEffect('correct');
-                        const newMatched = [...matchedIds, mItem.id];
-                        setMatchedIds(newMatched);
-                        setSelectedMalay(null);
-                        setSelectedChinese(null);
-                        setScore((s) => s + 5);
-
-                        if (newMatched.length === VOCAB_LIST.length) {
-                            setIsCompleted(true);
-                            triggerConfetti();
-                            showToast("Hebat! Anda telah berjaya memadankan semua perkataan! 🎉");
-                            if (onComplete) onComplete();
-                        }
-                    } else {
-                        // Wrong match
-                        playSoundEffect('wrong');
-                        setTimeout(() => {
-                            setSelectedMalay(null);
-                            setSelectedChinese(null);
-                        }, 500);
-                    }
-                }
-            };
-
-            return (
-                <div className="max-w-4xl mx-auto glass-panel p-6 md:p-8 rounded-3xl shadow-lg border border-white">
-                    <div className="flex flex-col md:flex-row items-center justify-between mb-6 pb-4 border-b border-slate-200">
-                        <div>
-                            <h2 className="text-xl font-bold text-slate-800">🧩 Permainan Padankan Perkataan</h2>
-                            <p className="text-xs text-slate-500">Pilih kata kerja Bahasa Melayu di sebelah kiri dan maksud Bahasa Cina di sebelah kanan.</p>
-                        </div>
-                        <button
-                            onClick={initGame}
-                            className="mt-3 md:mt-0 text-xs font-bold text-sky-600 bg-sky-50 px-4 py-2 rounded-xl border border-sky-200 hover:bg-sky-100 transition-colors flex items-center gap-1.5"
-                        >
-                            <i className="fa-solid fa-arrows-rotate"></i> Main Semula
-                        </button>
-                    </div>
-
-                    {isCompleted ? (
-                        <div className="text-center py-12">
-                            <div className="text-6xl mb-4">🏆</div>
-                            <h3 className="text-2xl font-bold text-slate-800 mb-2">Syabas! Semua Padanan Betul!</h3>
-                            <p className="text-slate-600 text-sm mb-6">Anda telah menguasai kesemua 9 perkataan penulisan Hari Sukan!</p>
-                            <button
-                                onClick={initGame}
-                                className="px-6 py-3 bg-sky-500 text-white font-bold rounded-2xl shadow-lg hover:bg-sky-600 transition-transform active:scale-95"
-                            >
-                                Bermain Sekali Lagi
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Column 1: Bahasa Melayu */}
-                            <div className="space-y-2.5">
-                                <h3 className="text-sm font-extrabold text-sky-700 uppercase tracking-wider mb-3">Bahasa Melayu</h3>
-                                {malayItems.map((item) => {
-                                    const isMatched = matchedIds.includes(item.id);
-                                    const isSelected = selectedMalay?.id === item.id;
-                                    return (
-                                        <button
-                                            key={`m-${item.id}`}
-                                            onClick={() => handleMalayClick(item)}
-                                            disabled={isMatched}
-                                            className={`w-full p-3.5 rounded-2xl font-bold text-left text-sm transition-all flex items-center justify-between border ${
-                                                isMatched
-                                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-200 opacity-60'
-                                                    : isSelected
-                                                    ? 'bg-sky-500 text-white border-sky-600 shadow-md scale-102'
-                                                    : 'bg-white text-slate-700 border-slate-200 hover:border-sky-300 hover:bg-sky-50/50'
-                                            }`}
-                                        >
-                                            <span className="flex items-center gap-2">
-                                                <span>{item.icon}</span>
-                                                <span>{item.malay}</span>
-                                            </span>
-                                            {isMatched && <i className="fa-solid fa-check text-emerald-500"></i>}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Column 2: Chinese */}
-                            <div className="space-y-2.5">
-                                <h3 className="text-sm font-extrabold text-amber-700 uppercase tracking-wider mb-3">Bahasa Cina (华文)</h3>
-                                {chineseItems.map((item) => {
-                                    const isMatched = matchedIds.includes(item.id);
-                                    const isSelected = selectedChinese?.id === item.id;
-                                    return (
-                                        <button
-                                            key={`c-${item.id}`}
-                                            onClick={() => handleChineseClick(item)}
-                                            disabled={isMatched}
-                                            className={`w-full p-3.5 rounded-2xl font-bold text-left text-sm transition-all flex items-center justify-between border ${
-                                                isMatched
-                                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-200 opacity-60'
-                                                    : isSelected
-                                                    ? 'bg-amber-500 text-white border-amber-600 shadow-md scale-102'
-                                                    : 'bg-white text-slate-700 border-slate-200 hover:border-amber-300 hover:bg-amber-50/50'
-                                            }`}
-                                        >
-                                            <span>
-                                                {item.chinese} <span className="text-xs font-normal opacity-80">({item.pinyin})</span>
-                                            </span>
-                                            {isMatched && <i className="fa-solid fa-check text-emerald-500"></i>}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
-        }
-
-        function FillBlankTab({ setScore, triggerConfetti, showToast, onComplete }) {
-            const QUESTIONS = [
-                {
-                    id: 1,
-                    sentence: "Guru Besar sekolah kami telah ___ Kejohanan Sukan Tahunan dengan meriah.",
-                    answer: "merasmikan",
-                    options: ["merasmikan", "mencatat", "bersorak-sorai"]
-                },
-                {
-                    id: 2,
-                    sentence: "Siva dan kawan-kawannya ___ dalam acara lari 100 meter.",
-                    answer: "mengambil bahagian / menyertai",
-                    options: ["mengambil bahagian / menyertai", "mengumumkan keputusan", "melontar peluru"]
-                },
-                {
-                    id: 3,
-                    sentence: "Para peserta ___ di balapan dengan sekuat tenaga mereka.",
-                    answer: "berlumba lari",
-                    options: ["berlumba lari", "mencatat", "menyampaikan pingat"]
-                },
-                {
-                    id: 4,
-                    sentence: "Ahli sukan itu ___ sekuat hatinya di padang sekolah.",
-                    answer: "melontar peluru",
-                    options: ["melontar peluru", "menyaksikan", "merasmikan"]
-                },
-                {
-                    id: 5,
-                    sentence: "Guru bertugas ___ masa larian dan markah setiap peserta.",
-                    answer: "mencatat",
-                    options: ["mencatat", "bersorak-sorai", "berlumba lari"]
-                },
-                {
-                    id: 6,
-                    sentence: "Ibu bapa gembira ___ pelbagai acara sukan yang dianjurkan.",
-                    answer: "menyaksikan",
-                    options: ["menyaksikan", "mengumumkan keputusan", "melontar peluru"]
-                },
-                {
-                    id: 7,
-                    sentence: "Para penonton ___ untuk memberi sokongan kepada rumah sukan masing-masing.",
-                    answer: "bersorak-sorai",
-                    options: ["bersorak-sorai", "merasmikan", "mencatat"]
-                },
-                {
-                    id: 8,
-                    sentence: "Juruacara ___ pertandingan dengan jelas di corong pembesar suara.",
-                    answer: "mengumumkan keputusan",
-                    options: ["mengumumkan keputusan", "berlumba lari", "menyertai"]
-                },
-                {
-                    id: 9,
-                    sentence: "Tetamu kehormat dijemput ke pentas untuk ___ kepada para pemenang.",
-                    answer: "menyampaikan pingat",
-                    options: ["menyampaikan pingat", "menyaksikan", "melontar peluru"]
-                }
-            ];
-
-            const [userAnswers, setUserAnswers] = useState({});
-            const [submitted, setSubmitted] = useState(false);
-
-            const handleOptionSelect = (qId, option) => {
-                if (submitted) return;
-                setUserAnswers({ ...userAnswers, [qId]: option });
-            };
-
-            const handleSubmit = () => {
-                let correctCount = 0;
-                QUESTIONS.forEach((q) => {
-                    if (userAnswers[q.id] === q.answer) correctCount++;
-                });
-
-                setSubmitted(true);
-                if (correctCount === QUESTIONS.length) {
-                    playSoundEffect('correct');
-                    triggerConfetti();
-                    setScore((s) => s + 30);
-                    showToast("Sempurna! 100% Markah! (+30⭐)");
-                } else {
-                    playSoundEffect('correct');
-                    setScore((s) => s + correctCount * 3);
-                    showToast(`Anda mendapat ${correctCount}/${QUESTIONS.length} betul!`);
-                }
-
-                if (onComplete) {
-                    onComplete(correctCount, QUESTIONS.length);
-                }
-            };
-
-            const handleReset = () => {
-                setUserAnswers({});
-                setSubmitted(false);
-            };
-
-            return (
-                <div className="max-w-3xl mx-auto glass-panel p-6 md:p-8 rounded-3xl shadow-lg border border-white">
-                    <div className="mb-6 pb-4 border-b border-slate-200">
-                        <h2 className="text-xl font-bold text-slate-800">✍️ Latihan Isi Tempat Kosong</h2>
-                        <p className="text-xs text-slate-500">Pilih kata kerja yang paling sesuai untuk melengkapkan ayat karangan Hari Sukan di bawah.</p>
-                    </div>
-
-                    <div className="space-y-6">
-                        {QUESTIONS.map((q, idx) => {
-                            const selected = userAnswers[q.id];
-                            const isCorrect = selected === q.answer;
-
-                            return (
-                                <div key={q.id} className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-                                    <div className="flex items-start gap-3 mb-3">
-                                        <span className="w-6 h-6 bg-sky-100 text-sky-700 font-bold text-xs rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                                            {idx + 1}
-                                        </span>
-                                        <p className="text-sm font-semibold text-slate-800 leading-relaxed">
-                                            {q.sentence.split('___')[0]}
-                                            <span className={`inline-block px-3 py-1 mx-1 rounded-lg border text-sm font-bold ${
-                                                submitted
-                                                    ? isCorrect
-                                                        ? 'bg-emerald-100 text-emerald-700 border-emerald-300'
-                                                        : 'bg-rose-100 text-rose-700 border-rose-300 line-through'
-                                                    : selected
-                                                    ? 'bg-sky-100 text-sky-800 border-sky-300'
-                                                    : 'bg-slate-100 text-slate-400 border-slate-200'
-                                            }`}>
-                                                {selected || '...........'}
-                                            </span>
-                                            {q.sentence.split('___')[1]}
-                                        </p>
-                                    </div>
-
-                                    {/* Choice buttons */}
-                                    <div className="flex flex-wrap gap-2 ml-9">
-                                        {q.options.map((opt) => (
-                                            <button
-                                                key={opt}
-                                                onClick={() => handleOptionSelect(q.id, opt)}
-                                                disabled={submitted}
-                                                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
-                                                    selected === opt
-                                                        ? 'bg-sky-500 text-white border-sky-600 shadow-sm'
-                                                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                                                }`}
-                                            >
-                                                {opt}
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    {/* Explanation on submit */}
-                                    {submitted && !isCorrect && (
-                                        <div className="mt-2 ml-9 text-xs text-rose-600 font-medium">
-                                            Jawapan betul: <span className="font-bold">{q.answer}</span>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <div className="mt-8 pt-4 border-t border-slate-200 flex items-center justify-between">
-                        {submitted ? (
-                            <button
-                                onClick={handleReset}
-                                className="px-6 py-3 bg-slate-700 text-white text-sm font-bold rounded-2xl hover:bg-slate-800 transition-colors"
-                            >
-                                Cuba Semula
-                            </button>
-                        ) : (
-                            <button
-                                onClick={handleSubmit}
-                                disabled={Object.keys(userAnswers).length < QUESTIONS.length}
-                                className={`w-full py-3.5 text-sm font-bold rounded-2xl shadow-md transition-all ${
-                                    Object.keys(userAnswers).length === QUESTIONS.length
-                                        ? 'bg-emerald-500 text-white hover:bg-emerald-600 active:scale-95'
-                                        : 'bg-slate-300 text-slate-500 cursor-not-allowed'
-                                }`}
-                            >
-                                Semak Jawapan Saya
-                            </button>
-                        )}
-                    </div>
-                </div>
-            );
-        }
-
-        function EssayBuilderTab({ triggerConfetti, showToast, onComplete }) {
-            const [userInputs, setUserInputs] = useState({
-                p1: '', p2: '', p3: '', p4: '', p5: '', p6: '', p7: '', p8: '', p9: ''
-            });
-            const [activeInput, setActiveInput] = useState('p1');
-            const [submitted, setSubmitted] = useState(false);
-            const [results, setResults] = useState({});
-
-            // Jawapan betul bagi setiap tempat kosong (termasuk variasi)
-            const CORRECT_ANSWERS = {
-                p1: ["merasmikan"],
-                p2: ["mengambil bahagian", "menyertai", "mengambil bahagian / menyertai"],
-                p3: ["berlumba lari"],
-                p4: ["melontar peluru"],
-                p5: ["mencatat"],
-                p6: ["menyaksikan"],
-                p7: ["bersorak-sorai"],
-                p8: ["mengumumkan keputusan"],
-                p9: ["menyampaikan pingat"]
-            };
-
-            const wordList = [
-                "merasmikan",
-                "mengambil bahagian / menyertai",
-                "berlumba lari",
-                "melontar peluru",
-                "mencatat",
-                "menyaksikan",
-                "bersorak-sorai",
-                "mengumumkan keputusan",
-                "menyampaikan pingat"
-            ];
-
-            const handleInputChange = (field, value) => {
-                setUserInputs(prev => ({ ...prev, [field]: value }));
-                if (submitted) setSubmitted(false);
-            };
-
-            const handleWordClick = (word) => {
-                if (activeInput) {
-                    setUserInputs(prev => ({ ...prev, [activeInput]: word }));
-                    if (submitted) setSubmitted(false);
-                }
-            };
-
-            const checkEssay = () => {
-                let correctCount = 0;
-                const newResults = {};
-
-                Object.keys(CORRECT_ANSWERS).forEach(key => {
-                    const userVal = (userInputs[key] || '').trim().toLowerCase();
-                    const validValids = CORRECT_ANSWERS[key].map(v => v.toLowerCase());
-                    const isRight = validValids.includes(userVal);
-                    newResults[key] = isRight;
-                    if (isRight) correctCount++;
-                });
-
-                setResults(newResults);
-                setSubmitted(true);
-
-                if (correctCount === 9) {
-                    playSoundEffect('correct');
-                    triggerConfetti();
-                    showToast("Syabas! Karangan lengkap dan semua 9 jawapan ditaip dengan betul! 🎉");
-                } else {
-                    playSoundEffect('correct');
-                    showToast(`Anda telah melengkapkan ${correctCount}/9 tempat kosong dengan betul! Sila semak semula.`);
-                }
-
-                if (onComplete) {
-                    onComplete(correctCount, 9);
-                }
-            };
-
-            const fillAllAnswers = () => {
-                setUserInputs({
-                    p1: "merasmikan",
-                    p2: "mengambil bahagian / menyertai",
-                    p3: "berlumba lari",
-                    p4: "melontar peluru",
-                    p5: "mencatat",
-                    p6: "menyaksikan",
-                    p7: "bersorak-sorai",
-                    p8: "mengumumkan keputusan",
-                    p9: "menyampaikan pingat"
-                });
-                setSubmitted(false);
-                showToast("Semua jawapan telah diisikan sebagai panduan!");
-            };
-
-            const copyEssayToClipboard = () => {
-                const getW = (key) => userInputs[key] || "_______";
-                const text = `HARI SUKAN SEKOLAH SAYA\n\nPada hari Sabtu yang lalu, Sekolah Jenis Kebangsaan (Cina) kami telah mengadakan Kejohanan Sukan Tahunan di padang sekolah. Suasana pada hari tersebut sungguh meriah.\n\nMajlis dimulakan apabila Guru Besar dijemput untuk ${getW('p1')} kejohanan sukan tersebut. Semua murid bersiap sedia untuk ${getW('p2')} dalam pelbagai acara yang dipertandingkan.\n\nDi balapan, para peserta ${getW('p3')} dengan pantas untuk merebut gelaran johan. Di padang pula, peserta acara padang ${getW('p4')} dengan penuh semangat.\n\nPara guru bertugas sibuk ${getW('p5')} masa dan markah pertandingan. Manakala ibu bapa gembira ${getW('p6')} aksi anak-anak mereka dari khemah penonton. Suasana menjadi gemuruh apabila penonton ${getW('p7')} untuk memberi sokongan.\n\nSebelum majlis tamat, juruacara ${getW('p8')} rasmi pertandingan. Tetamu kehormat pula dijemput untuk ${getW('p9')} kepada para pemenang.\n\nSukan tahunan ini berakhir dengan jayanya dan kami pulang ke rumah dengan gembira.`;
-
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast("Teks karangan telah disalin ke papan klip! 📋");
-                } catch (e) {
-                    showToast("Gagal menyalin. Sila salin secara manual.");
-                }
-                document.body.removeChild(textArea);
-            };
-
-            const renderInput = (key, placeholder) => {
-                const isCorrect = results[key];
-                let inputBgClass = "bg-white border-amber-300 text-slate-800 focus:border-sky-500 focus:ring-2 focus:ring-sky-200";
-                
-                if (submitted) {
-                    if (isCorrect) {
-                        inputBgClass = "bg-emerald-100 border-emerald-500 text-emerald-900 font-bold";
-                    } else {
-                        inputBgClass = "bg-rose-100 border-rose-500 text-rose-900 font-bold";
-                    }
-                }
-
-                return (
-                    <span className="inline-block relative my-1 mx-1">
-                        <input
-                            type="text"
-                            value={userInputs[key]}
-                            onFocus={() => setActiveInput(key)}
-                            onChange={(e) => handleInputChange(key, e.target.value)}
-                            placeholder={placeholder}
-                            className={`px-3 py-1 text-sm font-bold border-2 rounded-xl outline-none transition-all shadow-sm ${inputBgClass} ${activeInput === key ? 'ring-2 ring-sky-400 border-sky-500' : ''}`}
-                            style={{ minWidth: '160px', width: 'auto' }}
-                        />
-                        {submitted && !isCorrect && (
-                            <span className="block text-[11px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 mt-0.5">
-                                Betul: {CORRECT_ANSWERS[key][0]}
-                            </span>
-                        )}
-                    </span>
-                );
-            };
-
-            return (
-                <div className="max-w-4xl mx-auto glass-panel p-6 md:p-8 rounded-3xl shadow-lg border border-white">
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
-                        <div>
-                            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                <span>✍️</span> Modul Lengkapkan Karangan (Taip Jawapan)
-                            </h2>
-                            <p className="text-xs text-slate-500">
-                                Murid perlu menaip kata kerja Bahasa Melayu yang betul di dalam petak kosong untuk melengkapkan karangan Hari Sukan.
-                            </p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            <button
-                                onClick={fillAllAnswers}
-                                className="bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-bold px-3 py-2 rounded-xl border border-sky-200 transition-colors flex items-center gap-1.5"
-                                title="Bantu isi semua tempat kosong"
-                            >
-                                <i className="fa-solid fa-lightbulb text-amber-500"></i> Petunjuk Jawapan
-                            </button>
-                            <button
-                                onClick={copyEssayToClipboard}
-                                className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md transition-all flex items-center gap-1.5"
-                            >
-                                <i className="fa-regular fa-copy"></i> Salin Karangan
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Word Bank / Pilihan Perkataan */}
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6">
-                        <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2 flex items-center justify-between">
-                            <span><i className="fa-solid fa-box-archive text-amber-500 mr-1"></i> Bank Kosa Kata Hari Sukan (Klik untuk isi petak aktif)</span>
-                            <span className="text-[11px] font-normal text-slate-400">Petak aktif: <strong className="text-sky-600">{activeInput ? `Petak ${activeInput.replace('p', '')}` : 'Tiada'}</strong></span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {wordList.map((word) => (
-                                <button
-                                    key={word}
-                                    onClick={() => handleWordClick(word)}
-                                    className="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs transition-transform active:scale-95 flex items-center gap-1"
-                                >
-                                    <span>{word}</span>
-                                    <i className="fa-solid fa-plus text-[10px] text-amber-600"></i>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Interactive Essay Paragraphs */}
-                    <div className="bg-amber-50/60 border border-amber-200/80 p-6 md:p-8 rounded-2xl font-serif leading-relaxed text-slate-800 text-base space-y-5 shadow-inner">
-                        <h3 className="text-center font-sans font-extrabold text-xl text-slate-900 uppercase tracking-wide border-b border-amber-200 pb-2">
-                            HARI SUKAN SEKOLAH SAYA
-                        </h3>
-
-                        <p className="indent-8 leading-loose">
-                            Pada hari Sabtu yang lalu, sekolah kami telah mengadakan Kejohanan Sukan Tahunan di padang sekolah. Suasana pada pagi itu sungguh meriah dengan hiasan bendera berwarna-warni.
-                        </p>
-
-                        <p className="indent-8 leading-loose">
-                            Majlis dimulakan apabila Guru Besar dijemput untuk{' '}
-                            {renderInput('p1', '1. taip jawapan...')}
-                            {' '}kejohanan tersebut. Semua murid teruja untuk{' '}
-                            {renderInput('p2', '2. taip jawapan...')}
-                            {' '}dalam pelbagai acara sukan.
-                        </p>
-
-                        <p className="indent-8 leading-loose">
-                            Acara sukan bermula tidak lama kemudian. Para peserta{' '}
-                            {renderInput('p3', '3. taip jawapan...')}
-                            {' '}di balapan dengan pantas sekali. Di kawasan padang pula, peserta acara padang bersungguh-sungguh{' '}
-                            {renderInput('p4', '4. taip jawapan...')}
-                            {' '}demi memungut mata bagi rumah sukan masing-masing.
-                        </p>
-
-                        <p className="indent-8 leading-loose">
-                            Sementara itu, guru pencatat sibuk{' '}
-                            {renderInput('p5', '5. taip jawapan...')}
-                            {' '}keputusan pertandingan. Ramai ibu bapa hadir untuk{' '}
-                            {renderInput('p6', '6. taip jawapan...')}
-                            {' '}anak-anak mereka beraksi. Suasana menjadi riuh-rendah apabila para penonton{' '}
-                            {renderInput('p7', '7. taip jawapan...')}
-                            {' '}untuk memberi sokongan.
-                        </p>
-
-                        <p className="indent-8 leading-loose">
-                            Sebelum majlis berlabuh tirai, juruacara pun{' '}
-                            {renderInput('p8', '8. taip jawapan...')}
-                            {' '}keseluruhan. Tetamu kehormat dijemput ke pentas untuk{' '}
-                            {renderInput('p9', '9. taip jawapan...')}
-                            {' '}kepada para pemenang. Kejohanan sukan ini berakhir dengan jayanya.
-                        </p>
-                    </div>
-
-                    {/* Submit Action Bar */}
-                    <div className="mt-6 flex flex-col md:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200">
-                        <div className="text-xs text-slate-500 font-medium">
-                            {submitted ? (
-                                <span className="font-bold text-slate-700">
-                                    Keputusan: {Object.values(results).filter(Boolean).length} / 9 Betul
-                                </span>
-                            ) : (
-                                "Taip jawapan anda di tempat kosong dan tekan butang 'Semak Karangan Saya'."
-                            )}
-                        </div>
-                        <button
-                            onClick={checkEssay}
-                            className="w-full md:w-auto px-8 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2"
-                        >
-                            <i className="fa-solid fa-circle-check"></i> Semak Karangan Saya
-                        </button>
-                    </div>
-                </div>
-            );
-        }
-
-        function DictionaryTab({ showToast }) {
-            const [searchTerm, setSearchTerm] = useState('');
-
-            const filteredVocab = VOCAB_LIST.filter(
-                (item) =>
-                    item.malay.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    item.chinese.includes(searchTerm) ||
-                    item.pinyin.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-
-            return (
-                <div className="max-w-4xl mx-auto glass-panel p-6 md:p-8 rounded-3xl shadow-lg border border-white">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
-                        <div>
-                            <h2 className="text-xl font-bold text-slate-800">📚 Senarai Kosa Kata Penulisan</h2>
-                            <p className="text-xs text-slate-500">Rujukan pantas bagi 9 kosa kata utama Hari Sukan Bahasa Melayu.</p>
-                        </div>
-                        {/* Search Bar */}
-                        <div className="relative w-full md:w-64">
-                            <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input
-                                type="text"
-                                placeholder="Cari perkataan..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-9 pr-4 py-2 bg-white rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-sky-500"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {filteredVocab.map((item) => (
-                            <div key={item.id} className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-2xl">{item.icon}</span>
-                                        <span className={`text-[10px] font-bold text-white px-2.5 py-0.5 rounded-full ${item.badgeColor}`}>
-                                            {item.category}
-                                        </span>
-                                    </div>
-                                    <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                                        <span>{item.id}. {item.malay}</span>
-                                        <button
-                                            onClick={() => speakText(item.malay, 'ms-MY')}
-                                            className="text-sky-500 hover:text-sky-700 text-xs"
-                                            title="Sebut"
-                                        >
-                                            <i className="fa-solid fa-volume-high"></i>
-                                        </button>
-                                    </h3>
-                                    <div className="text-amber-600 font-bold text-sm mt-0.5">
-                                        {item.chinese} <span className="text-slate-400 font-normal text-xs">({item.pinyin})</span>
-                                    </div>
-                                    <p className="text-slate-500 text-xs mt-2 font-medium">
-                                        {item.meaning}
-                                    </p>
-                                </div>
-
-                                <div className="mt-4 pt-3 border-t border-slate-100 bg-slate-50/60 -mx-5 -mb-5 p-4 rounded-b-2xl">
-                                    <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Contoh Ayat:</div>
-                                    <p className="text-xs text-slate-700 italic">"{item.sentence}"</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
     </script>
 </body>
 </html>
