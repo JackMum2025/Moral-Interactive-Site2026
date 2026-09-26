@@ -334,25 +334,59 @@
             </div>
         </section>
 
-        <!-- 模块 4: 社区礼让小达人闯关 ADVENTURE & QUIZ -->
+        <!-- 模块 4: 社区礼让翻翻卡大冒险 ADVENTURE & FLIP MATCH GAME -->
         <section id="tab-adventure" class="tab-content hidden space-y-6">
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-indigo-100 space-y-6">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                
+                <!-- 头部说明与分组控制 -->
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-100 pb-4">
                     <div>
-                        <span class="text-xs font-bold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full uppercase">综合挑战关卡</span>
-                        <h3 class="text-2xl font-black text-slate-800 mt-1">社区礼让小达人大冒险 🎮</h3>
-                        <p class="text-slate-500 text-xs">结合 14.1 & 14.2 知识，完成下列情境选择与小测验！</p>
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full uppercase">14.1 & 14.2 互动竞赛</span>
+                        <h3 class="text-2xl font-black text-slate-800 mt-1">社区礼让翻翻卡大冒险 🃏</h3>
+                        <p class="text-slate-500 text-xs">配对<b>【情景描述】</b>与<b>【相对应的礼让句子/重要性】</b>，选错将自动换下一组挑战！</p>
                     </div>
-                    <div class="bg-indigo-50 border border-indigo-200 px-4 py-2 rounded-2xl text-right">
-                        <span class="text-[10px] text-indigo-500 font-bold block uppercase">闯关进度</span>
-                        <span id="adventure-progress-text" class="text-base font-black text-indigo-700">1 / 5</span>
+
+                    <!-- 分组设置与当前回合 -->
+                    <div class="flex flex-col items-end space-y-2">
+                        <div class="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-2xl text-xs font-bold">
+                            <span class="text-slate-600 pl-2">参赛组数:</span>
+                            <button onclick="setTeamCount(2)" id="team-btn-2" class="px-2.5 py-1 rounded-xl bg-indigo-600 text-white shadow-sm">2组</button>
+                            <button onclick="setTeamCount(3)" id="team-btn-3" class="px-2.5 py-1 rounded-xl bg-white text-slate-700 hover:bg-slate-200">3组</button>
+                            <button onclick="setTeamCount(4)" id="team-btn-4" class="px-2.5 py-1 rounded-xl bg-white text-slate-700 hover:bg-slate-200">4组</button>
+                        </div>
+                        <button onclick="resetFlipGame()" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold transition shadow-sm flex items-center space-x-1">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>重新洗牌发牌</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- 闯关内容容器 -->
-                <div id="adventure-container">
-                    <!-- 由 JavaScript 动态渲染 -->
+                <!-- 队伍计分牌与回合提示 -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-indigo-900 text-white p-3.5 rounded-2xl shadow-md">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></div>
+                            <span class="text-xs md:text-sm font-black">当前回合：</span>
+                            <span id="current-team-indicator" class="bg-amber-400 text-slate-900 px-3 py-0.5 rounded-full text-xs md:text-sm font-black">
+                                第 1 组 (红组) 上台翻牌
+                            </span>
+                        </div>
+                        <div id="game-status-toast" class="text-xs font-bold text-amber-300">
+                            请派一名代表翻开 2 张卡片！
+                        </div>
+                    </div>
+
+                    <!-- 各组比分栏 -->
+                    <div id="teams-score-board" class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+                        <!-- 由 JavaScript 动态渲染 -->
+                    </div>
                 </div>
+
+                <!-- 12张卡片网格区域 -->
+                <div id="flip-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 pt-2">
+                    <!-- 由 JavaScript 动态生成 12 张卡片 -->
+                </div>
+
             </div>
         </section>
 
@@ -637,175 +671,296 @@
         }
 
         // -------------------------------------------------------------
-        // 4. 综合闯关小测验 ADVENTURE & QUIZ (14.1 & 14.2)
+        // 4. 12张翻翻卡分组竞技配对逻辑 (14.1 & 14.2)
         // -------------------------------------------------------------
-        const quizQuestions = [
+        
+        // 6组匹配对（每组包含1张情景卡与1张句子卡，共12张卡片）
+        const flipPairsDatabase = [
             {
-                type: "scenario",
-                tag: "14.1 辨识例子",
-                question: "【情境题】在社区多用途球场上，你和朋友已经连续打了2个小时羽毛球。此时，隔壁栋的几位邻居也在场边排队等候。下列哪项属于【礼让行为】？",
-                options: [
-                    "A. 装作没看到，继续打球直到自己尽兴为止",
-                    "B. 理直气壮地说：“是我们先来的，你们明天再来！”",
-                    "C. 主动上前打招呼，协议再打10分钟后把场地让给他们使用",
-                    "D. 把球拍扔在地上离开，并恶言相向"
-                ],
-                answer: 2,
-                explanation: "主动沟通并协议轮流使用社区公共场地，是体现 14.1 礼让精神的标准例子！"
+                pairId: 1,
+                icon: "fa-bus-simple",
+                cardA: { type: "情景图片/描述", title: "🚌 公车情景", content: "在社区巴士上，看见腿脚不便的长者抱婴儿上车。" },
+                cardB: { type: "相对应句子", title: "💬 14.1 例子", content: "【14.1例子】主动站立让座，方便有需要的乘客就座。" }
             },
             {
-                type: "concept",
-                tag: "14.2 重要性",
-                question: "【讲述重要性】在社区生活中，居民之间保持互相礼让的主要重要性是什么？",
-                options: [
-                    "A. 能够让自己在社区里显得最有威风",
-                    "B. 促进邻里和谐团结，有效化解不必要的误会与冲突",
-                    "C. 可以获得政府颁发的巨额金钱奖赏",
-                    "D. 能让自己永远优先享有所有公共资源"
-                ],
-                answer: 1,
-                explanation: "礼让的核心重要性（14.2）在于营造包容和谐的居住环境，化解矛盾冲突。"
+                pairId: 2,
+                icon: "fa-child-reaching",
+                cardA: { type: "情景图片/描述", title: "🛝 公园情景", content: "游乐场秋千旁，有好几位小朋友正排队等待玩乐。" },
+                cardB: { type: "相对应句子", title: "💬 14.1 例子", content: "【14.1例子】玩了一会儿后主动让出秋千，大家轮流玩乐。" }
             },
             {
-                type: "scenario",
-                tag: "14.1 辨识例子",
-                question: "【情境题】社区举办文娱晚会，座位十分紧张。下列哪位居民的行为体现了“礼让”美德？",
-                options: [
-                    "A. 秀芬用5本字典占了第一排座位留给还没到的朋友",
-                    "B. 伟杰主动把靠近走道的舒适座位让给抱婴儿的妈妈",
-                    "C. 强强一个人躺在三个座位上睡觉",
-                    "D. 莉莉大声斥责想要坐到她旁边的长者"
-                ],
-                answer: 1,
-                explanation: "伟杰主动照顾有需要的社区成员，是体贴礼让的具体展现。"
+                pairId: 3,
+                icon: "fa-elevator",
+                cardA: { type: "情景图片/描述", title: "🏢 电梯情景", content: "公寓电梯门即将关闭，看见邻居手提两包重物走来。" },
+                cardB: { type: "相对应句子", title: "💬 14.1 例子", content: "【14.1例子】按住开门键并侧身礼让，请邻居先进入电梯。" }
             },
             {
-                type: "concept",
-                tag: "14.2 重要性",
-                question: "【讲述重要性】如果社区里的儿童在游乐场玩耍时都能自觉礼让、轮流使用滑梯与秋千，这能带来什么好处？",
-                options: [
-                    "A. 保障公共设施安全有序地被使用，减少推搡摔伤事故",
-                    "B. 让游乐场设施更快损坏",
-                    "C. 让其他小朋友失去玩乐机会",
-                    "D. 没有任何实质好处"
-                ],
-                answer: 0,
-                explanation: "秩序与礼让能保护儿童玩乐安全，避免争抢造成的摔伤意外（14.2）。"
+                pairId: 4,
+                icon: "fa-chair",
+                cardA: { type: "情景图片/描述", title: "🏛️ 晚会情景", content: "社区礼堂举行晚会，部分晚到的长者找不到座位。" },
+                cardB: { type: "相对应句子", title: "💬 14.2 重要性", content: "【14.2重要性】拒绝霸座，保障社区公共资源公平与礼貌秩序。" }
             },
             {
-                type: "scenario",
-                tag: "14.1 & 14.2 综合",
-                question: "【综合思考】社区儿童会讨论聚会地点，小乐的提议没有被大多数人采纳。小乐应该怎样做才能表现出礼让与涵养？",
-                options: [
-                    "A. 发脾气退出儿童会，并吵着不让大家举办聚会",
-                    "B. 少数服从多数，接受大家的决定并积极配合参与",
-                    "C. 在现场大哭大闹，强迫大家听自己的",
-                    "D. 背后说其他小朋友的坏话"
-                ],
-                answer: 1,
-                explanation: "尊重大局、少数服从多数是道德礼让与包容的优良体现。"
+                pairId: 5,
+                icon: "fa-table-tennis-paddle-ball",
+                cardA: { type: "情景图片/描述", title: "🏸 球场情景", content: "在社区羽毛球场打球已满1小时，场外有邻居等待。" },
+                cardB: { type: "相对应句子", title: "💬 14.2 重要性", content: "【14.2重要性】谦让协商轮流使用设施，化解邻里冲突与争执。" }
+            },
+            {
+                pairId: 6,
+                icon: "fa-comments",
+                cardA: { type: "情景图片/描述", title: "🗣️ 会议情景", content: "居民会议上，大家对社区美化方案产生了不同意见。" },
+                cardB: { type: "相对应句子", title: "💬 14.2 重要性", content: "【14.2重要性】包容退让、服从多数决策，促进邻里和谐团结。" }
             }
         ];
 
-        let currentQuizIndex = 0;
-        let quizScoreCount = 0;
+        // 队伍设定
+        const teamColors = [
+            { name: "第 1 组 (红组)", bg: "bg-rose-500", text: "text-rose-600", border: "border-rose-300", lightBg: "bg-rose-50" },
+            { name: "第 2 组 (蓝组)", bg: "bg-blue-500", text: "text-blue-600", border: "border-blue-300", lightBg: "bg-blue-50" },
+            { name: "第 3 组 (绿组)", bg: "bg-emerald-500", text: "text-emerald-600", border: "border-emerald-300", lightBg: "bg-emerald-50" },
+            { name: "第 4 组 (黄组)", bg: "bg-amber-500", text: "text-amber-600", border: "border-amber-300", lightBg: "bg-amber-50" }
+        ];
 
-        function renderQuizQuestion() {
-            const container = document.getElementById('adventure-container');
-            document.getElementById('adventure-progress-text').innerText = `${currentQuizIndex + 1} / ${quizQuestions.length}`;
+        let totalTeams = 2;
+        let currentTeamIndex = 0;
+        let teamScores = [0, 0, 0, 0];
+        let cardList = [];
+        let selectedCards = []; // 储存当前回合翻开的两张卡片
+        let matchedCount = 0;
+        let isProcessing = false;
 
-            if (currentQuizIndex >= quizQuestions.length) {
-                // 闯关成功，颁发勋章
-                container.innerHTML = `
-                    <div class="text-center py-6 space-y-4">
-                        <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-full flex items-center justify-center text-4xl text-slate-900 mx-auto shadow-lg animate-bounce-gentle">
-                            <i class="fa-solid fa-award"></i>
+        // 初始化/洗牌游戏
+        function resetFlipGame() {
+            playSfx('click');
+            selectedCards = [];
+            matchedCount = 0;
+            isProcessing = false;
+            currentTeamIndex = 0;
+            teamScores = [0, 0, 0, 0];
+
+            // 12张卡片打散洗牌
+            let rawCards = [];
+            flipPairsDatabase.forEach(item => {
+                rawCards.push({
+                    pairId: item.pairId,
+                    icon: item.icon,
+                    type: item.cardA.type,
+                    title: item.cardA.title,
+                    content: item.cardA.content,
+                    isFlipped: false,
+                    isMatched: false
+                });
+                rawCards.push({
+                    pairId: item.pairId,
+                    icon: item.icon,
+                    type: item.cardB.type,
+                    title: item.cardB.title,
+                    content: item.cardB.content,
+                    isFlipped: false,
+                    isMatched: false
+                });
+            });
+
+            // Fisher-Yates 洗牌算法
+            for (let i = rawCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [rawCards[i], rawCards[j]] = [rawCards[j], rawCards[i]];
+            }
+
+            cardList = rawCards;
+            renderTeamsBoard();
+            renderFlipGrid();
+            updateTurnIndicator("请派一位队员上台翻开第 1 张卡片！");
+        }
+
+        function setTeamCount(count) {
+            totalTeams = count;
+            [2, 3, 4].forEach(n => {
+                const btn = document.getElementById(`team-btn-${n}`);
+                if (n === count) {
+                    btn.className = "px-2.5 py-1 rounded-xl bg-indigo-600 text-white shadow-sm font-black";
+                } else {
+                    btn.className = "px-2.5 py-1 rounded-xl bg-white text-slate-700 hover:bg-slate-200";
+                }
+            });
+            resetFlipGame();
+        }
+
+        function renderTeamsBoard() {
+            const board = document.getElementById('teams-score-board');
+            let html = "";
+            for (let i = 0; i < totalTeams; i++) {
+                const t = teamColors[i];
+                const isCurrent = (i === currentTeamIndex);
+                html += `
+                    <div class="p-3 rounded-2xl border-2 transition-all ${isCurrent ? `${t.border} ${t.lightBg} shadow-md scale-105` : 'border-slate-200 bg-white opacity-80'}">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-black ${t.text}">${t.name}</span>
+                            ${isCurrent ? `<span class="bg-indigo-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">思考中</span>` : ''}
                         </div>
-                        <div>
-                            <h4 class="text-2xl font-black text-slate-800">恭喜通过《礼让之城》大冒险！</h4>
-                            <p class="text-xs text-slate-500 mt-1">您在本次答题中获得了 <span class="text-amber-600 font-extrabold text-sm">${quizScoreCount * 20} 分</span></p>
+                        <div class="text-lg font-black text-slate-800">
+                            ${teamScores[i]} <span class="text-xs font-normal text-slate-500">对 (${teamScores[i] * 20}分)</span>
                         </div>
-
-                        <!-- 电子勋章 Card -->
-                        <div class="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 border-2 border-teal-300 p-5 rounded-3xl max-w-sm mx-auto shadow-md space-y-2">
-                            <span class="bg-teal-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">五年级道德荣誉认证</span>
-                            <h5 class="text-lg font-black text-teal-900">“社区礼让小达人”</h5>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                表彰你在单元十四中深入掌握 <b>14.1 礼让行为例子</b> 与 <b>14.2 礼让重要性</b>，文明礼让，从我做起！
-                            </p>
-                        </div>
-
-                        <button onclick="restartAdventure()" class="px-6 py-2.5 bg-indigo-600 text-white rounded-2xl font-bold text-xs shadow-md hover:bg-indigo-700 transition">
-                            <i class="fa-solid fa-rotate-right mr-1"></i> 再次挑战闯关
-                        </button>
                     </div>
                 `;
-                confetti({ particleCount: 100, spread: 80 });
-                return;
+            }
+            board.innerHTML = html;
+        }
+
+        function updateTurnIndicator(toastMsg) {
+            const currentT = teamColors[currentTeamIndex];
+            document.getElementById('current-team-indicator').className = `${currentT.bg} text-white px-3 py-0.5 rounded-full text-xs md:text-sm font-black`;
+            document.getElementById('current-team-indicator').innerText = `轮到：${currentT.name}`;
+            if (toastMsg) {
+                document.getElementById('game-status-toast').innerText = toastMsg;
+            }
+        }
+
+        function renderFlipGrid() {
+            const grid = document.getElementById('flip-cards-grid');
+            grid.innerHTML = cardList.map((card, idx) => {
+                const isA = card.type.includes("情景");
+                const cardBadgeColor = isA ? "bg-amber-100 text-amber-800" : "bg-teal-100 text-teal-800";
+                
+                return `
+                    <div onclick="onCardClick(${idx})" class="cursor-pointer h-40 sm:h-44 rounded-2xl transition-all transform duration-300 hover:scale-105 active:scale-95 ${card.isMatched ? 'opacity-90 pointer-events-none' : ''}">
+                        <div class="w-full h-full rounded-2xl shadow-sm border-2 ${card.isFlipped || card.isMatched ? (card.isMatched ? 'border-emerald-400 bg-gradient-to-br from-emerald-50 to-teal-50' : 'border-indigo-400 bg-white') : 'border-indigo-200 bg-gradient-to-br from-indigo-500 to-indigo-700'} p-3 flex flex-col justify-between relative overflow-hidden">
+                            
+                            ${card.isFlipped || card.isMatched ? `
+                                <!-- 翻开的卡片内容 -->
+                                <div class="space-y-1 z-10">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] font-extrabold ${cardBadgeColor} px-2 py-0.5 rounded-full">${card.type}</span>
+                                        <i class="fa-solid ${card.icon} text-indigo-500 text-sm"></i>
+                                    </div>
+                                    <h5 class="font-extrabold text-slate-800 text-xs mt-1">${card.title}</h5>
+                                    <p class="text-[11px] text-slate-600 font-medium leading-tight">${card.content}</p>
+                                </div>
+                                ${card.isMatched ? `
+                                    <div class="absolute bottom-2 right-2 text-emerald-600 text-lg">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </div>
+                                ` : ''}
+                            ` : `
+                                <!-- 未翻开的背面卡片 -->
+                                <div class="flex flex-col items-center justify-center h-full text-white space-y-1">
+                                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-yellow-300 text-xl font-black shadow-inner">
+                                        <i class="fa-solid fa-hands-holding-child"></i>
+                                    </div>
+                                    <span class="font-extrabold text-xs tracking-wider text-indigo-100">卡片 #${idx + 1}</span>
+                                    <span class="text-[9px] text-indigo-200">点击翻开</span>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function onCardClick(index) {
+            if (isProcessing) return;
+            const card = cardList[index];
+
+            // 忽略已翻开或已配对的卡片
+            if (card.isFlipped || card.isMatched) return;
+
+            playSfx('click');
+            card.isFlipped = true;
+            selectedCards.push({ index, card });
+            renderFlipGrid();
+
+            if (selectedCards.length === 1) {
+                updateTurnIndicator("很好！请再翻开第 2 张卡片进行配对...");
+            } else if (selectedCards.length === 2) {
+                isProcessing = true;
+                checkCardMatch();
+            }
+        }
+
+        function checkCardMatch() {
+            const [first, second] = selectedCards;
+            const isPairMatch = (first.card.pairId === second.card.pairId);
+
+            if (isPairMatch) {
+                // 配对成功
+                playSfx('correct');
+                first.card.isMatched = true;
+                second.card.isMatched = true;
+                matchedCount++;
+                teamScores[currentTeamIndex]++;
+                addScore(20);
+
+                updateTurnIndicator("🎉 恭喜配对成功！得分加 20 分！");
+                renderTeamsBoard();
+                renderFlipGrid();
+
+                selectedCards = [];
+                isProcessing = false;
+
+                // 检查是否全部配对完毕
+                if (matchedCount === 6) {
+                    setTimeout(showGameVictoryModal, 600);
+                }
+            } else {
+                // 配对失败
+                playSfx('wrong');
+                updateTurnIndicator("❌ 配对不匹配！1.5秒后翻回，换下一组！");
+
+                setTimeout(() => {
+                    first.card.isFlipped = false;
+                    second.card.isFlipped = false;
+                    selectedCards = [];
+                    isProcessing = false;
+
+                    // 换下一组继续
+                    currentTeamIndex = (currentTeamIndex + 1) % totalTeams;
+                    renderTeamsBoard();
+                    renderFlipGrid();
+                    updateTurnIndicator(`请 ${teamColors[currentTeamIndex].name} 上台选卡片！`);
+                }, 1600);
+            }
+        }
+
+        function showGameVictoryModal() {
+            confetti({ particleCount: 120, spread: 90 });
+
+            // 寻找最高分队伍
+            let maxScore = -1;
+            let winnerTeam = "";
+            for (let i = 0; i < totalTeams; i++) {
+                if (teamScores[i] > maxScore) {
+                    maxScore = teamScores[i];
+                    winnerTeam = teamColors[i].name;
+                }
             }
 
-            const q = quizQuestions[currentQuizIndex];
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex items-center space-x-2">
-                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-lg">${q.tag}</span>
+            const grid = document.getElementById('flip-cards-grid');
+            grid.innerHTML = `
+                <div class="col-span-full bg-gradient-to-br from-amber-50 via-teal-50 to-indigo-50 border-2 border-amber-300 p-6 rounded-3xl text-center space-y-4 shadow-md">
+                    <div class="w-16 h-16 bg-amber-400 text-slate-900 rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg animate-bounce-gentle">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-800">翻翻卡大冒险圆满完成！</h4>
+                    <p class="text-xs text-slate-600">全场 6 组礼让情景与句子已成功解锁配对！</p>
+                    
+                    <div class="bg-white p-4 rounded-2xl border border-amber-200 max-w-md mx-auto">
+                        <span class="text-xs font-bold text-amber-700 block">🏆 本轮优胜组</span>
+                        <span class="text-lg font-black text-indigo-900">${winnerTeam} (成功配对 ${maxScore} 组)</span>
                     </div>
 
-                    <h4 class="font-bold text-slate-800 text-sm leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                        ${q.question}
-                    </h4>
-
-                    <div class="grid grid-cols-1 gap-2.5 pt-1">
-                        ${q.options.map((opt, idx) => `
-                            <button onclick="submitQuizAnswer(${idx})" class="quiz-opt-btn w-full text-left p-3.5 rounded-2xl border border-slate-200/80 hover:border-indigo-400 hover:bg-indigo-50/50 transition font-medium text-xs text-slate-700 flex justify-between items-center group">
-                                <span>${opt}</span>
-                                <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-indigo-500"></i>
-                            </button>
-                        `).join('')}
-                    </div>
-
-                    <div id="quiz-feedback" class="hidden p-3.5 rounded-2xl text-xs font-bold"></div>
+                    <button onclick="resetFlipGame()" class="px-6 py-2.5 bg-indigo-600 text-white font-black text-xs rounded-2xl shadow hover:bg-indigo-700 transition">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> 再玩一局 (重新洗牌)
+                    </button>
                 </div>
             `;
-        }
-
-        function submitQuizAnswer(selectedIdx) {
-            const q = quizQuestions[currentQuizIndex];
-            const feedback = document.getElementById('quiz-feedback');
-            feedback.classList.remove('hidden');
-
-            if (selectedIdx === q.answer) {
-                playSfx('correct');
-                quizScoreCount++;
-                addScore(20);
-                feedback.className = "p-3.5 rounded-2xl text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-check text-base mr-1"></i> 回答正确！${q.explanation}`;
-            } else {
-                playSfx('wrong');
-                feedback.className = "p-3.5 rounded-2xl text-xs font-bold bg-rose-100 text-rose-900 border border-rose-300";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-base mr-1"></i> 回答错误。解析：${q.explanation}`;
-            }
-
-            // 禁用按钮防重复点击
-            document.querySelectorAll('.quiz-opt-btn').forEach(b => b.disabled = true);
-
-            setTimeout(() => {
-                currentQuizIndex++;
-                renderQuizQuestion();
-            }, 2200);
-        }
-
-        function restartAdventure() {
-            currentQuizIndex = 0;
-            quizScoreCount = 0;
-            renderQuizQuestion();
         }
 
         // 初始化加载
         window.onload = function() {
             renderIdentifyCard();
             switchImportanceScene(0);
-            renderQuizQuestion();
+            resetFlipGame();
         };
     </script>
 </body>
