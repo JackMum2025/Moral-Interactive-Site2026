@@ -3,163 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>五年级道德教育 - 礼让感受收集瓶</title>
+    <title>五年级道德教育 单元十四：礼让之城 蛇棋大冒险</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;800;900&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
-        body { font-family: 'Noto Sans SC', sans-serif; background: #fffbeb; }
-        .jar-shape {
-            border: 5px solid #f43f5e;
-            border-top: 10px solid #fb7185;
-            border-radius: 20px 20px 50px 50px;
-            background: rgba(255, 241, 242, 0.7);
-            box-shadow: inset 0 0 20px rgba(244, 63, 94, 0.15), 0 10px 25px rgba(0,0,0,0.1);
+        body {
+            font-family: 'Noto Sans SC', 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #fef9c3 0%, #e0f2fe 50%, #fce7f3 100%);
+        }
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        .snake-head {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+        }
+        .ladder-bottom {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+        }
+        .dice-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(-15deg) scale(1.1); }
+            40% { transform: rotate(15deg) scale(1.1); }
+            60% { transform: rotate(-10deg); }
+            80% { transform: rotate(10deg); }
+            100% { transform: rotate(0deg); }
         }
     </style>
 </head>
-<body class="p-6 flex justify-center items-center min-h-screen">
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
 
-    <div class="max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-6 border-4 border-pink-300">
-        <!-- 头部标题 -->
-        <div class="text-center mb-6">
-            <span class="bg-pink-100 text-pink-700 text-xs font-black px-4 py-1.5 rounded-full border border-pink-300">
-                💖 学习标准 14.4：表达表现礼让行为的感受
-            </span>
-            <h3 class="text-2xl font-black text-rose-900 mt-2">我的“社区礼让与感受”正能量收集瓶</h3>
-            <p class="text-slate-600 text-xs font-bold mt-1">第一步：点击社区礼让行为 ➔ 第二步：点击你的内心感受 ➔ 收集正能量卡片！</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-            
-            <!-- 左侧：第一步 & 第二步 选择区 -->
-            <div class="space-y-4 md:col-span-2">
-                
-                <!-- 步骤 1：选择社区礼让行为 -->
-                <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-300">
-                    <h4 class="font-black text-amber-900 text-xs uppercase mb-2 flex items-center">
-                        <span class="bg-amber-400 text-amber-950 w-5 h-5 rounded-full inline-flex items-center justify-center text-xs mr-2">1</span>
-                        选择在社区可以做出的礼让行为：
-                    </h4>
-                    <div class="flex flex-wrap gap-2" id="action-pool">
-                        <button onclick="selectAction(this, '🚌 巴士上主动给老人让座')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🚌 巴士上主动给老人让座</button>
-                        <button onclick="selectAction(this, '🎠 公园秋千按次序排队玩')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🎠 公园秋千按次序排队玩</button>
-                        <button onclick="selectAction(this, '🏬 进电梯时主动挡门让邻居先进')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🏬 进电梯时主动挡门让邻居先进</button>
-                        <button onclick="selectAction(this, '🏸 羽毛球场打完后让给等待的邻居')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🏸 羽毛球场打完后让给等待的邻居</button>
-                        <button onclick="selectAction(this, '🍲 社区食堂排队买饭不插队')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🍲 社区食堂排队买饭不插队</button>
-                    </div>
+    <!-- 缤纷蛇棋主题顶部导航栏 -->
+    <header class="sticky top-0 z-50 bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 text-white shadow-xl border-b-4 border-yellow-300">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-yellow-300 text-purple-900 p-2.5 rounded-2xl shadow-md rotate-3">
+                    <i class="fa-solid fa-dice text-3xl"></i>
                 </div>
-
-                <!-- 步骤 2：选择感受 -->
-                <div class="bg-rose-50 p-4 rounded-2xl border-2 border-rose-300 opacity-50 pointer-events-none transition-all" id="feeling-box">
-                    <h4 class="font-black text-rose-900 text-xs uppercase mb-2 flex items-center">
-                        <span class="bg-rose-400 text-rose-950 w-5 h-5 rounded-full inline-flex items-center justify-center text-xs mr-2">2</span>
-                        做了这个礼让行为后，你的感受是：
-                    </h4>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="addCombo('😃 开心愉快', 'bg-yellow-100 text-yellow-900 border-yellow-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">😃 开心愉快</button>
-                        <button onclick="addCombo('🏆 为自己自豪', 'bg-amber-100 text-amber-900 border-amber-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">🏆 为自己自豪</button>
-                        <button onclick="addCombo('🌸 感到内心温馨', 'bg-pink-100 text-pink-900 border-pink-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">🌸 感到内心温馨</button>
-                        <button onclick="addCombo('😌 心里很踏实', 'bg-teal-100 text-teal-900 border-teal-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">😌 心里很踏实</button>
-                        <button onclick="addCombo('🤝 觉得邻里关系更融洽', 'bg-purple-100 text-purple-900 border-purple-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">🤝 觉得邻里关系更融洽</button>
-                    </div>
-                </div>
-
-                <!-- 提示区域 -->
-                <div class="text-xs text-slate-500 font-semibold px-2" id="hint-text">
-                    💡 请先在“步骤 1”中选择一个礼让行为。
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black tracking-wide drop-shadow-md">道德教育五年级</h1>
+                    <p class="text-xs text-yellow-200 font-bold">单元十四：礼让之城 🎲 蛇棋大冒险 (标准 14.3 & 14.4)</p>
                 </div>
             </div>
+            <!-- 导航按钮 -->
+            <nav class="hidden md:flex space-x-2 text-sm font-black">
+                <button onclick="switchTab('overview')" class="nav-btn px-4 py-2 rounded-xl transition bg-white/20 hover:bg-yellow-300 hover:text-purple-900" id="btn-overview">
+                    <i class="fa-solid fa-book-open mr-1"></i> 知识大本营
+                </button>
+                <button onclick="switchTab('boardgame')" class="nav-btn px-4 py-2 rounded-xl transition hover:bg-yellow-300 hover:text-purple-900" id="btn-boardgame">
+                    <i class="fa-solid fa-chess-board mr-1"></i> 在线蛇棋体验 (14.3/14.4)
+                </button>
+                <button onclick="switchTab('feelings')" class="nav-btn px-4 py-2 rounded-xl transition hover:bg-yellow-300 hover:text-purple-900" id="btn-feelings">
+                    <i class="fa-solid fa-heart-circle-check mr-1"></i> 礼让感受收集瓶
+                </button>
+                <button onclick="switchTab('quiz')" class="nav-btn px-4 py-2 rounded-xl transition hover:bg-yellow-300 hover:text-purple-900" id="btn-quiz">
+                    <i class="fa-solid fa-trophy mr-1"></i> 蛇棋关卡小测验
+                </button>
+            </nav>
+        </div>
+        <!-- 移动端导航 -->
+        <div class="md:hidden flex justify-around bg-purple-900/90 text-xs font-bold py-2 border-t border-purple-400">
+            <button onclick="switchTab('overview')" class="flex flex-col items-center py-1 text-yellow-300"><i class="fa-solid fa-book-open text-base"></i>知识大本营</button>
+            <button onclick="switchTab('boardgame')" class="flex flex-col items-center py-1 text-pink-300"><i class="fa-solid fa-chess-board text-base"></i>蛇棋体验</button>
+            <button onclick="switchTab('feelings')" class="flex flex-col items-center py-1 text-emerald-300"><i class="fa-solid fa-heart text-base"></i>感受收集</button>
+            <button onclick="switchTab('quiz')" class="flex flex-col items-center py-1 text-cyan-300"><i class="fa-solid fa-trophy text-base"></i>关卡小测验</button>
+        </div>
+    </header>
 
-            <!-- 右侧：收集瓶展示 -->
-            <div class="flex flex-col items-center">
-                <div class="w-full h-80 jar-shape p-4 relative flex flex-col-reverse items-center overflow-y-auto space-y-2 space-y-reverse" id="jar-container">
-                    <div class="text-xs text-rose-400 font-bold my-auto text-center" id="jar-placeholder">
-                        <i class="fa-solid fa-heart-circle-plus text-3xl mb-2 block animate-bounce"></i>
-                        瓶子空空的...<br>完成左侧选择<br>把礼让能量装进来！
-                    </div>
+    <!-- 主体区域 -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- Banner 标语 -->
+        <div class="bg-gradient-to-r from-amber-400 via-rose-400 to-indigo-500 text-white rounded-3xl p-6 shadow-2xl mb-8 border-4 border-white flex flex-col md:flex-row items-center justify-between relative overflow-hidden">
+            <div class="space-y-2 text-center md:text-left z-10">
+                <span class="bg-yellow-300 text-purple-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider shadow">🎲 Board Game 交互强化版</span>
+                <h2 class="text-2xl md:text-3xl font-black drop-shadow">骰子转一转，礼让好品德！</h2>
+                <p class="text-yellow-100 text-xs md:text-sm max-w-xl font-semibold">
+                    遇到“梯子”代表表现礼让（收获积极感受）；遇到“蛇头”代表忽视礼让（导致不合与后果）！
+                </p>
+            </div>
+            <div class="z-10 mt-4 md:mt-0 flex items-center space-x-3 bg-white/20 backdrop-blur-md p-3 rounded-2xl border border-white/40">
+                <div id="dice-display" class="text-4xl text-yellow-300 bg-purple-800 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg font-black border-2 border-yellow-300">
+                    🎲
                 </div>
-
-                <button onclick="clearJar()" class="mt-4 text-xs font-bold text-rose-600 hover:text-rose-800 transition flex items-center">
-                    <i class="fa-solid fa-rotate-left mr-1"></i> 清空收集瓶重来
+                <button onclick="rollDice()" class="bg-yellow-400 hover:bg-yellow-300 text-purple-900 font-black px-4 py-2.5 rounded-xl shadow-lg transition active:scale-95 text-xs">
+                    掷骰子试试！
                 </button>
             </div>
-
         </div>
-    </div>
+
+        <!-- 1. 知识大本营 OVERVIEW -->
+        <section id="tab-overview" class="tab-content space-y-6">
+            <div class="text-center max-w-2xl mx-auto mb-6">
+                <h3 class="text-2xl font-black text-purple-900">蛇棋两大核心卡片指南</h3>
+                <p class="text-slate-600 text-xs font-bold">学习标准 14.3 与 14.4 在桌游中的对应含义</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 14.3 忽视礼让（蛇头惩罚） -->
+                <div class="bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-3xl p-6 shadow-xl border-4 border-red-300 relative">
+                    <div class="absolute -top-4 right-4 bg-yellow-300 text-red-900 text-xs font-black px-3 py-1 rounded-full border-2 border-red-500 shadow">
+                        🐍 蛇头惩罚格 (标准 14.3)
+                    </div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl font-black">
+                            14.3
+                        </div>
+                        <div>
+                            <h4 class="font-black text-xl">推断忽视礼让的影响</h4>
+                            <p class="text-xs text-red-100">忽视礼让，如同踩到蛇头而向下滑落！</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm font-semibold text-red-50 bg-black/10 p-4 rounded-2xl">
+                        <li class="flex items-start"><i class="fa-solid fa-triangle-exclamation text-yellow-300 mt-1 mr-2"></i><strong>引发误会与争执：</strong>争抢设施容易导致口角。</li>
+                        <li class="flex items-start"><i class="fa-solid fa-users-slash text-yellow-300 mt-1 mr-2"></i><strong>破坏社区和谐：</strong>邻里关系变得紧张缺乏互信。</li>
+                        <li class="flex items-start"><i class="fa-solid fa-face-frown-open text-yellow-300 mt-1 mr-2"></i><strong>产生负面情绪：</strong>让人感到愤怒、不公与沮丧。</li>
+                    </ul>
+                </div>
+
+                <!-- 14.4 表现礼让（梯子奖励） -->
+                <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-3xl p-6 shadow-xl border-4 border-emerald-300 relative">
+                    <div class="absolute -top-4 right-4 bg-yellow-300 text-emerald-900 text-xs font-black px-3 py-1 rounded-full border-2 border-emerald-500 shadow">
+                        🪜 梯子奖励格 (标准 14.4)
+                    </div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl font-black">
+                            14.4
+                        </div>
+                        <div>
+                            <h4 class="font-black text-xl">表达表现礼让行为的感受</h4>
+                            <p class="text-xs text-emerald-100">表现礼让，如同顺着梯子向上攀升！</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm font-semibold text-emerald-50 bg-black/10 p-4 rounded-2xl">
+                        <li class="flex items-start"><i class="fa-solid fa-heart text-yellow-300 mt-1 mr-2"></i><strong>内心开心与愉快：</strong>帮助他人带来满载的快乐。</li>
+                        <li class="flex items-start"><i class="fa-solid fa-award text-yellow-300 mt-1 mr-2"></i><strong>感到自豪与踏实：</strong>为自己的道德文明行为感到自豪。</li>
+                        <li class="flex items-start"><i class="fa-solid fa-sun text-yellow-300 mt-1 mr-2"></i><strong>促进温馨与融洽：</strong>收获邻里尊重的微笑与友谊。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 在线蛇棋体验 BOARDGAME -->
+        <section id="tab-boardgame" class="tab-content hidden space-y-6">
+            <div class="bg-white/90 rounded-3xl shadow-xl p-6 border-4 border-indigo-200">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="bg-purple-600 text-white text-xs font-black px-3 py-1.5 rounded-full shadow">
+                        🎲 《礼让小达人 蛇棋大冒险》互动地图
+                    </span>
+                    <span class="text-xs font-black text-indigo-600">点击下方格子查看情境卡</span>
+                </div>
+
+                <!-- 五彩模拟棋盘格子 (10个精选代表性格子) -->
+                <div class="board-grid mb-6">
+                    <div onclick="showTileInfo('tile8')" class="ladder-bottom p-3 rounded-2xl text-white font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 8</span>
+                        <p class="text-sm">秋千让座 🪜</p>
+                    </div>
+                    <div onclick="showTileInfo('tile10')" class="bg-amber-100 border-2 border-amber-300 p-3 rounded-2xl text-amber-900 font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 10</span>
+                        <p class="text-sm">普通格 💬</p>
+                    </div>
+                    <div onclick="showTileInfo('tile25')" class="ladder-bottom p-3 rounded-2xl text-white font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 25</span>
+                        <p class="text-sm">巴士让座 🪜</p>
+                    </div>
+                    <div onclick="showTileInfo('tile30')" class="bg-amber-100 border-2 border-amber-300 p-3 rounded-2xl text-amber-900 font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 30</span>
+                        <p class="text-sm">梯子终点 🌟</p>
+                    </div>
+                    <div onclick="showTileInfo('tile45')" class="bg-indigo-100 border-2 border-indigo-300 p-3 rounded-2xl text-indigo-900 font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 45</span>
+                        <p class="text-sm">问答卡 ❤️</p>
+                    </div>
+                    <div onclick="showTileInfo('tile57')" class="snake-head p-3 rounded-2xl text-white font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 57</span>
+                        <p class="text-sm">食堂插队 🐍</p>
+                    </div>
+                    <div onclick="showTileInfo('tile60')" class="bg-amber-100 border-2 border-amber-300 p-3 rounded-2xl text-amber-900 font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 60</span>
+                        <p class="text-sm">普通格 💬</p>
+                    </div>
+                    <div onclick="showTileInfo('tile88')" class="snake-head p-3 rounded-2xl text-white font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 88</span>
+                        <p class="text-sm">霸占球场 🐍</p>
+                    </div>
+                    <div onclick="showTileInfo('tile95')" class="bg-indigo-100 border-2 border-indigo-300 p-3 rounded-2xl text-indigo-900 font-black cursor-pointer hover:scale-105 transition text-center">
+                        <span class="text-xs opacity-75">格 95</span>
+                        <p class="text-sm">感受卡 💖</p>
+                    </div>
+                    <div onclick="showTileInfo('tile100')" class="bg-gradient-to-r from-yellow-400 to-amber-500 text-purple-900 p-3 rounded-2xl font-black cursor-pointer hover:scale-105 transition text-center border-2 border-yellow-200">
+                        <span class="text-xs opacity-75">格 100</span>
+                        <p class="text-sm">礼让之星 🏆</p>
+                    </div>
+                </div>
+
+                <!-- 显示点击格子的卡片效果 -->
+                <div id="tile-card" class="bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-300 rounded-2xl p-5 shadow-inner text-center">
+                    <p class="text-sm font-bold text-purple-900">👈 请点击上方任意一个蛇棋格子，开启情境与学习标准卡片！</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 感受收集瓶 FEELINGS -->
+        <section id="tab-feelings" class="tab-content hidden space-y-6">
+            <div class="bg-white/90 rounded-3xl shadow-xl p-6 border-4 border-pink-200 text-center">
+                <h3 class="text-2xl font-black text-pink-900 mb-2">我的“礼让感受”正能量瓶 💖</h3>
+                <p class="text-slate-600 text-xs font-bold mb-6">点击词汇装入瓶中，体验学习标准 14.4 带来的内心美好！</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div class="space-y-3">
+                        <div class="flex flex-wrap gap-2 justify-center" id="word-pool">
+                            <button onclick="addFeeling('开心 😃', 'bg-yellow-300 text-purple-900 border-yellow-400')" class="px-3 py-2 rounded-xl border-2 font-black text-xs shadow hover:scale-110 transition">😃 开心</button>
+                            <button onclick="addFeeling('自豪 🏆', 'bg-amber-300 text-amber-900 border-amber-400')" class="px-3 py-2 rounded-xl border-2 font-black text-xs shadow hover:scale-110 transition">🏆 自豪</button>
+                            <button onclick="addFeeling('欣慰 🌸', 'bg-pink-300 text-pink-900 border-pink-400')" class="px-3 py-2 rounded-xl border-2 font-black text-xs shadow hover:scale-110 transition">🌸 欣慰</button>
+                            <button onclick="addFeeling('温馨 💕', 'bg-rose-300 text-rose-900 border-rose-400')" class="px-3 py-2 rounded-xl border-2 font-black text-xs shadow hover:scale-110 transition">💕 温馨</button>
+                            <button onclick="addFeeling('踏实 😌', 'bg-teal-300 text-teal-900 border-teal-400')" class="px-3 py-2 rounded-xl border-2 font-black text-xs shadow hover:scale-110 transition">😌 踏实</button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="w-48 h-60 border-4 border-pink-400 rounded-b-3xl rounded-t-xl bg-pink-50 p-4 relative flex flex-col-reverse items-center overflow-hidden shadow-inner" id="jar-container">
+                            <div class="text-xs text-pink-400 font-bold mb-2" id="jar-placeholder">瓶子空空的...<br>点击感受装满它！</div>
+                        </div>
+                        <button onclick="clearJar()" class="mt-3 text-xs text-rose-600 font-bold hover:underline"><i class="fa-solid fa-rotate-left mr-1"></i>重置</button>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-pink-100 to-amber-100 p-4 rounded-2xl border-2 border-pink-300 text-left space-y-2">
+                        <h4 class="font-black text-pink-900 text-sm">💡 感受总结 (标准 14.4)</h4>
+                        <p class="text-xs text-slate-700 leading-relaxed font-semibold">
+                            每当我们在社区中做出礼让，不仅帮到了他人，内心也会充盈着无比的开心与自豪。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 小测验 QUIZ -->
+        <section id="tab-quiz" class="tab-content hidden space-y-6">
+            <div class="bg-white/90 rounded-3xl shadow-xl p-6 border-4 border-yellow-300">
+                <div class="flex justify-between items-center mb-6 border-b-2 pb-4">
+                    <h3 class="text-xl font-black text-purple-900">蛇棋大挑战小测验</h3>
+                    <div class="bg-yellow-300 text-purple-900 font-black px-4 py-2 rounded-xl text-md shadow" id="quiz-score">
+                        得分: 0
+                    </div>
+                </div>
+                <div id="quiz-container"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-purple-900 text-purple-200 text-xs py-6 mt-12 border-t-4 border-yellow-300 text-center">
+        <p class="font-bold">五年级道德教育《单元十四：礼让之城》蛇棋互动学习平台</p>
+        <p class="text-purple-400 mt-1">符合 KSSR Semakan 道德教育标准 14.3 与 14.4</p>
+    </footer>
 
     <script>
-        let selectedActionText = "";
-        let count = 0;
-
-        function selectAction(btn, actionText) {
-            // 清除其他按钮高亮
-            document.querySelectorAll('.action-btn').forEach(b => {
-                b.classList.remove('bg-amber-400', 'text-amber-950');
-                b.classList.add('bg-white', 'text-amber-900');
-            });
-            // 高亮当前按钮
-            btn.classList.remove('bg-white', 'text-amber-900');
-            btn.classList.add('bg-amber-400', 'text-amber-950');
-
-            selectedActionText = actionText;
-
-            // 解锁第二步
-            const feelingBox = document.getElementById('feeling-box');
-            feelingBox.classList.remove('opacity-50', 'pointer-events-none');
-            document.getElementById('hint-text').innerText = "💡 太棒了！现在请在“步骤 2”中选择你做这件事时的感受。";
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
         }
 
-        function addCombo(feelingText, colorStyle) {
-            if (!selectedActionText) return;
-            if (count >= 4) {
-                alert("收集瓶已经装得满满的啦！点击下方“清空”可以重新收集哦！");
-                return;
-            }
+        function rollDice() {
+            const dice = document.getElementById('dice-display');
+            dice.classList.add('dice-shake');
+            setTimeout(() => {
+                const num = Math.floor(Math.between ? Math.between(1,6) : Math.random()*6 + 1);
+                dice.innerText = num;
+                dice.classList.remove('dice-shake');
+            }, 500);
+        }
 
+        const tileData = {
+            'tile8': { type: 'ladder', title: '格子 8：秋千让座 🪜', desc: '主动把秋千让给排队的小弟弟玩。顺着梯子爬到格子 30！', feeling: '学习标准 14.4 感受：小弟弟笑了，自己内心非常开心与温馨！' },
+            'tile25': { type: 'ladder', title: '格子 25：巴士让座 🪜', desc: '在公共巴士上给抱小孩的阿姨让座。爬到格子 45！', feeling: '学习标准 14.4 感受：受到尊重，感到无比自豪与踏实！' },
+            'tile57': { type: 'snake', title: '格子 57：食堂插队 🐍', desc: '在食堂买食物时直接插队。滑落到格子 10！', feeling: '学习标准 14.3 影响：引发口角争执，后面排队的人很愤怒，破坏秩序！' },
+            'tile88': { type: 'snake', title: '格子 88：霸占球场 🐍', desc: '占着羽毛球场不肯轮流。滑落到格子 50！', feeling: '学习标准 14.3 影响：引发剧烈冲突，大家都无法继续打球。' },
+            'tile45': { type: 'card', title: '格子 45：问答卡 ❤️', desc: '抽卡思考：在社区公共设施前，礼让可以带来什么好处？', feeling: '有助于促进社区和谐与友好邻里关系。' },
+            'tile100': { type: 'win', title: '格子 100：礼让之星 🏆', desc: '恭喜你到达终点！你已成为社区礼让小达人！', feeling: '成为文明礼让的守卫者！' }
+        };
+
+        function showTileInfo(key) {
+            const card = document.getElementById('tile-card');
+            const data = tileData[key] || { title: '普通格子 💬', desc: '继续加油向前走！', feeling: '维持良好的社区礼让态度。' };
+            
+            let bgClass = "from-amber-100 to-yellow-100 border-yellow-400";
+            if (data.type === 'ladder') bgClass = "from-emerald-100 to-teal-100 border-emerald-400";
+            if (data.type === 'snake') bgClass = "from-red-100 to-rose-100 border-red-400";
+
+            card.className = `bg-gradient-to-r ${bgClass} border-2 rounded-2xl p-5 shadow-md text-left space-y-2`;
+            card.innerHTML = `
+                <h4 class="font-black text-base text-slate-800">${data.title}</h4>
+                <p class="text-xs font-semibold text-slate-700">${data.desc}</p>
+                <div class="pt-2 border-t border-slate-300 text-xs font-bold text-purple-900">
+                    💡 ${data.feeling}
+                </div>
+            `;
+        }
+
+        let feelingCount = 0;
+        function addFeeling(text, bgClass) {
+            if (feelingCount >= 5) return;
             const jar = document.getElementById('jar-container');
             const placeholder = document.getElementById('jar-placeholder');
             if (placeholder) placeholder.style.display = 'none';
 
-            // 创建能量卡片
-            const card = document.createElement('div');
-            card.className = `w-full p-2.5 rounded-2xl border-2 text-xs font-black shadow-md transition-all duration-300 animate-fade-in ${colorStyle}`;
-            card.innerHTML = `
-                <div class="text-slate-800 font-extrabold truncate"><i class="fa-solid fa-hand-holding-heart mr-1"></i>${selectedActionText}</div>
-                <div class="text-right text-rose-700 font-black mt-1">➔ 感受：${feelingText}</div>
-            `;
-
-            jar.appendChild(card);
-            count++;
-
-            // 放花炮庆祝
-            confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
-
-            // 重置选中的 action
-            selectedActionText = "";
-            document.querySelectorAll('.action-btn').forEach(b => {
-                b.classList.remove('bg-amber-400', 'text-amber-950');
-                b.classList.add('bg-white', 'text-amber-900');
-            });
-            document.getElementById('feeling-box').classList.add('opacity-50', 'pointer-events-none');
-            document.getElementById('hint-text').innerText = "💡 成功装入瓶中！请继续选择下一个礼让行为。";
+            const chip = document.createElement('div');
+            chip.className = `px-3 py-1.5 rounded-full border text-xs font-black shadow my-1 ${bgClass}`;
+            chip.innerText = text;
+            jar.appendChild(chip);
+            feelingCount++;
+            if (feelingCount === 5) confetti({ particleCount: 70 });
         }
 
         function clearJar() {
-            document.getElementById('jar-container').innerHTML = `
-                <div class="text-xs text-rose-400 font-bold my-auto text-center" id="jar-placeholder">
-                    <i class="fa-solid fa-heart-circle-plus text-3xl mb-2 block animate-bounce"></i>
-                    瓶子空空的...<br>完成左侧选择<br>把礼让能量装进来！
-                </div>`;
-            count = 0;
-            selectedActionText = "";
-            document.querySelectorAll('.action-btn').forEach(b => {
-                b.classList.remove('bg-amber-400', 'text-amber-950');
-                b.classList.add('bg-white', 'text-amber-900');
-            });
-            document.getElementById('feeling-box').classList.add('opacity-50', 'pointer-events-none');
-            document.getElementById('hint-text').innerText = "💡 请先在“步骤 1”中选择一个礼让行为。";
+            document.getElementById('jar-container').innerHTML = '<div class="text-xs text-pink-400 font-bold mb-2" id="jar-placeholder">瓶子空空的...<br>点击感受装满它！</div>';
+            feelingCount = 0;
         }
     </script>
 </body>
