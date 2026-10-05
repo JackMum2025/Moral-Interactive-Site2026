@@ -3,965 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>五年级道德教育 单元十四：礼让之城 (14.1 & 14.2)</title>
-    <!-- Tailwind CSS CDN -->
+    <title>五年级道德教育 - 礼让感受收集瓶</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Tone.js for Web Audio SFX -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-
     <style>
-        body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background-color: #f3f7fc;
-        }
-        .animate-bounce-gentle {
-            animation: bounce 2.5s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-7px); }
-        }
-        .card-hover-effect {
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card-hover-effect:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 9999px;
+        body { font-family: 'Noto Sans SC', sans-serif; background: #fffbeb; }
+        .jar-shape {
+            border: 5px solid #f43f5e;
+            border-top: 10px solid #fb7185;
+            border-radius: 20px 20px 50px 50px;
+            background: rgba(255, 241, 242, 0.7);
+            box-shadow: inset 0 0 20px rgba(244, 63, 94, 0.15), 0 10px 25px rgba(0,0,0,0.1);
         }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="p-6 flex justify-center items-center min-h-screen">
 
-    <!-- 顶部导航栏 Navigation Bar -->
-    <header class="sticky top-0 z-50 bg-gradient-to-r from-teal-600 via-emerald-600 to-indigo-600 text-white shadow-md">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('knowledge')">
-                <div class="bg-white/20 p-2.5 rounded-2xl backdrop-blur-md flex items-center justify-center">
-                    <i class="fa-solid fa-hands-holding-child text-2xl text-yellow-300"></i>
-                </div>
-                <div>
-                    <h1 class="text-lg md:text-xl font-black tracking-wide leading-tight">道德教育五年级</h1>
-                    <p class="text-xs text-teal-100">单元十四：礼让之城 <span class="bg-amber-400/30 text-amber-200 px-1.5 py-0.5 rounded text-[10px] ml-1">标准 14.1 & 14.2</span></p>
-                </div>
-            </div>
-
-            <!-- 桌面端导航 -->
-            <nav class="hidden md:flex items-center space-x-1.5 text-xs font-bold">
-                <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn px-3.5 py-2 rounded-xl transition bg-white/20 hover:bg-white/30 flex items-center space-x-1">
-                    <i class="fa-solid fa-book-open text-yellow-300"></i> <span>1. 知识大本营</span>
-                </button>
-                <button onclick="switchTab('identify')" id="nav-identify" class="nav-btn px-3.5 py-2 rounded-xl transition hover:bg-white/20 flex items-center space-x-1">
-                    <i class="fa-solid fa-magnifying-glass text-teal-200"></i> <span>2. 礼让例子 (14.1)</span>
-                </button>
-                <button onclick="switchTab('importance')" id="nav-importance" class="nav-btn px-3.5 py-2 rounded-xl transition hover:bg-white/20 flex items-center space-x-1">
-                    <i class="fa-solid fa-lightbulb text-amber-300"></i> <span>3. 重要性罗盘 (14.2)</span>
-                </button>
-                <button onclick="switchTab('adventure')" id="nav-adventure" class="nav-btn px-3.5 py-2 rounded-xl transition hover:bg-white/20 flex items-center space-x-1">
-                    <i class="fa-solid fa-gamepad text-rose-300"></i> <span>4. 社区闯关</span>
-                </button>
-            </nav>
-
-            <!-- 积分与徽章入口 -->
-            <div class="flex items-center space-x-2">
-                <div class="bg-amber-400 text-slate-900 font-black px-3 py-1.5 rounded-full text-xs shadow flex items-center space-x-1.5">
-                    <i class="fa-solid fa-star text-amber-700"></i>
-                    <span id="global-score">得分: 0</span>
-                </div>
-            </div>
+    <div class="max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-6 border-4 border-pink-300">
+        <!-- 头部标题 -->
+        <div class="text-center mb-6">
+            <span class="bg-pink-100 text-pink-700 text-xs font-black px-4 py-1.5 rounded-full border border-pink-300">
+                💖 学习标准 14.4：表达表现礼让行为的感受
+            </span>
+            <h3 class="text-2xl font-black text-rose-900 mt-2">我的“社区礼让与感受”正能量收集瓶</h3>
+            <p class="text-slate-600 text-xs font-bold mt-1">第一步：点击社区礼让行为 ➔ 第二步：点击你的内心感受 ➔ 收集正能量卡片！</p>
         </div>
 
-        <!-- 移动端导航 -->
-        <div class="md:hidden flex justify-around bg-teal-800 text-[11px] font-medium py-2 border-t border-teal-700/80">
-            <button onclick="switchTab('knowledge')" class="flex flex-col items-center py-1 text-white/90">
-                <i class="fa-solid fa-book-open text-sm mb-0.5"></i>大本营
-            </button>
-            <button onclick="switchTab('identify')" class="flex flex-col items-center py-1 text-white/90">
-                <i class="fa-solid fa-magnifying-glass text-sm mb-0.5"></i>14.1例子
-            </button>
-            <button onclick="switchTab('importance')" class="flex flex-col items-center py-1 text-white/90">
-                <i class="fa-solid fa-lightbulb text-sm mb-0.5"></i>14.2重要性
-            </button>
-            <button onclick="switchTab('adventure')" class="flex flex-col items-center py-1 text-white/90">
-                <i class="fa-solid fa-gamepad text-sm mb-0.5"></i>闯关冒险
-            </button>
-        </div>
-    </header>
-
-    <!-- 主体区域 -->
-    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
-
-        <!-- 顶部宣传/学习目标 Header Banner -->
-        <div class="bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600 text-white rounded-3xl p-6 shadow-md relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
-            <div class="space-y-2 z-10 text-center md:text-left max-w-2xl">
-                <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md text-teal-100 text-xs font-bold px-3 py-1 rounded-full">
-                    <i class="fa-solid fa-graduation-cap text-yellow-300"></i>
-                    <span>KSSR Semakan 道德教育五年级 · 单元十四</span>
-                </div>
-                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">互相礼让好处多，和谐社区齐建设！</h2>
-                <p class="text-teal-100 text-xs md:text-sm leading-relaxed">
-                    在社区生活里，懂得礼让能化解矛盾、促进友谊。让我们一起学习<b>辨识社区里的礼让行为 (14.1)</b>，并领悟<b>礼让行为带来的深远重要性 (14.2)</b>吧！
-                </p>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
             
-            <div class="mt-4 md:mt-0 z-10 flex flex-col items-center bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/20 text-center min-w-[130px]">
-                <div class="w-12 h-12 rounded-full bg-amber-400 flex items-center justify-center text-slate-900 text-2xl mb-1 shadow-md animate-bounce-gentle">
-                    <i class="fa-solid fa-heart-circle-check"></i>
-                </div>
-                <span class="text-xs font-bold text-yellow-200">礼让美德卡</span>
-                <span class="text-[10px] text-teal-100 mt-0.5">从我做起 谦让相待</span>
-            </div>
-
-            <!-- 背景装饰图案 -->
-            <i class="fa-solid fa-users text-white/5 text-9xl absolute -right-6 -bottom-6 pointer-events-none"></i>
-        </div>
-
-        <!-- 模块 1: 知识大本营 KNOWLEDGE HUB -->
-        <section id="tab-knowledge" class="tab-content space-y-6">
-            <div class="text-center max-w-2xl mx-auto space-y-1">
-                <span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">课本核心知识解读</span>
-                <h3 class="text-2xl font-black text-slate-800">14.1 & 14.2 学习标准全掌握</h3>
-                <p class="text-slate-500 text-xs">通过图文卡片，轻松掌握社区生活里礼让行为的例子及其重要性</p>
-            </div>
-
-            <!-- 14.1 辨识礼让行为的例子 -->
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
-                <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
-                    <div class="w-10 h-10 rounded-2xl bg-teal-500 text-white font-black text-sm flex items-center justify-center shadow-sm">
-                        14.1
-                    </div>
-                    <div>
-                        <h4 class="font-extrabold text-slate-800 text-lg">辨识社区生活里礼让行为的例子</h4>
-                        <p class="text-xs text-slate-500">我们在社区里可以怎样展现礼让精神？</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- 例子 1 -->
-                    <div class="bg-emerald-50/60 p-4 rounded-2xl border border-emerald-100 card-hover-effect space-y-2">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-lg shadow-sm">
-                            <i class="fa-solid fa-bus-simple"></i>
-                        </div>
-                        <h5 class="font-bold text-slate-800 text-sm">1. 公共交通与出行</h5>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            乘搭社区巴士时，主动将座位让给老弱妇孺、孕妇或行动不便者；遵守秩序排队上下车。
-                        </p>
-                    </div>
-
-                    <!-- 例子 2 -->
-                    <div class="bg-blue-50/60 p-4 rounded-2xl border border-blue-100 card-hover-effect space-y-2">
-                        <div class="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center text-lg shadow-sm">
-                            <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-                        </div>
-                        <h5 class="font-bold text-slate-800 text-sm">2. 轮流使用公共设施</h5>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            在游乐场荡秋千或社区羽毛球场运动时，不长时间独占设施，主动与他人协议轮流玩乐。
-                        </p>
-                    </div>
-
-                    <!-- 例子 3 -->
-                    <div class="bg-indigo-50/60 p-4 rounded-2xl border border-indigo-100 card-hover-effect space-y-2">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center text-lg shadow-sm">
-                            <i class="fa-solid fa-users-rectangle"></i>
-                        </div>
-                        <h5 class="font-bold text-slate-800 text-sm">3. 社区活动有序入席</h5>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            参加社区讲座、文娱晚会或居民大会时，按顺序入座，不替未到的朋友霸占前排座位。
-                        </p>
-                    </div>
-
-                    <!-- 例子 4 -->
-                    <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-100 card-hover-effect space-y-2">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg shadow-sm">
-                            <i class="fa-solid fa-comments"></i>
-                        </div>
-                        <h5 class="font-bold text-slate-800 text-sm">4. 意见分歧时尊重大局</h5>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            在讨论社区集体活动或游戏规则时，少数服从多数，不强求己见，包容与退让一步。
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 14.2 礼让行为的重要性 -->
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 space-y-4">
-                <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
-                    <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white font-black text-sm flex items-center justify-center shadow-sm">
-                        14.2
-                    </div>
-                    <div>
-                        <h4 class="font-extrabold text-slate-800 text-lg">讲述社区生活里礼让行为的重要性</h4>
-                        <p class="text-xs text-slate-500">为什么我们在社区里一定要懂得互相礼让？</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="flex items-start space-x-3 bg-gradient-to-r from-amber-50 to-orange-50/50 p-4 rounded-2xl border border-amber-100">
-                        <div class="p-3 bg-amber-500 text-white rounded-xl flex-shrink-0 text-xl shadow-sm">
-                            <i class="fa-solid fa-handshake-angle"></i>
-                        </div>
-                        <div>
-                            <h5 class="font-bold text-amber-900 text-sm mb-1">① 促进邻里和谐，避免冲突争执</h5>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                大家各退一步、谦让有礼，能有效化解邻里间的误会与口角，营造团结融洽的社区氛围。
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-3 bg-gradient-to-r from-teal-50 to-emerald-50/50 p-4 rounded-2xl border border-teal-100">
-                        <div class="p-3 bg-teal-500 text-white rounded-xl flex-shrink-0 text-xl shadow-sm">
-                            <i class="fa-solid fa-shield-heart"></i>
-                        </div>
-                        <div>
-                            <h5 class="font-bold text-teal-900 text-sm mb-1">② 保护公共设施，防止意外事故</h5>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                蜂拥争抢容易损坏设施或导致儿童摔伤。有秩序地礼让使用能保障人人安全，延长设施寿命。
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-3 bg-gradient-to-r from-blue-50 to-cyan-50/50 p-4 rounded-2xl border border-blue-100">
-                        <div class="p-3 bg-blue-500 text-white rounded-xl flex-shrink-0 text-xl shadow-sm">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                        </div>
-                        <div>
-                            <h5 class="font-bold text-blue-900 text-sm mb-1">③ 树立文明风尚，培养优良品德</h5>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                礼让行为展现了社区成员的高尚涵养，能发挥榜样作用，吸引更多人一起共建温暖文明社会。
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-3 bg-gradient-to-r from-purple-50 to-pink-50/50 p-4 rounded-2xl border border-purple-100">
-                        <div class="p-3 bg-purple-500 text-white rounded-xl flex-shrink-0 text-xl shadow-sm">
-                            <i class="fa-solid fa-face-smile-beam"></i>
-                        </div>
-                        <div>
-                            <h5 class="font-bold text-purple-900 text-sm mb-1">④ 提升社区居住满意度与幸福感</h5>
-                            <p class="text-xs text-slate-600 leading-relaxed">
-                                在一个充满关爱与体谅的社区中生活，每个人都能感到被尊重与被关怀，生活充满阳光。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 模块 2: 学习标准 14.1 礼让行为火眼金睛 IDENTIFY GAME -->
-        <section id="tab-identify" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-teal-100 space-y-6">
-                <div class="text-center max-w-xl mx-auto space-y-1">
-                    <span class="text-xs font-bold text-teal-600 bg-teal-100 px-3 py-1 rounded-full uppercase">学习标准 14.1 专项训练</span>
-                    <h3 class="text-2xl font-black text-slate-800">礼让行为火眼金睛 🔍</h3>
-                    <p class="text-slate-500 text-xs">判断下列社区情境中的行为，哪些是<b>【文明礼让】</b>，哪些是<b>【非礼让/自私】</b>行为？</p>
-                </div>
-
-                <div class="flex justify-between items-center bg-teal-50/80 px-4 py-2.5 rounded-2xl border border-teal-100 text-xs font-bold text-teal-800">
-                    <span id="identify-progress">卡片: 1 / 6</span>
-                    <span id="identify-score-badge" class="bg-teal-200 text-teal-900 px-2.5 py-1 rounded-lg">正确率: 0/0</span>
-                </div>
-
-                <!-- 动态卡片区域 -->
-                <div id="identify-card-container" class="max-w-xl mx-auto bg-gradient-to-b from-slate-50 to-white p-6 rounded-3xl border-2 border-slate-200/80 shadow-sm text-center space-y-4">
-                    <!-- 由 JavaScript 填充卡片内容 -->
-                </div>
-
-                <!-- 交互选择按钮 -->
-                <div class="max-w-md mx-auto grid grid-cols-2 gap-4">
-                    <button onclick="checkIdentifyAnswer(true)" class="py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-sm shadow-md transition transform active:scale-95 flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-circle-check text-lg"></i>
-                        <span>是【礼让行为】</span>
-                    </button>
-                    <button onclick="checkIdentifyAnswer(false)" class="py-3.5 px-4 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-sm shadow-md transition transform active:scale-95 flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-circle-xmark text-lg"></i>
-                        <span>非【礼让行为】</span>
-                    </button>
-                </div>
-
-                <!-- 反馈提示 -->
-                <div id="identify-feedback" class="hidden max-w-xl mx-auto p-4 rounded-2xl text-xs font-bold text-center"></div>
-            </div>
-        </section>
-
-        <!-- 模块 3: 学习标准 14.2 礼让重要性逻辑罗盘 IMPORTANCE EXPLORER -->
-        <section id="tab-importance" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-amber-100 space-y-6">
-                <div class="text-center max-w-xl mx-auto space-y-1">
-                    <span class="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full uppercase">学习标准 14.2 深度理解</span>
-                    <h3 class="text-2xl font-black text-slate-800">礼让重要性逻辑罗盘 💡</h3>
-                    <p class="text-slate-500 text-xs">点击不同社区情境，对比“互相礼让”与“互不相让”的不同结局，体会礼让的无比重要！</p>
-                </div>
-
-                <!-- 情境切换按钮 -->
-                <div class="flex flex-wrap justify-center gap-2" id="importance-tabs">
-                    <button onclick="switchImportanceScene(0)" class="imp-tab-btn active px-4 py-2 rounded-xl text-xs font-bold border transition bg-amber-500 text-white border-amber-500 shadow-sm">
-                        <i class="fa-solid fa-bus mr-1"></i> 1. 公共交通上
-                    </button>
-                    <button onclick="switchImportanceScene(1)" class="imp-tab-btn px-4 py-2 rounded-xl text-xs font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">
-                        <i class="fa-solid fa-child-swimming mr-1"></i> 2. 游乐场秋千
-                    </button>
-                    <button onclick="switchImportanceScene(2)" class="imp-tab-btn px-4 py-2 rounded-xl text-xs font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">
-                        <i class="fa-solid fa-chair mr-1"></i> 3. 晚会占位置
-                    </button>
-                    <button onclick="switchImportanceScene(3)" class="imp-tab-btn px-4 py-2 rounded-xl text-xs font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200">
-                        <i class="fa-solid fa-chess mr-1"></i> 4. 社区讨论会
-                    </button>
-                </div>
-
-                <!-- 对比展示区 -->
-                <div id="importance-display" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                    <!-- JS 动态注入内容 -->
-                </div>
-
-                <!-- 14.2 总结金句 -->
-                <div class="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 p-4 rounded-2xl text-white text-center font-bold text-xs shadow-sm flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-quote-left text-lg text-amber-200"></i>
-                    <span>礼让并非软弱，而是一种高尚的文明素养；礼让一步，天地宽，社区和谐大家欢！</span>
-                    <i class="fa-solid fa-quote-right text-lg text-amber-200"></i>
-                </div>
-            </div>
-        </section>
-
-        <!-- 模块 4: 社区礼让翻翻卡大冒险 ADVENTURE & FLIP MATCH GAME -->
-        <section id="tab-adventure" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-indigo-100 space-y-6">
+            <!-- 左侧：第一步 & 第二步 选择区 -->
+            <div class="space-y-4 md:col-span-2">
                 
-                <!-- 头部说明与分组控制 -->
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-100 pb-4">
-                    <div>
-                        <span class="text-xs font-bold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full uppercase">14.1 & 14.2 互动竞赛</span>
-                        <h3 class="text-2xl font-black text-slate-800 mt-1">社区礼让翻翻卡大冒险 🃏</h3>
-                        <p class="text-slate-500 text-xs">配对<b>【情景描述】</b>与<b>【相对应的礼让句子/重要性】</b>，选错将自动换下一组挑战！</p>
-                    </div>
-
-                    <!-- 分组设置与当前回合 -->
-                    <div class="flex flex-col items-end space-y-2">
-                        <div class="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-2xl text-xs font-bold">
-                            <span class="text-slate-600 pl-2">参赛组数:</span>
-                            <button onclick="setTeamCount(2)" id="team-btn-2" class="px-2.5 py-1 rounded-xl bg-indigo-600 text-white shadow-sm">2组</button>
-                            <button onclick="setTeamCount(3)" id="team-btn-3" class="px-2.5 py-1 rounded-xl bg-white text-slate-700 hover:bg-slate-200">3组</button>
-                            <button onclick="setTeamCount(4)" id="team-btn-4" class="px-2.5 py-1 rounded-xl bg-white text-slate-700 hover:bg-slate-200">4组</button>
-                        </div>
-                        <button onclick="resetFlipGame()" class="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold transition shadow-sm flex items-center space-x-1">
-                            <i class="fa-solid fa-rotate-right"></i>
-                            <span>重新洗牌发牌</span>
-                        </button>
+                <!-- 步骤 1：选择社区礼让行为 -->
+                <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-300">
+                    <h4 class="font-black text-amber-900 text-xs uppercase mb-2 flex items-center">
+                        <span class="bg-amber-400 text-amber-950 w-5 h-5 rounded-full inline-flex items-center justify-center text-xs mr-2">1</span>
+                        选择在社区可以做出的礼让行为：
+                    </h4>
+                    <div class="flex flex-wrap gap-2" id="action-pool">
+                        <button onclick="selectAction(this, '🚌 巴士上主动给老人让座')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🚌 巴士上主动给老人让座</button>
+                        <button onclick="selectAction(this, '🎠 公园秋千按次序排队玩')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🎠 公园秋千按次序排队玩</button>
+                        <button onclick="selectAction(this, '🏬 进电梯时主动挡门让邻居先进')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🏬 进电梯时主动挡门让邻居先进</button>
+                        <button onclick="selectAction(this, '🏸 羽毛球场打完后让给等待的邻居')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🏸 羽毛球场打完后让给等待的邻居</button>
+                        <button onclick="selectAction(this, '🍲 社区食堂排队买饭不插队')" class="action-btn px-3 py-2 rounded-xl border-2 border-amber-300 bg-white text-amber-900 font-bold text-xs shadow-sm hover:bg-amber-200 transition">🍲 社区食堂排队买饭不插队</button>
                     </div>
                 </div>
 
-                <!-- 队伍计分牌与回合提示 -->
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between bg-indigo-900 text-white p-3.5 rounded-2xl shadow-md">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></div>
-                            <span class="text-xs md:text-sm font-black">当前回合：</span>
-                            <span id="current-team-indicator" class="bg-amber-400 text-slate-900 px-3 py-0.5 rounded-full text-xs md:text-sm font-black">
-                                第 1 组 (红组) 上台翻牌
-                            </span>
-                        </div>
-                        <div id="game-status-toast" class="text-xs font-bold text-amber-300">
-                            请派一名代表翻开 2 张卡片！
-                        </div>
-                    </div>
-
-                    <!-- 各组比分栏 -->
-                    <div id="teams-score-board" class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-                        <!-- 由 JavaScript 动态渲染 -->
+                <!-- 步骤 2：选择感受 -->
+                <div class="bg-rose-50 p-4 rounded-2xl border-2 border-rose-300 opacity-50 pointer-events-none transition-all" id="feeling-box">
+                    <h4 class="font-black text-rose-900 text-xs uppercase mb-2 flex items-center">
+                        <span class="bg-rose-400 text-rose-950 w-5 h-5 rounded-full inline-flex items-center justify-center text-xs mr-2">2</span>
+                        做了这个礼让行为后，你的感受是：
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="addCombo('😃 开心愉快', 'bg-yellow-100 text-yellow-900 border-yellow-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">😃 开心愉快</button>
+                        <button onclick="addCombo('🏆 为自己自豪', 'bg-amber-100 text-amber-900 border-amber-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">🏆 为自己自豪</button>
+                        <button onclick="addCombo('🌸 感到内心温馨', 'bg-pink-100 text-pink-900 border-pink-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">🌸 感到内心温馨</button>
+                        <button onclick="addCombo('😌 心里很踏实', 'bg-teal-100 text-teal-900 border-teal-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">😌 心里很踏实</button>
+                        <button onclick="addCombo('🤝 觉得邻里关系更融洽', 'bg-purple-100 text-purple-900 border-purple-400')" class="px-3 py-2 rounded-xl border-2 border-rose-300 bg-white text-rose-900 font-bold text-xs shadow-sm hover:bg-rose-200 transition">🤝 觉得邻里关系更融洽</button>
                     </div>
                 </div>
 
-                <!-- 12张卡片网格区域 -->
-                <div id="flip-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 pt-2">
-                    <!-- 由 JavaScript 动态生成 12 张卡片 -->
+                <!-- 提示区域 -->
+                <div class="text-xs text-slate-500 font-semibold px-2" id="hint-text">
+                    💡 请先在“步骤 1”中选择一个礼让行为。
                 </div>
-
             </div>
-        </section>
 
-    </main>
+            <!-- 右侧：收集瓶展示 -->
+            <div class="flex flex-col items-center">
+                <div class="w-full h-80 jar-shape p-4 relative flex flex-col-reverse items-center overflow-y-auto space-y-2 space-y-reverse" id="jar-container">
+                    <div class="text-xs text-rose-400 font-bold my-auto text-center" id="jar-placeholder">
+                        <i class="fa-solid fa-heart-circle-plus text-3xl mb-2 block animate-bounce"></i>
+                        瓶子空空的...<br>完成左侧选择<br>把礼让能量装进来！
+                    </div>
+                </div>
 
-    <!-- 页脚 Footer -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 mt-12 border-t border-slate-800">
-        <div class="max-w-5xl mx-auto px-4 text-center space-y-3">
-            <div class="flex justify-center space-x-3 text-lg text-teal-400 mb-2">
-                <i class="fa-solid fa-hand-holding-heart"></i>
-                <i class="fa-solid fa-city"></i>
-                <i class="fa-solid fa-people-roof"></i>
+                <button onclick="clearJar()" class="mt-4 text-xs font-bold text-rose-600 hover:text-rose-800 transition flex items-center">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> 清空收集瓶重来
+                </button>
             </div>
-            <p class="font-bold text-slate-200">五年级道德教育《单元十四：礼让之城》交互式教学辅助平台</p>
-            <p class="text-slate-500">符合马来西亚 KSSR Semakan 道德教育课程标准 · 学习标准 14.1 (例子) & 14.2 (重要性)</p>
-            <p class="text-[11px] text-slate-600">© 道德教育数字化教学资源库 · 让礼让美德发扬光大</p>
+
         </div>
-    </footer>
+    </div>
 
-    <!-- 逻辑脚本 JavaScript -->
     <script>
-        // 音效播放器 Audio Player using Tone.js
-        function playSfx(type) {
-            try {
-                if (Tone.context.state !== 'running') {
-                    Tone.start();
-                }
-                const synth = new Tone.Synth().toDestination();
-                if (type === 'correct') {
-                    synth.triggerAttackRelease("C5", "8n");
-                    setTimeout(() => synth.triggerAttackRelease("E5", "8n"), 100);
-                    setTimeout(() => synth.triggerAttackRelease("G5", "8n"), 200);
-                } else if (type === 'wrong') {
-                    synth.triggerAttackRelease("G3", "8n");
-                    setTimeout(() => synth.triggerAttackRelease("Eb3", "8n"), 150);
-                } else if (type === 'click') {
-                    synth.triggerAttackRelease("A4", "16n");
-                }
-            } catch(e) {
-                console.log("Audio not supported or initialized");
-            }
-        }
+        let selectedActionText = "";
+        let count = 0;
 
-        // 全局得分机制
-        let globalScore = 0;
-        function addScore(points) {
-            globalScore += points;
-            document.getElementById('global-score').innerText = `得分: ${globalScore}`;
-        }
-
-        // 1. 标签页切换 Switch Tabs
-        function switchTab(tabId) {
-            playSfx('click');
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-white/20');
+        function selectAction(btn, actionText) {
+            // 清除其他按钮高亮
+            document.querySelectorAll('.action-btn').forEach(b => {
+                b.classList.remove('bg-amber-400', 'text-amber-950');
+                b.classList.add('bg-white', 'text-amber-900');
             });
-            const activeNav = document.getElementById('nav-' + tabId);
-            if (activeNav) activeNav.classList.add('bg-white/20');
+            // 高亮当前按钮
+            btn.classList.remove('bg-white', 'text-amber-900');
+            btn.classList.add('bg-amber-400', 'text-amber-950');
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            selectedActionText = actionText;
+
+            // 解锁第二步
+            const feelingBox = document.getElementById('feeling-box');
+            feelingBox.classList.remove('opacity-50', 'pointer-events-none');
+            document.getElementById('hint-text').innerText = "💡 太棒了！现在请在“步骤 2”中选择你做这件事时的感受。";
         }
 
-        // -------------------------------------------------------------
-        // 2. 学习标准 14.1: 辨识礼让行为 (火眼金睛逻辑)
-        // -------------------------------------------------------------
-        const identifyData = [
-            {
-                title: "公共交通让座",
-                icon: "fa-bus",
-                desc: "在社区巴士上看到怀抱婴儿的妈妈，12岁的明敏主动站起身来说：“阿姨，您坐这里吧！”",
-                isYield: true,
-                explanation: "正确！这是在公共交通上礼让老弱妇孺的典型例子，符合标准 14.1。"
-            },
-            {
-                title: "长时间霸占公共秋千",
-                icon: "fa-child-reaching",
-                desc: "在社区公园里，小强独自荡秋千长达半小时，即使身后有其他小伙伴排队等待，他也装作没看见。",
-                isYield: false,
-                explanation: "这是自私霸占公共设施的行为！礼让的做法应该是玩一会儿后主动让给别人轮流玩。"
-            },
-            {
-                title: "按住电梯开门键让邻居先进",
-                icon: "fa-elevator",
-                desc: "在公寓电梯口，看到邻居张阿姨提着两大包杂物走来，小伟按住开门键并侧身礼让张阿姨先进去。",
-                isYield: true,
-                explanation: "正确！电梯口侧身礼让邻居先行，是社区生活里非常体贴文明的礼让行为。"
-            },
-            {
-                title: "用书包霸占讲座会前排座位",
-                icon: "fa-chair",
-                desc: "社区举行健康讲座会，小华一个人拿了四个书包放在前排椅子上，不让其他早到的长者坐下。",
-                isYield: false,
-                explanation: "这是不文明的霸座行为！社区活动应当遵守秩序入座，不能强行替未到的朋友霸占座位。"
-            },
-            {
-                title: "讨论游戏规则时服从多数",
-                icon: "fa-people-group",
-                desc: "社区儿童会讨论假期活动，大多数人选择踢足球，小明虽然想下棋，但他决定少服从多数并快乐参与。",
-                isYield: true,
-                explanation: "正确！在集体决策中不固执己见，包容退让，也是道德教育 14.1 倡导的礼让行为。"
-            },
-            {
-                title: "游乐场滑梯反向逆爬",
-                icon: "fa-triangle-exclamation",
-                desc: "在社区公园滑梯上，小军不顾其他小朋友正在顺向下滑，硬是从滑梯底部往上爬，阻止他人滑下。",
-                isYield: false,
-                explanation: "这是缺乏秩序与礼让意识的行为，不仅影响别人玩乐，还极易引发碰撞意外。"
-            }
-        ];
-
-        let currentIdentifyIndex = 0;
-        let identifyCorrectCount = 0;
-
-        function renderIdentifyCard() {
-            if (currentIdentifyIndex >= identifyData.length) {
-                // 完成辨识训练
-                document.getElementById('identify-card-container').innerHTML = `
-                    <div class="py-6 space-y-3">
-                        <div class="text-4xl">🎉</div>
-                        <h4 class="text-xl font-extrabold text-slate-800">太棒了！您已完成 14.1 辨识训练！</h4>
-                        <p class="text-xs text-slate-600">您准确辨识了社区生活中的礼让行为与非礼让行为！</p>
-                        <button onclick="resetIdentifyGame()" class="mt-2 px-5 py-2 bg-teal-600 text-white rounded-xl font-bold text-xs shadow hover:bg-teal-700">
-                            重新挑战
-                        </button>
-                    </div>
-                `;
-                confetti({ particleCount: 60, spread: 60 });
+        function addCombo(feelingText, colorStyle) {
+            if (!selectedActionText) return;
+            if (count >= 4) {
+                alert("收集瓶已经装得满满的啦！点击下方“清空”可以重新收集哦！");
                 return;
             }
 
-            const item = identifyData[currentIdentifyIndex];
-            document.getElementById('identify-progress').innerText = `卡片: ${currentIdentifyIndex + 1} / ${identifyData.length}`;
-            document.getElementById('identify-card-container').innerHTML = `
-                <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl mx-auto shadow-sm">
-                    <i class="fa-solid ${item.icon}"></i>
-                </div>
-                <h4 class="font-black text-slate-800 text-base">${item.title}</h4>
-                <p class="text-xs text-slate-600 leading-relaxed bg-white p-3.5 rounded-2xl border border-slate-100 shadow-inner">
-                    "${item.desc}"
-                </p>
+            const jar = document.getElementById('jar-container');
+            const placeholder = document.getElementById('jar-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+
+            // 创建能量卡片
+            const card = document.createElement('div');
+            card.className = `w-full p-2.5 rounded-2xl border-2 text-xs font-black shadow-md transition-all duration-300 animate-fade-in ${colorStyle}`;
+            card.innerHTML = `
+                <div class="text-slate-800 font-extrabold truncate"><i class="fa-solid fa-hand-holding-heart mr-1"></i>${selectedActionText}</div>
+                <div class="text-right text-rose-700 font-black mt-1">➔ 感受：${feelingText}</div>
             `;
-            document.getElementById('identify-feedback').classList.add('hidden');
-        }
 
-        function checkIdentifyAnswer(userChoice) {
-            const item = identifyData[currentIdentifyIndex];
-            const feedback = document.getElementById('identify-feedback');
-            feedback.classList.remove('hidden');
+            jar.appendChild(card);
+            count++;
 
-            if (userChoice === item.isYield) {
-                playSfx('correct');
-                identifyCorrectCount++;
-                addScore(10);
-                feedback.className = "max-w-xl mx-auto p-3.5 rounded-2xl text-xs font-bold text-center bg-emerald-100 border border-emerald-300 text-emerald-900";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-check text-base mr-1"></i> 回答正确！${item.explanation}`;
-            } else {
-                playSfx('wrong');
-                feedback.className = "max-w-xl mx-auto p-3.5 rounded-2xl text-xs font-bold text-center bg-rose-100 border border-rose-300 text-rose-900";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-base mr-1"></i> 答错了哦！${item.explanation}`;
-            }
+            // 放花炮庆祝
+            confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
 
-            document.getElementById('identify-score-badge').innerText = `正确率: ${identifyCorrectCount}/${currentIdentifyIndex + 1}`;
-
-            setTimeout(() => {
-                currentIdentifyIndex++;
-                renderIdentifyCard();
-            }, 2200);
-        }
-
-        function resetIdentifyGame() {
-            currentIdentifyIndex = 0;
-            identifyCorrectCount = 0;
-            document.getElementById('identify-score-badge').innerText = `正确率: 0/0`;
-            renderIdentifyCard();
-        }
-
-        // -------------------------------------------------------------
-        // 3. 学习标准 14.2: 礼让重要性逻辑罗盘 (切换显示)
-        // -------------------------------------------------------------
-        const importanceScenes = [
-            {
-                title: "公共交通乘搭场景",
-                yieldOutcome: {
-                    title: "✅ 表现礼让的结果 (14.2)",
-                    badge: "促进社区和谐与爱心传递",
-                    text: "主动让座给老人家后，老人家感到十分温暖并道谢；车厢内秩序井然，满满的正能量与人情味！"
-                },
-                noYieldOutcome: {
-                    title: "❌ 互不相让的结果",
-                    badge: "引发不满与摩擦",
-                    text: "大家各不相让抢挤上车，险些撞倒长者；乘客之间爆发生气口角，破坏了社区的和谐风貌。"
-                }
-            },
-            {
-                title: "社区公园游乐设施",
-                yieldOutcome: {
-                    title: "✅ 表现礼让的结果 (14.2)",
-                    badge: "保障设施安全与公平共享",
-                    text: "大家约定每人荡秋千10分钟轮流玩，小伙伴们都玩得非常开心，公共设施得到爱护也不易损坏。"
-                },
-                noYieldOutcome: {
-                    title: "❌ 互不相让的结果",
-                    badge: "导致意外与社交排挤",
-                    text: "两人为了抢秋千拉扯推搡，导致小朋友摔伤流血；原本欢乐的游乐场变成了争执现场。"
-                }
-            },
-            {
-                title: "社区文娱晚会现场",
-                yieldOutcome: {
-                    title: "✅ 表现礼让的结果 (14.2)",
-                    badge: "彰显文明有礼社区风尚",
-                    text: "居民们井然有序地按顺序入座，并将方便的位置礼让给抱着婴儿的妈妈，晚会在温馨气氛中开幕。"
-                },
-                noYieldOutcome: {
-                    title: "❌ 互不相让的结果",
-                    badge: "造成资源浪费与冷漠氛围",
-                    text: "许多空位被书包占着不让人坐，真正有需要的长者只能全程站着，引发邻里之间的强烈指责。"
-                }
-            },
-            {
-                title: "社区活动决策讨论",
-                yieldOutcome: {
-                    title: "✅ 表现礼让的结果 (14.2)",
-                    badge: "增强社区凝聚力与团结",
-                    text: "大家包容不同意见，各让一步达成共识；活动顺利圆满举办，大家的关系更加亲密融洽。"
-                },
-                noYieldOutcome: {
-                    title: "❌ 互不相让的结果",
-                    badge: "导致社区分崩离析",
-                    text: "每个人都坚持己见不肯退让，甚至拍桌子吵架；最终活动被迫取消，邻里之间留下隔阂。"
-                }
-            }
-        ];
-
-        function switchImportanceScene(index) {
-            playSfx('click');
-            const btns = document.querySelectorAll('.imp-tab-btn');
-            btns.forEach((btn, i) => {
-                if (i === index) {
-                    btn.className = "imp-tab-btn active px-4 py-2 rounded-xl text-xs font-bold border transition bg-amber-500 text-white border-amber-500 shadow-sm";
-                } else {
-                    btn.className = "imp-tab-btn px-4 py-2 rounded-xl text-xs font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200";
-                }
+            // 重置选中的 action
+            selectedActionText = "";
+            document.querySelectorAll('.action-btn').forEach(b => {
+                b.classList.remove('bg-amber-400', 'text-amber-950');
+                b.classList.add('bg-white', 'text-amber-900');
             });
-
-            const sc = importanceScenes[index];
-            const display = document.getElementById('importance-display');
-            display.innerHTML = `
-                <!-- 礼让的积极重要性 -->
-                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 p-5 rounded-3xl border border-emerald-200 shadow-sm space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h4 class="font-extrabold text-emerald-900 text-sm">${sc.yieldOutcome.title}</h4>
-                        <span class="bg-emerald-200 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${sc.yieldOutcome.badge}</span>
-                    </div>
-                    <p class="text-xs text-slate-700 leading-relaxed font-medium bg-white/80 p-3.5 rounded-2xl border border-emerald-100">
-                        ${sc.yieldOutcome.text}
-                    </p>
-                    <div class="text-[11px] font-bold text-emerald-700 flex items-center space-x-1">
-                        <i class="fa-solid fa-seedling"></i>
-                        <span>重要性领悟：礼让能创造双赢，共建关爱社会！</span>
-                    </div>
-                </div>
-
-                <!-- 忽视礼让的消极后果 -->
-                <div class="bg-gradient-to-br from-rose-50 to-orange-50 p-5 rounded-3xl border border-rose-200 shadow-sm space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h4 class="font-extrabold text-rose-900 text-sm">${sc.noYieldOutcome.title}</h4>
-                        <span class="bg-rose-200 text-rose-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${sc.noYieldOutcome.badge}</span>
-                    </div>
-                    <p class="text-xs text-slate-700 leading-relaxed font-medium bg-white/80 p-3.5 rounded-2xl border border-rose-100">
-                        ${sc.noYieldOutcome.text}
-                    </p>
-                    <div class="text-[11px] font-bold text-rose-700 flex items-center space-x-1">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span>警惕：争强好胜、互不相让只会带来误会与伤害！</span>
-                    </div>
-                </div>
-            `;
+            document.getElementById('feeling-box').classList.add('opacity-50', 'pointer-events-none');
+            document.getElementById('hint-text').innerText = "💡 成功装入瓶中！请继续选择下一个礼让行为。";
         }
 
-        // -------------------------------------------------------------
-        // 4. 12张翻翻卡分组竞技配对逻辑 (14.1 & 14.2)
-        // -------------------------------------------------------------
-        
-        // 6组匹配对（每组包含1张情景卡与1张句子卡，共12张卡片）
-        const flipPairsDatabase = [
-            {
-                pairId: 1,
-                icon: "fa-bus-simple",
-                cardA: { type: "情景图片/描述", title: "🚌 公车情景", content: "在社区巴士上，看见腿脚不便的长者抱婴儿上车。" },
-                cardB: { type: "相对应句子", title: "💬 14.1 例子", content: "【14.1例子】主动站立让座，方便有需要的乘客就座。" }
-            },
-            {
-                pairId: 2,
-                icon: "fa-child-reaching",
-                cardA: { type: "情景图片/描述", title: "🛝 公园情景", content: "游乐场秋千旁，有好几位小朋友正排队等待玩乐。" },
-                cardB: { type: "相对应句子", title: "💬 14.1 例子", content: "【14.1例子】玩了一会儿后主动让出秋千，大家轮流玩乐。" }
-            },
-            {
-                pairId: 3,
-                icon: "fa-elevator",
-                cardA: { type: "情景图片/描述", title: "🏢 电梯情景", content: "公寓电梯门即将关闭，看见邻居手提两包重物走来。" },
-                cardB: { type: "相对应句子", title: "💬 14.1 例子", content: "【14.1例子】按住开门键并侧身礼让，请邻居先进入电梯。" }
-            },
-            {
-                pairId: 4,
-                icon: "fa-chair",
-                cardA: { type: "情景图片/描述", title: "🏛️ 晚会情景", content: "社区礼堂举行晚会，部分晚到的长者找不到座位。" },
-                cardB: { type: "相对应句子", title: "💬 14.2 重要性", content: "【14.2重要性】拒绝霸座，保障社区公共资源公平与礼貌秩序。" }
-            },
-            {
-                pairId: 5,
-                icon: "fa-table-tennis-paddle-ball",
-                cardA: { type: "情景图片/描述", title: "🏸 球场情景", content: "在社区羽毛球场打球已满1小时，场外有邻居等待。" },
-                cardB: { type: "相对应句子", title: "💬 14.2 重要性", content: "【14.2重要性】谦让协商轮流使用设施，化解邻里冲突与争执。" }
-            },
-            {
-                pairId: 6,
-                icon: "fa-comments",
-                cardA: { type: "情景图片/描述", title: "🗣️ 会议情景", content: "居民会议上，大家对社区美化方案产生了不同意见。" },
-                cardB: { type: "相对应句子", title: "💬 14.2 重要性", content: "【14.2重要性】包容退让、服从多数决策，促进邻里和谐团结。" }
-            }
-        ];
-
-        // 队伍设定
-        const teamColors = [
-            { name: "第 1 组 (红组)", bg: "bg-rose-500", text: "text-rose-600", border: "border-rose-300", lightBg: "bg-rose-50" },
-            { name: "第 2 组 (蓝组)", bg: "bg-blue-500", text: "text-blue-600", border: "border-blue-300", lightBg: "bg-blue-50" },
-            { name: "第 3 组 (绿组)", bg: "bg-emerald-500", text: "text-emerald-600", border: "border-emerald-300", lightBg: "bg-emerald-50" },
-            { name: "第 4 组 (黄组)", bg: "bg-amber-500", text: "text-amber-600", border: "border-amber-300", lightBg: "bg-amber-50" }
-        ];
-
-        let totalTeams = 2;
-        let currentTeamIndex = 0;
-        let teamScores = [0, 0, 0, 0];
-        let cardList = [];
-        let selectedCards = []; // 储存当前回合翻开的两张卡片
-        let matchedCount = 0;
-        let isProcessing = false;
-
-        // 初始化/洗牌游戏
-        function resetFlipGame() {
-            playSfx('click');
-            selectedCards = [];
-            matchedCount = 0;
-            isProcessing = false;
-            currentTeamIndex = 0;
-            teamScores = [0, 0, 0, 0];
-
-            // 12张卡片打散洗牌
-            let rawCards = [];
-            flipPairsDatabase.forEach(item => {
-                rawCards.push({
-                    pairId: item.pairId,
-                    icon: item.icon,
-                    type: item.cardA.type,
-                    title: item.cardA.title,
-                    content: item.cardA.content,
-                    isFlipped: false,
-                    isMatched: false
-                });
-                rawCards.push({
-                    pairId: item.pairId,
-                    icon: item.icon,
-                    type: item.cardB.type,
-                    title: item.cardB.title,
-                    content: item.cardB.content,
-                    isFlipped: false,
-                    isMatched: false
-                });
+        function clearJar() {
+            document.getElementById('jar-container').innerHTML = `
+                <div class="text-xs text-rose-400 font-bold my-auto text-center" id="jar-placeholder">
+                    <i class="fa-solid fa-heart-circle-plus text-3xl mb-2 block animate-bounce"></i>
+                    瓶子空空的...<br>完成左侧选择<br>把礼让能量装进来！
+                </div>`;
+            count = 0;
+            selectedActionText = "";
+            document.querySelectorAll('.action-btn').forEach(b => {
+                b.classList.remove('bg-amber-400', 'text-amber-950');
+                b.classList.add('bg-white', 'text-amber-900');
             });
-
-            // Fisher-Yates 洗牌算法
-            for (let i = rawCards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [rawCards[i], rawCards[j]] = [rawCards[j], rawCards[i]];
-            }
-
-            cardList = rawCards;
-            renderTeamsBoard();
-            renderFlipGrid();
-            updateTurnIndicator("请派一位队员上台翻开第 1 张卡片！");
+            document.getElementById('feeling-box').classList.add('opacity-50', 'pointer-events-none');
+            document.getElementById('hint-text').innerText = "💡 请先在“步骤 1”中选择一个礼让行为。";
         }
-
-        function setTeamCount(count) {
-            totalTeams = count;
-            [2, 3, 4].forEach(n => {
-                const btn = document.getElementById(`team-btn-${n}`);
-                if (n === count) {
-                    btn.className = "px-2.5 py-1 rounded-xl bg-indigo-600 text-white shadow-sm font-black";
-                } else {
-                    btn.className = "px-2.5 py-1 rounded-xl bg-white text-slate-700 hover:bg-slate-200";
-                }
-            });
-            resetFlipGame();
-        }
-
-        function renderTeamsBoard() {
-            const board = document.getElementById('teams-score-board');
-            let html = "";
-            for (let i = 0; i < totalTeams; i++) {
-                const t = teamColors[i];
-                const isCurrent = (i === currentTeamIndex);
-                html += `
-                    <div class="p-3 rounded-2xl border-2 transition-all ${isCurrent ? `${t.border} ${t.lightBg} shadow-md scale-105` : 'border-slate-200 bg-white opacity-80'}">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-xs font-black ${t.text}">${t.name}</span>
-                            ${isCurrent ? `<span class="bg-indigo-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">思考中</span>` : ''}
-                        </div>
-                        <div class="text-lg font-black text-slate-800">
-                            ${teamScores[i]} <span class="text-xs font-normal text-slate-500">对 (${teamScores[i] * 20}分)</span>
-                        </div>
-                    </div>
-                `;
-            }
-            board.innerHTML = html;
-        }
-
-        function updateTurnIndicator(toastMsg) {
-            const currentT = teamColors[currentTeamIndex];
-            document.getElementById('current-team-indicator').className = `${currentT.bg} text-white px-3 py-0.5 rounded-full text-xs md:text-sm font-black`;
-            document.getElementById('current-team-indicator').innerText = `轮到：${currentT.name}`;
-            if (toastMsg) {
-                document.getElementById('game-status-toast').innerText = toastMsg;
-            }
-        }
-
-        function renderFlipGrid() {
-            const grid = document.getElementById('flip-cards-grid');
-            grid.innerHTML = cardList.map((card, idx) => {
-                const isA = card.type.includes("情景");
-                const cardBadgeColor = isA ? "bg-amber-100 text-amber-800" : "bg-teal-100 text-teal-800";
-                
-                return `
-                    <div onclick="onCardClick(${idx})" class="cursor-pointer h-40 sm:h-44 rounded-2xl transition-all transform duration-300 hover:scale-105 active:scale-95 ${card.isMatched ? 'opacity-90 pointer-events-none' : ''}">
-                        <div class="w-full h-full rounded-2xl shadow-sm border-2 ${card.isFlipped || card.isMatched ? (card.isMatched ? 'border-emerald-400 bg-gradient-to-br from-emerald-50 to-teal-50' : 'border-indigo-400 bg-white') : 'border-indigo-200 bg-gradient-to-br from-indigo-500 to-indigo-700'} p-3 flex flex-col justify-between relative overflow-hidden">
-                            
-                            ${card.isFlipped || card.isMatched ? `
-                                <!-- 翻开的卡片内容 -->
-                                <div class="space-y-1 z-10">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-[10px] font-extrabold ${cardBadgeColor} px-2 py-0.5 rounded-full">${card.type}</span>
-                                        <i class="fa-solid ${card.icon} text-indigo-500 text-sm"></i>
-                                    </div>
-                                    <h5 class="font-extrabold text-slate-800 text-xs mt-1">${card.title}</h5>
-                                    <p class="text-[11px] text-slate-600 font-medium leading-tight">${card.content}</p>
-                                </div>
-                                ${card.isMatched ? `
-                                    <div class="absolute bottom-2 right-2 text-emerald-600 text-lg">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                    </div>
-                                ` : ''}
-                            ` : `
-                                <!-- 未翻开的背面卡片 -->
-                                <div class="flex flex-col items-center justify-center h-full text-white space-y-1">
-                                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-yellow-300 text-xl font-black shadow-inner">
-                                        <i class="fa-solid fa-hands-holding-child"></i>
-                                    </div>
-                                    <span class="font-extrabold text-xs tracking-wider text-indigo-100">卡片 #${idx + 1}</span>
-                                    <span class="text-[9px] text-indigo-200">点击翻开</span>
-                                </div>
-                            `}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function onCardClick(index) {
-            if (isProcessing) return;
-            const card = cardList[index];
-
-            // 忽略已翻开或已配对的卡片
-            if (card.isFlipped || card.isMatched) return;
-
-            playSfx('click');
-            card.isFlipped = true;
-            selectedCards.push({ index, card });
-            renderFlipGrid();
-
-            if (selectedCards.length === 1) {
-                updateTurnIndicator("很好！请再翻开第 2 张卡片进行配对...");
-            } else if (selectedCards.length === 2) {
-                isProcessing = true;
-                checkCardMatch();
-            }
-        }
-
-        function checkCardMatch() {
-            const [first, second] = selectedCards;
-            const isPairMatch = (first.card.pairId === second.card.pairId);
-
-            if (isPairMatch) {
-                // 配对成功
-                playSfx('correct');
-                first.card.isMatched = true;
-                second.card.isMatched = true;
-                matchedCount++;
-                teamScores[currentTeamIndex]++;
-                addScore(20);
-
-                updateTurnIndicator("🎉 恭喜配对成功！得分加 20 分！");
-                renderTeamsBoard();
-                renderFlipGrid();
-
-                selectedCards = [];
-                isProcessing = false;
-
-                // 检查是否全部配对完毕
-                if (matchedCount === 6) {
-                    setTimeout(showGameVictoryModal, 600);
-                }
-            } else {
-                // 配对失败
-                playSfx('wrong');
-                updateTurnIndicator("❌ 配对不匹配！1.5秒后翻回，换下一组！");
-
-                setTimeout(() => {
-                    first.card.isFlipped = false;
-                    second.card.isFlipped = false;
-                    selectedCards = [];
-                    isProcessing = false;
-
-                    // 换下一组继续
-                    currentTeamIndex = (currentTeamIndex + 1) % totalTeams;
-                    renderTeamsBoard();
-                    renderFlipGrid();
-                    updateTurnIndicator(`请 ${teamColors[currentTeamIndex].name} 上台选卡片！`);
-                }, 1600);
-            }
-        }
-
-        function showGameVictoryModal() {
-            confetti({ particleCount: 120, spread: 90 });
-
-            // 寻找最高分队伍
-            let maxScore = -1;
-            let winnerTeam = "";
-            for (let i = 0; i < totalTeams; i++) {
-                if (teamScores[i] > maxScore) {
-                    maxScore = teamScores[i];
-                    winnerTeam = teamColors[i].name;
-                }
-            }
-
-            const grid = document.getElementById('flip-cards-grid');
-            grid.innerHTML = `
-                <div class="col-span-full bg-gradient-to-br from-amber-50 via-teal-50 to-indigo-50 border-2 border-amber-300 p-6 rounded-3xl text-center space-y-4 shadow-md">
-                    <div class="w-16 h-16 bg-amber-400 text-slate-900 rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg animate-bounce-gentle">
-                        <i class="fa-solid fa-trophy"></i>
-                    </div>
-                    <h4 class="text-2xl font-black text-slate-800">翻翻卡大冒险圆满完成！</h4>
-                    <p class="text-xs text-slate-600">全场 6 组礼让情景与句子已成功解锁配对！</p>
-                    
-                    <div class="bg-white p-4 rounded-2xl border border-amber-200 max-w-md mx-auto">
-                        <span class="text-xs font-bold text-amber-700 block">🏆 本轮优胜组</span>
-                        <span class="text-lg font-black text-indigo-900">${winnerTeam} (成功配对 ${maxScore} 组)</span>
-                    </div>
-
-                    <button onclick="resetFlipGame()" class="px-6 py-2.5 bg-indigo-600 text-white font-black text-xs rounded-2xl shadow hover:bg-indigo-700 transition">
-                        <i class="fa-solid fa-rotate-right mr-1"></i> 再玩一局 (重新洗牌)
-                    </button>
-                </div>
-            `;
-        }
-
-        // 初始化加载
-        window.onload = function() {
-            renderIdentifyCard();
-            switchImportanceScene(0);
-            resetFlipGame();
-        };
     </script>
 </body>
 </html>
