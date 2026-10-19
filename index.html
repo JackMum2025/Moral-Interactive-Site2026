@@ -3,662 +3,1008 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>五年级道德教育 单元十四：礼让之城</title>
-    <!-- Tailwind CSS CDN -->
+    <title>五年级道德教育 - 单元十四：礼让之城</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    
     <style>
         body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background-color: #f4f7fe;
+            font-family: 'Noto Sans SC', 'Plus Jakarta Sans', sans-serif;
+            background-color: #f0fdf4;
+            color: #164e63;
         }
-        .bounce-gentle {
-            animation: bounce 2s infinite;
+        .tab-btn.active {
+            background-color: #0d9488;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        .scenario-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+        .scenario-card:hover {
+            transform: translateY(-4px);
+        }
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* Interactive Clothes Rack Styles */
+        .clothes-item {
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .clothes-item:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+        .clothes-item.selected {
+            ring: 4px;
+            ring-color: #f59e0b;
+            transform: scale(1.03);
+        }
+        .drop-zone-active {
+            border-style: solid !important;
+            background-color: rgba(204, 251, 241, 0.6) !important;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e6f4f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0d9488;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- 顶部导航栏 Navigation Bar -->
-    <header class="sticky top-0 z-50 bg-gradient-to-r from-teal-600 via-emerald-600 to-indigo-600 text-white shadow-lg">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-teal-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2 rounded-xl backdrop-blur-md">
-                    <i class="fa-solid fa-hand-holding-heart text-2xl text-yellow-300"></i>
+                <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-shirt"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-black tracking-wide">道德教育五年级</h1>
-                    <p class="text-xs text-teal-100">单元十四：礼让之城 (学习标准 14.3 & 14.4)</p>
+                    <h1 class="text-lg md:text-xl font-bold text-teal-900 leading-tight">
+                        五年级道德教育 <span class="text-teal-600">| 单元十四《礼让之城》</span>
+                    </h1>
+                    <p class="text-xs text-teal-600 font-medium">核心价值：礼让（Toleransi dalam Komuniti）</p>
                 </div>
             </div>
-            <!-- 导航菜单按钮 -->
-            <nav class="hidden md:flex space-x-2 text-sm font-bold">
-                <button onclick="switchTab('overview')" class="nav-btn px-4 py-2 rounded-lg transition bg-white/20 hover:bg-white/30" id="btn-overview">
-                    <i class="fa-solid fa-book-open mr-1"></i> 知识学堂
+            
+            <!-- Navigation Pills -->
+            <nav class="flex items-center gap-1.5 overflow-x-auto py-1 max-w-full">
+                <button onclick="switchTab('tab-intro')" id="btn-tab-intro" class="tab-btn active text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-paw"></i> <span>情境导入</span>
                 </button>
-                <button onclick="switchTab('scenario')" class="nav-btn px-4 py-2 rounded-lg transition hover:bg-white/20" id="btn-scenario">
-                    <i class="fa-solid fa-gamepad mr-1"></i> 情境大冒险 (14.3/14.4)
+                <button onclick="switchTab('tab-scenarios')" id="btn-tab-scenarios" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-city"></i> <span>4大社区例子</span>
                 </button>
-                <button onclick="switchTab('feelings')" class="nav-btn px-4 py-2 rounded-lg transition hover:bg-white/20" id="btn-feelings">
-                    <i class="fa-solid fa-heart mr-1"></i> 感受收集瓶
+                <button onclick="switchTab('tab-clothes')" id="btn-tab-clothes" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-amber-900 bg-amber-100 border border-amber-300 hover:bg-amber-200 transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-shirt text-amber-600"></i> <span>👕 挂衣服互动游戏</span>
                 </button>
-                <button onclick="switchTab('quiz')" class="nav-btn px-4 py-2 rounded-lg transition hover:bg-white/20" id="btn-quiz">
-                    <i class="fa-solid fa-circle-question mr-1"></i> 闯关小测验
+                <button onclick="switchTab('tab-importance')" id="btn-tab-importance" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-lightbulb"></i> <span>礼让的重要性</span>
+                </button>
+                <button onclick="switchTab('tab-quiz')" id="btn-tab-quiz" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-gamepad"></i> <span>礼让大侦探</span>
                 </button>
             </nav>
         </div>
-        <!-- 移动端导航 -->
-        <div class="md:hidden flex justify-around bg-teal-800 text-xs font-medium py-2 border-t border-teal-700">
-            <button onclick="switchTab('overview')" class="flex flex-col items-center py-1">
-                <i class="fa-solid fa-book-open text-base mb-1"></i>知识学堂
-            </button>
-            <button onclick="switchTab('scenario')" class="flex flex-col items-center py-1">
-                <i class="fa-solid fa-gamepad text-base mb-1"></i>情境冒险
-            </button>
-            <button onclick="switchTab('feelings')" class="flex flex-col items-center py-1">
-                <i class="fa-solid fa-heart text-base mb-1"></i>感受收集
-            </button>
-            <button onclick="switchTab('quiz')" class="flex flex-col items-center py-1">
-                <i class="fa-solid fa-circle-question text-base mb-1"></i>小测验
-            </button>
-        </div>
     </header>
 
-    <!-- 主体内容区域 Content Area -->
-    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
 
-        <!-- Banner 标语 -->
-        <div class="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 text-white rounded-2xl p-6 shadow-md mb-8 flex flex-col md:flex-row items-center justify-between">
-            <div class="space-y-2 text-center md:text-left mb-4 md:mb-0">
-                <span class="bg-white/30 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">KSSR Semakan 课程</span>
-                <h2 class="text-2xl md:text-3xl font-extrabold">学会社区礼让，共享和谐生活！</h2>
-                <p class="text-amber-100 text-sm max-w-xl">
-                    在社区生活里，懂得礼让能化解冲突；忽视礼让则会引发争执。快来一起学习并感受礼让带来的温暖吧！
-                </p>
-            </div>
-            <div class="bg-white text-amber-600 rounded-full p-4 shadow-lg bounce-gentle text-center min-w-[90px]">
-                <i class="fa-solid fa-smile-beam text-4xl"></i>
-                <p class="text-xs font-bold mt-1">礼让之星</p>
-            </div>
-        </div>
-
-        <!-- 1. 知识学堂模块 OVERVIEW -->
-        <section id="tab-overview" class="tab-content space-y-6">
-            <div class="text-center max-w-2xl mx-auto mb-6">
-                <h3 class="text-2xl font-bold text-slate-800">学习标准要点解析</h3>
-                <p class="text-slate-500 text-sm">深入理解忽视礼让的后果，以及表现礼让时的内心感受</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- 14.3 忽视礼让的影响 -->
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition border-2 border-rose-100 p-6 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center space-x-3 mb-4">
-                            <span class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-black text-lg">
-                                14.3
-                            </span>
-                            <div>
-                                <h4 class="font-bold text-lg text-rose-900">推断忽视礼让行为的影响</h4>
-                                <p class="text-xs text-rose-500">如果社区成员都不互相礼让，会怎样？</p>
-                            </div>
-                        </div>
-
-                        <ul class="space-y-3 text-sm text-slate-700">
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>发生误会与争执：</strong>争抢设施或占位容易引发口角与摩擦。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-users-slash text-rose-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>破坏社区和谐：</strong>邻里关系变得紧张，缺乏包容与互信。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-face-frown-open text-rose-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>引发负面情绪：</strong>让人感到愤怒、不公、被忽视和沮丧。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-handcuffs text-rose-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>损坏公共设施：</strong>蜂拥争抢容易导致公共器具损坏或发生意外。</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="mt-6 bg-rose-50 rounded-xl p-3 text-xs text-rose-700 font-medium text-center">
-                        💡 记住：自私与互不相让，只会让大家两败俱伤！
-                    </div>
-                </div>
-
-                <!-- 14.4 表现礼让的感受 -->
-                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition border-2 border-emerald-100 p-6 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center space-x-3 mb-4">
-                            <span class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-lg">
-                                14.4
-                            </span>
-                            <div>
-                                <h4 class="font-bold text-lg text-emerald-900">表达表现礼让行为的感受</h4>
-                                <p class="text-xs text-emerald-500">当我们在社区里做出礼让时，心情如何？</p>
-                            </div>
-                        </div>
-
-                        <ul class="space-y-3 text-sm text-slate-700">
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-heart text-emerald-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>感到无比开心与愉快：</strong>看到别人得到帮助，内心满载快乐。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-award text-emerald-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>感到自豪与踏实：</strong>为自己能成为一个文明有礼的社区成员而自豪。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-sun text-emerald-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>感到温暖与欣慰：</strong>传递正能量，促进社区里的友爱与融洽。</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fa-solid fa-thumbs-up text-emerald-500 mt-1 mr-2 flex-shrink-0"></i>
-                                <span><strong>获得尊重与友谊：</strong>礼让能换来邻里的微笑、感谢与敬重。</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="mt-6 bg-emerald-50 rounded-xl p-3 text-xs text-emerald-700 font-medium text-center">
-                        🌟 总结：礼让别人，快乐自己！让爱在社区流动。
-                    </div>
-                </div>
-            </div>
-
-            <!-- 图解快速导读 -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
-                <h4 class="font-bold text-slate-800 mb-4 text-center">社区常见礼让场景一览</h4>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div class="p-3 bg-amber-50 rounded-xl">
-                        <i class="fa-solid fa-bus text-2xl text-amber-600 mb-2"></i>
-                        <p class="font-bold text-xs text-slate-700">公共交通让座</p>
-                        <p class="text-[11px] text-slate-500 mt-1">让给老人/孕妇/幼童</p>
-                    </div>
-                    <div class="p-3 bg-blue-50 rounded-xl">
-                        <i class="fa-solid fa-table-tennis-paddle-ball text-2xl text-blue-600 mb-2"></i>
-                        <p class="font-bold text-xs text-slate-700">轮流使用球场</p>
-                        <p class="text-[11px] text-slate-500 mt-1">不独占游乐场设施</p>
-                    </div>
-                    <div class="p-3 bg-indigo-50 rounded-xl">
-                        <i class="fa-solid fa-elevator text-2xl text-indigo-600 mb-2"></i>
-                        <p class="font-bold text-xs text-slate-700">礼让电梯进出</p>
-                        <p class="text-[11px] text-slate-500 mt-1">先让电梯里的人出来</p>
-                    </div>
-                    <div class="p-3 bg-teal-50 rounded-xl">
-                        <i class="fa-solid fa-people-group text-2xl text-teal-600 mb-2"></i>
-                        <p class="font-bold text-xs text-slate-700">文娱晚会排队</p>
-                        <p class="text-[11px] text-slate-500 mt-1">有秩序不插队占位</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. 社区互动情境大冒险 SCENARIO GAME -->
-        <section id="tab-scenario" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-md p-6 border border-indigo-100">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">
-                        <i class="fa-solid fa-gamepad mr-1"></i> 互动探索体验
+        <!-- TAB 1: 导入与情境迁移 -->
+        <section id="tab-intro" class="space-y-6">
+            <div class="bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="bg-teal-900/50 text-teal-100 border border-teal-300/30 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
+                        第一步：导入与情境迁移
                     </span>
-                    <span class="text-xs font-bold text-slate-400" id="scenario-progress-text">情境 1 / 4</span>
-                </div>
-
-                <!-- 情境卡片 -->
-                <div id="scenario-card" class="space-y-4">
-                    <!-- JS 动态注入情境内容 -->
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. 感受收集瓶 FEELINGS JAR -->
-        <section id="tab-feelings" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-md p-6 border border-pink-100 text-center">
-                <h3 class="text-2xl font-bold text-slate-800 mb-2">我的社区“礼让感受”集音瓶 🍯</h3>
-                <p class="text-slate-500 text-sm mb-6">点击选择你在社区做出礼让行为后的感受词汇，装满你的礼让心灵瓶！</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                    <!-- 词汇卡片池 -->
-                    <div class="space-y-3 md:col-span-1">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">点击词汇装入瓶中</p>
-                        <div class="flex flex-wrap gap-2 justify-center" id="word-pool">
-                            <button onclick="addFeeling('开心 😃', 'bg-yellow-100 text-yellow-800 border-yellow-300')" class="px-3 py-2 rounded-xl border bg-white shadow-sm hover:scale-105 transition font-bold text-sm">😃 开心</button>
-                            <button onclick="addFeeling('自豪 🏆', 'bg-amber-100 text-amber-800 border-amber-300')" class="px-3 py-2 rounded-xl border bg-white shadow-sm hover:scale-105 transition font-bold text-sm">🏆 自豪</button>
-                            <button onclick="addFeeling('欣慰 🌸', 'bg-pink-100 text-pink-800 border-pink-300')" class="px-3 py-2 rounded-xl border bg-white shadow-sm hover:scale-105 transition font-bold text-sm">🌸 欣慰</button>
-                            <button onclick="addFeeling('温馨 💕', 'bg-rose-100 text-rose-800 border-rose-300')" class="px-3 py-2 rounded-xl border bg-white shadow-sm hover:scale-105 transition font-bold text-sm">💕 温馨</button>
-                            <button onclick="addFeeling('受人尊重 🤝', 'bg-blue-100 text-blue-800 border-blue-300')" class="px-3 py-2 rounded-xl border bg-white shadow-sm hover:scale-105 transition font-bold text-sm">🤝 受人尊重</button>
-                            <button onclick="addFeeling('踏实 😌', 'bg-teal-100 text-teal-800 border-teal-300')" class="px-3 py-2 rounded-xl border bg-white shadow-sm hover:scale-105 transition font-bold text-sm">😌 踏实</button>
-                            <button onclick="addFeeling('充满爱心 ❤️', 'bg-red-100 text-red-800 border-red-300')" class="px-3 py-2 rounded-xl border bg-white shadow-sm hover:scale-105 transition font-bold text-sm">❤️ 充满爱心</button>
-                        </div>
-                    </div>
-
-                    <!-- 瓶子容器视觉 -->
-                    <div class="md:col-span-1 flex flex-col items-center">
-                        <div class="w-48 h-64 border-4 border-amber-400 rounded-b-3xl rounded-t-xl bg-amber-50/50 p-4 relative flex flex-col-reverse items-center overflow-hidden shadow-inner" id="jar-container">
-                            <div class="text-xs text-amber-400 font-bold mb-2 pointer-events-none" id="jar-placeholder">瓶子空空的...<br>快收集感受吧！</div>
-                        </div>
-                        <button onclick="clearJar()" class="mt-3 text-xs text-rose-500 hover:underline font-bold">
-                            <i class="fa-solid fa-rotate-left mr-1"></i>清空重新收集
+                    <h2 class="text-2xl md:text-4xl font-extrabold mt-3 leading-tight">
+                        从森林小动物到我们的社区生活
+                    </h2>
+                    <p class="text-sm md:text-base text-teal-50 mt-2 leading-relaxed">
+                        先前我们看到了黑熊、小猫和大象在森林里互相礼让的故事。现在，让我们一起来看看，如何在现实的<strong class="underline decoration-amber-300">社区生活 (Komuniti)</strong> 中实践<strong class="text-amber-300">“礼让” (Toleransi)</strong>的美德！
+                    </p>
+                    <div class="mt-5 flex flex-wrap gap-3">
+                        <button onclick="switchTab('tab-scenarios')" class="bg-amber-400 hover:bg-amber-300 text-teal-950 px-5 py-2.5 rounded-xl font-bold shadow-lg transition flex items-center gap-2 text-sm">
+                            探索社区 4 大礼让场景 <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button onclick="switchTab('tab-clothes')" class="bg-teal-900/80 hover:bg-teal-950 text-amber-300 border border-amber-400/40 px-5 py-2.5 rounded-xl font-bold shadow-lg transition flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-shirt"></i> 体验社区挂衣服游戏
                         </button>
                     </div>
+                </div>
+                <div class="absolute -right-8 -bottom-12 opacity-20 pointer-events-none">
+                    <i class="fa-solid fa-tree-city text-9xl text-white"></i>
+                </div>
+            </div>
 
-                    <!-- 总结心得展示 -->
-                    <div class="md:col-span-1 bg-gradient-to-br from-amber-50 to-orange-50 p-4 rounded-2xl border border-amber-200 text-left space-y-3">
-                        <h4 class="font-bold text-amber-900 text-sm flex items-center">
-                            <i class="fa-solid fa-pen-nib mr-2 text-amber-600"></i>我的礼让承诺书
-                        </h4>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            在社区里，每当我对邻里与他人展现<strong>礼让</strong>时，我的内心就会装满这些正能量！礼让不仅能避免争执，还能让我们的社区变得越来越美好。
+            <!-- Transition Comparison Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                                <i class="fa-solid fa-paw"></i> 森林小动物（复习）
+                            </span>
+                            <span class="text-xs text-slate-400">热身思考</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-teal-950 mb-2">森林里的礼让好榜样</h3>
+                        <p class="text-sm text-slate-600 mb-4">
+                            小猫主动让出秋千、黑熊与伙伴分享坚果蛋糕、大象被踩到脚时依然微笑包容。
                         </p>
-                        <div class="pt-2 border-t border-amber-200/60 flex justify-between items-center text-xs text-amber-800 font-bold">
-                            <span>收集进度: <span id="jar-count">0</span>/5</span>
-                            <span id="jar-status" class="text-emerald-600 font-extrabold">继续努力！</span>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 text-right">
+                        <span class="text-xs text-teal-600 font-semibold">良好品德 <i class="fa-solid fa-heart text-red-500"></i></span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                                <i class="fa-solid fa-building-user"></i> 现实社区生活
+                            </span>
+                            <span class="text-xs text-teal-600 font-bold">学习标准 14.1 & 14.2</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-teal-950 mb-2">人类社区里的礼让美德</h3>
+                        <p class="text-sm text-slate-600 mb-4">
+                            在我们的住宅区、道路上、巴士站以及居民大会中，我们该如何展示礼让行为？
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 text-right">
+                        <button onclick="switchTab('tab-scenarios')" class="text-xs text-teal-700 font-bold hover:underline">
+                            前往社区情境例子 &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: 4个社区礼让例子 (可爱卡通矢量图版) -->
+        <section id="tab-scenarios" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-teal-200 pb-4">
+                <div>
+                    <span class="text-xs font-bold text-teal-600 uppercase tracking-wide">学习标准 14.1</span>
+                    <h2 class="text-2xl font-extrabold text-teal-950">社区生活 4 大礼让例子 (Contoh Toleransi)</h2>
+                    <p class="text-sm text-slate-600">点击下方场景标签，查看高清晰度可爱卡通插图与礼让讲解：</p>
+                </div>
+                <!-- Scenario Selector Pills -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="showScenario('A')" id="scen-btn-A" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-teal-600 text-white shadow">
+                        场景 A（公共交通）
+                    </button>
+                    <button onclick="showScenario('B')" id="scen-btn-B" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
+                        场景 B（窄路/公园）
+                    </button>
+                    <button onclick="showScenario('C')" id="scen-btn-C" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
+                        场景 C（邻里/环境）
+                    </button>
+                    <button onclick="showScenario('D')" id="scen-btn-D" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
+                        场景 D（社区会议）
+                    </button>
+                </div>
+            </div>
+
+            <!-- SCENARIO DISPLAY BOX -->
+            <div id="scenario-content-area" class="bg-white rounded-3xl p-6 md:p-8 border border-teal-100 shadow-lg">
+                <!-- Dynamically populated via JavaScript -->
+            </div>
+        </section>
+
+        <!-- TAB 3: HANGING CLOTHES GAME -->
+        <section id="tab-clothes" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 shadow-md">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-amber-200 pb-4 mb-4">
+                    <div>
+                        <span class="bg-amber-500 text-white text-xs font-extrabold px-3 py-1 rounded-full inline-block mb-1 shadow-sm">
+                            <i class="fa-solid fa-gamepad"></i> 社区互动学习环节
+                        </span>
+                        <h2 class="text-2xl font-extrabold text-amber-950">👕 社区好邻居“晒衣服/挂衣服”挑战赛</h2>
+                        <p class="text-xs md:text-sm text-amber-800">
+                            请将写着社区情境的<strong class="text-amber-900 font-bold">T-恤卡片</strong><strong class="text-emerald-700">拖拽</strong>或<strong class="text-emerald-700">点击选中后挂到</strong>正确的衣架上！
+                        </p>
+                    </div>
+                    <button onclick="resetClothesGame()" class="text-xs bg-white text-amber-900 px-4 py-2 rounded-xl border border-amber-300 hover:bg-amber-100 font-bold shadow-sm transition flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-right"></i> 重置所有衣服
+                    </button>
+                </div>
+
+                <!-- Game Racks Container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
+                    
+                    <!-- Tolerant Rack (Green) -->
+                    <div id="rack-tolerant" class="bg-emerald-50/80 border-4 border-dashed border-emerald-400 rounded-3xl p-5 min-h-[280px] flex flex-col justify-start items-center transition relative" ondragover="allowDrop(event)" ondrop="handleDrop(event, true)" onclick="tapTargetRack(true)">
+                        <div class="w-full flex items-center justify-between border-b border-emerald-200 pb-2 mb-3">
+                            <span class="bg-emerald-600 text-white font-bold text-sm px-3 py-1 rounded-xl shadow flex items-center gap-1.5">
+                                <i class="fa-solid fa-square-check"></i> 🟢 礼让大衣架 (Toleransi)
+                            </span>
+                            <span id="count-tolerant" class="text-xs font-extrabold bg-emerald-200 text-emerald-900 px-2.5 py-0.5 rounded-full">已挂: 0 件</span>
+                        </div>
+                        <p class="text-[11px] text-emerald-700 font-medium mb-3">（拖拽或点击衣服后点此挂上）</p>
+                        
+                        <!-- Wooden Bar Visual -->
+                        <div class="w-full h-3 bg-amber-700 rounded-full shadow-inner mb-4 relative">
+                            <div class="absolute left-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
+                            <div class="absolute right-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
+                        </div>
+
+                        <!-- Dropped Items list -->
+                        <div id="tolerant-clothes-container" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <!-- Hung clothes appear here -->
+                        </div>
+                    </div>
+
+                    <!-- Intolerant Rack (Red) -->
+                    <div id="rack-intolerant" class="bg-rose-50/80 border-4 border-dashed border-rose-400 rounded-3xl p-5 min-h-[280px] flex flex-col justify-start items-center transition relative" ondragover="allowDrop(event)" ondrop="handleDrop(event, false)" onclick="tapTargetRack(false)">
+                        <div class="w-full flex items-center justify-between border-b border-rose-200 pb-2 mb-3">
+                            <span class="bg-rose-600 text-white font-bold text-sm px-3 py-1 rounded-xl shadow flex items-center gap-1.5">
+                                <i class="fa-solid fa-rectangle-xmark"></i> 🔴 不礼让大衣架 (Bukan Toleransi)
+                            </span>
+                            <span id="count-intolerant" class="text-xs font-extrabold bg-rose-200 text-rose-900 px-2.5 py-0.5 rounded-full">已挂: 0 件</span>
+                        </div>
+                        <p class="text-[11px] text-rose-700 font-medium mb-3">（拖拽或点击衣服后点此挂上）</p>
+
+                        <!-- Wooden Bar Visual -->
+                        <div class="w-full h-3 bg-amber-700 rounded-full shadow-inner mb-4 relative">
+                            <div class="absolute left-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
+                            <div class="absolute right-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
+                        </div>
+
+                        <!-- Dropped Items list -->
+                        <div id="intolerant-clothes-container" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <!-- Hung clothes appear here -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Unassigned Laundry Basket / Rack Pool -->
+                <div class="bg-white rounded-2xl p-5 border border-amber-200 shadow-sm mt-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-extrabold text-amber-950 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-basket-shopping text-amber-600"></i> 待抽取的社区行为 T-恤篮子 (Laundry Basket)
+                        </h3>
+                        <span id="selected-hint" class="text-xs text-amber-700 font-bold bg-amber-100 px-3 py-1 rounded-lg">
+                            💡 提示：按衣服可直接选中，然后按上方衣架！
+                        </span>
+                    </div>
+
+                    <div id="unassigned-clothes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <!-- Dynamic Clothes Items -->
+                    </div>
+                </div>
+
+                <!-- Victory Banner -->
+                <div id="clothes-game-victory" class="hidden mt-6 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 text-white text-center shadow-xl space-y-2">
+                    <div class="text-4xl text-amber-300"><i class="fa-solid fa-trophy"></i></div>
+                    <h3 class="text-2xl font-black">全班太棒了！所有衣服成功分类完毕！</h3>
+                    <p class="text-xs md:text-sm text-teal-100">大家已经能够准确分辨社区里的礼让与不礼让行为。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: 礼让的重要性 (学习标准 14.2) -->
+        <section id="tab-importance" class="hidden space-y-6">
+            <div class="border-b border-teal-200 pb-4">
+                <span class="text-xs font-bold text-teal-600 uppercase tracking-wide">学习标准 14.2</span>
+                <h2 class="text-2xl font-extrabold text-teal-950">社区生活里礼让行为的重要性 (Kepentingan Toleransi)</h2>
+                <p class="text-sm text-slate-600">如果每个人在社区里都懂得礼让，会带来什么好处？请将鼠标悬停或触碰下方卡片翻看详解：</p>
+            </div>
+
+            <!-- Importance Flip Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="flip-card h-72">
+                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
+                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-3xl mb-1">
+                                <i class="fa-solid fa-handshake-angle"></i>
+                            </div>
+                            <span class="text-xs font-bold text-teal-600">重要性 1</span>
+                            <h3 class="font-bold text-lg text-teal-950">增进邻里感情与和谐</h3>
+                            <p class="text-xs text-slate-500">Memupuk Keharmonian Jiran</p>
+                            <span class="text-[10px] text-teal-500 font-semibold bg-teal-50 px-2.5 py-1 rounded-md border border-teal-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-teal-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
+                            <h4 class="font-bold text-amber-300 text-sm">详细说明：</h4>
+                            <p class="text-xs leading-relaxed">
+                                互相体谅与退让能减少邻里之间的误会与争吵，拉近邻居之间的关系，让住宅区充满欢声笑语。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="flip-card h-72">
+                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
+                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-3xl mb-1">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <span class="text-xs font-bold text-amber-600">重要性 2</span>
+                            <h3 class="font-bold text-lg text-teal-950">建立秩序与保障安全</h3>
+                            <p class="text-xs text-slate-500">Ketenteraman & Ketertiban</p>
+                            <span class="text-[10px] text-amber-600 font-semibold bg-amber-50 px-2.5 py-1 rounded-md border border-amber-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-amber-600 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
+                            <h4 class="font-bold text-amber-200 text-sm">详细说明：</h4>
+                            <p class="text-xs leading-relaxed">
+                                大家遵守秩序排队、在窄路减速让行，能确保公共设施顺畅运行，并大幅减少道路意外的发生。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="flip-card h-72">
+                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
+                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mb-1">
+                                <i class="fa-solid fa-house-chimney-window"></i>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-600">重要性 3</span>
+                            <h3 class="font-bold text-lg text-teal-950">打造充满关怀的温馨社区</h3>
+                            <p class="text-xs text-slate-500">Persekitaran Mesra & Penyayang</p>
+                            <span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-emerald-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
+                            <h4 class="font-bold text-emerald-200 text-sm">详细说明：</h4>
+                            <p class="text-xs leading-relaxed">
+                                礼让精神能传递温暖与人文关怀，让居民不分种族与背景，都能在这个社区里安心且舒适地生活。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="flip-card h-72">
+                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
+                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-3xl mb-1">
+                                <i class="fa-solid fa-user-graduate"></i>
+                            </div>
+                            <span class="text-xs font-bold text-indigo-600">重要性 4</span>
+                            <h3 class="font-bold text-lg text-teal-950">提升个人良好的道德修养</h3>
+                            <p class="text-xs text-slate-500">Meningkatkan Keperibadian Diri</p>
+                            <span class="text-[10px] text-indigo-600 font-semibold bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-indigo-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
+                            <h4 class="font-bold text-indigo-200 text-sm">详细说明：</h4>
+                            <p class="text-xs leading-relaxed">
+                                懂得礼让展现高尚的涵养与谦逊的品质，不仅能赢得邻里尊重，也能成为大家心中的道德楷模。
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. 闯关小测验 QUIZ MODULE -->
-        <section id="tab-quiz" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-2xl shadow-md p-6 border border-emerald-100">
-                <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <!-- TAB 5: 互动测试 - 社区礼让大侦探 -->
+        <section id="tab-quiz" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-teal-100 shadow-md">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-teal-100 pb-4 mb-6">
                     <div>
-                        <h3 class="text-xl font-extrabold text-slate-800">单元十四：礼让闯关大挑战</h3>
-                        <p class="text-xs text-slate-500">考验你对 14.3 与 14.4 学习标准的理解</p>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full inline-block mb-1">
+                            巩固活动
+                        </span>
+                        <h2 class="text-2xl font-extrabold text-teal-950">测试：社区礼让大侦探 (Kuiz Detektif Toleransi)</h2>
+                        <p class="text-xs md:text-sm text-slate-600">评判以下场景：哪一个是<strong class="text-emerald-600">礼让行为（绿灯）</strong>？哪一个是<strong class="text-rose-600">缺乏礼让（红灯）</strong>？</p>
                     </div>
-                    <div class="bg-emerald-100 text-emerald-800 font-black px-4 py-2 rounded-xl text-lg" id="quiz-score">
-                        得分: 0
+                    <div class="bg-teal-50 border border-teal-200 px-4 py-2 rounded-2xl flex items-center gap-3">
+                        <div class="text-center">
+                            <span class="text-[10px] text-teal-600 block uppercase font-bold">目前得分</span>
+                            <span id="quiz-score" class="text-2xl font-extrabold text-teal-900">0 / 6</span>
+                        </div>
+                        <button onclick="resetQuiz()" class="text-xs bg-white text-teal-700 px-3 py-1.5 rounded-lg border border-teal-200 hover:bg-teal-100 transition font-bold">
+                            <i class="fa-solid fa-rotate-right"></i> 重新测试
+                        </button>
                     </div>
                 </div>
 
-                <!-- 测验内容容器 -->
-                <div id="quiz-container">
-                    <!-- JS 动态注入题目 -->
+                <div id="quiz-questions-container" class="space-y-4"></div>
+
+                <div id="quiz-completion-banner" class="hidden mt-6 p-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white text-center shadow-lg space-y-3">
+                    <div class="text-4xl"><i class="fa-solid fa-award"></i></div>
+                    <h3 class="text-2xl font-bold">太棒了！你是出色的“社区礼让大侦探”！</h3>
+                    <button onclick="resetQuiz()" class="mt-2 bg-amber-400 hover:bg-amber-300 text-teal-950 font-bold px-5 py-2 rounded-xl text-sm transition shadow">
+                        <i class="fa-solid fa-rotate-right"></i> 再玩一次
+                    </button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- 页脚 Footer -->
-    <footer class="bg-slate-800 text-slate-400 text-xs py-6 mt-12 border-t border-slate-700">
-        <div class="max-w-6xl mx-auto px-4 text-center space-y-2">
-            <p class="font-medium text-slate-300">五年级道德教育《单元十四：礼让之城》辅助学习平台</p>
-            <p>符合马来西亚 KSSR Semakan 道德教育五年级课程标准 (标准 14.3 & 14.4)</p>
-            <p class="text-slate-500">© 道德教育教学资源库 · 乐学成长</p>
+    <!-- Global Footer -->
+    <footer class="bg-teal-950 text-teal-200 text-xs py-4 mt-8 border-t border-teal-800">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <p class="font-bold">五年级道德教育互动学习应用 (Moral Education Year 5)</p>
+                <p class="text-[11px] text-teal-400">单元十四：《礼让之城》(辨识社区生活中的礼让行为与重要性)</p>
+            </div>
+            <div class="text-teal-400 text-[11px]">
+                适用于华小 (SJKC) • KSSR Semakan 课程
+            </div>
         </div>
     </footer>
 
-    <!-- 逻辑脚本 JavaScript -->
     <script>
-        // 1. 标签页切换 Switch Tabs
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-white/30');
-            });
-            const activeBtn = document.getElementById('btn-' + tabId);
-            if (activeBtn) activeBtn.classList.add('bg-white/30');
-        }
-
-        // 2. 情境大冒险数据与逻辑 (14.3 & 14.4)
-        const scenarios = [
-            {
-                id: 1,
-                title: "社区羽毛球场的争执",
-                location: "社区活动中心羽毛球场",
-                icon: "fa-table-tennis-paddle-ball",
-                desc: "傍晚时分，你和朋友已经在羽毛球场打了1个小时球。此时，邻居明辉和同伴也想打球，并在场边等候。你应该怎么做？",
-                optionA: {
-                    text: "继续霸占球场，理直气壮地说：“是我们先来的，你们明天再来！”",
-                    type: "ignore",
-                    effect: "忽视礼让的影响 (14.3)：明辉非常愤怒，双方爆发了激烈口角，邻里关系恶化，大家都没心思打球了。",
-                    feeling: "受影响者的感受：愤怒、沮丧、觉得被排挤与不被尊重。"
-                },
-                optionB: {
-                    text: "主动打招呼，并协议再打10分钟后让出球场，或邀请他们一起双打轮流玩。",
-                    type: "yield",
-                    effect: "表现礼让的结果：大家开心地一起打球，还结识了新朋友，社区气氛非常融洽。",
-                    feelingChoice: ["欣慰 🌸", "开心 😃", "自豪 🏆", "充满友爱 🤝"]
-                }
+        /* SCENARIO DATA DEFINITIONS WITH CUTE SVG VECTOR GRAPHICS */
+        const scenariosData = {
+            'A': {
+                code: '场景 A',
+                title: '公共交通与设施 (Pengangkutan Awam)',
+                icon: 'fa-bus',
+                color: 'teal',
+                bgGradient: 'from-teal-600 to-cyan-700',
+                situation: '社区巴士站 (Stesen Bas Komuniti)',
+                // Cute primary-school vector SVG illustration
+                svgGraphic: `
+                    <svg viewBox="0 0 400 250" class="w-full h-full bg-sky-100 rounded-xl">
+                        <!-- Sky Background & Clouds -->
+                        <rect width="400" height="250" fill="#e0f2fe"/>
+                        <circle cx="80" cy="50" r="25" fill="#ffffff" opacity="0.9"/>
+                        <circle cx="105" cy="50" r="18" fill="#ffffff" opacity="0.9"/>
+                        <circle cx="300" cy="40" r="22" fill="#ffffff" opacity="0.8"/>
+                        <!-- Cute Yellow Bus -->
+                        <rect x="180" y="80" width="180" height="110" rx="20" fill="#f59e0b"/>
+                        <rect x="195" y="95" width="45" height="35" rx="5" fill="#38bdf8"/>
+                        <rect x="250" y="95" width="45" height="35" rx="5" fill="#38bdf8"/>
+                        <rect x="305" y="95" width="40" height="35" rx="5" fill="#38bdf8"/>
+                        <circle cx="220" cy="190" r="16" fill="#334155"/>
+                        <circle cx="220" cy="190" r="6" fill="#94a3b8"/>
+                        <circle cx="320" cy="190" r="16" fill="#334155"/>
+                        <circle cx="320" cy="190" r="6" fill="#94a3b8"/>
+                        <!-- Bus Stop Sign -->
+                        <rect x="130" y="110" width="8" height="90" fill="#64748b"/>
+                        <circle cx="134" cy="100" r="22" fill="#0284c7"/>
+                        <text x="134" y="105" font-size="12" fill="white" font-weight="bold" text-anchor="middle">BUS</text>
+                        <!-- Cute Queuing Students & Elderly Person -->
+                        <!-- Elderly -->
+                        <circle cx="45" cy="140" r="12" fill="#fde047"/>
+                        <circle cx="45" cy="135" r="11" fill="#cbd5e1"/> <!-- Grey Hair -->
+                        <rect x="38" y="152" width="14" height="35" rx="5" fill="#0284c7"/>
+                        <!-- Student 1 -->
+                        <circle cx="75" cy="150" r="10" fill="#fca5a5"/>
+                        <rect x="70" y="160" width="10" height="28" rx="4" fill="#16a34a"/>
+                        <!-- Student 2 -->
+                        <circle cx="100" cy="152" r="10" fill="#fed7aa"/>
+                        <rect x="95" y="162" width="10" height="26" rx="4" fill="#9333ea"/>
+                        <!-- Ground -->
+                        <rect x="0" y="195" width="400" height="55" fill="#475569"/>
+                        <rect x="0" y="200" width="400" height="6" fill="#e2e8f0"/>
+                    </svg>
+                `,
+                imageCaption: '可爱卡通：排队上车与礼让长者',
+                description: '在社区巴士站等候拥挤的巴士时，大家都在排队。此时有一位行动不便的老爷爷缓慢地走向巴士门。',
+                action: '遵守秩序按顺序排队上车，并主动礼让老爷爷优先上车，上车后主动让座。',
+                whyImportant: '确保上车秩序与安全，避免拥挤跌倒，展现对邻里长者的关心与尊重。',
+                badgeText: '排队上车 & 主动让座'
             },
-            {
-                id: 2,
-                title: "社区居民电梯口",
-                location: "社区公寓电梯",
-                icon: "fa-elevator",
-                desc: "电梯门打开了，里面有拎着重物的张奶奶准备出来，而电梯外排队的人急着想挤进去。你会怎么做？",
-                optionA: {
-                    text: "不管三二十一，急忙冲进电梯抢位置，差点撞倒张奶奶。",
-                    type: "ignore",
-                    effect: "忽视礼让的影响 (14.3)：险些导致张奶奶摔倒受伤，张奶奶感到心惊胆战，旁观邻居也指责你不文明。",
-                    feeling: "后果：造成意外隐患、被人批评、心中感到惭愧与不安。"
-                },
-                optionB: {
-                    text: "退后一步，按住电梯开门键，温和地说：“张奶奶，您先请出！”",
-                    type: "yield",
-                    effect: "表现礼让的结果：张奶奶安全走出电梯，微笑着夸奖你是个懂事的好孩子。",
-                    feelingChoice: ["踏实 😌", "温馨 💕", "自豪 🏆", "愉快 😃"]
-                }
+            'B': {
+                code: '场景 B',
+                title: '社区道路与游乐场 (Jalan Raya & Taman)',
+                icon: 'fa-car-side',
+                color: 'amber',
+                bgGradient: 'from-amber-600 to-orange-700',
+                situation: '住宅区狭窄道路与公园乒乓球台',
+                svgGraphic: `
+                    <svg viewBox="0 0 400 250" class="w-full h-full bg-emerald-100 rounded-xl">
+                        <rect width="400" height="250" fill="#dcfce7"/>
+                        <!-- Trees & Park Background -->
+                        <circle cx="60" cy="90" r="40" fill="#22c55e"/>
+                        <rect x="52" y="130" width="16" height="50" fill="#78350f"/>
+                        <circle cx="340" cy="80" r="45" fill="#16a34a"/>
+                        <rect x="332" y="125" width="16" height="55" fill="#78350f"/>
+                        <!-- Narrow Lane / Road -->
+                        <path d="M 0 190 Q 200 170 400 190 L 400 250 L 0 250 Z" fill="#64748b"/>
+                        <!-- Blue Car Waiting Kindly -->
+                        <rect x="50" y="180" width="90" height="45" rx="12" fill="#3b82f6"/>
+                        <circle cx="70" cy="225" r="10" fill="#1e293b"/>
+                        <circle cx="120" cy="225" r="10" fill="#1e293b"/>
+                        <text x="95" y="200" font-size="10" fill="white" font-weight="bold" text-anchor="middle">礼让中</text>
+                        <!-- Red Car Passing Safely -->
+                        <rect x="250" y="180" width="90" height="45" rx="12" fill="#ef4444"/>
+                        <circle cx="270" cy="225" r="10" fill="#1e293b"/>
+                        <circle cx="320" cy="225" r="10" fill="#1e293b"/>
+                        <!-- Park Pingpong Table -->
+                        <rect x="150" y="100" width="100" height="50" fill="#0284c7" rx="4"/>
+                        <rect x="198" y="90" width="4" height="20" fill="#ffffff"/> <!-- Net -->
+                        <rect x="160" y="150" width="6" height="30" fill="#334155"/>
+                        <rect x="234" y="150" width="6" height="30" fill="#334155"/>
+                        <!-- Kids playing happily -->
+                        <circle cx="130" cy="115" r="10" fill="#fca5a5"/>
+                        <circle cx="270" cy="115" r="10" fill="#fed7aa"/>
+                    </svg>
+                `,
+                imageCaption: '可爱卡通：窄路减速让行 & 游乐设施共享',
+                description: '在狭窄的住宅区巷子里，两辆汽车迎面相驶；而在公园里，有许多小朋友排队等着玩乒乓球。',
+                action: '驾驶者减速并将车停在较宽处礼让对面车辆先行；玩乒乓球时限定时间，主动让其他人轮流玩。',
+                whyImportant: '避免交通堵塞与碰撞事故，确保所有居民都能公平享受社区公共设施。',
+                badgeText: '窄路让行 & 轮流共享'
             },
-            {
-                id: 3,
-                title: "社区文娱晚会的座位",
-                location: "社区礼堂晚会现场",
-                icon: "fa-couch",
-                desc: "文娱晚会即将开始，礼堂座位紧张。你一个人用多本书包占了四个前排空位留给还没到的朋友。这时，一位抱着婴儿的妈妈没地方坐。",
-                optionA: {
-                    text: "假装没看到，继续用书包占着座位不肯移开。",
-                    type: "ignore",
-                    effect: "忽视礼让的影响 (14.3)：抱婴儿的妈妈十分疲惫与无助，周围的居民对你的自私行为感到不满，引发口角。",
-                    feeling: "后果：破坏晚会和谐氛围，让人觉得社区缺乏爱心与温情。"
-                },
-                optionB: {
-                    text: "主动拿开书包，微笑着招呼抱婴儿的妈妈坐下。",
-                    type: "yield",
-                    effect: "表现礼让的结果：宝妈感激不尽，朋友来到后也称赞你的热心与礼让举动。",
-                    feelingChoice: ["温馨 💕", "无比开心 😃", "受人尊敬 🤝", "自我肯定 🌟"]
-                }
+            'C': {
+                code: '场景 C',
+                title: '邻里相处与公共环境 (Jiran & Persekitaran)',
+                icon: 'fa-house-chimney-window',
+                color: 'emerald',
+                bgGradient: 'from-emerald-600 to-teal-700',
+                situation: '邻居房屋修缮与社区公共晾衣架',
+                svgGraphic: `
+                    <svg viewBox="0 0 400 250" class="w-full h-full bg-amber-50 rounded-xl">
+                        <rect width="400" height="250" fill="#fef3c7"/>
+                        <!-- Cute Houses -->
+                        <polygon points="50,90 110,40 170,90" fill="#f97316"/>
+                        <rect x="60" y="90" width="100" height="90" fill="#fde047"/>
+                        <rect x="90" y="125" width="25" height="55" fill="#78350f"/>
+                        
+                        <polygon points="230,90 290,40 350,90" fill="#0284c7"/>
+                        <rect x="240" y="90" width="100" height="90" fill="#7dd3fc"/>
+                        <rect x="270" y="125" width="25" height="55" fill="#0369a1"/>
+                        
+                        <!-- Clothesline in between -->
+                        <line x1="160" y1="110" x2="240" y2="110" stroke="#78350f" stroke-width="3"/>
+                        <!-- Shirt 1 -->
+                        <path d="M 170 110 L 180 120 L 190 110 L 195 135 L 165 135 Z" fill="#ec4899"/>
+                        <!-- Shirt 2 -->
+                        <path d="M 210 110 L 220 120 L 230 110 L 235 135 L 205 135 Z" fill="#10b981"/>
+                        
+                        <!-- Smiling Neighbours waving -->
+                        <circle cx="130" cy="150" r="11" fill="#fed7aa"/>
+                        <path d="M 120 165 Q 130 180 140 165" stroke="#2563eb" stroke-width="8"/>
+                        <circle cx="250" cy="150" r="11" fill="#fca5a5"/>
+                        <path d="M 240 165 Q 250 180 260 165" stroke="#059669" stroke-width="8"/>
+                    </svg>
+                `,
+                imageCaption: '可爱卡通：体谅邻居修缮 & 留出公共晾衣空间',
+                description: '邻居在白天进行轻微的房屋修缮或举办小聚会，产生了一点声音；另外在社区公共晾衣架处，空间有限。',
+                action: '体谅邻居暂时的修缮噪音；在公共晾衣架晾衣服时只占用所需空间，留出一半给邻居使用。',
+                whyImportant: '换位思考、体谅邻居需求，避免无谓的纠纷，维持长久和谐的邻里关系。',
+                badgeText: '体谅噪音 & 共享晾衣架'
             },
-            {
-                id: 4,
-                title: "社区游乐场的秋千",
-                location: "社区公园游乐场",
-                icon: "fa-child-reaching",
-                desc: "你玩荡秋千已经很久了，旁边的小弟弟一直在期待地看着你，希望能轮到他玩。",
-                optionA: {
-                    text: "当作没看见，继续旁若无人地荡高高，不肯下来。",
-                    type: "ignore",
-                    effect: "忽视礼让的影响 (14.3)：小弟弟委屈地哭了，他的家长过来理论，游乐场原本开心的气氛变成了不愉快。",
-                    feeling: "后果：让幼小的社区成员感到委屈，自己也玩得不安心。"
-                },
-                optionB: {
-                    text: "荡多几下后停下来，微笑着对小弟弟说：“来，换你玩吧！”",
-                    type: "yield",
-                    effect: "表现礼让的结果：小弟弟破涕为笑，开心地玩秋千，你也感受到了分享与礼让的快乐。",
-                    feelingChoice: ["欣慰 🌸", "快乐 😃", "像大哥哥/大姐姐般自豪 🏆", "心暖暖的 💕"]
-                }
+            'D': {
+                code: '场景 D',
+                title: '社区会议与交流 (Mesyuarat Komuniti)',
+                icon: 'fa-users-rectangle',
+                color: 'indigo',
+                bgGradient: 'from-indigo-600 to-blue-700',
+                situation: '居民大会 (Mesyuarat Agung Penduduk)',
+                svgGraphic: `
+                    <svg viewBox="0 0 400 250" class="w-full h-full bg-indigo-50 rounded-xl">
+                        <rect width="400" height="250" fill="#e0e7ff"/>
+                        <!-- Meeting Table -->
+                        <ellipse cx="200" cy="160" rx="140" ry="50" fill="#c7d2fe"/>
+                        <ellipse cx="200" cy="155" rx="135" ry="45" fill="#818cf8"/>
+                        <!-- Cute Resident Figures Around Table -->
+                        <circle cx="100" cy="120" r="14" fill="#fca5a5"/>
+                        <circle cx="160" cy="105" r="14" fill="#fed7aa"/>
+                        <circle cx="240" cy="105" r="14" fill="#fef08a"/>
+                        <circle cx="300" cy="120" r="14" fill="#bbf7d0"/>
+                        <!-- Speech Bubble -->
+                        <rect x="175" y="45" width="80" height="40" rx="10" fill="#ffffff" stroke="#4f46e5" stroke-width="2"/>
+                        <text x="215" y="68" font-size="11" fill="#4f46e5" font-weight="bold" text-anchor="middle">轮流发言</text>
+                        <polygon points="210,85 220,85 215,95" fill="#ffffff"/>
+                    </svg>
+                `,
+                imageCaption: '可爱卡通：居民大会有序发言 & 虚心倾听',
+                description: '在住宅区居民大会上讨论环境卫生与安全课题时，许多居民纷纷举手想表达看法。',
+                action: '发言时简明扼要，不霸占发言时间，简述观点后礼让并虚心倾听其他居民的意见。',
+                whyImportant: '保障每位居民表达意见的权力，促进民主包容的沟通，集思广益建设更好的社区。',
+                badgeText: '尊重发言 & 虚心倾听'
             }
+        };
+
+        /* SMARTBOARD HANGING CLOTHES GAME DATA */
+        const clothesGameItems = [
+            { id: 'c1', text: '在社区巴士站排队，并主动给长者让座', isTolerant: true, color: 'bg-teal-500' },
+            { id: 'c2', text: '在公园独占乒乓球台 2 小时，不给别人玩', isTolerant: false, color: 'bg-rose-500' },
+            { id: 'c3', text: '住宅区窄路慢驶，靠边让对面车辆先过', isTolerant: true, color: 'bg-emerald-500' },
+            { id: 'c4', text: '因邻居白天装修声音大，冲上门辱骂邻居', isTolerant: false, color: 'bg-red-500' },
+            { id: 'c5', text: '公共晾衣架只用一半，留一半给其他邻居', isTolerant: true, color: 'bg-cyan-600' },
+            { id: 'c6', text: '居民大会上抢话筒强行霸占发言时间', isTolerant: false, color: 'bg-orange-500' },
+            { id: 'c7', text: '认真虚心倾听其他邻居在会议上的建议', isTolerant: true, color: 'bg-indigo-500' },
+            { id: 'c8', text: '把自家垃圾与杂物堆在社区走廊通道', isTolerant: false, color: 'bg-amber-600' }
         ];
 
-        let currentScenarioIndex = 0;
+        let selectedClothesId = null;
+        let hungItemsState = {}; // id -> 'tolerant' | 'intolerant'
 
-        function renderScenario() {
-            const sc = scenarios[currentScenarioIndex];
-            const container = document.getElementById('scenario-card');
-            document.getElementById('scenario-progress-text').innerText = `情境 ${currentScenarioIndex + 1} / ${scenarios.length}`;
+        /* QUIZ DATA DEFINITIONS */
+        const quizQuestions = [
+            { id: 1, situation: '明辉在住宅区狭窄路段开慢车，并主动靠边停车，让路给对面的邻居车辆通过。', isTolerance: true, explanation: '回答正确！这是社区道路上良好的礼让与安全驾驶行为。' },
+            { id: 2, situation: '小明和朋友在社区公园的乒乓球台连续霸占玩了 2 个小时，理都不理后面排队的小朋友。', isTolerance: false, explanation: '回答正确！霸占公共设施是不体谅他人且缺乏礼让的行为。' },
+            { id: 3, situation: '秀兰在社区公共晾衣架晾衣服时只用了一半的空间，特地留出另一半给邻居美玲太太。', isTolerance: true, explanation: '回答正确！懂得共享公共空间，是体谅邻居的好行为。' },
+            { id: 4, situation: '木都先生因为邻居在白天维修损坏的大门产生声音，冲出门去对邻居大声喝骂。', isTolerance: false, explanation: '回答正确！对于邻居正常的日常常规修缮，我们应当给予体谅与包容。' },
+            { id: 5, situation: '在居民大会上，阿成发言 2 分钟后主动停止，礼让新搬来的邻居发表他们的建议。', isTolerance: true, explanation: '回答正确！尊重他人表达意见的权力，是文明礼让的交流态度。' },
+            { id: 6, situation: '丽拉在社区巴士站推开前面的小朋友，抢先推挤上车占座位。', isTolerance: false, explanation: '回答正确！插队抢先不仅危险，也是极不讲道德与礼让的行为。' }
+        ];
 
-            container.innerHTML = `
-                <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-4 rounded-xl border border-indigo-100 flex items-center space-x-3">
-                    <div class="p-3 bg-indigo-600 text-white rounded-xl">
-                        <i class="fa-solid ${sc.icon} text-xl"></i>
+        let quizUserAnswers = {};
+
+        function switchTab(tabId) {
+            const tabs = ['tab-intro', 'tab-scenarios', 'tab-clothes', 'tab-importance', 'tab-quiz'];
+            tabs.forEach(t => {
+                const el = document.getElementById(t);
+                const btn = document.getElementById('btn-' + t);
+                if (t === tabId) {
+                    el.classList.remove('hidden');
+                    btn.classList.add('active');
+                } else {
+                    el.classList.add('hidden');
+                    btn.classList.remove('active');
+                }
+            });
+
+            if (tabId === 'tab-scenarios') showScenario('A');
+            if (tabId === 'tab-clothes') renderClothesGame();
+        }
+
+        function showScenario(key) {
+            const data = scenariosData[key];
+            if (!data) return;
+
+            ['A', 'B', 'C', 'D'].forEach(k => {
+                const btn = document.getElementById(`scen-btn-${k}`);
+                if (btn) {
+                    btn.className = (k === key) 
+                        ? 'scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-teal-600 text-white shadow'
+                        : 'scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50';
+                }
+            });
+
+            const area = document.getElementById('scenario-content-area');
+            area.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                    <!-- Left Column: Illustration & Header -->
+                    <div class="lg:col-span-1 flex flex-col rounded-2xl overflow-hidden border border-teal-100 shadow-sm bg-white">
+                        <div class="relative h-56 w-full p-2 bg-slate-50 flex items-center justify-center">
+                            ${data.svgGraphic}
+                        </div>
+                        <div class="p-4 bg-gradient-to-r ${data.bgGradient} text-white flex-grow flex flex-col justify-between">
+                            <div>
+                                <span class="bg-white/30 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${data.code}</span>
+                                <h3 class="text-lg font-extrabold mt-1 leading-snug">${data.title}</h3>
+                                <p class="text-xs text-teal-100 mt-1"><i class="fa-solid fa-location-dot"></i> ${data.situation}</p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs">
+                                <span class="font-bold bg-white/20 px-2.5 py-1 rounded-lg">${data.badgeText}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-extrabold text-indigo-900 text-lg">${sc.title}</h4>
-                        <p class="text-xs text-indigo-600"><i class="fa-solid fa-location-dot mr-1"></i>地点：${sc.location}</p>
+
+                    <!-- Right Column: Situation, Action, Importance Breakdown -->
+                    <div class="lg:col-span-2 space-y-4 flex flex-col justify-between">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <h4 class="text-xs font-extrabold text-teal-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-info"></i> 1. 社区真实情境 (Situasi)
+                            </h4>
+                            <p class="text-sm font-medium text-slate-700 leading-relaxed">${data.description}</p>
+                        </div>
+
+                        <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200">
+                            <h4 class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-check"></i> 2. 应实践的礼让行为 (Tindakan Toleransi)
+                            </h4>
+                            <p class="text-sm font-bold text-emerald-900 leading-relaxed">${data.action}</p>
+                        </div>
+
+                        <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-200">
+                            <h4 class="text-xs font-extrabold text-amber-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-lightbulb"></i> 3. 礼让的重要性 (Kepentingan)
+                            </h4>
+                            <p class="text-sm font-medium text-amber-900 leading-relaxed">${data.whyImportant}</p>
+                        </div>
                     </div>
                 </div>
-
-                <p class="text-sm text-slate-700 bg-white p-4 rounded-xl border border-slate-200 leading-relaxed font-medium">
-                    ${sc.desc}
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <!-- 选择 A: 忽视礼让 -->
-                    <button onclick="handleChoice('ignore')" class="p-4 rounded-xl border-2 border-rose-200 bg-rose-50/50 hover:bg-rose-100/80 transition text-left space-y-2 group">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold bg-rose-200 text-rose-800 px-2 py-0.5 rounded">选择 A (忽视礼让)</span>
-                            <i class="fa-solid fa-xmark text-rose-500 group-hover:scale-125 transition"></i>
-                        </div>
-                        <p class="text-xs font-bold text-slate-800">${sc.optionA.text}</p>
-                    </button>
-
-                    <!-- 选择 B: 表现礼让 -->
-                    <button onclick="handleChoice('yield')" class="p-4 rounded-xl border-2 border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/80 transition text-left space-y-2 group">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded">选择 B (表现礼让)</span>
-                            <i class="fa-solid fa-check text-emerald-500 group-hover:scale-125 transition"></i>
-                        </div>
-                        <p class="text-xs font-bold text-slate-800">${sc.optionB.text}</p>
-                    </button>
-                </div>
-
-                <div id="choice-result" class="hidden mt-4 p-4 rounded-2xl"></div>
             `;
         }
 
-        function handleChoice(type) {
-            const sc = scenarios[currentScenarioIndex];
-            const resultBox = document.getElementById('choice-result');
-            resultBox.classList.remove('hidden');
+        /* HANGING CLOTHES GAME LOGIC */
+        function renderClothesGame() {
+            const unassignedContainer = document.getElementById('unassigned-clothes-container');
+            const tolerantContainer = document.getElementById('tolerant-clothes-container');
+            const intolerantContainer = document.getElementById('intolerant-clothes-container');
 
-            if (type === 'ignore') {
-                resultBox.className = "mt-4 p-4 rounded-2xl bg-rose-100 border border-rose-300 text-rose-900 space-y-2";
-                resultBox.innerHTML = `
-                    <div class="flex items-center space-x-2 font-bold text-sm text-rose-800">
-                        <i class="fa-solid fa-circle-exclamation text-lg"></i>
-                        <span>学习标准 14.3 - 忽视礼让的影响：</span>
-                    </div>
-                    <p class="text-xs font-medium leading-relaxed">${sc.optionA.effect}</p>
-                    <p class="text-xs text-rose-700 italic border-t border-rose-200 pt-2">${sc.optionA.feeling}</p>
-                    <button onclick="nextScenario()" class="mt-2 px-4 py-1.5 bg-rose-600 text-white rounded-lg text-xs font-bold hover:bg-rose-700">下一个情境 →</button>
-                `;
+            unassignedContainer.innerHTML = '';
+            tolerantContainer.innerHTML = '';
+            intolerantContainer.innerHTML = '';
+
+            let countTol = 0;
+            let countIntol = 0;
+
+            clothesGameItems.forEach(item => {
+                const status = hungItemsState[item.id];
+                const card = createClothesCardHTML(item);
+
+                if (!status) {
+                    unassignedContainer.appendChild(card);
+                } else if (status === 'tolerant') {
+                    countTol++;
+                    tolerantContainer.appendChild(card);
+                } else if (status === 'intolerant') {
+                    countIntol++;
+                    intolerantContainer.appendChild(card);
+                }
+            });
+
+            document.getElementById('count-tolerant').innerText = `已挂: ${countTol} 件`;
+            document.getElementById('count-intolerant').innerText = `已挂: ${countIntol} 件`;
+
+            if (countTol + countIntol === clothesGameItems.length) {
+                document.getElementById('clothes-game-victory').classList.remove('hidden');
+                playSuccessSound();
             } else {
-                confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
-                resultBox.className = "mt-4 p-4 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-900 space-y-3";
+                document.getElementById('clothes-game-victory').classList.add('hidden');
+            }
+        }
 
-                let chipsHtml = sc.optionB.feelingChoice.map(f =>
-                    `<span class="inline-block bg-white text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-300 shadow-sm mr-1 mb-1">${f}</span>`
-                ).join('');
+        function createClothesCardHTML(item) {
+            const div = document.createElement('div');
+            const isSelected = (selectedClothesId === item.id);
+            
+            div.className = `clothes-item flex flex-col items-center select-none cursor-pointer my-2 transition-all duration-200 transform ${isSelected ? 'scale-105' : 'hover:scale-[1.02]'}`;
+            div.draggable = true;
+            div.id = `clothes-${item.id}`;
 
-                resultBox.innerHTML = `
-                    <div class="flex items-center space-x-2 font-bold text-sm text-emerald-800">
-                        <i class="fa-solid fa-circle-check text-lg"></i>
-                        <span>学习标准 14.4 - 表现礼让的成果与感受：</span>
+            // Drag Events
+            div.ondragstart = (e) => {
+                e.dataTransfer.setData('text/plain', item.id);
+                selectedClothesId = item.id;
+            };
+
+            // Touch / Tap Event for Touchscreens & Mouse
+            div.onclick = (e) => {
+                e.stopPropagation();
+                if (selectedClothesId === item.id) {
+                    selectedClothesId = null;
+                } else {
+                    selectedClothesId = item.id;
+                    playClickSound();
+                }
+                renderClothesGame();
+            };
+
+            div.innerHTML = `
+                <!-- Wooden Hanger Hook Silhouette -->
+                <div class="w-7 h-4 border-t-2 border-r-2 border-amber-800/80 rounded-tr-full -mb-1 z-0"></div>
+                
+                <!-- T-Shirt Silhouette Container -->
+                <div class="relative w-full max-w-[280px]">
+                    <!-- Left Sleeve -->
+                    <div class="absolute -left-2.5 top-3 w-4 h-9 ${item.color} rounded-l-lg border-l-2 border-b-2 border-black/20 shadow-md"></div>
+                    <!-- Right Sleeve -->
+                    <div class="absolute -right-2.5 top-3 w-4 h-9 ${item.color} rounded-r-lg border-r-2 border-b-2 border-black/20 shadow-md"></div>
+                    
+                    <!-- Main Shirt Body -->
+                    <div class="${item.color} text-white rounded-b-2xl rounded-t-xl p-3.5 pt-4 relative border-2 ${isSelected ? 'ring-4 ring-amber-400 border-white shadow-xl' : 'border-white/30 shadow-md'} transition-all flex flex-col justify-between min-h-[110px]">
+                        
+                        <!-- Neck / Collar Cutout -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-3.5 bg-amber-50/90 rounded-b-full border-b-2 border-amber-300/40 shadow-inner flex items-center justify-center">
+                            <div class="w-8 h-1 bg-amber-200/50 rounded-full"></div>
+                        </div>
+
+                        <!-- Tag Header -->
+                        <div class="flex items-center justify-between pt-1 mb-1.5 z-10">
+                            <span class="text-[10px] bg-black/25 px-2 py-0.5 rounded-full font-extrabold tracking-wider text-amber-200 flex items-center gap-1">
+                                <i class="fa-solid fa-shirt"></i> T-Shirt
+                            </span>
+                            <span class="text-[9px] bg-white/20 px-1.5 py-0.5 rounded text-white font-mono">
+                                #${item.id}
+                            </span>
+                        </div>
+
+                        <!-- Sentence Content inside T-shirt -->
+                        <p class="text-xs md:text-sm font-bold leading-snug px-1 text-center text-white drop-shadow z-10">
+                            ${item.text}
+                        </p>
+
+                        <!-- Action Button if hung in a rack -->
+                        ${hungItemsState[item.id] ? `
+                            <div class="mt-2.5 pt-1.5 border-t border-white/20 text-center z-10">
+                                <button onclick="unhangItem('${item.id}', event)" class="text-[10px] bg-white/20 hover:bg-white/40 active:scale-95 px-3 py-1 rounded-lg text-white font-bold transition shadow-sm">
+                                    <i class="fa-solid fa-rotate-left mr-1"></i> 取下衣服
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
-                    <p class="text-xs font-medium leading-relaxed">${sc.optionB.effect}</p>
-                    <div class="border-t border-emerald-200 pt-2">
-                        <p class="text-xs font-bold text-emerald-800 mb-1">此时此刻，你的内心感受是：</p>
-                        <div>${chipsHtml}</div>
-                    </div>
-                    <button onclick="nextScenario()" class="mt-2 px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700">下一个情境 →</button>
-                `;
+                </div>
+            `;
+            return div;
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function handleDrop(e, targetIsTolerant) {
+            e.preventDefault();
+            const itemId = e.dataTransfer.getData('text/plain') || selectedClothesId;
+            if (itemId) {
+                verifyAndHang(itemId, targetIsTolerant);
             }
         }
 
-        function nextScenario() {
-            currentScenarioIndex = (currentScenarioIndex + 1) % scenarios.length;
-            renderScenario();
-        }
-
-        // 3. 感受瓶收集逻辑 FEELINGS JAR LOGIC
-        let feelingCount = 0;
-        function addFeeling(text, bgClass) {
-            if (feelingCount >= 5) {
-                alert('感受瓶已经装满正能量啦！');
-                return;
-            }
-            const jar = document.getElementById('jar-container');
-            const placeholder = document.getElementById('jar-placeholder');
-            if (placeholder) placeholder.style.display = 'none';
-
-            const chip = document.createElement('div');
-            chip.className = `px-3 py-1.5 rounded-full border text-xs font-extrabold shadow-sm my-1 animate-bounce ${bgClass}`;
-            chip.innerText = text;
-
-            jar.appendChild(chip);
-            feelingCount++;
-
-            document.getElementById('jar-count').innerText = feelingCount;
-            if (feelingCount === 5) {
-                document.getElementById('jar-status').innerText = "太棒了！内心充满礼让美德！🌟";
-                confetti({ particleCount: 80, spread: 70 });
+        function tapTargetRack(targetIsTolerant) {
+            if (selectedClothesId) {
+                verifyAndHang(selectedClothesId, targetIsTolerant);
             }
         }
 
-        function clearJar() {
-            const jar = document.getElementById('jar-container');
-            jar.innerHTML = '<div class="text-xs text-amber-400 font-bold mb-2 pointer-events-none" id="jar-placeholder">瓶子空空的...<br>快收集感受吧！</div>';
-            feelingCount = 0;
-            document.getElementById('jar-count').innerText = 0;
-            document.getElementById('jar-status').innerText = "继续努力！";
+        function verifyAndHang(itemId, targetIsTolerant) {
+            const item = clothesGameItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            if (item.isTolerant === targetIsTolerant) {
+                hungItemsState[itemId] = targetIsTolerant ? 'tolerant' : 'intolerant';
+                selectedClothesId = null;
+                playSuccessSound();
+            } else {
+                playClickSound();
+                alert(`⚠️ 仔细想想哦：“${item.text}” 属于${item.isTolerant ? '【礼让行为】' : '【缺乏礼让】'}！请再试一次！`);
+            }
+            renderClothesGame();
         }
 
-        // 4. 闯关测验数据与逻辑 QUIZ DATA
-        const quizQuestions = [
-            {
-                question: "【学习标准 14.3】在社区公园里，如果大家都争抢秋千且互不相让，最可能导致什么后果？",
-                options: [
-                    "A. 社区大家庭更加团结",
-                    "B. 发生口角争执，甚至导致设施损坏与伤亡意外",
-                    "C. 大家都能玩得更开心",
-                    "D. 得到居民的赞赏"
-                ],
-                answer: 1,
-                explanation: "忽视礼让会引发冲突争执，破坏邻里和谐与公共设施安全。"
-            },
-            {
-                question: "【学习标准 14.4】小强在乘坐社区公共巴士时，主动将座位让给抱着婴儿的妇女。此时小强的内心感受应该是怎样的？",
-                options: [
-                    "A. 感到委屈与吃亏",
-                    "B. 感到愤怒与不公平",
-                    "C. 感到开心、欣慰与自豪",
-                    "D. 感到非常倒霉"
-                ],
-                answer: 2,
-                explanation: "表现礼让不仅能帮助他人，还能让自己内心感到充实、欣慰与开心。"
-            },
-            {
-                question: "【学习标准 14.3】社区举行文娱晚会，有些居民用物件霸占空位且不肯让给有需要的老人。这种忽视礼让的行为会产生什么影响？",
-                options: [
-                    "A. 让人感到社区冷漠、缺乏关爱与和谐",
-                    "B. 能让晚会更快结束",
-                    "C. 增进居民之间的感情",
-                    "D. 显得很有秩序"
-                ],
-                answer: 0,
-                explanation: "霸占公共资源而不礼让他人，会让人觉得社区冷漠，引发居民不满。"
-            },
-            {
-                question: "【学习标准 14.4】以下哪项是表现礼让行为后所获得的正面感受与收获？",
-                options: [
-                    "A. 受到别人的埋怨",
-                    "B. 获得邻里的尊重与友谊，内心感到温馨",
-                    "C. 觉得失去了自己的权利",
-                    "D. 感到疲惫不堪"
-                ],
-                answer: 1,
-                explanation: "礼让能换来邻里的尊重与微笑，促进和谐关系。"
-            }
-        ];
+        function unhangItem(itemId, e) {
+            e.stopPropagation();
+            delete hungItemsState[itemId];
+            renderClothesGame();
+        }
 
-        let currentQuizIndex = 0;
-        let quizScore = 0;
+        function resetClothesGame() {
+            hungItemsState = {};
+            selectedClothesId = null;
+            renderClothesGame();
+        }
 
+        /* QUIZ FUNCTIONS */
         function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            if (currentQuizIndex >= quizQuestions.length) {
-                // 测验完成，展示证书
-                container.innerHTML = `
-                    <div class="text-center py-8 space-y-4">
-                        <div class="inline-block p-4 bg-yellow-100 rounded-full text-yellow-600 mb-2">
-                            <i class="fa-solid fa-award text-5xl"></i>
-                        </div>
-                        <h4 class="text-2xl font-black text-slate-800">恭喜你完成礼让大挑战！</h4>
-                        <p class="text-slate-600 text-sm">你的最终得分：<span class="font-extrabold text-emerald-600 text-xl">${quizScore} / ${quizQuestions.length * 25}</span></p>
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
 
-                        <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-4 border-amber-300 p-6 rounded-2xl max-w-md mx-auto shadow-md space-y-3">
-                            <div class="text-amber-800 font-bold text-xs uppercase tracking-widest">五年级道德教育荣誉证书</div>
-                            <h5 class="text-xl font-extrabold text-amber-900">“社区礼让小达人” Medal</h5>
-                            <p class="text-xs text-slate-600">特此表彰你在道德教育单元十四中，深入掌握礼让美德，懂得推断忽视礼让的影响，并能真切感受礼让带来的美好！</p>
-                            <div class="text-amber-600 text-xs font-bold pt-2">⭐ 礼让社区 · 从我做起 ⭐</div>
-                        </div>
-
-                        <button onclick="restartQuiz()" class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-emerald-700 transition">
-                            <i class="fa-solid fa-rotate-right mr-1"></i> 重新挑战
+            quizQuestions.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'p-4 rounded-2xl border border-teal-100 bg-teal-50/30 space-y-3';
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-extrabold text-teal-600 bg-teal-100 px-2.5 py-0.5 rounded-md">题目 ${index + 1}</span>
+                        <p class="text-xs md:text-sm font-semibold text-teal-950 leading-relaxed">${q.situation}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-1" id="quiz-options-${q.id}">
+                        <button onclick="answerQuiz(${q.id}, true)" class="text-xs font-bold px-3 py-2 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i> 绿灯（礼让行为）
+                        </button>
+                        <button onclick="answerQuiz(${q.id}, false)" class="text-xs font-bold px-3 py-2 rounded-xl border border-rose-300 bg-white hover:bg-rose-50 text-rose-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-xmark text-rose-600"></i> 红灯（缺乏礼让）
                         </button>
                     </div>
+                    <div id="quiz-feedback-${q.id}" class="hidden p-3 rounded-xl text-xs font-medium space-y-1"></div>
                 `;
-                confetti({ particleCount: 100, spread: 80 });
-                return;
-            }
+                container.appendChild(card);
+            });
+        }
 
-            const q = quizQuestions[currentQuizIndex];
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between text-xs font-bold text-slate-400">
-                        <span>题目 ${currentQuizIndex + 1} / ${quizQuestions.length}</span>
-                        <span>每题 25 分</span>
-                    </div>
+        function answerQuiz(id, userVal) {
+            const q = quizQuestions.find(item => item.id === id);
+            if (!q) return;
 
-                    <h4 class="font-extrabold text-slate-800 text-base leading-snug">${q.question}</h4>
+            quizUserAnswers[id] = userVal;
+            const isCorrect = (userVal === q.isTolerance);
 
-                    <div class="space-y-2 pt-2">
-                        ${q.options.map((opt, idx) => `
-                            <button onclick="checkAnswer(${idx})" class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition font-medium text-xs text-slate-700 flex justify-between items-center group">
-                                <span>${opt}</span>
-                                <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-emerald-500"></i>
-                            </button>
-                        `).join('')}
-                    </div>
+            const optionsBox = document.getElementById(`quiz-options-${id}`);
+            const feedbackBox = document.getElementById(`quiz-feedback-${id}`);
 
-                    <div id="quiz-feedback" class="hidden p-3 rounded-xl text-xs font-bold"></div>
-                </div>
+            optionsBox.innerHTML = `
+                <span class="text-xs px-3 py-1.5 rounded-xl font-bold ${userVal ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                    你的选择：${userVal ? '绿灯（礼让行为）' : '红灯（缺乏礼让）'}
+                </span>
             `;
-        }
 
-        function checkAnswer(selectedIndex) {
-            const q = quizQuestions[currentQuizIndex];
-            const feedback = document.getElementById('quiz-feedback');
-            feedback.classList.remove('hidden');
-
-            if (selectedIndex === q.answer) {
-                quizScore += 25;
-                document.getElementById('quiz-score').innerText = `得分: ${quizScore}`;
-                feedback.className = "p-3 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> 回答正确！${q.explanation}`;
+            feedbackBox.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackBox.className = 'p-3 rounded-xl text-xs font-medium bg-emerald-100 text-emerald-950 border border-emerald-300';
+                feedbackBox.innerHTML = `<i class="fa-solid fa-thumbs-up text-emerald-600 mr-1"></i> <strong>非常准确！</strong> ${q.explanation}`;
+                playSuccessSound();
             } else {
-                feedback.className = "p-3 rounded-xl text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300";
-                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> 回答错误。解析：${q.explanation}`;
+                feedbackBox.className = 'p-3 rounded-xl text-xs font-medium bg-rose-100 text-rose-950 border border-rose-300';
+                feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1"></i> <strong>不太准确。</strong> 再仔细想想，这个行为是否符合礼让精神呢？`;
             }
 
-            setTimeout(() => {
-                currentQuizIndex++;
-                renderQuiz();
-            }, 2000);
+            updateScore();
         }
 
-        function restartQuiz() {
-            currentQuizIndex = 0;
-            quizScore = 0;
-            document.getElementById('quiz-score').innerText = `得分: 0`;
+        function updateScore() {
+            let correctCount = 0;
+            const total = quizQuestions.length;
+            quizQuestions.forEach(q => {
+                if (quizUserAnswers[q.id] === q.isTolerance) correctCount++;
+            });
+            document.getElementById('quiz-score').innerText = `${correctCount} / ${total}`;
+            if (Object.keys(quizUserAnswers).length === total) {
+                document.getElementById('quiz-completion-banner').classList.remove('hidden');
+            }
+        }
+
+        function resetQuiz() {
+            quizUserAnswers = {};
+            document.getElementById('quiz-score').innerText = `0 / 6`;
+            document.getElementById('quiz-completion-banner').classList.add('hidden');
             renderQuiz();
         }
 
-        // 初始化加载
-        window.onload = function() {
-            renderScenario();
+        function playClickSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, ctx.currentTime);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            } catch (e) {}
+        }
+
+        function playSuccessSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc1.frequency.setValueAtTime(523.25, now);
+                osc2.frequency.setValueAtTime(659.25, now + 0.1);
+
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc1.start(now);
+                osc2.start(now + 0.1);
+                osc1.stop(now + 0.3);
+                osc2.stop(now + 0.3);
+            } catch (e) {}
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
             renderQuiz();
-        };
+            showScenario('A');
+            renderClothesGame();
+        });
     </script>
 </body>
 </html>
