@@ -1,1011 +1,871 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>五年级道德教育 - 单元十四：礼让之城</title>
+    <title>Aplikasi Pembelajaran Simpulan Bahasa Tahun 5</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
-    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Noto Sans SC', 'Plus Jakarta Sans', sans-serif;
-            background-color: #f0fdf4;
-            color: #164e63;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
         }
-        .tab-btn.active {
-            background-color: #0d9488;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        .title-font {
+            font-family: 'Fredoka', cursive;
         }
-        .scenario-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .scenario-card:hover {
-            transform: translateY(-4px);
-        }
-        .flip-card {
-            perspective: 1000px;
-        }
-        .flip-card-inner {
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-        .flip-card-front, .flip-card-back {
-            backface-visibility: hidden;
-        }
-        .flip-card-back {
-            transform: rotateY(180deg);
-        }
-        
-        /* Interactive Clothes Rack Styles */
-        .clothes-item {
-            cursor: grab;
-            user-select: none;
-            touch-action: none;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .clothes-item:active {
-            cursor: grabbing;
-            transform: scale(1.05);
-        }
-        .clothes-item.selected {
-            ring: 4px;
-            ring-color: #f59e0b;
-            transform: scale(1.03);
-        }
-        .drop-zone-active {
-            border-style: solid !important;
-            background-color: rgba(204, 251, 241, 0.6) !important;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #e6f4f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #0d9488;
-            border-radius: 4px;
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #certificate-modal, #certificate-modal * {
+                visibility: visible;
+            }
+            #certificate-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+            }
+            .no-print {
+                display: none !important;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
 
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-teal-100 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
-                    <i class="fa-solid fa-shirt"></i>
+    <!-- Web Audio Synthesizer Engine -->
+    <script>
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+            }
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+            playSuccess() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                osc.frequency.setValueAtTime(1046.50, now + 0.3);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.55);
+            }
+            playPop() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.08);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            }
+            playError() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(280, now);
+                osc.frequency.linearRampToValueAtTime(150, now + 0.25);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        }
+        const sfx = new SoundEngine();
+
+        function speakMalay(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ms-MY';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+
+    <!-- Navigation Header -->
+    <header class="bg-emerald-800 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-400 text-emerald-950 w-11 h-11 rounded-2xl flex items-center justify-center text-2xl font-bold shadow-md">
+                    📚
                 </div>
                 <div>
-                    <h1 class="text-lg md:text-xl font-bold text-teal-900 leading-tight">
-                        五年级道德教育 <span class="text-teal-600">| 单元十四《礼让之城》</span>
-                    </h1>
-                    <p class="text-xs text-teal-600 font-medium">核心价值：礼让（Toleransi dalam Komuniti）</p>
+                    <h1 class="title-font text-xl md:text-2xl font-bold tracking-wide">Simpulan Bahasa BM Tahun 5</h1>
+                    <p class="text-xs text-emerald-200 font-semibold">Cabaran 3 Level • 华文对比与句子应用</p>
                 </div>
             </div>
-            
-            <!-- Navigation Pills -->
-            <nav class="flex items-center gap-1.5 overflow-x-auto py-1 max-w-full">
-                <button onclick="switchTab('tab-intro')" id="btn-tab-intro" class="tab-btn active text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-paw"></i> <span>情境导入</span>
+
+            <!-- Student Profile & Score Tracker -->
+            <div class="flex items-center gap-3">
+                <button onclick="promptStudentLogin()" class="bg-emerald-700 hover:bg-emerald-600 border border-emerald-500 px-3 py-1.5 rounded-2xl flex items-center gap-2 shadow-inner transition text-xs">
+                    <span class="text-base">👤</span>
+                    <span id="student-display-name" class="font-bold text-amber-300 truncate max-w-[130px]">Murid: Sila Log Masuk</span>
+                    <i class="fa-solid fa-pen text-[10px] text-emerald-300"></i>
                 </button>
-                <button onclick="switchTab('tab-scenarios')" id="btn-tab-scenarios" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-city"></i> <span>4大社区例子</span>
-                </button>
-                <button onclick="switchTab('tab-clothes')" id="btn-tab-clothes" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-amber-900 bg-amber-100 border border-amber-300 hover:bg-amber-200 transition flex items-center gap-1.5 shadow-sm">
-                    <i class="fa-solid fa-shirt text-amber-600"></i> <span>👕 挂衣服互动游戏</span>
-                </button>
-                <button onclick="switchTab('tab-importance')" id="btn-tab-importance" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-lightbulb"></i> <span>礼让的重要性</span>
-                </button>
-                <button onclick="switchTab('tab-quiz')" id="btn-tab-quiz" class="tab-btn text-xs md:text-sm px-3 py-1.5 rounded-lg font-semibold text-teal-800 hover:bg-teal-100 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-gamepad"></i> <span>礼让大侦探</span>
-                </button>
-            </nav>
+                <div class="bg-emerald-900 border border-emerald-600 px-4 py-1.5 rounded-2xl flex items-center gap-2 shadow-inner">
+                    <span class="text-xl">⭐</span>
+                    <span class="text-xs text-emerald-200 font-bold uppercase">Markah:</span>
+                    <span id="score-count" class="font-extrabold text-xl text-amber-300">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Indicator Bar -->
+        <div class="bg-emerald-900 border-t border-emerald-700/60">
+            <div class="max-w-5xl mx-auto flex justify-around text-xs md:text-sm font-semibold text-emerald-100 py-2.5 px-4">
+                <div id="badge-level1" class="flex items-center gap-1.5 text-amber-300 font-bold">
+                    <span class="w-6 h-6 rounded-full bg-amber-400 text-emerald-950 flex items-center justify-center text-xs">1</span>
+                    <span>Level 1: Pilihan Maksud</span>
+                </div>
+                <div id="badge-level2" class="flex items-center gap-1.5 text-emerald-300 opacity-60">
+                    <span class="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center text-xs">2</span>
+                    <span>Level 2: Taip Jawapan</span>
+                </div>
+                <div id="badge-level3" class="flex items-center gap-1.5 text-emerald-300 opacity-60">
+                    <span class="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center text-xs">3</span>
+                    <span>Level 3: Isi Tempat Kosong</span>
+                </div>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto w-full p-4 md:p-6 flex-grow">
 
-        <!-- TAB 1: 导入与情境迁移 -->
-        <section id="tab-intro" class="space-y-6">
-            <div class="bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
-                <div class="relative z-10 max-w-2xl">
-                    <span class="bg-teal-900/50 text-teal-100 border border-teal-300/30 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
-                        第一步：导入与情境迁移
-                    </span>
-                    <h2 class="text-2xl md:text-4xl font-extrabold mt-3 leading-tight">
-                        从森林小动物到我们的社区生活
-                    </h2>
-                    <p class="text-sm md:text-base text-teal-50 mt-2 leading-relaxed">
-                        先前我们看到了黑熊、小猫和大象在森林里互相礼让的故事。现在，让我们一起来看看，如何在现实的<strong class="underline decoration-amber-300">社区生活 (Komuniti)</strong> 中实践<strong class="text-amber-300">“礼让” (Toleransi)</strong>的美德！
-                    </p>
-                    <div class="mt-5 flex flex-wrap gap-3">
-                        <button onclick="switchTab('tab-scenarios')" class="bg-amber-400 hover:bg-amber-300 text-teal-950 px-5 py-2.5 rounded-xl font-bold shadow-lg transition flex items-center gap-2 text-sm">
-                            探索社区 4 大礼让场景 <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                        <button onclick="switchTab('tab-clothes')" class="bg-teal-900/80 hover:bg-teal-950 text-amber-300 border border-amber-400/40 px-5 py-2.5 rounded-xl font-bold shadow-lg transition flex items-center gap-2 text-sm">
-                            <i class="fa-solid fa-shirt"></i> 体验社区挂衣服游戏
-                        </button>
-                    </div>
-                </div>
-                <div class="absolute -right-8 -bottom-12 opacity-20 pointer-events-none">
-                    <i class="fa-solid fa-tree-city text-9xl text-white"></i>
-                </div>
-            </div>
-
-            <!-- Transition Comparison Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
+        <!-- LEVEL 1: Pilihan Simpulan Bahasa berdasarkan Maksud (MCQ) -->
+        <section id="section-level1" class="block">
+            <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-emerald-100">
+                <div class="mb-6 border-b border-slate-100 pb-4 flex justify-between items-center">
                     <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                                <i class="fa-solid fa-paw"></i> 森林小动物（复习）
-                            </span>
-                            <span class="text-xs text-slate-400">热身思考</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-teal-950 mb-2">森林里的礼让好榜样</h3>
-                        <p class="text-sm text-slate-600 mb-4">
-                            小猫主动让出秋千、黑熊与伙伴分享坚果蛋糕、大象被踩到脚时依然微笑包容。
-                        </p>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Level 1 • 第一关</span>
+                        <h2 class="text-2xl font-bold text-slate-800 title-font mt-1">Pilih Simpulan Bahasa yang Betul (选择正确的成语)</h2>
+                        <p class="text-slate-500 text-sm mt-1">Baca maksud Bahasa Cina berikut dan pilih Simpulan Bahasa yang tepat.</p>
                     </div>
-                    <div class="pt-3 border-t border-slate-100 text-right">
-                        <span class="text-xs text-teal-600 font-semibold">良好品德 <i class="fa-solid fa-heart text-red-500"></i></span>
-                    </div>
+                    <span id="l1-progress" class="text-sm font-black text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">Soalan 1 / 5</span>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                                <i class="fa-solid fa-building-user"></i> 现实社区生活
-                            </span>
-                            <span class="text-xs text-teal-600 font-bold">学习标准 14.1 & 14.2</span>
-                        </div>
-                        <h3 class="font-bold text-lg text-teal-950 mb-2">人类社区里的礼让美德</h3>
-                        <p class="text-sm text-slate-600 mb-4">
-                            在我们的住宅区、道路上、巴士站以及居民大会中，我们该如何展示礼让行为？
-                        </p>
-                    </div>
-                    <div class="pt-3 border-t border-slate-100 text-right">
-                        <button onclick="switchTab('tab-scenarios')" class="text-xs text-teal-700 font-bold hover:underline">
-                            前往社区情境例子 &rarr;
-                        </button>
-                    </div>
+                <!-- Question Card -->
+                <div class="bg-amber-50/80 border-2 border-amber-200 rounded-3xl p-6 md:p-8 mb-6 text-center relative shadow-sm">
+                    <span class="text-xs font-extrabold text-amber-800 uppercase tracking-widest block mb-2">Maksud dalam Bahasa Cina (华文意思):</span>
+                    <h3 id="l1-question-text" class="text-xl md:text-2xl font-black text-slate-800 leading-snug">
+                        --
+                    </h3>
                 </div>
+
+                <!-- MCQ Options -->
+                <div id="l1-options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-6">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Instant Result Toast / Banner -->
+                <div id="l1-toast" class="hidden rounded-2xl p-4 font-bold text-sm mb-4 text-center"></div>
             </div>
         </section>
 
-        <!-- TAB 2: 4个社区礼让例子 (可爱卡通矢量图版) -->
-        <section id="tab-scenarios" class="hidden space-y-6">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-teal-200 pb-4">
-                <div>
-                    <span class="text-xs font-bold text-teal-600 uppercase tracking-wide">学习标准 14.1</span>
-                    <h2 class="text-2xl font-extrabold text-teal-950">社区生活 4 大礼让例子 (Contoh Toleransi)</h2>
-                    <p class="text-sm text-slate-600">点击下方场景标签，查看高清晰度可爱卡通插图与礼让讲解：</p>
-                </div>
-                <!-- Scenario Selector Pills -->
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="showScenario('A')" id="scen-btn-A" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-teal-600 text-white shadow">
-                        场景 A（公共交通）
-                    </button>
-                    <button onclick="showScenario('B')" id="scen-btn-B" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
-                        场景 B（窄路/公园）
-                    </button>
-                    <button onclick="showScenario('C')" id="scen-btn-C" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
-                        场景 C（邻里/环境）
-                    </button>
-                    <button onclick="showScenario('D')" id="scen-btn-D" class="scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50">
-                        场景 D（社区会议）
-                    </button>
-                </div>
-            </div>
-
-            <!-- SCENARIO DISPLAY BOX -->
-            <div id="scenario-content-area" class="bg-white rounded-3xl p-6 md:p-8 border border-teal-100 shadow-lg">
-                <!-- Dynamically populated via JavaScript -->
-            </div>
-        </section>
-
-        <!-- TAB 3: HANGING CLOTHES GAME -->
-        <section id="tab-clothes" class="hidden space-y-6">
-            <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6 shadow-md">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-amber-200 pb-4 mb-4">
+        <!-- LEVEL 2: Taip Simpulan Bahasa Tanpa Petunjuk -->
+        <section id="section-level2" class="hidden">
+            <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-emerald-100">
+                <div class="mb-6 border-b border-slate-100 pb-4 flex justify-between items-center">
                     <div>
-                        <span class="bg-amber-500 text-white text-xs font-extrabold px-3 py-1 rounded-full inline-block mb-1 shadow-sm">
-                            <i class="fa-solid fa-gamepad"></i> 社区互动学习环节
-                        </span>
-                        <h2 class="text-2xl font-extrabold text-amber-950">👕 社区好邻居“晒衣服/挂衣服”挑战赛</h2>
-                        <p class="text-xs md:text-sm text-amber-800">
-                            请将写着社区情境的<strong class="text-amber-900 font-bold">T-恤卡片</strong><strong class="text-emerald-700">拖拽</strong>或<strong class="text-emerald-700">点击选中后挂到</strong>正确的衣架上！
-                        </p>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Level 2 • 第二关</span>
+                        <h2 class="text-2xl font-bold text-slate-800 title-font mt-1">Taip Simpulan Bahasa (看华文写国语句子)</h2>
+                        <p class="text-slate-500 text-sm mt-1">Taip Simpulan Bahasa yang betul berdasarkan maksud tanpa sebarang petunjuk!</p>
                     </div>
-                    <button onclick="resetClothesGame()" class="text-xs bg-white text-amber-900 px-4 py-2 rounded-xl border border-amber-300 hover:bg-amber-100 font-bold shadow-sm transition flex items-center gap-1">
-                        <i class="fa-solid fa-rotate-right"></i> 重置所有衣服
+                    <span id="l2-progress" class="text-sm font-black text-purple-700 bg-purple-50 px-3 py-1.5 rounded-xl border border-purple-200">Soalan 1 / 5</span>
+                </div>
+
+                <!-- Question Card -->
+                <div class="bg-purple-50/70 border-2 border-purple-200 rounded-3xl p-6 md:p-8 mb-6 text-center relative shadow-sm">
+                    <span class="text-xs font-extrabold text-purple-800 uppercase tracking-widest block mb-2">Maksud dalam Bahasa Cina (华文意思):</span>
+                    <h3 id="l2-question-text" class="text-xl md:text-2xl font-black text-slate-800 leading-snug mb-4">
+                        --
+                    </h3>
+
+                    <!-- Input Box -->
+                    <div class="max-w-md mx-auto">
+                        <input type="text" id="l2-user-input" placeholder="Taip jawapan di sini... (例: mandi kerbau)" class="w-full bg-white border-2 border-purple-300 focus:border-purple-600 rounded-2xl px-5 py-3.5 text-center text-lg font-bold text-purple-950 outline-none transition shadow-inner">
+                    </div>
+                </div>
+
+                <div class="flex justify-center mb-4">
+                    <button onclick="submitL2Answer()" class="bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-base px-8 py-3 rounded-2xl shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Hantar Jawapan (提交答案)
                     </button>
                 </div>
 
-                <!-- Game Racks Container -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
-                    
-                    <!-- Tolerant Rack (Green) -->
-                    <div id="rack-tolerant" class="bg-emerald-50/80 border-4 border-dashed border-emerald-400 rounded-3xl p-5 min-h-[280px] flex flex-col justify-start items-center transition relative" ondragover="allowDrop(event)" ondrop="handleDrop(event, true)" onclick="tapTargetRack(true)">
-                        <div class="w-full flex items-center justify-between border-b border-emerald-200 pb-2 mb-3">
-                            <span class="bg-emerald-600 text-white font-bold text-sm px-3 py-1 rounded-xl shadow flex items-center gap-1.5">
-                                <i class="fa-solid fa-square-check"></i> 🟢 礼让大衣架 (Toleransi)
-                            </span>
-                            <span id="count-tolerant" class="text-xs font-extrabold bg-emerald-200 text-emerald-900 px-2.5 py-0.5 rounded-full">已挂: 0 件</span>
-                        </div>
-                        <p class="text-[11px] text-emerald-700 font-medium mb-3">（拖拽或点击衣服后点此挂上）</p>
-                        
-                        <!-- Wooden Bar Visual -->
-                        <div class="w-full h-3 bg-amber-700 rounded-full shadow-inner mb-4 relative">
-                            <div class="absolute left-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
-                            <div class="absolute right-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
-                        </div>
-
-                        <!-- Dropped Items list -->
-                        <div id="tolerant-clothes-container" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <!-- Hung clothes appear here -->
-                        </div>
-                    </div>
-
-                    <!-- Intolerant Rack (Red) -->
-                    <div id="rack-intolerant" class="bg-rose-50/80 border-4 border-dashed border-rose-400 rounded-3xl p-5 min-h-[280px] flex flex-col justify-start items-center transition relative" ondragover="allowDrop(event)" ondrop="handleDrop(event, false)" onclick="tapTargetRack(false)">
-                        <div class="w-full flex items-center justify-between border-b border-rose-200 pb-2 mb-3">
-                            <span class="bg-rose-600 text-white font-bold text-sm px-3 py-1 rounded-xl shadow flex items-center gap-1.5">
-                                <i class="fa-solid fa-rectangle-xmark"></i> 🔴 不礼让大衣架 (Bukan Toleransi)
-                            </span>
-                            <span id="count-intolerant" class="text-xs font-extrabold bg-rose-200 text-rose-900 px-2.5 py-0.5 rounded-full">已挂: 0 件</span>
-                        </div>
-                        <p class="text-[11px] text-rose-700 font-medium mb-3">（拖拽或点击衣服后点此挂上）</p>
-
-                        <!-- Wooden Bar Visual -->
-                        <div class="w-full h-3 bg-amber-700 rounded-full shadow-inner mb-4 relative">
-                            <div class="absolute left-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
-                            <div class="absolute right-4 -top-2 w-2 h-4 bg-amber-900 rounded"></div>
-                        </div>
-
-                        <!-- Dropped Items list -->
-                        <div id="intolerant-clothes-container" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <!-- Hung clothes appear here -->
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Unassigned Laundry Basket / Rack Pool -->
-                <div class="bg-white rounded-2xl p-5 border border-amber-200 shadow-sm mt-6">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-extrabold text-amber-950 text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-basket-shopping text-amber-600"></i> 待抽取的社区行为 T-恤篮子 (Laundry Basket)
-                        </h3>
-                        <span id="selected-hint" class="text-xs text-amber-700 font-bold bg-amber-100 px-3 py-1 rounded-lg">
-                            💡 提示：按衣服可直接选中，然后按上方衣架！
-                        </span>
-                    </div>
-
-                    <div id="unassigned-clothes-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <!-- Dynamic Clothes Items -->
-                    </div>
-                </div>
-
-                <!-- Victory Banner -->
-                <div id="clothes-game-victory" class="hidden mt-6 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 text-white text-center shadow-xl space-y-2">
-                    <div class="text-4xl text-amber-300"><i class="fa-solid fa-trophy"></i></div>
-                    <h3 class="text-2xl font-black">全班太棒了！所有衣服成功分类完毕！</h3>
-                    <p class="text-xs md:text-sm text-teal-100">大家已经能够准确分辨社区里的礼让与不礼让行为。</p>
-                </div>
+                <div id="l2-toast" class="hidden rounded-2xl p-4 font-bold text-sm mb-4 text-center"></div>
             </div>
         </section>
 
-        <!-- TAB 4: 礼让的重要性 (学习标准 14.2) -->
-        <section id="tab-importance" class="hidden space-y-6">
-            <div class="border-b border-teal-200 pb-4">
-                <span class="text-xs font-bold text-teal-600 uppercase tracking-wide">学习标准 14.2</span>
-                <h2 class="text-2xl font-extrabold text-teal-950">社区生活里礼让行为的重要性 (Kepentingan Toleransi)</h2>
-                <p class="text-sm text-slate-600">如果每个人在社区里都懂得礼让，会带来什么好处？请将鼠标悬停或触碰下方卡片翻看详解：</p>
-            </div>
+        <!-- LEVEL 3: Melengkapkan 6 Ayat Bahasa Melayu -->
+        <section id="section-level3" class="hidden">
+            <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-emerald-100">
+                <div class="mb-6 border-b border-slate-100 pb-4">
+                    <span class="bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Level 3 • 第三关</span>
+                    <h2 class="text-2xl font-bold text-slate-800 title-font mt-1">Aplikasi Simpulan Bahasa dalam Ayat (句子填充)</h2>
+                    <p class="text-slate-500 text-sm mt-1">Pilih Simpulan Bahasa yang paling sesuai untuk melengkapkan 6 ayat di bawah. (共 6 个国语句子，无华文意思标注)</p>
+                </div>
 
-            <!-- Importance Flip Cards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1 -->
-                <div class="flip-card h-72">
-                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
-                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
-                            <div class="w-16 h-16 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-3xl mb-1">
-                                <i class="fa-solid fa-handshake-angle"></i>
-                            </div>
-                            <span class="text-xs font-bold text-teal-600">重要性 1</span>
-                            <h3 class="font-bold text-lg text-teal-950">增进邻里感情与和谐</h3>
-                            <p class="text-xs text-slate-500">Memupuk Keharmonian Jiran</p>
-                            <span class="text-[10px] text-teal-500 font-semibold bg-teal-50 px-2.5 py-1 rounded-md border border-teal-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
-                        </div>
-                        <div class="flip-card-back absolute inset-0 bg-teal-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
-                            <h4 class="font-bold text-amber-300 text-sm">详细说明：</h4>
-                            <p class="text-xs leading-relaxed">
-                                互相体谅与退让能减少邻里之间的误会与争吵，拉近邻居之间的关系，让住宅区充满欢声笑语。
-                            </p>
-                        </div>
+                <!-- Word Bank Sticky List -->
+                <div class="bg-sky-50 border border-sky-200 rounded-2xl p-4 mb-6">
+                    <span class="text-xs font-extrabold text-sky-800 uppercase tracking-widest block mb-2">Pilihan Simpulan Bahasa (答案选项词库):</span>
+                    <div class="flex flex-wrap gap-2 text-xs font-bold text-sky-900">
+                        <span class="bg-white border border-sky-300 px-3 py-1.5 rounded-xl shadow-xs">mandi kerbau</span>
+                        <span class="bg-white border border-sky-300 px-3 py-1.5 rounded-xl shadow-xs">ringan tulang</span>
+                        <span class="bg-white border border-sky-300 px-3 py-1.5 rounded-xl shadow-xs">lipas kudung</span>
+                        <span class="bg-white border border-sky-300 px-3 py-1.5 rounded-xl shadow-xs">ambil berat</span>
+                        <span class="bg-white border border-sky-300 px-3 py-1.5 rounded-xl shadow-xs">buah tangan</span>
+                        <span class="bg-white border border-sky-300 px-3 py-1.5 rounded-xl shadow-xs">kaki ayam</span>
                     </div>
                 </div>
 
-                <!-- Card 2 -->
-                <div class="flip-card h-72">
-                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
-                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
-                            <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-3xl mb-1">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </div>
-                            <span class="text-xs font-bold text-amber-600">重要性 2</span>
-                            <h3 class="font-bold text-lg text-teal-950">建立秩序与保障安全</h3>
-                            <p class="text-xs text-slate-500">Ketenteraman & Ketertiban</p>
-                            <span class="text-[10px] text-amber-600 font-semibold bg-amber-50 px-2.5 py-1 rounded-md border border-amber-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
-                        </div>
-                        <div class="flip-card-back absolute inset-0 bg-amber-600 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
-                            <h4 class="font-bold text-amber-200 text-sm">详细说明：</h4>
-                            <p class="text-xs leading-relaxed">
-                                大家遵守秩序排队、在窄路减速让行，能确保公共设施顺畅运行，并大幅减少道路意外的发生。
-                            </p>
-                        </div>
-                    </div>
+                <!-- 6 Sentence Questions List -->
+                <div id="l3-questions-container" class="space-y-4 mb-6">
+                    <!-- Populated by JS -->
                 </div>
 
-                <!-- Card 3 -->
-                <div class="flip-card h-72">
-                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
-                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
-                            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mb-1">
-                                <i class="fa-solid fa-house-chimney-window"></i>
-                            </div>
-                            <span class="text-xs font-bold text-emerald-600">重要性 3</span>
-                            <h3 class="font-bold text-lg text-teal-950">打造充满关怀的温馨社区</h3>
-                            <p class="text-xs text-slate-500">Persekitaran Mesra & Penyayang</p>
-                            <span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
-                        </div>
-                        <div class="flip-card-back absolute inset-0 bg-emerald-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
-                            <h4 class="font-bold text-emerald-200 text-sm">详细说明：</h4>
-                            <p class="text-xs leading-relaxed">
-                                礼让精神能传递温暖与人文关怀，让居民不分种族与背景，都能在这个社区里安心且舒适地生活。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="flip-card h-72">
-                    <div class="flip-card-inner relative w-full h-full text-center shadow-md rounded-2xl border border-teal-100">
-                        <div class="flip-card-front absolute inset-0 bg-white p-6 rounded-2xl flex flex-col items-center justify-center space-y-3">
-                            <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-3xl mb-1">
-                                <i class="fa-solid fa-user-graduate"></i>
-                            </div>
-                            <span class="text-xs font-bold text-indigo-600">重要性 4</span>
-                            <h3 class="font-bold text-lg text-teal-950">提升个人良好的道德修养</h3>
-                            <p class="text-xs text-slate-500">Meningkatkan Keperibadian Diri</p>
-                            <span class="text-[10px] text-indigo-600 font-semibold bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">点击/悬停翻转 <i class="fa-solid fa-rotate"></i></span>
-                        </div>
-                        <div class="flip-card-back absolute inset-0 bg-indigo-700 text-white p-6 rounded-2xl flex flex-col justify-center items-center space-y-3">
-                            <h4 class="font-bold text-indigo-200 text-sm">详细说明：</h4>
-                            <p class="text-xs leading-relaxed">
-                                懂得礼让展现高尚的涵养与谦逊的品质，不仅能赢得邻里尊重，也能成为大家心中的道德楷模。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 5: 互动测试 - 社区礼让大侦探 -->
-        <section id="tab-quiz" class="hidden space-y-6">
-            <div class="bg-white rounded-3xl p-6 border border-teal-100 shadow-md">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-teal-100 pb-4 mb-6">
-                    <div>
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full inline-block mb-1">
-                            巩固活动
-                        </span>
-                        <h2 class="text-2xl font-extrabold text-teal-950">测试：社区礼让大侦探 (Kuiz Detektif Toleransi)</h2>
-                        <p class="text-xs md:text-sm text-slate-600">评判以下场景：哪一个是<strong class="text-emerald-600">礼让行为（绿灯）</strong>？哪一个是<strong class="text-rose-600">缺乏礼让（红灯）</strong>？</p>
-                    </div>
-                    <div class="bg-teal-50 border border-teal-200 px-4 py-2 rounded-2xl flex items-center gap-3">
-                        <div class="text-center">
-                            <span class="text-[10px] text-teal-600 block uppercase font-bold">目前得分</span>
-                            <span id="quiz-score" class="text-2xl font-extrabold text-teal-900">0 / 6</span>
-                        </div>
-                        <button onclick="resetQuiz()" class="text-xs bg-white text-teal-700 px-3 py-1.5 rounded-lg border border-teal-200 hover:bg-teal-100 transition font-bold">
-                            <i class="fa-solid fa-rotate-right"></i> 重新测试
-                        </button>
-                    </div>
-                </div>
-
-                <div id="quiz-questions-container" class="space-y-4"></div>
-
-                <div id="quiz-completion-banner" class="hidden mt-6 p-6 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white text-center shadow-lg space-y-3">
-                    <div class="text-4xl"><i class="fa-solid fa-award"></i></div>
-                    <h3 class="text-2xl font-bold">太棒了！你是出色的“社区礼让大侦探”！</h3>
-                    <button onclick="resetQuiz()" class="mt-2 bg-amber-400 hover:bg-amber-300 text-teal-950 font-bold px-5 py-2 rounded-xl text-sm transition shadow">
-                        <i class="fa-solid fa-rotate-right"></i> 再玩一次
+                <div class="flex justify-center">
+                    <button onclick="submitL3Answers()" class="bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-base px-10 py-3.5 rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i> Semak Semua 6 Jawapan (检查所有答案)
                     </button>
                 </div>
+
+                <div id="l3-toast" class="hidden rounded-2xl p-4 font-bold text-sm mt-4 text-center"></div>
             </div>
         </section>
 
     </main>
 
-    <!-- Global Footer -->
-    <footer class="bg-teal-950 text-teal-200 text-xs py-4 mt-8 border-t border-teal-800">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
-            <div>
-                <p class="font-bold">五年级道德教育互动学习应用 (Moral Education Year 5)</p>
-                <p class="text-[11px] text-teal-400">单元十四：《礼让之城》(辨识社区生活中的礼让行为与重要性)</p>
+    <!-- Student Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-emerald-100">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-sm">
+                    🎓
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 title-font">Selamat Datang! (欢迎登录)</h3>
+                <p class="text-xs text-slate-500 mt-1">Sila masukkan nama dan kelas anda untuk memulakan cabaran Simpulan Bahasa Tahun 5.</p>
             </div>
-            <div class="text-teal-400 text-[11px]">
-                适用于华小 (SJKC) • KSSR Semakan 课程
+            
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">Nama Murid (学生姓名):</label>
+                    <input type="text" id="input-student-name" required placeholder="Contoh: Zhe Hao / 陈哲豪" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl px-4 py-3 text-sm font-semibold outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">Nama Kelas (班级):</label>
+                    <input type="text" id="input-student-class" placeholder="Contoh: Tahun 5 Mawar" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-emerald-500 rounded-xl px-4 py-3 text-sm font-semibold outline-none transition">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-xl transition shadow-lg text-base mt-2 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> Mula Latihan Sekarang (开始答题)
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Modal Replacement for alert() -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4 no-print">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center border border-emerald-100">
+            <span id="modal-icon" class="text-5xl block mb-3">🎉</span>
+            <h3 id="modal-title" class="text-xl font-bold text-slate-800 mb-2">Maklumat</h3>
+            <p id="modal-message" class="text-sm text-slate-600 mb-6 leading-relaxed">Pesej mesej di sini.</p>
+            <button onclick="closeModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl transition shadow">
+                Faham (明白)
+            </button>
+        </div>
+    </div>
+
+    <!-- Automatic Printable Certificate Modal -->
+    <div id="certificate-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-8 md:p-12 shadow-2xl relative border-8 border-amber-400 m-auto text-center font-sans">
+            <div class="no-print absolute top-4 right-4 flex gap-2">
+                <button onclick="copyAchievementText()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-copy"></i> Salin Ringkasan (复制)
+                </button>
+                <button onclick="downloadOrPrintCertificate()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-download"></i> Muat Turun Sijil (下载/打印)
+                </button>
+                <button onclick="closeCertificate()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition">
+                    ✕
+                </button>
+            </div>
+
+            <div class="inline-block bg-emerald-800 text-amber-300 px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4 shadow">
+                Sijil Pencapaian Bahasa Melayu Tahun 5
+            </div>
+
+            <h2 class="title-font text-3xl md:text-4xl font-extrabold text-slate-800 mb-1 tracking-tight">SIJIL PENGUASAAN SIMPULAN BAHASA</h2>
+            <p class="text-slate-500 text-xs uppercase tracking-widest font-bold border-b border-amber-200 pb-4 mb-6">
+                Peringkat Sekolah Rendah • 表达与成语运用
+            </p>
+
+            <p class="text-slate-600 text-sm italic">Dengan ini diperakui bahawa (兹证明):</p>
+            
+            <h3 id="cert-student-name" class="text-2xl md:text-3xl font-extrabold text-emerald-800 my-2 underline decoration-amber-400 decoration-4 underline-offset-4">
+                [ Nama Murid ]
+            </h3>
+            
+            <p id="cert-student-class" class="text-xs font-bold text-slate-500 mb-6">Kelas: Tahun 5</p>
+
+            <p class="text-slate-700 text-sm max-w-lg mx-auto leading-relaxed">
+                Telah berjaya menyempurnakan ketiga-tiga Aras Penguasaan Simpulan Bahasa (Pilihan Maksud, Taip Bebas, dan Aplikasi dalam 6 Ayat Bahasa Melayu).
+            </p>
+
+            <div class="my-6 bg-amber-50 border-2 border-dashed border-amber-300 rounded-2xl p-4 flex justify-around items-center max-w-md mx-auto">
+                <div class="text-center">
+                    <span class="text-xs font-bold text-amber-800 uppercase block">Jumlah Markah</span>
+                    <span id="cert-score" class="text-2xl font-black text-amber-600">⭐ 0 / 100</span>
+                </div>
+                <div class="h-10 border-r border-amber-200"></div>
+                <div class="text-center">
+                    <span class="text-xs font-bold text-emerald-800 uppercase block">Tahap Penguasaan</span>
+                    <span id="cert-grade" class="text-lg font-black text-emerald-700">⭐ Cemerlang</span>
+                </div>
+            </div>
+
+            <div class="no-print mt-4 bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                <p class="text-xs text-slate-600 font-semibold mb-2">📋 Salin ringkasan keputusan untuk dihantar kepada guru (复制成绩以发给老师/家长):</p>
+                <button onclick="copyAchievementText()" class="bg-amber-400 hover:bg-amber-500 text-emerald-950 font-extrabold text-xs py-2 px-5 rounded-xl shadow transition inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-paste"></i> Salin Ringkasan Keputusan
+                </button>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-200 flex justify-between items-end text-xs text-slate-500 font-semibold px-4">
+                <div class="text-left">
+                    <span>Tarikh Tamat: <strong id="cert-date" class="text-slate-800">30/10/2026</strong></span><br>
+                    <span>Status Pengesahan: Lulus Cemerlang</span>
+                </div>
+                <div class="text-center">
+                    <div class="w-24 border-b border-slate-400 mb-1 mx-auto"></div>
+                    <span class="font-bold text-slate-700">Guru Bahasa Melayu</span>
+                </div>
             </div>
         </div>
-    </footer>
+    </div>
 
+    <!-- JavaScript Data Logic -->
     <script>
-        /* SCENARIO DATA DEFINITIONS WITH CUTE SVG VECTOR GRAPHICS */
-        const scenariosData = {
-            'A': {
-                code: '场景 A',
-                title: '公共交通与设施 (Pengangkutan Awam)',
-                icon: 'fa-bus',
-                color: 'teal',
-                bgGradient: 'from-teal-600 to-cyan-700',
-                situation: '社区巴士站 (Stesen Bas Komuniti)',
-                // Cute primary-school vector SVG illustration
-                svgGraphic: `
-                    <svg viewBox="0 0 400 250" class="w-full h-full bg-sky-100 rounded-xl">
-                        <!-- Sky Background & Clouds -->
-                        <rect width="400" height="250" fill="#e0f2fe"/>
-                        <circle cx="80" cy="50" r="25" fill="#ffffff" opacity="0.9"/>
-                        <circle cx="105" cy="50" r="18" fill="#ffffff" opacity="0.9"/>
-                        <circle cx="300" cy="40" r="22" fill="#ffffff" opacity="0.8"/>
-                        <!-- Cute Yellow Bus -->
-                        <rect x="180" y="80" width="180" height="110" rx="20" fill="#f59e0b"/>
-                        <rect x="195" y="95" width="45" height="35" rx="5" fill="#38bdf8"/>
-                        <rect x="250" y="95" width="45" height="35" rx="5" fill="#38bdf8"/>
-                        <rect x="305" y="95" width="40" height="35" rx="5" fill="#38bdf8"/>
-                        <circle cx="220" cy="190" r="16" fill="#334155"/>
-                        <circle cx="220" cy="190" r="6" fill="#94a3b8"/>
-                        <circle cx="320" cy="190" r="16" fill="#334155"/>
-                        <circle cx="320" cy="190" r="6" fill="#94a3b8"/>
-                        <!-- Bus Stop Sign -->
-                        <rect x="130" y="110" width="8" height="90" fill="#64748b"/>
-                        <circle cx="134" cy="100" r="22" fill="#0284c7"/>
-                        <text x="134" y="105" font-size="12" fill="white" font-weight="bold" text-anchor="middle">BUS</text>
-                        <!-- Cute Queuing Students & Elderly Person -->
-                        <!-- Elderly -->
-                        <circle cx="45" cy="140" r="12" fill="#fde047"/>
-                        <circle cx="45" cy="135" r="11" fill="#cbd5e1"/> <!-- Grey Hair -->
-                        <rect x="38" y="152" width="14" height="35" rx="5" fill="#0284c7"/>
-                        <!-- Student 1 -->
-                        <circle cx="75" cy="150" r="10" fill="#fca5a5"/>
-                        <rect x="70" y="160" width="10" height="28" rx="4" fill="#16a34a"/>
-                        <!-- Student 2 -->
-                        <circle cx="100" cy="152" r="10" fill="#fed7aa"/>
-                        <rect x="95" y="162" width="10" height="26" rx="4" fill="#9333ea"/>
-                        <!-- Ground -->
-                        <rect x="0" y="195" width="400" height="55" fill="#475569"/>
-                        <rect x="0" y="200" width="400" height="6" fill="#e2e8f0"/>
-                    </svg>
-                `,
-                imageCaption: '可爱卡通：排队上车与礼让长者',
-                description: '在社区巴士站等候拥挤的巴士时，大家都在排队。此时有一位行动不便的老爷爷缓慢地走向巴士门。',
-                action: '遵守秩序按顺序排队上车，并主动礼让老爷爷优先上车，上车后主动让座。',
-                whyImportant: '确保上车秩序与安全，避免拥挤跌倒，展现对邻里长者的关心与尊重。',
-                badgeText: '排队上车 & 主动让座'
+        // Data Set of Simpulan Bahasa
+        const vocabularyList = [
+            { id: "mandi kerbau", term: "mandi kerbau", meaning: "形容洗澡不干净，速度极快" },
+            { id: "ringan tulang", term: "ringan tulang", meaning: "形容一个人非常勤劳，乐于助人" },
+            { id: "lipas kudung", term: "lipas kudung", meaning: "形容做事手脚利索，非常迅速" },
+            { id: "ambil berat", term: "ambil berat", meaning: "指对某人/某件事表示关心，给予注意" },
+            { id: "buah tangan", term: "buah tangan", meaning: "去拜访亲友时顺手带去的礼物（手信）" }
+        ];
+
+        // Level 3 Sentence Questions (6 Questions including kaki ayam)
+        const level3Questions = [
+            {
+                id: 1,
+                sentenceBefore: "Adik tidak memakai kasut semasa bermain di luar rumah, ibunya menasihatinya supaya tidak berkaki ayam atau menjadi ",
+                sentenceAfter: " kerana kotor.",
+                answer: "kaki ayam",
+                hintOptions: ["mandi kerbau", "ringan tulang", "lipas kudung", "ambil berat", "buah tangan", "kaki ayam"]
             },
-            'B': {
-                code: '场景 B',
-                title: '社区道路与游乐场 (Jalan Raya & Taman)',
-                icon: 'fa-car-side',
-                color: 'amber',
-                bgGradient: 'from-amber-600 to-orange-700',
-                situation: '住宅区狭窄道路与公园乒乓球台',
-                svgGraphic: `
-                    <svg viewBox="0 0 400 250" class="w-full h-full bg-emerald-100 rounded-xl">
-                        <rect width="400" height="250" fill="#dcfce7"/>
-                        <!-- Trees & Park Background -->
-                        <circle cx="60" cy="90" r="40" fill="#22c55e"/>
-                        <rect x="52" y="130" width="16" height="50" fill="#78350f"/>
-                        <circle cx="340" cy="80" r="45" fill="#16a34a"/>
-                        <rect x="332" y="125" width="16" height="55" fill="#78350f"/>
-                        <!-- Narrow Lane / Road -->
-                        <path d="M 0 190 Q 200 170 400 190 L 400 250 L 0 250 Z" fill="#64748b"/>
-                        <!-- Blue Car Waiting Kindly -->
-                        <rect x="50" y="180" width="90" height="45" rx="12" fill="#3b82f6"/>
-                        <circle cx="70" cy="225" r="10" fill="#1e293b"/>
-                        <circle cx="120" cy="225" r="10" fill="#1e293b"/>
-                        <text x="95" y="200" font-size="10" fill="white" font-weight="bold" text-anchor="middle">礼让中</text>
-                        <!-- Red Car Passing Safely -->
-                        <rect x="250" y="180" width="90" height="45" rx="12" fill="#ef4444"/>
-                        <circle cx="270" cy="225" r="10" fill="#1e293b"/>
-                        <circle cx="320" cy="225" r="10" fill="#1e293b"/>
-                        <!-- Park Pingpong Table -->
-                        <rect x="150" y="100" width="100" height="50" fill="#0284c7" rx="4"/>
-                        <rect x="198" y="90" width="4" height="20" fill="#ffffff"/> <!-- Net -->
-                        <rect x="160" y="150" width="6" height="30" fill="#334155"/>
-                        <rect x="234" y="150" width="6" height="30" fill="#334155"/>
-                        <!-- Kids playing happily -->
-                        <circle cx="130" cy="115" r="10" fill="#fca5a5"/>
-                        <circle cx="270" cy="115" r="10" fill="#fed7aa"/>
-                    </svg>
-                `,
-                imageCaption: '可爱卡通：窄路减速让行 & 游乐设施共享',
-                description: '在狭窄的住宅区巷子里，两辆汽车迎面相驶；而在公园里，有许多小朋友排队等着玩乒乓球。',
-                action: '驾驶者减速并将车停在较宽处礼让对面车辆先行；玩乒乓球时限定时间，主动让其他人轮流玩。',
-                whyImportant: '避免交通堵塞与碰撞事故，确保所有居民都能公平享受社区公共设施。',
-                badgeText: '窄路让行 & 轮流共享'
+            {
+                id: 2,
+                sentenceBefore: "Ahmad hanya mandi sebentar sahaja kerana tergesa-gesa. Sikapnya itu seperti ",
+                sentenceAfter: " .",
+                answer: "mandi kerbau",
+                hintOptions: ["mandi kerbau", "ringan tulang", "lipas kudung", "ambil berat", "buah tangan", "kaki ayam"]
             },
-            'C': {
-                code: '场景 C',
-                title: '邻里相处与公共环境 (Jiran & Persekitaran)',
-                icon: 'fa-house-chimney-window',
-                color: 'emerald',
-                bgGradient: 'from-emerald-600 to-teal-700',
-                situation: '邻居房屋修缮与社区公共晾衣架',
-                svgGraphic: `
-                    <svg viewBox="0 0 400 250" class="w-full h-full bg-amber-50 rounded-xl">
-                        <rect width="400" height="250" fill="#fef3c7"/>
-                        <!-- Cute Houses -->
-                        <polygon points="50,90 110,40 170,90" fill="#f97316"/>
-                        <rect x="60" y="90" width="100" height="90" fill="#fde047"/>
-                        <rect x="90" y="125" width="25" height="55" fill="#78350f"/>
-                        
-                        <polygon points="230,90 290,40 350,90" fill="#0284c7"/>
-                        <rect x="240" y="90" width="100" height="90" fill="#7dd3fc"/>
-                        <rect x="270" y="125" width="25" height="55" fill="#0369a1"/>
-                        
-                        <!-- Clothesline in between -->
-                        <line x1="160" y1="110" x2="240" y2="110" stroke="#78350f" stroke-width="3"/>
-                        <!-- Shirt 1 -->
-                        <path d="M 170 110 L 180 120 L 190 110 L 195 135 L 165 135 Z" fill="#ec4899"/>
-                        <!-- Shirt 2 -->
-                        <path d="M 210 110 L 220 120 L 230 110 L 235 135 L 205 135 Z" fill="#10b981"/>
-                        
-                        <!-- Smiling Neighbours waving -->
-                        <circle cx="130" cy="150" r="11" fill="#fed7aa"/>
-                        <path d="M 120 165 Q 130 180 140 165" stroke="#2563eb" stroke-width="8"/>
-                        <circle cx="250" cy="150" r="11" fill="#fca5a5"/>
-                        <path d="M 240 165 Q 250 180 260 165" stroke="#059669" stroke-width="8"/>
-                    </svg>
-                `,
-                imageCaption: '可爱卡通：体谅邻居修缮 & 留出公共晾衣空间',
-                description: '邻居在白天进行轻微的房屋修缮或举办小聚会，产生了一点声音；另外在社区公共晾衣架处，空间有限。',
-                action: '体谅邻居暂时的修缮噪音；在公共晾衣架晾衣服时只占用所需空间，留出一半给邻居使用。',
-                whyImportant: '换位思考、体谅邻居需求，避免无谓的纠纷，维持长久和谐的邻里关系。',
-                badgeText: '体谅噪音 & 共享晾衣架'
+            {
+                id: 3,
+                sentenceBefore: "Siti seorang yang sangat ",
+                sentenceAfter: " kerana dia suka membantu ibunya mengemas rumah setiap hari.",
+                answer: "ringan tulang",
+                hintOptions: ["mandi kerbau", "ringan tulang", "lipas kudung", "ambil berat", "buah tangan", "kaki ayam"]
             },
-            'D': {
-                code: '场景 D',
-                title: '社区会议与交流 (Mesyuarat Komuniti)',
-                icon: 'fa-users-rectangle',
-                color: 'indigo',
-                bgGradient: 'from-indigo-600 to-blue-700',
-                situation: '居民大会 (Mesyuarat Agung Penduduk)',
-                svgGraphic: `
-                    <svg viewBox="0 0 400 250" class="w-full h-full bg-indigo-50 rounded-xl">
-                        <rect width="400" height="250" fill="#e0e7ff"/>
-                        <!-- Meeting Table -->
-                        <ellipse cx="200" cy="160" rx="140" ry="50" fill="#c7d2fe"/>
-                        <ellipse cx="200" cy="155" rx="135" ry="45" fill="#818cf8"/>
-                        <!-- Cute Resident Figures Around Table -->
-                        <circle cx="100" cy="120" r="14" fill="#fca5a5"/>
-                        <circle cx="160" cy="105" r="14" fill="#fed7aa"/>
-                        <circle cx="240" cy="105" r="14" fill="#fef08a"/>
-                        <circle cx="300" cy="120" r="14" fill="#bbf7d0"/>
-                        <!-- Speech Bubble -->
-                        <rect x="175" y="45" width="80" height="40" rx="10" fill="#ffffff" stroke="#4f46e5" stroke-width="2"/>
-                        <text x="215" y="68" font-size="11" fill="#4f46e5" font-weight="bold" text-anchor="middle">轮流发言</text>
-                        <polygon points="210,85 220,85 215,95" fill="#ffffff"/>
-                    </svg>
-                `,
-                imageCaption: '可爱卡通：居民大会有序发言 & 虚心倾听',
-                description: '在住宅区居民大会上讨论环境卫生与安全课题时，许多居民纷纷举手想表达看法。',
-                action: '发言时简明扼要，不霸占发言时间，简述观点后礼让并虚心倾听其他居民的意见。',
-                whyImportant: '保障每位居民表达意见的权力，促进民主包容的沟通，集思广益建设更好的社区。',
-                badgeText: '尊重发言 & 虚心倾听'
+            {
+                id: 4,
+                sentenceBefore: "Pekerja di restoran itu membuat kerja seperti ",
+                sentenceAfter: " supaya pelanggan tidak menunggu lama.",
+                answer: "lipas kudung",
+                hintOptions: ["mandi kerbau", "ringan tulang", "lipas kudung", "ambil berat", "buah tangan", "kaki ayam"]
+            },
+            {
+                id: 5,
+                sentenceBefore: "Guru kelas sentiasa ",
+                sentenceAfter: " terhadap kebajikan dan pelajaran murid-muridnya.",
+                answer: "ambil berat",
+                hintOptions: ["mandi kerbau", "ringan tulang", "lipas kudung", "ambil berat", "buah tangan", "kaki ayam"]
+            },
+            {
+                id: 6,
+                sentenceBefore: "Ayah membawa ",
+                sentenceAfter: " sewaktu melawat jiran di hospital.",
+                answer: "buah tangan",
+                hintOptions: ["mandi kerbau", "ringan tulang", "lipas kudung", "ambil berat", "buah tangan", "kaki ayam"]
             }
-        };
-
-        /* SMARTBOARD HANGING CLOTHES GAME DATA */
-        const clothesGameItems = [
-            { id: 'c1', text: '在社区巴士站排队，并主动给长者让座', isTolerant: true, color: 'bg-teal-500' },
-            { id: 'c2', text: '在公园独占乒乓球台 2 小时，不给别人玩', isTolerant: false, color: 'bg-rose-500' },
-            { id: 'c3', text: '住宅区窄路慢驶，靠边让对面车辆先过', isTolerant: true, color: 'bg-emerald-500' },
-            { id: 'c4', text: '因邻居白天装修声音大，冲上门辱骂邻居', isTolerant: false, color: 'bg-red-500' },
-            { id: 'c5', text: '公共晾衣架只用一半，留一半给其他邻居', isTolerant: true, color: 'bg-cyan-600' },
-            { id: 'c6', text: '居民大会上抢话筒强行霸占发言时间', isTolerant: false, color: 'bg-orange-500' },
-            { id: 'c7', text: '认真虚心倾听其他邻居在会议上的建议', isTolerant: true, color: 'bg-indigo-500' },
-            { id: 'c8', text: '把自家垃圾与杂物堆在社区走廊通道', isTolerant: false, color: 'bg-amber-600' }
         ];
 
-        let selectedClothesId = null;
-        let hungItemsState = {}; // id -> 'tolerant' | 'intolerant'
+        // Global State
+        let studentName = "";
+        let studentClass = "";
+        let totalScore = 0;
 
-        /* QUIZ DATA DEFINITIONS */
-        const quizQuestions = [
-            { id: 1, situation: '明辉在住宅区狭窄路段开慢车，并主动靠边停车，让路给对面的邻居车辆通过。', isTolerance: true, explanation: '回答正确！这是社区道路上良好的礼让与安全驾驶行为。' },
-            { id: 2, situation: '小明和朋友在社区公园的乒乓球台连续霸占玩了 2 个小时，理都不理后面排队的小朋友。', isTolerance: false, explanation: '回答正确！霸占公共设施是不体谅他人且缺乏礼让的行为。' },
-            { id: 3, situation: '秀兰在社区公共晾衣架晾衣服时只用了一半的空间，特地留出另一半给邻居美玲太太。', isTolerance: true, explanation: '回答正确！懂得共享公共空间，是体谅邻居的好行为。' },
-            { id: 4, situation: '木都先生因为邻居在白天维修损坏的大门产生声音，冲出门去对邻居大声喝骂。', isTolerance: false, explanation: '回答正确！对于邻居正常的日常常规修缮，我们应当给予体谅与包容。' },
-            { id: 5, situation: '在居民大会上，阿成发言 2 分钟后主动停止，礼让新搬来的邻居发表他们的建议。', isTolerance: true, explanation: '回答正确！尊重他人表达意见的权力，是文明礼让的交流态度。' },
-            { id: 6, situation: '丽拉在社区巴士站推开前面的小朋友，抢先推挤上车占座位。', isTolerance: false, explanation: '回答正确！插队抢先不仅危险，也是极不讲道德与礼让的行为。' }
-        ];
+        let currentL1Index = 0;
+        let currentL2Index = 0;
 
-        let quizUserAnswers = {};
-
-        function switchTab(tabId) {
-            const tabs = ['tab-intro', 'tab-scenarios', 'tab-clothes', 'tab-importance', 'tab-quiz'];
-            tabs.forEach(t => {
-                const el = document.getElementById(t);
-                const btn = document.getElementById('btn-' + t);
-                if (t === tabId) {
-                    el.classList.remove('hidden');
-                    btn.classList.add('active');
-                } else {
-                    el.classList.add('hidden');
-                    btn.classList.remove('active');
-                }
-            });
-
-            if (tabId === 'tab-scenarios') showScenario('A');
-            if (tabId === 'tab-clothes') renderClothesGame();
+        function promptStudentLogin() {
+            document.getElementById('login-modal').classList.remove('hidden');
         }
 
-        function showScenario(key) {
-            const data = scenariosData[key];
-            if (!data) return;
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('input-student-name').value.trim();
+            const classInput = document.getElementById('input-student-class').value.trim();
 
-            ['A', 'B', 'C', 'D'].forEach(k => {
-                const btn = document.getElementById(`scen-btn-${k}`);
-                if (btn) {
-                    btn.className = (k === key) 
-                        ? 'scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-teal-600 text-white shadow'
-                        : 'scen-pill text-xs font-bold px-3 py-2 rounded-xl bg-white text-teal-800 border border-teal-200 hover:bg-teal-50';
-                }
-            });
-
-            const area = document.getElementById('scenario-content-area');
-            area.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-                    <!-- Left Column: Illustration & Header -->
-                    <div class="lg:col-span-1 flex flex-col rounded-2xl overflow-hidden border border-teal-100 shadow-sm bg-white">
-                        <div class="relative h-56 w-full p-2 bg-slate-50 flex items-center justify-center">
-                            ${data.svgGraphic}
-                        </div>
-                        <div class="p-4 bg-gradient-to-r ${data.bgGradient} text-white flex-grow flex flex-col justify-between">
-                            <div>
-                                <span class="bg-white/30 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">${data.code}</span>
-                                <h3 class="text-lg font-extrabold mt-1 leading-snug">${data.title}</h3>
-                                <p class="text-xs text-teal-100 mt-1"><i class="fa-solid fa-location-dot"></i> ${data.situation}</p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-white/20 flex items-center justify-between text-xs">
-                                <span class="font-bold bg-white/20 px-2.5 py-1 rounded-lg">${data.badgeText}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Situation, Action, Importance Breakdown -->
-                    <div class="lg:col-span-2 space-y-4 flex flex-col justify-between">
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                            <h4 class="text-xs font-extrabold text-teal-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                <i class="fa-solid fa-circle-info"></i> 1. 社区真实情境 (Situasi)
-                            </h4>
-                            <p class="text-sm font-medium text-slate-700 leading-relaxed">${data.description}</p>
-                        </div>
-
-                        <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200">
-                            <h4 class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                <i class="fa-solid fa-circle-check"></i> 2. 应实践的礼让行为 (Tindakan Toleransi)
-                            </h4>
-                            <p class="text-sm font-bold text-emerald-900 leading-relaxed">${data.action}</p>
-                        </div>
-
-                        <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-200">
-                            <h4 class="text-xs font-extrabold text-amber-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                <i class="fa-solid fa-lightbulb"></i> 3. 礼让的重要性 (Kepentingan)
-                            </h4>
-                            <p class="text-sm font-medium text-amber-900 leading-relaxed">${data.whyImportant}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        /* HANGING CLOTHES GAME LOGIC */
-        function renderClothesGame() {
-            const unassignedContainer = document.getElementById('unassigned-clothes-container');
-            const tolerantContainer = document.getElementById('tolerant-clothes-container');
-            const intolerantContainer = document.getElementById('intolerant-clothes-container');
-
-            unassignedContainer.innerHTML = '';
-            tolerantContainer.innerHTML = '';
-            intolerantContainer.innerHTML = '';
-
-            let countTol = 0;
-            let countIntol = 0;
-
-            clothesGameItems.forEach(item => {
-                const status = hungItemsState[item.id];
-                const card = createClothesCardHTML(item);
-
-                if (!status) {
-                    unassignedContainer.appendChild(card);
-                } else if (status === 'tolerant') {
-                    countTol++;
-                    tolerantContainer.appendChild(card);
-                } else if (status === 'intolerant') {
-                    countIntol++;
-                    intolerantContainer.appendChild(card);
-                }
-            });
-
-            document.getElementById('count-tolerant').innerText = `已挂: ${countTol} 件`;
-            document.getElementById('count-intolerant').innerText = `已挂: ${countIntol} 件`;
-
-            if (countTol + countIntol === clothesGameItems.length) {
-                document.getElementById('clothes-game-victory').classList.remove('hidden');
-                playSuccessSound();
-            } else {
-                document.getElementById('clothes-game-victory').classList.add('hidden');
+            if (nameInput) {
+                studentName = nameInput;
+                studentClass = classInput || "Tahun 5";
+                document.getElementById('student-display-name').innerText = `Murid: ${studentName}`;
+                document.getElementById('login-modal').classList.add('hidden');
+                sfx.playSuccess();
+                initLevel1();
             }
         }
 
-        function createClothesCardHTML(item) {
-            const div = document.createElement('div');
-            const isSelected = (selectedClothesId === item.id);
-            
-            div.className = `clothes-item flex flex-col items-center select-none cursor-pointer my-2 transition-all duration-200 transform ${isSelected ? 'scale-105' : 'hover:scale-[1.02]'}`;
-            div.draggable = true;
-            div.id = `clothes-${item.id}`;
+        function addScore(pts) {
+            totalScore += pts;
+            document.getElementById('score-count').innerText = totalScore;
+        }
 
-            // Drag Events
-            div.ondragstart = (e) => {
-                e.dataTransfer.setData('text/plain', item.id);
-                selectedClothesId = item.id;
-            };
+        // --- LEVEL 1 LOGIC ---
+        function initLevel1() {
+            currentL1Index = 0;
+            renderL1Question();
+        }
 
-            // Touch / Tap Event for Touchscreens & Mouse
-            div.onclick = (e) => {
-                e.stopPropagation();
-                if (selectedClothesId === item.id) {
-                    selectedClothesId = null;
-                } else {
-                    selectedClothesId = item.id;
-                    playClickSound();
-                }
-                renderClothesGame();
-            };
-
-            div.innerHTML = `
-                <!-- Wooden Hanger Hook Silhouette -->
-                <div class="w-7 h-4 border-t-2 border-r-2 border-amber-800/80 rounded-tr-full -mb-1 z-0"></div>
+        function renderL1Question() {
+            if (currentL1Index >= vocabularyList.length) {
+                // Completed Level 1 -> Move to Level 2
+                document.getElementById('section-level1').classList.add('hidden');
+                document.getElementById('section-level2').classList.remove('hidden');
                 
-                <!-- T-Shirt Silhouette Container -->
-                <div class="relative w-full max-w-[280px]">
-                    <!-- Left Sleeve -->
-                    <div class="absolute -left-2.5 top-3 w-4 h-9 ${item.color} rounded-l-lg border-l-2 border-b-2 border-black/20 shadow-md"></div>
-                    <!-- Right Sleeve -->
-                    <div class="absolute -right-2.5 top-3 w-4 h-9 ${item.color} rounded-r-lg border-r-2 border-b-2 border-black/20 shadow-md"></div>
-                    
-                    <!-- Main Shirt Body -->
-                    <div class="${item.color} text-white rounded-b-2xl rounded-t-xl p-3.5 pt-4 relative border-2 ${isSelected ? 'ring-4 ring-amber-400 border-white shadow-xl' : 'border-white/30 shadow-md'} transition-all flex flex-col justify-between min-h-[110px]">
-                        
-                        <!-- Neck / Collar Cutout -->
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-3.5 bg-amber-50/90 rounded-b-full border-b-2 border-amber-300/40 shadow-inner flex items-center justify-center">
-                            <div class="w-8 h-1 bg-amber-200/50 rounded-full"></div>
-                        </div>
+                // Update badge UI
+                document.getElementById('badge-level1').className = "flex items-center gap-1.5 text-emerald-300 opacity-60";
+                document.getElementById('badge-level2').className = "flex items-center gap-1.5 text-amber-300 font-bold";
 
-                        <!-- Tag Header -->
-                        <div class="flex items-center justify-between pt-1 mb-1.5 z-10">
-                            <span class="text-[10px] bg-black/25 px-2 py-0.5 rounded-full font-extrabold tracking-wider text-amber-200 flex items-center gap-1">
-                                <i class="fa-solid fa-shirt"></i> T-Shirt
-                            </span>
-                            <span class="text-[9px] bg-white/20 px-1.5 py-0.5 rounded text-white font-mono">
-                                #${item.id}
-                            </span>
-                        </div>
-
-                        <!-- Sentence Content inside T-shirt -->
-                        <p class="text-xs md:text-sm font-bold leading-snug px-1 text-center text-white drop-shadow z-10">
-                            ${item.text}
-                        </p>
-
-                        <!-- Action Button if hung in a rack -->
-                        ${hungItemsState[item.id] ? `
-                            <div class="mt-2.5 pt-1.5 border-t border-white/20 text-center z-10">
-                                <button onclick="unhangItem('${item.id}', event)" class="text-[10px] bg-white/20 hover:bg-white/40 active:scale-95 px-3 py-1 rounded-lg text-white font-bold transition shadow-sm">
-                                    <i class="fa-solid fa-rotate-left mr-1"></i> 取下衣服
-                                </button>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-            return div;
-        }
-
-        function allowDrop(e) {
-            e.preventDefault();
-        }
-
-        function handleDrop(e, targetIsTolerant) {
-            e.preventDefault();
-            const itemId = e.dataTransfer.getData('text/plain') || selectedClothesId;
-            if (itemId) {
-                verifyAndHang(itemId, targetIsTolerant);
+                initLevel2();
+                return;
             }
-        }
 
-        function tapTargetRack(targetIsTolerant) {
-            if (selectedClothesId) {
-                verifyAndHang(selectedClothesId, targetIsTolerant);
+            const item = vocabularyList[currentL1Index];
+            document.getElementById('l1-progress').innerText = `Soalan ${currentL1Index + 1} / ${vocabularyList.length}`;
+            document.getElementById('l1-question-text').innerText = item.meaning;
+            document.getElementById('l1-toast').classList.add('hidden');
+
+            // Generate options (Correct answer + 3 random options)
+            const options = [...vocabularyList].map(v => v.term);
+            // Add 'kaki ayam' into option pool for variety
+            if (!options.includes('kaki ayam')) options.push('kaki ayam');
+
+            // Shuffle options
+            const shuffledOptions = options.sort(() => Math.random() - 0.5).slice(0, 4);
+            if (!shuffledOptions.includes(item.term)) {
+                shuffledOptions[0] = item.term;
             }
+            shuffledOptions.sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('l1-options-grid');
+            grid.innerHTML = '';
+
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white hover:bg-emerald-50 border-2 border-slate-200 hover:border-emerald-500 text-slate-800 font-black text-lg py-4 px-6 rounded-2xl transition shadow-xs flex items-center justify-between group";
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-solid fa-chevron-right text-xs text-slate-300 group-hover:text-emerald-600"></i>`;
+                btn.onclick = () => selectL1Option(opt, item.term);
+                grid.appendChild(btn);
+            });
         }
 
-        function verifyAndHang(itemId, targetIsTolerant) {
-            const item = clothesGameItems.find(i => i.id === itemId);
-            if (!item) return;
+        function selectL1Option(selected, correct) {
+            const toast = document.getElementById('l1-toast');
+            toast.classList.remove('hidden');
 
-            if (item.isTolerant === targetIsTolerant) {
-                hungItemsState[itemId] = targetIsTolerant ? 'tolerant' : 'intolerant';
-                selectedClothesId = null;
-                playSuccessSound();
+            if (selected === correct) {
+                sfx.playSuccess();
+                addScore(10);
+                toast.className = "rounded-2xl p-4 font-bold text-sm mb-4 text-center bg-emerald-100 text-emerald-900 border border-emerald-300";
+                toast.innerHTML = `🎉 Betul! "${selected}" ialah jawapan yang tepat! (+10 ⭐)`;
             } else {
-                playClickSound();
-                alert(`⚠️ 仔细想想哦：“${item.text}” 属于${item.isTolerant ? '【礼让行为】' : '【缺乏礼让】'}！请再试一次！`);
+                sfx.playError();
+                toast.className = "rounded-2xl p-4 font-bold text-sm mb-4 text-center bg-rose-100 text-rose-900 border border-rose-300";
+                toast.innerHTML = `❌ Kurang tepat. Jawapan yang betul ialah "${correct}".`;
             }
-            renderClothesGame();
+
+            // Progress directly to next question
+            setTimeout(() => {
+                currentL1Index++;
+                renderL1Question();
+            }, 1200);
         }
 
-        function unhangItem(itemId, e) {
-            e.stopPropagation();
-            delete hungItemsState[itemId];
-            renderClothesGame();
+        // --- LEVEL 2 LOGIC ---
+        function initLevel2() {
+            currentL2Index = 0;
+            renderL2Question();
         }
 
-        function resetClothesGame() {
-            hungItemsState = {};
-            selectedClothesId = null;
-            renderClothesGame();
+        function renderL2Question() {
+            if (currentL2Index >= vocabularyList.length) {
+                // Completed Level 2 -> Move to Level 3
+                document.getElementById('section-level2').classList.add('hidden');
+                document.getElementById('section-level3').classList.remove('hidden');
+
+                // Update badge UI
+                document.getElementById('badge-level2').className = "flex items-center gap-1.5 text-emerald-300 opacity-60";
+                document.getElementById('badge-level3').className = "flex items-center gap-1.5 text-amber-300 font-bold";
+
+                initLevel3();
+                return;
+            }
+
+            const item = vocabularyList[currentL2Index];
+            document.getElementById('l2-progress').innerText = `Soalan ${currentL2Index + 1} / ${vocabularyList.length}`;
+            document.getElementById('l2-question-text').innerText = item.meaning;
+            document.getElementById('l2-user-input').value = '';
+            document.getElementById('l2-toast').classList.add('hidden');
+            document.getElementById('l2-user-input').focus();
         }
 
-        /* QUIZ FUNCTIONS */
-        function renderQuiz() {
-            const container = document.getElementById('quiz-questions-container');
+        function submitL2Answer() {
+            const userInput = document.getElementById('l2-user-input').value.trim().toLowerCase();
+            const correct = vocabularyList[currentL2Index].term.toLowerCase();
+            const toast = document.getElementById('l2-toast');
+            toast.classList.remove('hidden');
+
+            if (!userInput) {
+                sfx.playError();
+                toast.className = "rounded-2xl p-3 font-bold text-sm mb-4 text-center bg-amber-100 text-amber-900 border border-amber-300";
+                toast.innerHTML = `⚠️ Sila taip jawapan anda terlebih dahulu!`;
+                return;
+            }
+
+            if (userInput === correct) {
+                sfx.playSuccess();
+                addScore(10);
+                toast.className = "rounded-2xl p-4 font-bold text-sm mb-4 text-center bg-purple-100 text-purple-900 border border-purple-300";
+                toast.innerHTML = `🎉 Syabas! Taipan jawapan "${correct}" anda sangat tepat! (+10 ⭐)`;
+            } else {
+                sfx.playError();
+                toast.className = "rounded-2xl p-4 font-bold text-sm mb-4 text-center bg-rose-100 text-rose-900 border border-rose-300";
+                toast.innerHTML = `❌ Kurang tepat. Jawapan yang betul ialah "${correct}".`;
+            }
+
+            setTimeout(() => {
+                currentL2Index++;
+                renderL2Question();
+            }, 1300);
+        }
+
+        // Enable Enter key submission for Level 2
+        document.addEventListener('DOMContentLoaded', () => {
+            const l2Input = document.getElementById('l2-user-input');
+            if (l2Input) {
+                l2Input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') submitL2Answer();
+                });
+            }
+        });
+
+        // --- LEVEL 3 LOGIC ---
+        function initLevel3() {
+            const container = document.getElementById('l3-questions-container');
             container.innerHTML = '';
 
-            quizQuestions.forEach((q, index) => {
-                const card = document.createElement('div');
-                card.className = 'p-4 rounded-2xl border border-teal-100 bg-teal-50/30 space-y-3';
-                card.innerHTML = `
-                    <div class="space-y-1">
-                        <span class="text-[10px] font-extrabold text-teal-600 bg-teal-100 px-2.5 py-0.5 rounded-md">题目 ${index + 1}</span>
-                        <p class="text-xs md:text-sm font-semibold text-teal-950 leading-relaxed">${q.situation}</p>
+            level3Questions.forEach((q, idx) => {
+                const qCard = document.createElement('div');
+                qCard.className = "bg-slate-50 border border-slate-200 rounded-2xl p-4 md:p-5 text-sm md:text-base font-semibold leading-relaxed text-slate-800";
+
+                let optionsHTML = `<option value="">-- [ Sila Pilih Simpulan Bahasa ] --</option>`;
+                q.hintOptions.forEach(opt => {
+                    optionsHTML += `<option value="${opt}">${opt}</option>`;
+                });
+
+                qCard.innerHTML = `
+                    <div class="flex items-start gap-2.5">
+                        <span class="bg-sky-600 text-white w-6 h-6 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 mt-1">${idx + 1}</span>
+                        <div class="w-full">
+                            <span>${q.sentenceBefore}</span>
+                            <select id="l3-select-${q.id}" class="bg-white border-2 border-sky-300 rounded-xl px-3 py-1.5 font-bold text-sky-900 focus:outline-none focus:border-sky-600 mx-1 my-1">
+                                ${optionsHTML}
+                            </select>
+                            <span>${q.sentenceAfter}</span>
+                        </div>
                     </div>
-                    <div class="flex flex-wrap gap-2 pt-1" id="quiz-options-${q.id}">
-                        <button onclick="answerQuiz(${q.id}, true)" class="text-xs font-bold px-3 py-2 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-check text-emerald-600"></i> 绿灯（礼让行为）
-                        </button>
-                        <button onclick="answerQuiz(${q.id}, false)" class="text-xs font-bold px-3 py-2 rounded-xl border border-rose-300 bg-white hover:bg-rose-50 text-rose-800 flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-xmark text-rose-600"></i> 红灯（缺乏礼让）
-                        </button>
-                    </div>
-                    <div id="quiz-feedback-${q.id}" class="hidden p-3 rounded-xl text-xs font-medium space-y-1"></div>
                 `;
-                container.appendChild(card);
+                container.appendChild(qCard);
             });
         }
 
-        function answerQuiz(id, userVal) {
-            const q = quizQuestions.find(item => item.id === id);
-            if (!q) return;
-
-            quizUserAnswers[id] = userVal;
-            const isCorrect = (userVal === q.isTolerance);
-
-            const optionsBox = document.getElementById(`quiz-options-${id}`);
-            const feedbackBox = document.getElementById(`quiz-feedback-${id}`);
-
-            optionsBox.innerHTML = `
-                <span class="text-xs px-3 py-1.5 rounded-xl font-bold ${userVal ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                    你的选择：${userVal ? '绿灯（礼让行为）' : '红灯（缺乏礼让）'}
-                </span>
-            `;
-
-            feedbackBox.classList.remove('hidden');
-            if (isCorrect) {
-                feedbackBox.className = 'p-3 rounded-xl text-xs font-medium bg-emerald-100 text-emerald-950 border border-emerald-300';
-                feedbackBox.innerHTML = `<i class="fa-solid fa-thumbs-up text-emerald-600 mr-1"></i> <strong>非常准确！</strong> ${q.explanation}`;
-                playSuccessSound();
-            } else {
-                feedbackBox.className = 'p-3 rounded-xl text-xs font-medium bg-rose-100 text-rose-950 border border-rose-300';
-                feedbackBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1"></i> <strong>不太准确。</strong> 再仔细想想，这个行为是否符合礼让精神呢？`;
-            }
-
-            updateScore();
-        }
-
-        function updateScore() {
+        function submitL3Answers() {
             let correctCount = 0;
-            const total = quizQuestions.length;
-            quizQuestions.forEach(q => {
-                if (quizUserAnswers[q.id] === q.isTolerance) correctCount++;
+            let unselectedCount = 0;
+
+            level3Questions.forEach(q => {
+                const selectEl = document.getElementById(`l3-select-${q.id}`);
+                const val = selectEl.value;
+
+                if (!val) {
+                    unselectedCount++;
+                } else if (val === q.answer) {
+                    correctCount++;
+                    selectEl.className = "bg-emerald-100 border-2 border-emerald-500 rounded-xl px-3 py-1.5 font-bold text-emerald-950 mx-1 my-1";
+                } else {
+                    selectEl.className = "bg-rose-100 border-2 border-rose-500 rounded-xl px-3 py-1.5 font-bold text-rose-950 mx-1 my-1";
+                }
             });
-            document.getElementById('quiz-score').innerText = `${correctCount} / ${total}`;
-            if (Object.keys(quizUserAnswers).length === total) {
-                document.getElementById('quiz-completion-banner').classList.remove('hidden');
+
+            const toast = document.getElementById('l3-toast');
+            toast.classList.remove('hidden');
+
+            if (unselectedCount > 0) {
+                sfx.playError();
+                toast.className = "rounded-2xl p-4 font-bold text-sm mt-4 text-center bg-amber-100 text-amber-900 border border-amber-300";
+                toast.innerHTML = `⚠️ Sila pilih jawapan untuk kesemua 6 soalan sebelum menyemak! (${unselectedCount} lagi belum diisi)`;
+                return;
             }
+
+            const l3Score = correctCount * 10;
+            addScore(l3Score);
+
+            if (correctCount === 6) {
+                sfx.playSuccess();
+                toast.className = "rounded-2xl p-4 font-bold text-sm mt-4 text-center bg-emerald-100 text-emerald-900 border border-emerald-300";
+                toast.innerHTML = `🏆 Sempurna! Anda mendapat 6/6 betul! (+${l3Score} ⭐)`;
+            } else {
+                sfx.playSuccess();
+                toast.className = "rounded-2xl p-4 font-bold text-sm mt-4 text-center bg-sky-100 text-sky-900 border border-sky-300";
+                toast.innerHTML = `👍 Keputusan Level 3: Anda mendapat ${correctCount} daripada 6 betul! (+${l3Score} ⭐)`;
+            }
+
+            // Automatically Generate Certificate after finishing all 3 levels
+            setTimeout(() => {
+                generateCertificate();
+            }, 1500);
         }
 
-        function resetQuiz() {
-            quizUserAnswers = {};
-            document.getElementById('quiz-score').innerText = `0 / 6`;
-            document.getElementById('quiz-completion-banner').classList.add('hidden');
-            renderQuiz();
+        // --- CERTIFICATE & MODAL GENERATION ---
+        function generateCertificate() {
+            if (!studentName) {
+                promptStudentLogin();
+                return;
+            }
+
+            document.getElementById('cert-student-name').innerText = studentName;
+            document.getElementById('cert-student-class').innerText = `Kelas: ${studentClass || 'Tahun 5'}`;
+            document.getElementById('cert-score').innerText = `⭐ ${totalScore} / 160`;
+            
+            let grade = "⭐ Cemerlang (优秀)";
+            if (totalScore >= 130) grade = "🏆 Sangat Cemerlang (特优)";
+            else if (totalScore < 80) grade = "👍 Baik (良好)";
+            document.getElementById('cert-grade').innerText = grade;
+
+            const today = new Date();
+            document.getElementById('cert-date').innerText = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
+            sfx.playSuccess();
+            document.getElementById('certificate-modal').classList.remove('hidden');
         }
 
-        function playClickSound() {
+        function closeCertificate() {
+            document.getElementById('certificate-modal').classList.add('hidden');
+        }
+
+        // Optimized Download Certificate function using SVG/Canvas Rendering
+        function downloadOrPrintCertificate() {
+            sfx.playSuccess();
+            
+            const name = studentName || 'Murid';
+            const kls = studentClass || 'Tahun 5';
+            const score = totalScore;
+            const grade = document.getElementById('cert-grade').innerText || '⭐ Cemerlang';
+            const today = new Date();
+            const dateStr = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+
+            // Create a high-resolution Canvas to render the Certificate
+            const canvas = document.createElement('canvas');
+            canvas.width = 1200;
+            canvas.height = 850;
+            const ctx = canvas.getContext('2d');
+
+            // Draw Background & Border
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#f59e0b'; // Amber border
+            ctx.fillRect(20, 20, canvas.width - 40, canvas.height - 40);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(35, 35, canvas.width - 70, canvas.height - 70);
+
+            // Header Banner
+            ctx.fillStyle = '#065f46';
+            ctx.fillRect(300, 70, 600, 45);
+            ctx.fillStyle = '#fcd34d';
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('SIJIL PENCAPAIAN BAHASA MELAYU TAHUN 5', 600, 100);
+
+            // Title
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 36px Fredoka, sans-serif';
+            ctx.fillText('SIJIL PENGUASAAN SIMPULAN BAHASA', 600, 175);
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = '16px Inter, sans-serif';
+            ctx.fillText('Peringkat Sekolah Rendah • 表达与成语运用', 600, 205);
+
+            // Line Separator
+            ctx.strokeStyle = '#fde68a';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(250, 225);
+            ctx.lineTo(950, 225);
+            ctx.stroke();
+
+            // Student Detail
+            ctx.fillStyle = '#475569';
+            ctx.font = 'italic 18px Inter, sans-serif';
+            ctx.fillText('Dengan ini diperakui bahawa (兹证明):', 600, 275);
+
+            ctx.fillStyle = '#065f46';
+            ctx.font = 'bold 44px Inter, sans-serif';
+            ctx.fillText(name, 600, 340);
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.fillText(`Kelas: ${kls}`, 600, 385);
+
+            ctx.fillStyle = '#334155';
+            ctx.font = '18px Inter, sans-serif';
+            ctx.fillText('Telah berjaya menyempurnakan ketiga-tiga Aras Penguasaan Simpulan Bahasa', 600, 440);
+            ctx.fillText('(Pilihan Maksud, Taip Bebas, dan Aplikasi dalam 6 Ayat Bahasa Melayu).', 600, 470);
+
+            // Score Box
+            ctx.fillStyle = '#fffbeb';
+            ctx.fillRect(350, 510, 500, 100);
+            ctx.strokeStyle = '#fcd34d';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(350, 510, 500, 100);
+
+            ctx.fillStyle = '#92400e';
+            ctx.font = 'bold 16px Inter, sans-serif';
+            ctx.fillText('JUMLAH MARKAH', 470, 545);
+            ctx.fillStyle = '#d97706';
+            ctx.font = 'bold 28px Inter, sans-serif';
+            ctx.fillText(`⭐ ${score} / 160`, 470, 585);
+
+            ctx.fillStyle = '#065f46';
+            ctx.font = 'bold 16px Inter, sans-serif';
+            ctx.fillText('TAHAP PENGUASAAN', 730, 545);
+            ctx.fillStyle = '#047857';
+            ctx.font = 'bold 22px Inter, sans-serif';
+            ctx.fillText(grade, 730, 585);
+
+            // Footer
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'bold 16px Inter, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(`Tarikh Tamat: ${dateStr}`, 100, 740);
+            ctx.fillText('Status Pengesahan: Lulus Cemerlang', 100, 770);
+
+            ctx.textAlign = 'right';
+            ctx.fillText('__________________________', 1100, 740);
+            ctx.fillText('Guru Bahasa Melayu', 1100, 770);
+
+            // Trigger Image Download
+            const link = document.createElement('a');
+            link.download = `Sijil_Pencapaian_${name.replace(/\s+/g, '_')}.png`;
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showCustomModal('Sijil Dimuat Turun!', `Sijil pencapaian ${name} telah disimpan ke peranti anda sebagai imej PNG.`, '📥');
+        }
+
+        function copyAchievementText() {
+            const name = studentName || 'Murid';
+            const kls = studentClass || 'Tahun 5';
+            const score = totalScore;
+            const grade = document.getElementById('cert-grade').innerText || '⭐ Cemerlang';
+
+            const summaryText = `🏆 PENCAPAIAN SIMPULAN BAHASA BAHASA MELAYU TAHUN 5\n` +
+                `----------------------------------------\n` +
+                `👤 Nama Murid: ${name}\n` +
+                `🏫 Kelas: ${kls}\n` +
+                `⭐ Jumlah Markah: ${score} / 160\n` +
+                `🏅 Tahap Penguasaan: ${grade}\n` +
+                `----------------------------------------\n` +
+                `Telah berjaya menyempurnakan kesemua 3 Level Simpulan Bahasa! 🎉`;
+
+            const tempInput = document.createElement('textarea');
+            tempInput.value = summaryText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, ctx.currentTime);
-                gain.gain.setValueAtTime(0.05, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.1);
-            } catch (e) {}
+                document.execCommand('copy');
+                sfx.playSuccess();
+                showCustomModal('Berjaya Disalin!', 'Ringkasan keputusan murid telah disalin. Anda boleh menampal (paste) teks ini untuk dihantar kepada guru atau ibu bapa.', '📋');
+            } catch (err) {
+                sfx.playError();
+                showCustomModal('Ralat', 'Gagal menyalin secara automatik.', '❌');
+            }
+            document.body.removeChild(tempInput);
         }
 
-        function playSuccessSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = ctx.currentTime;
-                const osc1 = ctx.createOscillator();
-                const osc2 = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc1.frequency.setValueAtTime(523.25, now);
-                osc2.frequency.setValueAtTime(659.25, now + 0.1);
-
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-
-                osc1.connect(gain);
-                osc2.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc1.start(now);
-                osc2.start(now + 0.1);
-                osc1.stop(now + 0.3);
-                osc2.stop(now + 0.3);
-            } catch (e) {}
+        function showCustomModal(title, msg, icon = '🌙') {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = msg;
+            document.getElementById('modal-icon').innerText = icon;
+            document.getElementById('custom-modal').classList.remove('hidden');
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            renderQuiz();
-            showScenario('A');
-            renderClothesGame();
-        });
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        window.onload = function() {
+            setTimeout(() => {
+                if (!studentName) promptStudentLogin();
+            }, 400);
+        };
     </script>
 </body>
 </html>
-
